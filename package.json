@@ -10,7 +10,7 @@
     "main": "src/main.js",
     "type": "module",
     "scripts": {
-        "start": "electron .",
+        "start": "electron . --no-sandbox",
         "build": "electron-builder --linux deb"
     },
     "dependencies": {

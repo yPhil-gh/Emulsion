@@ -1,0 +1,29 @@
+{
+    "name": "emume",
+    "version": "1.0.0",
+    "description": "A frontend to launch games",
+    "homepage": "https://gitlab.com/yphil/emume",
+    "author": {
+        "name": "yPhil",
+        "email": "yphil@gnu.org"
+    },
+    "main": "src/main.js",
+    "type": "module",
+    "scripts": {
+        "start": "electron .",
+        "build": "electron-builder --linux deb"
+    },
+    "dependencies": {
+    },
+    "devDependencies": {
+        "electron": "^28.0.0",
+        "electron-builder": "^24.0.0"
+    },
+    "build": {
+        "productName": "EmumE",
+        "linux": {
+            "target": "deb",
+            "category": "Utility"
+        }
+    }
+}

@@ -1,0 +1,10 @@
+{
+  "productName": "EmumE",
+  "directories": {
+    "output": "dist"
+  },
+  "linux": {
+    "target": "deb",
+    "category": "Utility"
+  }
+}

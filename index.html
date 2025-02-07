@@ -2,31 +2,103 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Slideshow with Background Images</title>
-  <link rel="stylesheet" href="src/style.css">
+  <title>Slideshow with Dimmed Previews</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+    /* The slideshow container – note: overflow visible to allow adjacent previews */
+    #slideshow {
+      position: relative;
+      width: 256px;
+      height: 256px;
+      overflow: visible;
+    }
+    /* Each slide is absolutely positioned, sized to match its background image */
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 256px;
+      height: 256px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 16px;
+      transition: transform 0.5s ease, opacity 0.5s ease;
+      opacity: 0;
+    }
+    /* The active slide: fully visible, centered, normal scale */
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+      z-index: 2;
+    }
+    /* The immediate left slide: shifted left, scaled down, dimmed */
+    .slide.adjacent.active-left {
+      opacity: 0.5;
+      transform: translateX(-100px) scale(0.9);
+      z-index: 1;
+    }
+    /* The immediate right slide: shifted right, scaled down, dimmed */
+    .slide.adjacent.active-right {
+      opacity: 0.5;
+      transform: translateX(100px) scale(0.9);
+      z-index: 1;
+    }
+  </style>
 </head>
 <body>
   <div id="slideshow">
-    <div class="slide active" style="background-image: url('img/amiga.png');">
-      <div class="slide-content">
-        <h1>Amiga</h1>
-        <p>Additional content goes here.</p>
-      </div>
-    </div>
-    <div class="slide" style="background-image: url('img/dreamcast.png');">
-      <div class="slide-content">
-        <h1>Dreamcast</h1>
-        <p>Additional content goes here.</p>
-      </div>
-    </div>
-    <div class="slide" style="background-image: url('img/gamecube.png');">
-      <div class="slide-content">
-        <h1>GameCube</h1>
-        <p>Additional content goes here.</p>
-      </div>
-    </div>
+    <!-- Three slides with background images -->
+    <div class="slide active" style="background-image: url('img/amiga.png');"></div>
+    <div class="slide" style="background-image: url('img/dreamcast.png');"></div>
+    <div class="slide" style="background-image: url('img/gamecube.png');"></div>
   </div>
 
-  <script src="src/renderer.js"></script>
+  <script>
+   const slides = document.querySelectorAll('.slide');
+   let currentSlide = 0;
+
+   // This function sets the appropriate classes based on the current slide index.
+   function showSlide(index) {
+       slides.forEach((slide, i) => {
+           // Remove all state classes.
+           slide.classList.remove('active', 'adjacent', 'active-left', 'active-right');
+           if (i === index) {
+               // Center (active) slide.
+               slide.classList.add('active');
+           } else if (i === (index - 1 + slides.length) % slides.length) {
+               // Immediate left slide.
+               slide.classList.add('adjacent', 'active-left');
+           } else if (i === (index + 1) % slides.length) {
+               // Immediate right slide.
+               slide.classList.add('adjacent', 'active-right');
+           }
+       });
+   }
+
+   // Keyboard navigation with circular wrap-around.
+   document.addEventListener('keydown', (e) => {
+       if (e.key === 'ArrowRight') {
+           currentSlide = (currentSlide + 1) % slides.length;
+           showSlide(currentSlide);
+       } else if (e.key === 'ArrowLeft') {
+           currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+           showSlide(currentSlide);
+       }
+   });
+
+   // Initial display.
+   showSlide(currentSlide);
+  </script>
 </body>
 </html>

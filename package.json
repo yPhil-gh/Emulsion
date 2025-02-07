@@ -1,29 +1,68 @@
 {
-    "name": "emume",
-    "version": "1.0.0",
-    "description": "A frontend to launch games",
-    "homepage": "https://gitlab.com/yphil/emume",
-    "author": {
-        "name": "yPhil",
-        "email": "yphil@gnu.org"
+  "name": "EnumE",
+  "version": "1.0.0",
+  "context": "prod",
+  "description": "A frontend to launch games for multiple platforms",
+  "main": "main.js",
+  "homepage": "https://github.com/yourusername/enume",
+  "author": {
+    "name": "Your Name",
+    "email": "youremail@example.com"
+  },
+  "keywords": [
+    "emulator",
+    "frontend",
+    "games",
+    "amiga",
+    "dreamcast",
+    "gamecube"
+  ],
+  "license": "GPLv3",
+  "scripts": {
+    "start": "electron . --no-sandbox",
+    "prebuild": "rm -rf ./dist ./out ./node_modules ./repack ./tmp && npm install",
+    "build": "electron-builder --linux --x64 --publish never",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "build": {
+    "files": [
+      "**/*",
+      "!**/*.map",
+      "!**/*.log",
+      "!**/node_modules/**/*.md",
+      "!**/node_modules/**/*.ts",
+      "!**/node_modules/**/test",
+      "!**/node_modules/**/tests",
+      "!**/node_modules/**/examples"
+    ],
+    "appId": "com.yourusername.enume",
+    "productName": "EnumE",
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "icon": "img/enume.png",
+      "category": "Utility",
+      "artifactName": "${productName}-${version}.${ext}"
     },
-    "main": "src/main.js",
-    "type": "module",
-    "scripts": {
-        "start": "electron . --no-sandbox",
-        "build": "electron-builder --linux deb"
-    },
-    "dependencies": {
-    },
-    "devDependencies": {
-        "electron": "^28.0.0",
-        "electron-builder": "^24.0.0"
-    },
-    "build": {
-        "productName": "EmumE",
-        "linux": {
-            "target": "deb",
-            "category": "Utility"
-        }
-    }
+    "asar": true,
+    "compression": "store"
+  },
+  "devDependencies": {
+    "electron": "^34.0.2",
+    "electron-builder": "^25.1.8"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "cheerio": "^1.0.0",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "electron-store": "^8.1.0"
+  },
+  "platforms": [
+    "amiga",
+    "dreamcast",
+    "gamecube"
+  ]
 }

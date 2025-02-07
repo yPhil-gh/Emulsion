@@ -11,7 +11,7 @@ body {
   position: relative;
 }
 
-/* The slideshow container; overflow visible so adjacent slides peek in */
+/* The slideshow container (overflow visible so adjacent slides peek in) */
 #slideshow {
   position: relative;
   width: 256px;
@@ -19,8 +19,8 @@ body {
   overflow: visible;
 }
 
-/* Each slide is 256×256px, has rounded corners, a blue outline,
-   and is 50% transparent by default */
+/* Each slide is a 256x256px div with a background image, 50% opacity by default,
+   rounded corners, and a blue outline */
 .slide {
   position: absolute;
   top: 0;
@@ -32,35 +32,37 @@ body {
   border-radius: 16px;
   border: 2px solid #007bff;
   opacity: 0.5;
-  transition: transform 0.5s ease, opacity 0.5s ease;
+  transition: transform 0.5s ease, opacity 0.5s ease, box-shadow 0.5s ease, background-color 0.5s ease;
   cursor: pointer;
 }
 
-/* The active slide: fully opaque and centered */
+/* Active slide: fully opaque with a light grey background and a bright blue glow */
 .slide.active {
-  opacity: 1;
+  opacity: 0.9;
   transform: translateX(0) scale(1);
   z-index: 2;
   pointer-events: auto;
+  background-color: #222;
+  box-shadow: 0 0 20px 5px #007bff;
 }
 
-/* Immediate left adjacent slide: shifted left and scaled down slightly */
+/* Immediate left adjacent slide: shifted left by 200px and scaled down slightly */
 .slide.adjacent.active-left {
-  transform: translateX(-100px) scale(0.9);
+  transform: translateX(-200px) scale(0.9);
   z-index: 1;
 }
 
-/* Immediate right adjacent slide: shifted right and scaled down slightly */
+/* Immediate right adjacent slide: shifted right by 200px and scaled down slightly */
 .slide.adjacent.active-right {
-  transform: translateX(100px) scale(0.9);
+  transform: translateX(200px) scale(0.9);
   z-index: 1;
 }
 
-/* Content on top of each slide */
+/* Content layered on top of each slide */
 .slide-content {
   position: relative;
   z-index: 3;
   text-align: center;
-  color: #fff;
+  color: #333;
   padding: 10px;
 }

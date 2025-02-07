@@ -2,7 +2,7 @@ const slides = document.querySelectorAll('.slide');
 let currentSlide = 0;
 
 // Function to update slide classes: active slide is fully opaque,
-// immediate left/right slides get "adjacent" classes.
+// immediate neighbors get shifted far apart and scaled.
 function showSlide(index) {
   slides.forEach((slide, i) => {
     slide.classList.remove('active', 'adjacent', 'active-left', 'active-right');
@@ -16,8 +16,7 @@ function showSlide(index) {
   });
 }
 
-// Keyboard navigation for left/right arrows.
-// When RETURN (Enter) is pressed, log the selected slide's title.
+// Listen to keyboard events for navigation.
 document.addEventListener('keydown', (event) => {
   if (event.key === 'ArrowRight') {
     currentSlide = (currentSlide + 1) % slides.length;
@@ -30,7 +29,7 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-// Also log selection when a slide is clicked.
+// Log selection when a slide is clicked.
 slides.forEach((slide, index) => {
   slide.addEventListener('click', () => {
     currentSlide = index;

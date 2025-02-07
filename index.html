@@ -16,14 +16,15 @@
       overflow: hidden;
       position: relative;
     }
-    /* The slideshow container – note: overflow visible to allow adjacent previews */
+    /* The slideshow container (overflow visible so adjacent slides peek in) */
     #slideshow {
       position: relative;
       width: 256px;
       height: 256px;
       overflow: visible;
     }
-    /* Each slide is absolutely positioned, sized to match its background image */
+    /* Base slide styling: 256px square, with rounded corners and blue outline.
+       Default opacity is 0.5 (dimmed). */
     .slide {
       position: absolute;
       top: 0;
@@ -33,71 +34,88 @@
       background-size: cover;
       background-position: center;
       border-radius: 16px;
+      border: 2px solid #007bff;
+      opacity: 0.5;
       transition: transform 0.5s ease, opacity 0.5s ease;
-      opacity: 0;
     }
-    /* The active slide: fully visible, centered, normal scale */
+    /* Active slide: fully opaque, no translation, normal scale */
     .slide.active {
       opacity: 1;
       transform: translateX(0) scale(1);
       z-index: 2;
+      pointer-events: auto;
     }
-    /* The immediate left slide: shifted left, scaled down, dimmed */
+    /* Immediate left adjacent slide: shifted left and scaled down slightly */
     .slide.adjacent.active-left {
-      opacity: 0.5;
       transform: translateX(-100px) scale(0.9);
       z-index: 1;
     }
-    /* The immediate right slide: shifted right, scaled down, dimmed */
+    /* Immediate right adjacent slide: shifted right and scaled down slightly */
     .slide.adjacent.active-right {
-      opacity: 0.5;
       transform: translateX(100px) scale(0.9);
       z-index: 1;
+    }
+    /* Optional overlay content on each slide */
+    .slide-content {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      color: #fff;
+      padding: 10px;
     }
   </style>
 </head>
 <body>
   <div id="slideshow">
     <!-- Three slides with background images -->
-    <div class="slide active" style="background-image: url('img/amiga.png');"></div>
-    <div class="slide" style="background-image: url('img/dreamcast.png');"></div>
-    <div class="slide" style="background-image: url('img/gamecube.png');"></div>
+    <div class="slide active" style="background-image: url('img/amiga.png');">
+      <div class="slide-content">
+        <h1>Amiga</h1>
+      </div>
+    </div>
+    <div class="slide" style="background-image: url('img/dreamcast.png');">
+      <div class="slide-content">
+        <h1>Dreamcast</h1>
+      </div>
+    </div>
+    <div class="slide" style="background-image: url('img/gamecube.png');">
+      <div class="slide-content">
+        <h1>GameCube</h1>
+      </div>
+    </div>
   </div>
 
   <script>
+   // Select all slide elements and initialize the current slide index.
    const slides = document.querySelectorAll('.slide');
    let currentSlide = 0;
 
-   // This function sets the appropriate classes based on the current slide index.
+   // Function to update slide classes for active and adjacent slides.
    function showSlide(index) {
        slides.forEach((slide, i) => {
-           // Remove all state classes.
            slide.classList.remove('active', 'adjacent', 'active-left', 'active-right');
            if (i === index) {
-               // Center (active) slide.
                slide.classList.add('active');
            } else if (i === (index - 1 + slides.length) % slides.length) {
-               // Immediate left slide.
                slide.classList.add('adjacent', 'active-left');
            } else if (i === (index + 1) % slides.length) {
-               // Immediate right slide.
                slide.classList.add('adjacent', 'active-right');
            }
        });
    }
 
-   // Keyboard navigation with circular wrap-around.
-   document.addEventListener('keydown', (e) => {
-       if (e.key === 'ArrowRight') {
+   // Listen for left/right arrow key presses to cycle through slides.
+   document.addEventListener('keydown', (event) => {
+       if (event.key === 'ArrowRight') {
            currentSlide = (currentSlide + 1) % slides.length;
            showSlide(currentSlide);
-       } else if (e.key === 'ArrowLeft') {
+       } else if (event.key === 'ArrowLeft') {
            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
            showSlide(currentSlide);
        }
    });
 
-   // Initial display.
+   // Initialize the slideshow.
    showSlide(currentSlide);
   </script>
 </body>

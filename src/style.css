@@ -7,15 +7,20 @@ body {
   align-items: center;
   height: 100vh;
   font-family: sans-serif;
+  overflow: hidden;
+  position: relative;
 }
 
+/* The slideshow container; overflow visible so adjacent slides peek in */
 #slideshow {
   position: relative;
   width: 256px;
   height: 256px;
-  overflow: hidden;
+  overflow: visible;
 }
 
+/* Each slide is 256×256px, has rounded corners, a blue outline,
+   and is 50% transparent by default */
 .slide {
   position: absolute;
   top: 0;
@@ -25,26 +30,36 @@ body {
   background-size: cover;
   background-position: center;
   border-radius: 16px;
-  /* Initially hidden */
-  opacity: 0;
-  pointer-events: none;
-  /* Smooth transition on opacity and transform */
-  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+  border: 2px solid #007bff;
+  opacity: 0.5;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  cursor: pointer;
 }
 
+/* The active slide: fully opaque and centered */
 .slide.active {
   opacity: 1;
+  transform: translateX(0) scale(1);
+  z-index: 2;
   pointer-events: auto;
-  transform: scale(1); /* You can adjust this to create a slight zoom effect if desired */
 }
 
-.slide:not(.active) {
-  transform: scale(0.95);
+/* Immediate left adjacent slide: shifted left and scaled down slightly */
+.slide.adjacent.active-left {
+  transform: translateX(-100px) scale(0.9);
+  z-index: 1;
 }
 
+/* Immediate right adjacent slide: shifted right and scaled down slightly */
+.slide.adjacent.active-right {
+  transform: translateX(100px) scale(0.9);
+  z-index: 1;
+}
+
+/* Content on top of each slide */
 .slide-content {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   text-align: center;
   color: #fff;
   padding: 10px;

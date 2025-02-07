@@ -1,54 +1,48 @@
-// src/renderer.js
-
-let selectedIndex = 1; // Start with the middle platform selected
+let selectedIndex = 0; // Start with the first div selected
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM is fully loaded!');
 
-  const platformsMenu = document.getElementById('platforms-menu');
-  const platforms = ['amiga', 'dreamcast', 'gamecube'];
+  const carousel = document.getElementById('carousel');
+  const divCount = 6; // Change this to 4, 5, or 6 as needed
 
-  // Add platforms dynamically
-  platforms.forEach((platform, index) => {
-    const platformDiv = document.createElement('div');
-    platformDiv.className = 'platform';
-    platformDiv.style.backgroundImage = `./img/${platform}.png`;
-    platformDiv.textContent = platform.toUpperCase();
-    platformsMenu.appendChild(platformDiv);
-  });
+  // Add divs dynamically
+  for (let i = 0; i < divCount; i++) {
+    const div = document.createElement('div');
+    div.textContent = `Div ${i + 1}`;
+    carousel.appendChild(div);
+  }
 
-  // Center the selected platform
-  updatePlatformPosition();
+  // Center the selected div
+  updateCarouselPosition();
 
-  // Handle left/right arrow keys with circular wrap-around
+  // Handle left/right arrow keys
   document.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowLeft') {
-      // Decrement and wrap around if necessary
-      selectedIndex = (selectedIndex - 1 + platforms.length) % platforms.length;
-      updatePlatformPosition();
+      selectedIndex = (selectedIndex - 1 + divCount) % divCount; // Circular left
+      updateCarouselPosition();
     } else if (event.key === 'ArrowRight') {
-      // Increment and wrap around if necessary
-      selectedIndex = (selectedIndex + 1) % platforms.length;
-      updatePlatformPosition();
+      selectedIndex = (selectedIndex + 1) % divCount; // Circular right
+      updateCarouselPosition();
     }
   });
 });
 
-function updatePlatformPosition() {
-  const platformsMenu = document.getElementById('platforms-menu');
-  const platforms = document.querySelectorAll('.platform');
-  const platformWidth = platforms[0].offsetWidth + 20; // width plus gap
+function updateCarouselPosition() {
+  const carousel = document.getElementById('carousel');
+  const divs = document.querySelectorAll('.carousel div');
+  const divWidth = divs[0].offsetWidth + 20; // Width + gap
 
-  // Calculate the offset to center the selected platform
-  const offset = -selectedIndex * platformWidth;
-  platformsMenu.style.transform = `translateX(${offset}px)`;
+  // Calculate the offset to center the selected div
+  const offset = -selectedIndex * divWidth;
+  carousel.style.transform = `translateX(${offset}px)`;
 
-  // Highlight the selected platform
-  platforms.forEach((platform, index) => {
+  // Highlight the selected div
+  divs.forEach((div, index) => {
     if (index === selectedIndex) {
-      platform.style.border = '2px solid #007bff';
+      div.classList.add('selected'); // Highlight selected div
     } else {
-      platform.style.border = 'none';
+      div.classList.remove('selected'); // Remove highlight from others
     }
   });
 }

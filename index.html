@@ -2,18 +2,100 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EnumE</title>
-  <link rel="stylesheet" href="src/style.css">
+  <title>Slideshow with Background Images</title>
+  <style>
+    /* Basic styling for a centered slideshow container */
+    body {
+      margin: 0;
+      padding: 0;
+      background: #111; /* Page background remains dark */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: sans-serif;
+    }
+    /* The slideshow container is 256px by 256px */
+    #slideshow {
+      position: relative;
+      width: 256px;
+      height: 256px;
+      overflow: hidden;
+    }
+    /* Each slide is a 256px by 256px div with rounded corners */
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 256px;
+      height: 256px;
+      display: none;
+      background-size: cover;
+      background-position: center;
+      transition: opacity 0.5s ease;
+      border-radius: 16px;
+      background-color: transparent; /* Transparent so the image shows through */
+    }
+    .slide.active {
+      display: block;
+      opacity: 1;
+    }
+    /* Optional overlay content */
+    .slide-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: #fff;
+      padding: 10px;
+    }
+  </style>
 </head>
 <body>
-  <div id="platforms-menu" class="platforms-menu">
-    <!-- Platforms will be dynamically added here -->
+  <div id="slideshow">
+    <div class="slide active" style="background-image: url('img/amiga.png');">
+      <div class="slide-content">
+        <h1>Amiga</h1>
+      </div>
+    </div>
+    <div class="slide" style="background-image: url('img/dreamcast.png');">
+      <div class="slide-content">
+        <h1>Dreamcast</h1>
+      </div>
+    </div>
+    <div class="slide" style="background-image: url('img/gamecube.png');">
+      <div class="slide-content">
+        <h1>GameCube</h1>
+      </div>
+    </div>
+    <div class="slide" style="background-image: url('img/another.png');">
+      <div class="slide-content">
+        <h1>Another</h1>
+      </div>
+    </div>
   </div>
 
-  <!-- Placeholder for dynamically loaded content -->
-  <div id="content"></div>
+  <script>
+   // Select all slides and set the initial index
+   const slides = document.querySelectorAll('.slide');
+   let currentSlide = 0;
 
-  <script src="src/renderer.js"></script>
+   // Function to show a specific slide
+   function showSlide(index) {
+       slides.forEach((slide, i) => {
+           slide.classList.toggle('active', i === index);
+       });
+   }
+
+   // Listen for arrow key events to navigate the slideshow
+   document.addEventListener('keydown', (event) => {
+       if (event.key === 'ArrowRight') {
+           currentSlide = (currentSlide + 1) % slides.length;
+           showSlide(currentSlide);
+       } else if (event.key === 'ArrowLeft') {
+           currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+           showSlide(currentSlide);
+       }
+   });
+  </script>
 </body>
 </html>

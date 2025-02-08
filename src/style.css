@@ -11,22 +11,19 @@ body {
   position: relative;
 }
 
-/* The slideshow container (overflow visible so adjacent slides peek in) */
 #slideshow {
   position: relative;
-  width: 256px;
-  height: 256px;
+  width: 512px;
+  height: 512px;
   overflow: visible;
 }
 
-/* Each slide is a 256x256px div with a background image, 50% opacity by default,
-   rounded corners, and a blue outline */
 .slide {
   position: absolute;
   top: 0;
   left: 0;
-  width: 256px;
-  height: 256px;
+  width: 512px;
+  height: 512px;
   background-size: cover;
   background-position: center;
   border-radius: 16px;
@@ -36,7 +33,6 @@ body {
   cursor: pointer;
 }
 
-/* Active slide: fully opaque with a light grey background and a bright blue glow */
 .slide.active {
   opacity: 0.9;
   transform: translateX(0) scale(1);
@@ -46,23 +42,40 @@ body {
   box-shadow: 0 0 20px 5px #007bff;
 }
 
-/* Immediate left adjacent slide: shifted left by 200px and scaled down slightly */
 .slide.adjacent.active-left {
   transform: translateX(-200px) scale(0.9);
   z-index: 1;
 }
 
-/* Immediate right adjacent slide: shifted right by 200px and scaled down slightly */
 .slide.adjacent.active-right {
   transform: translateX(200px) scale(0.9);
   z-index: 1;
 }
 
-/* Content layered on top of each slide */
-.slide-content {
-  position: relative;
-  z-index: 3;
-  text-align: center;
-  color: #333;
+.platform-form {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
   padding: 10px;
+  border-radius: 8px;
+  color: white;
+  text-align: center;
+}
+
+.platform-form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.platform-form input {
+  width: 200px;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.platform-form button {
+  padding: 5px 10px;
+  cursor: pointer;
 }

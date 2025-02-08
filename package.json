@@ -1,23 +1,7 @@
 {
   "name": "EnumE",
   "version": "1.0.0",
-  "context": "prod",
-  "description": "A frontend to launch games for multiple platforms",
-  "main": "main.js",
-  "homepage": "https://github.com/yourusername/enume",
-  "author": {
-    "name": "Your Name",
-    "email": "youremail@example.com"
-  },
-  "keywords": [
-    "emulator",
-    "frontend",
-    "games",
-    "amiga",
-    "dreamcast",
-    "gamecube"
-  ],
-  "license": "GPLv3",
+  "main": "src/main.js",
   "scripts": {
     "start": "electron . --no-sandbox",
     "prebuild": "rm -rf ./dist ./out ./node_modules ./repack ./tmp && npm install",

@@ -2,24 +2,59 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Slideshow with Far Apart Previews</title>
+  <title>EnumE - Platform Slideshow</title>
   <link rel="stylesheet" href="src/style.css">
 </head>
 <body>
   <div id="slideshow">
+    <!-- Amiga Slide -->
     <div class="slide active" style="background-image: url('img/amiga.png');">
       <div class="slide-content">
-        <h1>Amiga</h1>
+        <form id="amiga-form" class="platform-form">
+          <label for="amiga-games-dir">Games Directory:</label>
+          <input type="text" id="amiga-games-dir" readonly>
+          <button type="button" class="browse-button" data-platform="amiga" data-input="amiga-games-dir">Browse</button>
+
+          <label for="amiga-emulator">Emulator:</label>
+          <input type="text" id="amiga-emulator" readonly>
+          <button type="button" class="browse-button" data-platform="amiga" data-input="amiga-emulator">Browse</button>
+
+          <button type="button" class="save-button" data-platform="amiga">Save</button>
+        </form>
       </div>
     </div>
+
+    <!-- Dreamcast Slide -->
     <div class="slide" style="background-image: url('img/dreamcast.png');">
       <div class="slide-content">
-        <h1>Dreamcast</h1>
+        <form id="dreamcast-form" class="platform-form">
+          <label for="dreamcast-games-dir">Games Directory:</label>
+          <input type="text" id="dreamcast-games-dir" readonly>
+          <button type="button" class="browse-button" data-platform="dreamcast" data-input="dreamcast-games-dir">Browse</button>
+
+          <label for="dreamcast-emulator">Emulator:</label>
+          <input type="text" id="dreamcast-emulator" readonly>
+          <button type="button" class="browse-button" data-platform="dreamcast" data-input="dreamcast-emulator">Browse</button>
+
+          <button type="button" class="save-button" data-platform="dreamcast">Save</button>
+        </form>
       </div>
     </div>
+
+    <!-- GameCube Slide -->
     <div class="slide" style="background-image: url('img/gamecube.png');">
       <div class="slide-content">
-        <h1>GameCube</h1>
+        <form id="gamecube-form" class="platform-form">
+          <label for="gamecube-games-dir">Games Directory:</label>
+          <input type="text" id="gamecube-games-dir" readonly>
+          <button type="button" class="browse-button" data-platform="gamecube" data-input="gamecube-games-dir">Browse</button>
+
+          <label for="gamecube-emulator">Emulator:</label>
+          <input type="text" id="gamecube-emulator" readonly>
+          <button type="button" class="browse-button" data-platform="gamecube" data-input="gamecube-emulator">Browse</button>
+
+          <button type="button" class="save-button" data-platform="gamecube">Save</button>
+        </form>
       </div>
     </div>
   </div>

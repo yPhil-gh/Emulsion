@@ -1,5 +1,10 @@
-import { contextBridge } from 'electron';
+const { contextBridge, ipcRenderer } = require('electron');
 
-contextBridge.exposeInMainWorld('electronAPI', {
-    sayHello: () => 'Hello World'
+// Expose APIs to the renderer process
+contextBridge.exposeInMainWorld('api', {
+  selectDirectory: () => ipcRenderer.invoke('select-directory'),
+  selectFile: () => ipcRenderer.invoke('select-file'),
+  savePreferences: (platform, preferences) =>
+    ipcRenderer.invoke('save-preferences', platform, preferences),
+  loadPreferences: (platform) => ipcRenderer.invoke('load-preferences', platform),
 });

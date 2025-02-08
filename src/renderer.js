@@ -1,3 +1,7 @@
+const { ipcRenderer } = require('electron');
+const fs = require('fs');
+const path = require('path');
+
 const slides = document.querySelectorAll('.slide');
 let currentSlide = 0;
 
@@ -45,7 +49,7 @@ document.querySelectorAll('.browse-button').forEach(button => {
     const inputElement = document.getElementById(inputId);
 
     if (button.textContent === 'Browse') {
-      const path = await window.api.selectDirectory(); // Use window.api.selectDirectory
+      const path = await ipcRenderer.invoke('select-directory'); // Use ipcRenderer.invoke
       if (path) inputElement.value = path;
     }
   });
@@ -62,7 +66,7 @@ document.querySelectorAll('.save-button').forEach(button => {
       return;
     }
 
-    await window.api.savePreferences(platform, { gamesDir, emulator }); // Use window.api.savePreferences
+    await ipcRenderer.invoke('save-preferences', platform, { gamesDir, emulator }); // Use ipcRenderer.invoke
     alert('Preferences saved!');
   });
 });
@@ -72,7 +76,7 @@ window.addEventListener('load', async () => {
   const platforms = ['amiga', 'dreamcast', 'gamecube'];
   platforms.forEach(async platform => {
     try {
-      const preferences = await window.api.loadPreferences(platform); // Use window.api.loadPreferences
+      const preferences = await ipcRenderer.invoke('load-preferences', platform); // Use ipcRenderer.invoke
       document.getElementById(`${platform}-games-dir`).value = preferences.gamesDir;
       document.getElementById(`${platform}-emulator`).value = preferences.emulator;
     } catch (error) {

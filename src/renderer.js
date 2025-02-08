@@ -2,6 +2,31 @@ const { ipcRenderer } = require('electron');
 const fs = require('fs');
 const path = require('path');
 
+// Path to package.json
+const packageJsonPath = path.join(__dirname, 'package.json');
+
+// Load package.json
+fs.readFile(packageJsonPath, 'utf8', (err, data) => {
+  if (err) {
+    console.error('Error loading package.json:', err);
+    return;
+  }
+
+  try {
+    const packageJson = JSON.parse(data);
+    const platforms = packageJson.platforms || []; // Get platforms from package.json
+
+    console.log('Platforms:', platforms);
+
+    // Use the platforms array as needed
+    platforms.forEach(platform => {
+      console.log(`Platform: ${platform}`);
+    });
+  } catch (err) {
+    console.error('Error parsing package.json:', err);
+  }
+});
+
 const slides = document.querySelectorAll('.slide');
 let currentSlide = 0;
 

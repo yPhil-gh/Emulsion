@@ -5,27 +5,67 @@ const path = require('path');
 // Path to package.json
 const packageJsonPath = path.join(__dirname, 'package.json');
 
-// Load package.json
-fs.readFile(packageJsonPath, 'utf8', (err, data) => {
-  if (err) {
-    console.error('Error loading package.json:', err);
-    return;
-  }
 
-  try {
-    const packageJson = JSON.parse(data);
-    const platforms = packageJson.platforms || []; // Get platforms from package.json
+// Read platforms from package.json
+const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+const platforms = pkg.platforms || [];
 
-    console.log('Platforms:', platforms);
-
-    // Use the platforms array as needed
-    platforms.forEach(platform => {
-      console.log(`Platform: ${platform}`);
-    });
-  } catch (err) {
-    console.error('Error parsing package.json:', err);
-  }
+platforms.forEach(platform => {
+    console.log(`Platform: ${platform}`);
 });
+
+
+// Build the slideshow content dynamically
+const slideshow = document.getElementById("slideshow");
+
+platforms.forEach((platform) => {
+  // Create the slide container
+  const slide = document.createElement("div");
+  slide.className = "slide";
+  slide.style.backgroundImage = `url('img/${platform}.png')`;
+
+  // Create the content container
+  const content = document.createElement("div");
+  content.className = "slide-content";
+
+  // Create the form
+  const form = document.createElement("form");
+  form.id = `${platform}-form`;
+  form.className = "platform-form";
+
+  // Add input and buttons for games directory
+  form.innerHTML += `
+    <label for="${platform}-games-dir">Games Directory:</label>
+    <input type="text" id="${platform}-games-dir" readonly>
+    <button type="button" class="browse-button" data-platform="${platform}" data-input="${platform}-games-dir">Browse</button>
+  `;
+
+  // Add input and buttons for emulator
+  form.innerHTML += `
+    <label for="${platform}-emulator">Emulator:</label>
+    <input type="text" id="${platform}-emulator" readonly>
+    <button type="button" class="browse-button" data-platform="${platform}" data-input="${platform}-emulator">Browse</button>
+  `;
+
+  // Add save button
+  form.innerHTML += `
+    <button type="button" class="save-button" data-platform="${platform}">Save</button>
+  `;
+
+  // Append the form to the content
+  content.appendChild(form);
+
+  // Append the content to the slide
+  slide.appendChild(content);
+
+  // Append the slide to the slideshow container
+  slideshow.appendChild(slide);
+});
+
+// // Activate the first slide
+// if (slideshow.firstChild) {
+//   slideshow.firstChild.classList.add("active");
+// }
 
 const slides = document.querySelectorAll('.slide');
 let currentSlide = 0;
@@ -98,7 +138,6 @@ document.querySelectorAll('.save-button').forEach(button => {
 
 // Load saved preferences
 window.addEventListener('load', async () => {
-  const platforms = ['amiga', 'dreamcast', 'gamecube'];
   platforms.forEach(async platform => {
     try {
       const preferences = await ipcRenderer.invoke('load-preferences', platform); // Use ipcRenderer.invoke

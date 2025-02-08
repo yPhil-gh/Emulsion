@@ -37,14 +37,14 @@ platforms.forEach((platform) => {
   form.innerHTML += `
     <label for="${platform}-games-dir">Games Directory:</label>
     <input type="text" id="${platform}-games-dir" readonly>
-    <button type="button" class="browse-button" data-platform="${platform}" data-input="${platform}-games-dir">Browse</button>
+    <button type="button" class="browse-button-dir" data-platform="${platform}" data-input="${platform}-games-dir">Browse</button>
   `;
 
   // Add input and buttons for emulator
   form.innerHTML += `
     <label for="${platform}-emulator">Emulator:</label>
     <input type="text" id="${platform}-emulator" readonly>
-    <button type="button" class="browse-button" data-platform="${platform}" data-input="${platform}-emulator">Browse</button>
+    <button type="button" class="browse-button-file" data-platform="${platform}" data-input="${platform}-emulator">Browse</button>
   `;
 
   // Add save button
@@ -107,7 +107,7 @@ slides.forEach((slide, index) => {
 showSlide(currentSlide);
 
 // Platform form logic
-document.querySelectorAll('.browse-button').forEach(button => {
+document.querySelectorAll('.browse-button-dir').forEach(button => {
   button.addEventListener('click', async () => {
     const platform = button.getAttribute('data-platform');
     const inputId = button.getAttribute('data-input');
@@ -115,6 +115,20 @@ document.querySelectorAll('.browse-button').forEach(button => {
 
     if (button.textContent === 'Browse') {
       const path = await ipcRenderer.invoke('select-directory'); // Use ipcRenderer.invoke
+      if (path) inputElement.value = path;
+    }
+  });
+});
+
+// Platform form logic
+document.querySelectorAll('.browse-button-file').forEach(button => {
+  button.addEventListener('click', async () => {
+    const platform = button.getAttribute('data-platform');
+    const inputId = button.getAttribute('data-input');
+    const inputElement = document.getElementById(inputId);
+
+    if (button.textContent === 'Browse') {
+      const path = await ipcRenderer.invoke('select-file'); // Use ipcRenderer.invoke
       if (path) inputElement.value = path;
     }
   });

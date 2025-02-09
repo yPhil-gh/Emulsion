@@ -153,27 +153,29 @@ function initializeGalleryNavigation(galleryContainer) {
     // Add event listener for keyboard navigation
     document.addEventListener('keydown', (event) => {
         switch (event.key) {
-            case 'ArrowRight':
-                selectedIndex = (selectedIndex + 1) % gameContainers.length;
-                break;
-            case 'ArrowLeft':
-                selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
-                break;
-            case 'ArrowDown':
-                selectedIndex = Math.min(selectedIndex + columns, gameContainers.length - 1);
-                break;
-            case 'ArrowUp':
-                selectedIndex = Math.max(selectedIndex - columns, 0);
-                break;
-            case 'Enter':
-                gameContainers[selectedIndex].click(); // Simulate click on the selected game container
-                break;
-            case 'Escape':
-                console.log("Escape pressed");
-                removeGalleryAndShowSlideshow();
-                break;
-            default:
-                return; // Exit if no relevant key is pressed
+        case 'ArrowRight':
+            selectedIndex = (selectedIndex + 1) % gameContainers.length;
+            break;
+        case 'ArrowLeft':
+            selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
+            break;
+        case 'ArrowDown':
+            selectedIndex = Math.min(selectedIndex + columns, gameContainers.length) + 1;
+            console.log("ArrowDown selectedIndex: ", selectedIndex);
+            break;
+        case 'ArrowUp':
+            selectedIndex = Math.max(selectedIndex - columns, 0) - 1;
+            console.log("ArrowUp selectedIndex: ", selectedIndex);
+            break;
+        case 'Enter':
+            gameContainers[selectedIndex].click(); // Simulate click on the selected game container
+            break;
+        case 'Escape':
+            console.log("Escape pressed");
+            removeGalleryAndShowSlideshow();
+            break;
+        default:
+            return; // Exit if no relevant key is pressed
         }
 
         // Update the selected state

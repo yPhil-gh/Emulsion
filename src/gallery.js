@@ -47,7 +47,12 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
     galleryContainer.classList.add('gallery');
 
     // Define valid extensions for the platform
-    const extensions = ['.iso', '.ciso']; // Add more extensions as needed
+    const extensionsArrays = {
+        gamecube:['.iso', '.ciso'],
+        amiga:['.adf']
+    };
+
+    const extensions = extensionsArrays[platform];
 
     // Scan the games directory for valid files
     const gameFiles = scanDirectory(gamesDir, extensions, false);
@@ -62,43 +67,25 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
         // Create the game container
         const gameContainer = document.createElement('div');
         gameContainer.classList.add('game-container');
-        gameContainer.setAttribute('tabindex', 0);
+        // gameContainer.setAttribute('tabindex', 0);
+        gameContainer.setAttribute('data-command', `${emulator} ${emulatorArgs || ""} "${gameFile}"`);
 
-        // gameContainer.addEventListener('click', () => {
-
-        //     console.log("click!!");
-
-        //     const command = path.join(gamesDir, fileName);
-
-        //     console.log("command: ", command);
-
-        //     // Escape spaces or quote the command based on the platform
-        //     const escapedCommand = process.platform === 'win32' ? `"${command}"` : command.replace(/(["'`\\\s!$&*(){}\[\]|<>?;])/g, '\\$1');
-
-        //     console.log("escapedCommand: ", escapedCommand);
-
-        //     // console.log("yo: ", `${emulator} ${emulatorArgs} ${escapedCommand}`);
-
-        //     // if (!fs.existsSync(emulator)) {
-        //     //     console.log("No emulator",);
-        //     //     // showPreferencesDialog(`Can't find "${emulator} anywhere"`, emulatorInput);
-        //     // }
-
-        //     ipcRenderer.send('run-command', `${emulator} ${emulatorArgs ? emulatorArgs : ""} ${escapedCommand}`);
-        // });
-
+        // fetchCoverButton.setAttribute('data-game', fileNameWithoutExt);
 
         // Add click event to launch the game
-        gameContainer.addEventListener('click', () => {
+        gameContainer.addEventListener('click', (event) => {
+
+            console.log("data-plop:", event.target.dataset.command);
+
+            event.stopPropagation();
             // const command = `${emulator} ${emulatorArgs} "${gameFile}"`;
             const command = `${emulator} -b -e "${gameFile}"`;
 
-            const escapedCommand = process.platform === 'win32' ? `"${command}"` : command.replace(/(["'`\\\s!$&*(){}\[\]|<>?;])/g, '\\$1');
+            const escapedCommand = process.platform === 'win32' ? `"${event.target.dataset.command}"` : event.target.dataset.command.replace(/(["'`\\\s!$&*(){}\[\]|<>?;])/g, '\\$1');
 
-            console.log("command: ", command);
-            ipcRenderer.send('run-command', command); // Send the command to the main process
+            console.log("command, fileName: ", command, fileName);
+            ipcRenderer.send('run-command', event.target.dataset.command); // Send the command to the main process
         });
-
 
         // Create the image element
         const imgElement = document.createElement('img');

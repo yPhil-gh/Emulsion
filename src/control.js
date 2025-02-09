@@ -50,7 +50,15 @@ window.control = {
                 console.log("ArrowUp selectedIndex: ", selectedIndex);
                 break;
             case 'Enter':
-                gameContainers[selectedIndex].click();
+                function isElementVisible(el) {
+                    if (!el) return false;
+                    const style = window.getComputedStyle(el);
+                    return style.display !== 'none' && style.visibility !== 'hidden' && parseFloat(style.opacity) > 0;
+                }
+
+                if (document.querySelector('.gallery')) {
+                    gameContainers[selectedIndex].click();
+                }
                 break;
             case 'Escape':
                 console.log("Escape pressed");
@@ -187,77 +195,79 @@ window.control = {
             }
         }
 
-        document.addEventListener('keydown', event => {
-            // Check if we're in the gallery or slideshow context
-            const gallery = document.querySelector('#gamecube-gallery');
-            const slideshow = document.querySelector('#slideshow');
+        // document.addEventListener('keydown', event => {
+        //     // Check if we're in the gallery or slideshow context
+        //     const gallery = document.querySelector('.gallery');
+        //     const slideshow = document.querySelector('#slideshow');
+
+        //     event.stopPropagation();
+
+        //     let elements;
+        //     let isGallery = false;
+
+        //     if (gallery && gallery.contains(document.activeElement)) {
+        //         // If the gallery is in focus, use .game-container elements
+        //         elements = Array.from(gallery.querySelectorAll('.game-container'));
+        //         isGallery = true;
+        //     } else if (slideshow) {
+        //         // Otherwise, use .slide elements in the slideshow
+        //         elements = Array.from(slideshow.querySelectorAll('.slide'));
+        //     } else {
+        //         return; // Exit if neither context is found
+        //     }
 
 
-            let elements;
-            let isGallery = false;
 
-            if (gallery && gallery.contains(document.activeElement)) {
-                // If the gallery is in focus, use .game-container elements
-                elements = Array.from(gallery.querySelectorAll('.game-container'));
-                isGallery = true;
-            } else if (slideshow) {
-                // Otherwise, use .slide elements in the slideshow
-                elements = Array.from(slideshow.querySelectorAll('.slide'));
-            } else {
-                return; // Exit if neither context is found
-            }
+        //     if (elements.length === 0) return;
 
+        //     console.log("event: ", event);
 
+        //     // Find the index of the selected or active element
+        //     let selectedIndex = elements.findIndex(el => el.classList.contains('selected'));
+        //     if (selectedIndex === -1) {
+        //         selectedIndex = elements.findIndex(el => el.classList.contains('active'));
+        //     }
+        //     if (selectedIndex === -1) selectedIndex = 0;
 
-            if (elements.length === 0) return;
+        //     // Handle key events
+        //     switch (event.key) {
+        //     case 'ArrowRight':
+        //         selectedIndex = (selectedIndex + 1) % elements.length;
+        //         break;
+        //     case 'ArrowLeft':
+        //         selectedIndex = (selectedIndex - 1 + elements.length) % elements.length;
+        //         break;
+        //     case 'Enter':
+        //         // Dispatch a custom click event with extra data
+        //         const customClickEvent = new CustomEvent('click', {
+        //             detail: { arg: "plop" }
+        //         });
+        //         customClickEvent.stopPropagation();
+        //         elements[selectedIndex].dispatchEvent(customClickEvent);
+        //         break;
+        //     case 'p':
+        //         console.log("p pressed");
+        //         const customClickEventP = new CustomEvent('click', {
+        //             detail: { arg: "plop" }
+        //         });
+        //         elements[selectedIndex].dispatchEvent(customClickEventP);
+        //         break;
+        //     }
 
-            console.log("event: ", event);
+        //     // Update the "selected" class on each element
+        //     elements.forEach((el, index) =>
+        //         el.classList.toggle('selected', index === selectedIndex)
+        //     );
 
-            // Find the index of the selected or active element
-            let selectedIndex = elements.findIndex(el => el.classList.contains('selected'));
-            if (selectedIndex === -1) {
-                selectedIndex = elements.findIndex(el => el.classList.contains('active'));
-            }
-            if (selectedIndex === -1) selectedIndex = 0;
-
-            // Handle key events
-            switch (event.key) {
-            case 'ArrowRight':
-                selectedIndex = (selectedIndex + 1) % elements.length;
-                break;
-            case 'ArrowLeft':
-                selectedIndex = (selectedIndex - 1 + elements.length) % elements.length;
-                break;
-            case 'Enter':
-                // Dispatch a custom click event with extra data
-                const customClickEvent = new CustomEvent('click', {
-                    detail: { arg: "plop" }
-                });
-                elements[selectedIndex].dispatchEvent(customClickEvent);
-                break;
-            case 'p':
-                console.log("p pressed");
-                const customClickEventP = new CustomEvent('click', {
-                    detail: { arg: "plop" }
-                });
-                elements[selectedIndex].dispatchEvent(customClickEventP);
-                break;
-            }
-
-            // Update the "selected" class on each element
-            elements.forEach((el, index) =>
-                el.classList.toggle('selected', index === selectedIndex)
-            );
-
-            // Scroll the selected element into view
-            if (isGallery) {
-                // For gallery, scroll smoothly and center the element
-                elements[selectedIndex].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
-            } else {
-                // For slideshow, adjust the transform and opacity
-                elements[selectedIndex].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
-            }
-        });
+        //     // Scroll the selected element into view
+        //     if (isGallery) {
+        //         // For gallery, scroll smoothly and center the element
+        //         elements[selectedIndex].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+        //     } else {
+        //         // For slideshow, adjust the transform and opacity
+        //         elements[selectedIndex].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+        //     }
+        // });
 
 
     }

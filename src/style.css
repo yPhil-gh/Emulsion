@@ -17,7 +17,7 @@ body {
   height: 512px;
   overflow: visible;
 }
-
+/* Slide Styles */
 .slide {
   position: absolute;
   top: 0;
@@ -26,58 +26,141 @@ body {
   height: 512px;
   background-size: cover;
   background-position: center;
-  border-radius: 16px;
-  border: 2px solid #007bff;
+  border-radius: 24px; /* More rounded corners */
+  border: 2px solid rgba(0, 123, 255, 0.3); /* Subtle border */
   opacity: 0.5;
-  transition: transform 0.5s ease, opacity 0.5s ease, box-shadow 0.5s ease, background-color 0.5s ease;
+  transition: transform 0.5s ease, opacity 0.5s ease, box-shadow 0.5s ease, background-color 0.5s ease, border-color 0.5s ease;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 .slide.active {
-  opacity: 0.9;
+  opacity: 1; /* Fully visible */
   transform: translateX(0) scale(1);
   z-index: 2;
   pointer-events: auto;
-  background-color: #222;
-  box-shadow: 0 0 20px 5px #007bff;
+  background-color: rgba(34, 34, 34, 0.9); /* Darker background */
+  border-color: #007bff; /* Bright blue border */
+  box-shadow: 0 8px 24px rgba(0, 123, 255, 0.4); /* Glowing shadow */
 }
 
 .slide.adjacent.active-left {
   transform: translateX(-200px) scale(0.9);
   z-index: 1;
+  opacity: 0.7; /* Slightly more visible */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Subtle shadow */
 }
 
 .slide.adjacent.active-right {
   transform: translateX(200px) scale(0.9);
   z-index: 1;
+  opacity: 0.7; /* Slightly more visible */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Subtle shadow */
 }
 
+/* Hover Effect */
+.slide:hover {
+  opacity: 0.8;
+  border-color: rgba(0, 123, 255, 0.7); /* Brighter border on hover */
+  box-shadow: 0 8px 24px rgba(0, 123, 255, 0.3); /* Glowing shadow on hover */
+}
+
+/* Platform Form Styles */
+/* Platform Form Styles */
 .platform-form {
   position: absolute;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.8);
-  padding: 10px;
-  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.9); /* Dark background */
+  padding: 20px;
+  border-radius: 16px; /* Rounded corners */
   color: white;
   text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+  backdrop-filter: blur(8px); /* Frosted glass effect */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+  width: 100%;
+  max-width: 400px; /* Adjust as needed */
 }
 
-.platform-form label {
-  display: block;
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.form-group label {
   margin-bottom: 5px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8); /* Light text */
 }
 
-.platform-form input {
-  width: 200px;
-  padding: 5px;
-  margin-bottom: 10px;
+.input-group {
+  display: flex;
+  gap: 10px; /* Space between inputs and buttons */
 }
 
-.platform-form button {
-  padding: 5px 10px;
+.input-group input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+  border-radius: 8px; /* Rounded corners */
+  background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+  color: white;
+  font-size: 14px;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.input-group input:focus {
+  border-color: #007bff; /* Bright blue border on focus */
+  background: rgba(255, 255, 255, 0.2); /* Slightly lighter background */
+  outline: none; /* Remove default outline */
+}
+
+input.emulator-args {
+  max-width: 22px;
+}
+
+.input-group button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px; /* Rounded corners */
+  background: #007bff; /* Bright blue background */
+  color: white;
+  font-size: 14px;
   cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.input-group button:hover {
+  background: #005bb5; /* Darker blue on hover */
+  transform: translateY(-2px); /* Slight lift */
+}
+
+.input-group button:active {
+  transform: translateY(0); /* Reset lift on click */
+}
+
+.save-button {
+  width: 100%;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px; /* Rounded corners */
+  background: #007bff; /* Bright blue background */
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.save-button:hover {
+  background: #005bb5; /* Darker blue on hover */
+  transform: translateY(-2px); /* Slight lift */
+}
+
+.save-button:active {
+  transform: translateY(0); /* Reset lift on click */
 }
 
 /* GALLERY */
@@ -88,13 +171,15 @@ body {
   gap: 10px;
   padding: 10px;
   width: 100%;
-  max-width: 800px; /* Adjust as needed */
+  max-width: 98%; /* Adjust as needed */
   margin: 0 auto;
 }
 
 /* Game Container */
 .game-container {
   position: relative;
+  width: 150px;
+  height: 150px;
   max-width: 250px;
   max-height: 250px;
   border-radius: 16px;

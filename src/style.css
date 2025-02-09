@@ -117,6 +117,13 @@ body {
   border-radius: 16px;
 }
 
+.game-container p {
+    margin-top: 8px;
+    font-size: 14px;
+    text-align: center;
+    color: var(--text-color);
+}
+
 /* Fetch Cover Button */
 .fetchCoverButton {
   position: absolute;

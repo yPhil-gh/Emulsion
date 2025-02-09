@@ -3,7 +3,7 @@
 // const path = require('path');
 
 window.gallery = {
-    buildGalleryForPlatform: function(platform, gamesDir, emulator, emulatorArgs, userDataPath) {
+    buildGallery: function(platform, gamesDir, emulator, emulatorArgs, userDataPath) {
         buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath);
     }
 };
@@ -64,12 +64,51 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
         gameContainer.classList.add('game-container');
         gameContainer.setAttribute('tabindex', 0);
 
+        // gameContainer.addEventListener('click', () => {
+
+        //     console.log("click!!");
+
+        //     const command = path.join(gamesDir, fileName);
+
+        //     console.log("command: ", command);
+
+        //     // Escape spaces or quote the command based on the platform
+        //     const escapedCommand = process.platform === 'win32' ? `"${command}"` : command.replace(/(["'`\\\s!$&*(){}\[\]|<>?;])/g, '\\$1');
+
+        //     console.log("escapedCommand: ", escapedCommand);
+
+        //     // console.log("yo: ", `${emulator} ${emulatorArgs} ${escapedCommand}`);
+
+        //     // if (!fs.existsSync(emulator)) {
+        //     //     console.log("No emulator",);
+        //     //     // showPreferencesDialog(`Can't find "${emulator} anywhere"`, emulatorInput);
+        //     // }
+
+        //     ipcRenderer.send('run-command', `${emulator} ${emulatorArgs ? emulatorArgs : ""} ${escapedCommand}`);
+        // });
+
+
+        // Add click event to launch the game
+        gameContainer.addEventListener('click', () => {
+            // const command = `${emulator} ${emulatorArgs} "${gameFile}"`;
+            const command = `${emulator} -b -e "${gameFile}"`;
+
+            const escapedCommand = process.platform === 'win32' ? `"${command}"` : command.replace(/(["'`\\\s!$&*(){}\[\]|<>?;])/g, '\\$1');
+
+            console.log("command: ", command);
+            ipcRenderer.send('run-command', command); // Send the command to the main process
+        });
+
+
         // Create the image element
         const imgElement = document.createElement('img');
         imgElement.src = fs.existsSync(coverImagePath) ? coverImagePath : missingImagePath;
         imgElement.alt = fileNameWithoutExt;
         imgElement.title = fileNameWithoutExt;
         imgElement.classList.add('game-image');
+
+        const nameElement = document.createElement('p');
+        nameElement.textContent = `${fileNameWithoutExt}`;
 
         // Create the fetch cover button
         const fetchCoverButton = document.createElement('button');
@@ -103,13 +142,8 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
         // Append elements to the game container
         gameContainer.appendChild(imgElement);
+        gameContainer.appendChild(nameElement);
         gameContainer.appendChild(fetchCoverButton);
-
-        // Add click event to launch the game
-        gameContainer.addEventListener('click', () => {
-            const command = `${emulator} ${emulatorArgs} "${gameFile}"`;
-            ipcRenderer.send('run-command', command); // Send the command to the main process
-        });
 
         // Append the game container to the gallery
         galleryContainer.appendChild(gameContainer);
@@ -123,79 +157,6 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
     window.control.initNav(galleryContainer);
 }
 
-// function removeGalleryAndShowSlideshow() {
-//   // Remove the gallery element (all elements with class "gallery")
-//   const galleryElement = document.querySelector('.gallery');
-//   if (galleryElement) {
-//     galleryElement.remove();
-//     console.log("Gallery removed from DOM.");
-//   } else {
-//     console.log("No gallery element found to remove.");
-//   }
-
-//   // Ensure the slideshow is visible
-//   const slideshow = document.getElementById('slideshow');
-//   if (slideshow) {
-//     slideshow.style.display = 'block';
-//     console.log("Slideshow is now visible.");
-//   } else {
-//     console.warn("Slideshow element not found.");
-//   }
-// }
-
-// function initializeGalleryNavigation(galleryContainer) {
-//     const gameContainers = Array.from(galleryContainer.querySelectorAll('.game-container'));
-
-//     if (gameContainers.length === 0) return;
-
-//     let selectedIndex = 0;
-//     const columns = 4; // Fixed number of columns
-
-//     // Add event listener for keyboard navigation
-//     document.addEventListener('keydown', (event) => {
-//         switch (event.key) {
-//         case 'ArrowRight':
-//             selectedIndex = (selectedIndex + 1) % gameContainers.length;
-//             break;
-//         case 'ArrowLeft':
-//             selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
-//             break;
-//         case 'ArrowDown':
-//             selectedIndex = Math.min(selectedIndex + columns, gameContainers.length) + 1;
-//             console.log("ArrowDown selectedIndex: ", selectedIndex);
-//             break;
-//         case 'ArrowUp':
-//             selectedIndex = Math.max(selectedIndex - columns, 0) - 1;
-//             console.log("ArrowUp selectedIndex: ", selectedIndex);
-//             break;
-//         case 'Enter':
-//             gameContainers[selectedIndex].click(); // Simulate click on the selected game container
-//             break;
-//         case 'Escape':
-//             console.log("Escape pressed");
-//             removeGalleryAndShowSlideshow();
-//             break;
-//         default:
-//             return; // Exit if no relevant key is pressed
-//         }
-
-//         // Update the selected state
-//         gameContainers.forEach((container, index) => {
-//             container.classList.toggle('selected', index === selectedIndex);
-//         });
-
-//         // Scroll the selected game container into view
-//         gameContainers[selectedIndex].scrollIntoView({
-//             behavior: 'smooth',
-//             block: 'center',
-//             inline: 'center'
-//         });
-//     });
-
-//     // Set the first game container as selected by default
-//     gameContainers[selectedIndex].classList.add('selected');
-// }
-
 // Function to initialize the gallery for all platforms
 function initializeGallery() {
   const platforms = JSON.parse(fs.readFileSync(path.join(__dirname, '../../package.json'), 'utf8')).platforms || [];
@@ -207,6 +168,3 @@ function initializeGallery() {
     }
   });
 }
-
-// Initialize the gallery when the window loads
-// window.addEventListener('load', initializeGallery);

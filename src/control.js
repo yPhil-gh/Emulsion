@@ -1,3 +1,7 @@
+const fs = require('fs');
+const path = require('path');
+const { ipcRenderer } = require('electron');
+
 window.control = {
     initNav: function(galleryContainer) {
 
@@ -46,7 +50,7 @@ window.control = {
                 console.log("ArrowUp selectedIndex: ", selectedIndex);
                 break;
             case 'Enter':
-                gameContainers[selectedIndex].click(); // Simulate click on the selected game container
+                gameContainers[selectedIndex].click();
                 break;
             case 'Escape':
                 console.log("Escape pressed");

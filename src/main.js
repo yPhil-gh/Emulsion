@@ -1,6 +1,8 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const Store = require('electron-store');
+const { exec } = require('child_process');
+let childProcesses = [];
 
 const store = new Store();
 
@@ -52,4 +54,20 @@ ipcMain.handle('get-main-data', () => {
   return {
     userDataPath: app.getPath('userData')
   };
+});
+
+
+// Handle the command execution sent from the renderer process (gallery.js)
+ipcMain.on('run-command', (event, command) => {
+    const child = exec(command, (err, stdout, stderr) => {
+        if (err) {
+            console.error('Error executing command:', err);
+        }
+    });
+    childProcesses.push(child);
+
+    // Optionally remove the child when it exits
+    child.on('exit', () => {
+        childProcesses = childProcesses.filter(cp => cp !== child);
+    });
 });

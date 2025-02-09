@@ -1,7 +1,3 @@
-const { ipcRenderer } = require('electron');
-const fs = require('fs');
-const path = require('path');
-
 // Path to package.json
 const packageJsonPath = path.join(__dirname, 'package.json');
 
@@ -125,7 +121,9 @@ document.addEventListener('keydown', (event) => {
 
             ipcRenderer.invoke('get-main-data')
                 .then(({ userDataPath }) => {
-                    gallery.buildGalleryForPlatform(platform, gamesDir, emulator, emulatorArgs, userDataPath);
+                    if (!document.querySelector('.gallery')) {
+                        gallery.buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath);
+                    }
                 });
 
         }
@@ -145,7 +143,7 @@ document.addEventListener('keydown', (event) => {
 //       // Get the platform from the slide's id attribute.
 //       const platform = slide.id;
 //       // Build the gallery for that platform.
-//       gallery.buildGalleryForPlatform(platform);
+//       gallery.buildGallery(platform);
 //     }
 //   });
 // });

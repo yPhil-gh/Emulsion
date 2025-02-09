@@ -5,7 +5,6 @@ const path = require('path');
 // Path to package.json
 const packageJsonPath = path.join(__dirname, 'package.json');
 
-
 // Read platforms from package.json
 const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
 const platforms = pkg.platforms || [];
@@ -14,23 +13,25 @@ platforms.forEach(platform => {
     console.log(`Platform: ${platform}`);
 });
 
-
 // Build the slideshow content dynamically
 const slideshow = document.getElementById("slideshow");
 
 platforms.forEach((platform) => {
+    // Create the slide container
+    const slide = document.createElement("div");
+    slide.className = "slide";
+    slide.id = platform;
+    slide.style.backgroundImage = `url('img/${platform}.png')`;
 
     const prefString = localStorage.getItem(platform);
     if (prefString) {
         const prefs = JSON.parse(prefString);
+        slide.classList.add('runnable');
         console.log(`Preferences for ${platform}:`, prefs);
     } else {
         console.log(`No preferences found for ${platform}`);
     }
-    // Create the slide container
-    const slide = document.createElement("div");
-    slide.className = "slide";
-    slide.style.backgroundImage = `url('img/${platform}.png')`;
+
 
     // Create the content container
     const content = document.createElement("div");
@@ -74,11 +75,6 @@ platforms.forEach((platform) => {
     slideshow.appendChild(slide);
 });
 
-// // Activate the first slide
-// if (slideshow.firstChild) {
-//   slideshow.firstChild.classList.add("active");
-// }
-
 const slides = document.querySelectorAll('.slide');
 let currentSlide = 0;
 
@@ -88,6 +84,7 @@ function showSlide(index) {
         slide.classList.remove('active', 'adjacent', 'active-left', 'active-right');
         if (i === index) {
             slide.classList.add('active');
+
         } else if (i === (index - 1 + slides.length) % slides.length) {
             slide.classList.add('adjacent', 'active-left');
         } else if (i === (index + 1) % slides.length) {
@@ -104,15 +101,36 @@ document.addEventListener('keydown', (event) => {
     } else if (event.key === 'ArrowLeft') {
         currentSlide = (currentSlide - 1 + slides.length) % slides.length;
         showSlide(currentSlide);
+    } else if (event.key === 'Enter') {
+        console.log(`Slide selected via RETURN: ${slides[currentSlide].textContent.trim()}`);
+        // Log the class list of the current slide
+        console.log('Current slide classList:', slides[currentSlide].classList);
+
+        if (slides[currentSlide].classList.contains('runnable')) {
+            // Hide the slideshow div
+            document.getElementById('slideshow').style.display = 'none';
+            // Build the gallery for the selected platform using the global gallery from gallery.js
+            gallery.buildGalleryForPlatform(platforms[currentSlide]);
+        }
     }
 });
 
-// Click navigation
+
+// Click navigation: when a slide is clicked, select it,
+// show it, and if it's active, build the gallery.
 slides.forEach((slide, index) => {
-    slide.addEventListener('click', () => {
-        currentSlide = index;
-        showSlide(currentSlide);
-    });
+  slide.addEventListener('click', () => {
+    currentSlide = index;
+    showSlide(currentSlide);
+
+    // After updating the classes, check if the clicked slide is active.
+    if (slide.classList.contains('runnable')) {
+      // Get the platform from the slide's id attribute.
+      const platform = slide.id;
+      // Build the gallery for that platform.
+      gallery.buildGalleryForPlatform(platform);
+    }
+  });
 });
 
 // Initialize slideshow
@@ -126,13 +144,12 @@ document.querySelectorAll('.browse-button-dir').forEach(button => {
         const inputElement = document.getElementById(inputId);
 
         if (button.textContent === 'Browse') {
-            const path = await ipcRenderer.invoke('select-directory'); // Use ipcRenderer.invoke
-            if (path) inputElement.value = path;
+            const selectedPath = await ipcRenderer.invoke('select-directory');
+            if (selectedPath) inputElement.value = selectedPath;
         }
     });
 });
 
-// Platform form logic
 document.querySelectorAll('.browse-button-file').forEach(button => {
     button.addEventListener('click', async () => {
         const platform = button.getAttribute('data-platform');
@@ -140,8 +157,8 @@ document.querySelectorAll('.browse-button-file').forEach(button => {
         const inputElement = document.getElementById(inputId);
 
         if (button.textContent === 'Browse') {
-            const path = await ipcRenderer.invoke('select-file'); // Use ipcRenderer.invoke
-            if (path) inputElement.value = path;
+            const selectedPath = await ipcRenderer.invoke('select-file');
+            if (selectedPath) inputElement.value = selectedPath;
         }
     });
 });
@@ -163,7 +180,6 @@ document.querySelectorAll('.save-button').forEach(button => {
 
         alert('Preferences saved!');
 
-        // Hide the parent form element and disable pointer events so it no longer receives events.
         const parentForm = button.closest('.platform-form');
         if (parentForm) {
             parentForm.style.display = 'none';
@@ -172,15 +188,16 @@ document.querySelectorAll('.save-button').forEach(button => {
     });
 });
 
-
-// Load saved preferences
 window.addEventListener('load', async () => {
     platforms.forEach(async platform => {
         try {
-            const preferences = await ipcRenderer.invoke('load-preferences', platform); // Use ipcRenderer.invoke
-            document.getElementById(`${platform}-games-dir`).value = preferences.gamesDir;
-            document.getElementById(`${platform}-emulator`).value = preferences.emulator;
-            console.log("preferences: ", `${platform}-emulator`);
+            const prefString = localStorage.getItem(platform);
+            if (prefString) {
+                const preferences = JSON.parse(prefString);
+                document.getElementById(`${platform}-games-dir`).value = preferences.gamesDir;
+                document.getElementById(`${platform}-emulator`).value = preferences.emulator;
+            }
+            console.log(`Loaded preferences for ${platform}`);
         } catch (error) {
             console.error(`Error loading preferences for ${platform}:`, error);
         }

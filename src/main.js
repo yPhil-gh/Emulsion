@@ -46,3 +46,10 @@ ipcMain.handle('save-preferences', (event, platform, preferences) => {
 ipcMain.handle('load-preferences', (event, platform) => {
   return store.get(platform, { gamesDir: '', emulator: '' });
 });
+
+// Register the handler for 'get-main-data'
+ipcMain.handle('get-main-data', () => {
+  return {
+    userDataPath: app.getPath('userData')
+  };
+});

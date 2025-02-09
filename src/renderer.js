@@ -6,12 +6,10 @@ const path = require('path');
 const packageJsonPath = path.join(__dirname, 'package.json');
 
 // Read platforms from package.json
-const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
-const platforms = pkg.platforms || [];
+const pjson = JSON.parse(fs.readFileSync("package.json", "utf8"));
+const platforms = pjson.platforms || [];
 
-platforms.forEach(platform => {
-    console.log(`Platform: ${platform}`);
-});
+window.gamepad.logStatus();
 
 // Build the slideshow content dynamically
 const slideshow = document.getElementById("slideshow");
@@ -24,12 +22,20 @@ platforms.forEach((platform) => {
     slide.style.backgroundImage = `url('img/${platform}.png')`;
 
     const prefString = localStorage.getItem(platform);
+
     if (prefString) {
         const prefs = JSON.parse(prefString);
+
+        slide.setAttribute('data-platform', platform);
+        slide.setAttribute('data-games-dir', prefs.gamesDir);
+        slide.setAttribute('data-emulator', prefs.emulator);
+        slide.setAttribute('data-emulator-args', prefs.emulatorArgs);
+
         slide.classList.add('runnable');
-        console.log(`Preferences for ${platform}:`, prefs);
+
+        // console.log(`Preferences for ${platform}:`, prefs);
     } else {
-        console.log(`No preferences found for ${platform}`);
+        // console.log(`No preferences found for ${platform}`);
     }
 
 
@@ -109,8 +115,19 @@ document.addEventListener('keydown', (event) => {
         if (slides[currentSlide].classList.contains('runnable')) {
             // Hide the slideshow div
             document.getElementById('slideshow').style.display = 'none';
-            // Build the gallery for the selected platform using the global gallery from gallery.js
-            gallery.buildGalleryForPlatform(platforms[currentSlide]);
+            console.log("platform: ", slides[currentSlide].getAttribute('data-platform'));
+            console.log("games-dir: ", slides[currentSlide].getAttribute('data-games-dir'));
+
+            const platform = slides[currentSlide].getAttribute('data-platform');
+            const gamesDir = slides[currentSlide].getAttribute('data-games-dir');
+            const emulator = slides[currentSlide].getAttribute('data-emulator');
+            const emulatorArgs = slides[currentSlide].getAttribute('data-emulator-args');
+
+            ipcRenderer.invoke('get-main-data')
+                .then(({ userDataPath }) => {
+                    gallery.buildGalleryForPlatform(platform, gamesDir, emulator, emulatorArgs, userDataPath);
+                });
+
         }
     }
 });
@@ -197,7 +214,7 @@ window.addEventListener('load', async () => {
                 document.getElementById(`${platform}-games-dir`).value = preferences.gamesDir;
                 document.getElementById(`${platform}-emulator`).value = preferences.emulator;
             }
-            console.log(`Loaded preferences for ${platform}`);
+            // console.log(`Loaded preferences for ${platform}`);
         } catch (error) {
             console.error(`Error loading preferences for ${platform}:`, error);
         }

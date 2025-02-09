@@ -122,6 +122,26 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
     initializeGalleryNavigation(galleryContainer);
 }
 
+function removeGalleryAndShowSlideshow() {
+  // Remove the gallery element (all elements with class "gallery")
+  const galleryElement = document.querySelector('.gallery');
+  if (galleryElement) {
+    galleryElement.remove();
+    console.log("Gallery removed from DOM.");
+  } else {
+    console.log("No gallery element found to remove.");
+  }
+
+  // Ensure the slideshow is visible
+  const slideshow = document.getElementById('slideshow');
+  if (slideshow) {
+    slideshow.style.display = 'block';
+    console.log("Slideshow is now visible.");
+  } else {
+    console.warn("Slideshow element not found.");
+  }
+}
+
 function initializeGalleryNavigation(galleryContainer) {
     const gameContainers = Array.from(galleryContainer.querySelectorAll('.game-container'));
 
@@ -146,6 +166,10 @@ function initializeGalleryNavigation(galleryContainer) {
             break;
         case 'Enter':
             gameContainers[selectedIndex].click(); // Simulate click on the selected game container
+            break;
+        case 'Escape':
+            console.log("object: ");
+            removeGalleryAndShowSlideshow();
             break;
         default:
             return; // Exit if no relevant key is pressed

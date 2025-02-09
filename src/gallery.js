@@ -119,81 +119,82 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
     document.body.appendChild(galleryContainer);
 
     // Initialize navigation for the gallery
-    initializeGalleryNavigation(galleryContainer);
+    // initializeGalleryNavigation(galleryContainer);
+    window.control.initNav(galleryContainer);
 }
 
-function removeGalleryAndShowSlideshow() {
-  // Remove the gallery element (all elements with class "gallery")
-  const galleryElement = document.querySelector('.gallery');
-  if (galleryElement) {
-    galleryElement.remove();
-    console.log("Gallery removed from DOM.");
-  } else {
-    console.log("No gallery element found to remove.");
-  }
+// function removeGalleryAndShowSlideshow() {
+//   // Remove the gallery element (all elements with class "gallery")
+//   const galleryElement = document.querySelector('.gallery');
+//   if (galleryElement) {
+//     galleryElement.remove();
+//     console.log("Gallery removed from DOM.");
+//   } else {
+//     console.log("No gallery element found to remove.");
+//   }
 
-  // Ensure the slideshow is visible
-  const slideshow = document.getElementById('slideshow');
-  if (slideshow) {
-    slideshow.style.display = 'block';
-    console.log("Slideshow is now visible.");
-  } else {
-    console.warn("Slideshow element not found.");
-  }
-}
+//   // Ensure the slideshow is visible
+//   const slideshow = document.getElementById('slideshow');
+//   if (slideshow) {
+//     slideshow.style.display = 'block';
+//     console.log("Slideshow is now visible.");
+//   } else {
+//     console.warn("Slideshow element not found.");
+//   }
+// }
 
-function initializeGalleryNavigation(galleryContainer) {
-    const gameContainers = Array.from(galleryContainer.querySelectorAll('.game-container'));
+// function initializeGalleryNavigation(galleryContainer) {
+//     const gameContainers = Array.from(galleryContainer.querySelectorAll('.game-container'));
 
-    if (gameContainers.length === 0) return;
+//     if (gameContainers.length === 0) return;
 
-    let selectedIndex = 0;
-    const columns = 4; // Fixed number of columns
+//     let selectedIndex = 0;
+//     const columns = 4; // Fixed number of columns
 
-    // Add event listener for keyboard navigation
-    document.addEventListener('keydown', (event) => {
-        switch (event.key) {
-        case 'ArrowRight':
-            selectedIndex = (selectedIndex + 1) % gameContainers.length;
-            break;
-        case 'ArrowLeft':
-            selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
-            break;
-        case 'ArrowDown':
-            selectedIndex = Math.min(selectedIndex + columns, gameContainers.length) + 1;
-            console.log("ArrowDown selectedIndex: ", selectedIndex);
-            break;
-        case 'ArrowUp':
-            selectedIndex = Math.max(selectedIndex - columns, 0) - 1;
-            console.log("ArrowUp selectedIndex: ", selectedIndex);
-            break;
-        case 'Enter':
-            gameContainers[selectedIndex].click(); // Simulate click on the selected game container
-            break;
-        case 'Escape':
-            console.log("Escape pressed");
-            removeGalleryAndShowSlideshow();
-            break;
-        default:
-            return; // Exit if no relevant key is pressed
-        }
+//     // Add event listener for keyboard navigation
+//     document.addEventListener('keydown', (event) => {
+//         switch (event.key) {
+//         case 'ArrowRight':
+//             selectedIndex = (selectedIndex + 1) % gameContainers.length;
+//             break;
+//         case 'ArrowLeft':
+//             selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
+//             break;
+//         case 'ArrowDown':
+//             selectedIndex = Math.min(selectedIndex + columns, gameContainers.length) + 1;
+//             console.log("ArrowDown selectedIndex: ", selectedIndex);
+//             break;
+//         case 'ArrowUp':
+//             selectedIndex = Math.max(selectedIndex - columns, 0) - 1;
+//             console.log("ArrowUp selectedIndex: ", selectedIndex);
+//             break;
+//         case 'Enter':
+//             gameContainers[selectedIndex].click(); // Simulate click on the selected game container
+//             break;
+//         case 'Escape':
+//             console.log("Escape pressed");
+//             removeGalleryAndShowSlideshow();
+//             break;
+//         default:
+//             return; // Exit if no relevant key is pressed
+//         }
 
-        // Update the selected state
-        gameContainers.forEach((container, index) => {
-            container.classList.toggle('selected', index === selectedIndex);
-        });
+//         // Update the selected state
+//         gameContainers.forEach((container, index) => {
+//             container.classList.toggle('selected', index === selectedIndex);
+//         });
 
-        // Scroll the selected game container into view
-        gameContainers[selectedIndex].scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-            inline: 'center'
-        });
-    });
+//         // Scroll the selected game container into view
+//         gameContainers[selectedIndex].scrollIntoView({
+//             behavior: 'smooth',
+//             block: 'center',
+//             inline: 'center'
+//         });
+//     });
 
-    // Set the first game container as selected by default
-    gameContainers[selectedIndex].classList.add('selected');
-}
+//     // Set the first game container as selected by default
+//     gameContainers[selectedIndex].classList.add('selected');
+// }
 
 // Function to initialize the gallery for all platforms
 function initializeGallery() {

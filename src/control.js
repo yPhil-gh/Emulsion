@@ -1,4 +1,77 @@
-window.gamepad = {
+window.control = {
+    initNav: function(galleryContainer) {
+
+        function removeGalleryAndShowSlideshow() {
+            // Remove the gallery element (all elements with class "gallery")
+            const galleryElement = document.querySelector('.gallery');
+            if (galleryElement) {
+                galleryElement.remove();
+                console.log("Gallery removed from DOM.");
+            } else {
+                console.log("No gallery element found to remove.");
+            }
+
+            // Ensure the slideshow is visible
+            const slideshow = document.getElementById('slideshow');
+            if (slideshow) {
+                slideshow.style.display = 'block';
+                console.log("Slideshow is now visible.");
+            } else {
+                console.warn("Slideshow element not found.");
+            }
+        }
+
+        const gameContainers = Array.from(galleryContainer.querySelectorAll('.game-container'));
+
+        if (gameContainers.length === 0) return;
+
+        let selectedIndex = 0;
+        const columns = 4; // Fixed number of columns
+
+        // Add event listener for keyboard navigation
+        document.addEventListener('keydown', (event) => {
+            switch (event.key) {
+            case 'ArrowRight':
+                selectedIndex = (selectedIndex + 1) % gameContainers.length;
+                break;
+            case 'ArrowLeft':
+                selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
+                break;
+            case 'ArrowDown':
+                selectedIndex = Math.min(selectedIndex + columns, gameContainers.length) + 1;
+                console.log("ArrowDown selectedIndex: ", selectedIndex);
+                break;
+            case 'ArrowUp':
+                selectedIndex = Math.max(selectedIndex - columns, 0) - 1;
+                console.log("ArrowUp selectedIndex: ", selectedIndex);
+                break;
+            case 'Enter':
+                gameContainers[selectedIndex].click(); // Simulate click on the selected game container
+                break;
+            case 'Escape':
+                console.log("Escape pressed");
+                removeGalleryAndShowSlideshow();
+                break;
+            default:
+                return; // Exit if no relevant key is pressed
+            }
+
+            // Update the selected state
+            gameContainers.forEach((container, index) => {
+                container.classList.toggle('selected', index === selectedIndex);
+            });
+
+            // Scroll the selected game container into view
+            gameContainers[selectedIndex].scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+                inline: 'center'
+            });
+        });
+
+        // Set the first game container as selected by default
+        gameContainers[selectedIndex].classList.add('selected');
+    },
     logStatus: function() {
         const gamepads = navigator.getGamepads();
         const connected = Array.from(gamepads).some(gamepad => gamepad !== null);
@@ -109,57 +182,6 @@ window.gamepad = {
                 break;
             }
         }
-
-        function navigateGameContainers(direction) {
-            // Select the gallery container that holds the game containers
-            const gallery = document.querySelector('#gamecube-gallery');
-            if (!gallery) return;
-
-            // Get all game containers within the gallery
-            const gameContainers = Array.from(gallery.querySelectorAll('.game-container'));
-            if (gameContainers.length === 0) return;
-
-            // Find the currently selected game container
-            let selectedIndex = gameContainers.findIndex(container => container.classList.contains('selected'));
-            if (selectedIndex === -1) selectedIndex = 0; // Default to the first container if none is selected
-
-            // Get the grid style to determine the number of columns
-            const gridStyle = window.getComputedStyle(gallery);
-            const columns = gridStyle.gridTemplateColumns.split(' ').length;
-
-            // Update the selected index based on the direction
-            switch (direction) {
-            case 'right':
-                selectedIndex = (selectedIndex + 1) % gameContainers.length;
-                break;
-            case 'left':
-                selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
-                break;
-            case 'down':
-                if (selectedIndex + columns < gameContainers.length) {
-                    selectedIndex += columns;
-                } else {
-                    selectedIndex = selectedIndex % columns;
-                }
-                break;
-            case 'up':
-                if (selectedIndex - columns >= 0) {
-                    selectedIndex -= columns;
-                } else {
-                    selectedIndex = gameContainers.length - (columns - (selectedIndex % columns));
-                }
-                break;
-            }
-
-            // Update the selected state of the game containers
-            gameContainers.forEach((container, index) =>
-                container.classList.toggle('selected', index === selectedIndex)
-            );
-
-            // Scroll the selected game container into view
-            gameContainers[selectedIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
 
         document.addEventListener('keydown', event => {
             // Check if we're in the gallery or slideshow context

@@ -148,31 +148,32 @@ function initializeGalleryNavigation(galleryContainer) {
     if (gameContainers.length === 0) return;
 
     let selectedIndex = 0;
+    const columns = 4; // Fixed number of columns
 
     // Add event listener for keyboard navigation
     document.addEventListener('keydown', (event) => {
         switch (event.key) {
-        case 'ArrowRight':
-            selectedIndex = (selectedIndex + 1) % gameContainers.length;
-            break;
-        case 'ArrowLeft':
-            selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
-            break;
-        case 'ArrowDown':
-            selectedIndex = Math.min(selectedIndex + 4, gameContainers.length - 1); // Move down by row (4 columns)
-            break;
-        case 'ArrowUp':
-            selectedIndex = Math.max(selectedIndex - 4, 0); // Move up by row (4 columns)
-            break;
-        case 'Enter':
-            gameContainers[selectedIndex].click(); // Simulate click on the selected game container
-            break;
-        case 'Escape':
-            console.log("object: ");
-            removeGalleryAndShowSlideshow();
-            break;
-        default:
-            return; // Exit if no relevant key is pressed
+            case 'ArrowRight':
+                selectedIndex = (selectedIndex + 1) % gameContainers.length;
+                break;
+            case 'ArrowLeft':
+                selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
+                break;
+            case 'ArrowDown':
+                selectedIndex = Math.min(selectedIndex + columns, gameContainers.length - 1);
+                break;
+            case 'ArrowUp':
+                selectedIndex = Math.max(selectedIndex - columns, 0);
+                break;
+            case 'Enter':
+                gameContainers[selectedIndex].click(); // Simulate click on the selected game container
+                break;
+            case 'Escape':
+                console.log("Escape pressed");
+                removeGalleryAndShowSlideshow();
+                break;
+            default:
+                return; // Exit if no relevant key is pressed
         }
 
         // Update the selected state

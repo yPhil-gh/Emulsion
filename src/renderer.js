@@ -133,22 +133,22 @@ document.addEventListener('keydown', (event) => {
 });
 
 
-// Click navigation: when a slide is clicked, select it,
-// show it, and if it's active, build the gallery.
-slides.forEach((slide, index) => {
-  slide.addEventListener('click', () => {
-    currentSlide = index;
-    showSlide(currentSlide);
+// // Click navigation: when a slide is clicked, select it,
+// // show it, and if it's active, build the gallery.
+// slides.forEach((slide, index) => {
+//   slide.addEventListener('click', () => {
+//     currentSlide = index;
+//     showSlide(currentSlide);
 
-    // After updating the classes, check if the clicked slide is active.
-    if (slide.classList.contains('runnable')) {
-      // Get the platform from the slide's id attribute.
-      const platform = slide.id;
-      // Build the gallery for that platform.
-      gallery.buildGalleryForPlatform(platform);
-    }
-  });
-});
+//     // After updating the classes, check if the clicked slide is active.
+//     if (slide.classList.contains('runnable')) {
+//       // Get the platform from the slide's id attribute.
+//       const platform = slide.id;
+//       // Build the gallery for that platform.
+//       gallery.buildGalleryForPlatform(platform);
+//     }
+//   });
+// });
 
 // Initialize slideshow
 showSlide(currentSlide);

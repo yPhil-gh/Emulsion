@@ -166,6 +166,7 @@ window.gamepad = {
             const gallery = document.querySelector('#gamecube-gallery');
             const slideshow = document.querySelector('#slideshow');
 
+
             let elements;
             let isGallery = false;
 
@@ -180,7 +181,11 @@ window.gamepad = {
                 return; // Exit if neither context is found
             }
 
+
+
             if (elements.length === 0) return;
+
+            console.log("event: ", event);
 
             // Find the index of the selected or active element
             let selectedIndex = elements.findIndex(el => el.classList.contains('selected'));

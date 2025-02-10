@@ -41,8 +41,7 @@
     "axios": "^1.7.9",
     "cheerio": "^1.0.0",
     "fs": "^0.0.1-security",
-    "path": "^0.12.7",
-    "electron-store": "^8.1.0"
+    "path": "^0.12.7"
   },
   "platforms": [
     "amiga",

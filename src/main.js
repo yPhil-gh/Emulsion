@@ -1,10 +1,7 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
-const Store = require('electron-store');
 const { exec } = require('child_process');
 let childProcesses = [];
-
-const store = new Store();
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -38,15 +35,6 @@ ipcMain.handle('select-directory', async () => {
 ipcMain.handle('select-file', async () => {
   const result = await dialog.showOpenDialog({ properties: ['openFile'] });
   return result.filePaths[0];
-});
-
-ipcMain.handle('save-preferences', (event, platform, preferences) => {
-  store.set(platform, preferences);
-  return true;
-});
-
-ipcMain.handle('load-preferences', (event, platform) => {
-  return store.get(platform, { gamesDir: '', emulator: '' });
 });
 
 // Register the handler for 'get-main-data'

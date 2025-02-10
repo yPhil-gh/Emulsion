@@ -42,11 +42,12 @@ window.control = {
                 selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
                 break;
             case 'ArrowDown':
-                selectedIndex = Math.min(selectedIndex + columns, gameContainers.length) + 1;
+                selectedIndex = Math.min(selectedIndex + columns, gameContainers.length);
                 console.log("ArrowDown selectedIndex: ", selectedIndex);
+                console.log("gameContainers.length: ", gameContainers.length);
                 break;
             case 'ArrowUp':
-                selectedIndex = Math.max(selectedIndex - columns, 0) - 1;
+                selectedIndex = Math.max(selectedIndex - columns, 0);
                 console.log("ArrowUp selectedIndex: ", selectedIndex);
                 break;
             case 'Enter':
@@ -73,12 +74,14 @@ window.control = {
                 container.classList.toggle('selected', index === selectedIndex);
             });
 
-            // Scroll the selected game container into view
-            gameContainers[selectedIndex].scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-                inline: 'center'
-            });
+            if (gameContainers.length !== selectedIndex) {
+                gameContainers[selectedIndex].scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                    inline: 'center'
+                });
+
+            }
         });
 
         // Set the first game container as selected by default

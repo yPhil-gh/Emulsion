@@ -80,7 +80,7 @@ fetch('src/html/platform_form.html')
             if (prefString) {
                 // Hide the form if preferences exist.
                 platformForm.style.display = 'none';
-                platformForm.style.pointerEvents = 'none';
+                // platformForm.style.pointerEvents = 'none';
             }
 
             // Append the content to the slide
@@ -120,7 +120,7 @@ function initializeSlideshow() {
     // Keyboard navigation
     document.addEventListener('keydown', (event) => {
 
-        event.stopPropagation();
+        // event.stopPropagation();
 
         if (event.key === 'ArrowRight') {
             currentSlide = (currentSlide + 1) % slides.length;
@@ -151,6 +151,7 @@ function initializeSlideshow() {
 
                 ipcRenderer.invoke('get-main-data')
                     .then(({ userDataPath }) => {
+                        window.userDataPath = userDataPath;
                         if (!document.querySelector('.gallery')) {
                             gallery.buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath);
                         }
@@ -197,22 +198,22 @@ function initializeFormLogic() {
             const platform = button.getAttribute('data-platform');
             const gamesDir = document.getElementById(`${platform}-games-dir`).value;
             const emulator = document.getElementById(`${platform}-emulator`).value;
+            const emulatorArgs = document.getElementById(`${platform}-emulator-args`).value;
 
             if (!gamesDir || !emulator) {
                 alert('Please specify both the Games Directory and Emulator.');
                 return;
             }
 
-            const preferences = { gamesDir, emulator };
+            const preferences = { gamesDir, emulator, emulatorArgs };
             localStorage.setItem(platform, JSON.stringify(preferences));
-            console.log('Saved Preferences:', preferences);
 
             alert('Preferences saved!');
 
             const parentForm = button.closest('.platform-form');
             if (parentForm) {
                 parentForm.style.display = 'none';
-                parentForm.style.pointerEvents = 'none';
+                // parentForm.style.pointerEvents = 'none';
             }
         });
     });

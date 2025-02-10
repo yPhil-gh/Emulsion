@@ -110,14 +110,13 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
             const gameName = event.target.getAttribute('data-game');
             const platform = event.target.getAttribute('data-platform');
 
-            // Rotate the button
             fetchCoverButton.classList.add('rotate');
 
             try {
-                const imageUrl = await searchGame(gameName, platform); // Fetch the cover image URL
-                if (imageUrl) {
-                    await downloadImage(imageUrl, gameName, platform); // Download the image
-                    imgElement.src = path.join(gamesDir, `${fileNameWithoutExt}.jpg`); // Update the image source
+                const { imgSrcArray } = await window.coverDownloader.searchGame(gameName, platform);
+                if (imgSrcArray && imgSrcArray.length > 0) {
+                    const coverPath = await window.coverDownloader.downloadCover(imgSrcArray[0], gameName, platform);
+                    window.coverDownloader.reloadImage(imgElement, coverPath);
                     fetchCoverButton.setAttribute('data-image-status', 'found');
                 }
             } catch (error) {

@@ -2,7 +2,22 @@ const fs = require('fs');
 const path = require('path');
 const { ipcRenderer } = require('electron');
 
+function showStatusBar(context) {
+    const statusBar = document.getElementById("statusBar");
+    if (!statusBar) return;
+
+    statusBar.style.transform = "translateY(0)";
+
+    // After 6 seconds, hide the status bar again.
+    setTimeout(() => {
+        statusBar.style.transform = "translateY(100%)";
+    }, 6000);
+}
+
 window.control = {
+    showStatusBar: function(slideshow) {
+        showStatusBar("slideshow");
+    },
     initSlideShow: function(slideshow) {
         const slides = document.querySelectorAll('.slide');
         let currentSlide = 0;
@@ -24,6 +39,7 @@ window.control = {
         // Keyboard navigation
         slideshow.addEventListener('keydown', (event) => {
 
+            showStatusBar("slideshow"); // or showStatusBar("left") for leftward slide.
             // event.stopPropagation();
 
             if (event.key === 'ArrowRight') {
@@ -78,6 +94,17 @@ window.control = {
     },
     initNav: function(galleryContainer) {
 
+        // Function to simulate a key press
+        function simulateKeyPress(key) {
+            const event = new KeyboardEvent('keydown', {
+                key: key,
+                keyCode: key === 'ArrowUp' ? 38 : key === 'ArrowDown' ? 40 : key === 'ArrowLeft' ? 37 : 39, // Key codes for arrow keys
+                code: `Arrow${key.slice(5)}`, // Extract direction from key (e.g., "ArrowUp")
+                bubbles: true,
+            });
+            document.dispatchEvent(event);
+        }
+
         function removeGalleryAndShowSlideshow() {
             // Remove the gallery element (all elements with class "gallery")
             const galleryElement = document.querySelector('.gallery');
@@ -108,6 +135,9 @@ window.control = {
 
         // Add event listener for keyboard navigation
         document.addEventListener('keydown', (event) => {
+
+            showStatusBar("up", "gallery"); // or showStatusBar("left") for leftward slide.
+
             switch (event.key) {
             case 'ArrowRight':
                 selectedIndex = (selectedIndex + 1) % gameContainers.length;
@@ -116,12 +146,12 @@ window.control = {
                 selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
                 break;
             case 'ArrowDown':
-                selectedIndex = Math.min(selectedIndex + columns, gameContainers.length);
+                selectedIndex = Math.min(selectedIndex + columns, gameContainers.length) + 2;
                 console.log("ArrowDown selectedIndex: ", selectedIndex);
                 console.log("gameContainers.length: ", gameContainers.length);
                 break;
             case 'ArrowUp':
-                selectedIndex = Math.max(selectedIndex - columns, 0);
+                selectedIndex = Math.max(selectedIndex - columns, 0) - 2;
                 console.log("ArrowUp selectedIndex: ", selectedIndex);
                 break;
             case 'Enter':
@@ -164,6 +194,17 @@ window.control = {
     logStatus: function() {
         const gamepads = navigator.getGamepads();
         const connected = Array.from(gamepads).some(gamepad => gamepad !== null);
+
+        // Function to simulate a key press
+        function simulateKeyPress(key) {
+            const event = new KeyboardEvent('keydown', {
+                key: key,
+                keyCode: key === 'ArrowUp' ? 38 : key === 'ArrowDown' ? 40 : key === 'ArrowLeft' ? 37 : 39, // Key codes for arrow keys
+                code: `Arrow${key.slice(5)}`, // Extract direction from key (e.g., "ArrowUp")
+                bubbles: true,
+            });
+            document.dispatchEvent(event);
+        }
 
         if (connected) {
             console.log('Gamepad connected at startup:', gamepads[0].id);
@@ -240,7 +281,16 @@ window.control = {
             animationFrameId = requestAnimationFrame(pollGamepad);
         }
 
-
+        // Function to simulate a key press
+        function simulateKeyPress(key) {
+            const event = new KeyboardEvent('keydown', {
+                key: key,
+                keyCode: key === 'ArrowUp' ? 38 : key === 'ArrowDown' ? 40 : key === 'ArrowLeft' ? 37 : 39, // Key codes for arrow keys
+                code: `Arrow${key.slice(5)}`, // Extract direction from key (e.g., "ArrowUp")
+                bubbles: true,
+            });
+            document.dispatchEvent(event);
+        }
 
         function handleButtonPress(buttonIndex) {
             // Trigger the action only on button release
@@ -258,16 +308,20 @@ window.control = {
                 ipcRenderer.send('quit'); // Send a message to the main process
                 break;
             case 12: // D-pad up
-                navigateGameContainers('up');
+                // navigateGameContainers('up');
+                simulateKeyPress('ArrowUp'); // Simulate "up" arrow key
                 break;
             case 13: // D-pad down
-                navigateGameContainers('down');
+                // navigateGameContainers('down');
+                simulateKeyPress('ArrowDown'); // Simulate "down" arrow key
                 break;
             case 14: // D-pad left
-                navigateGameContainers('left');
+                // navigateGameContainers('left');
+                simulateKeyPress('ArrowLeft'); // Simulate "left" arrow ke
                 break;
             case 15: // D-pad right
-                navigateGameContainers('right');
+                // navigateGameContainers('right');
+                simulateKeyPress('ArrowRight'); // Simulate "right" arrow key
                 break;
             }
         }

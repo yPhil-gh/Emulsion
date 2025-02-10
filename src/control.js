@@ -3,6 +3,79 @@ const path = require('path');
 const { ipcRenderer } = require('electron');
 
 window.control = {
+    initSlideShow: function(slideshow) {
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+
+        // Function to update slide classes
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active', 'adjacent', 'active-left', 'active-right');
+                if (i === index) {
+                    slide.classList.add('active');
+                } else if (i === (index - 1 + slides.length) % slides.length) {
+                    slide.classList.add('adjacent', 'active-left');
+                } else if (i === (index + 1) % slides.length) {
+                    slide.classList.add('adjacent', 'active-right');
+                }
+            });
+        }
+
+        // Keyboard navigation
+        slideshow.addEventListener('keydown', (event) => {
+
+            // event.stopPropagation();
+
+            if (event.key === 'ArrowRight') {
+                currentSlide = (currentSlide + 1) % slides.length;
+                showSlide(currentSlide);
+            } else if (event.key === 'ArrowLeft') {
+                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                showSlide(currentSlide);
+            } else if (event.key === 'i') {
+                console.log("i & I: ", currentSlide);
+                const platform = slides[currentSlide].getAttribute('data-platform');
+                console.log("platform: ", platform);
+                slides[currentSlide].querySelector('.platform-form').style.display = "block";
+
+            } else if (event.key === 'Enter') {
+                console.log(`Slide selected via RETURN: ${slides[currentSlide].textContent.trim()}`);
+                console.log('Current slide classList:', slides[currentSlide].classList);
+
+                if (slides[currentSlide].classList.contains('runnable')) {
+                    // Hide the slideshow div
+                    document.getElementById('slideshow').style.display = 'none';
+                    console.log("platform: ", slides[currentSlide].getAttribute('data-platform'));
+                    console.log("games-dir: ", slides[currentSlide].getAttribute('data-games-dir'));
+
+                    const platform = slides[currentSlide].getAttribute('data-platform');
+                    const gamesDir = slides[currentSlide].getAttribute('data-games-dir');
+                    const emulator = slides[currentSlide].getAttribute('data-emulator');
+                    const emulatorArgs = slides[currentSlide].getAttribute('data-emulator-args');
+
+                    ipcRenderer.invoke('get-main-data')
+                        .then(({ userDataPath }) => {
+                            window.userDataPath = userDataPath;
+                            if (!document.querySelector('.gallery')) {
+                                gallery.buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath);
+                            }
+                        });
+                }
+            }
+        });
+
+
+        // Mouse navigation
+        slides.forEach((slide, index) => {
+            slide.addEventListener('click', () => {
+                currentSlide = index;
+                showSlide(currentSlide);
+            });
+        });
+
+        // Initialize slideshow
+        showSlide(currentSlide);
+    },
     initNav: function(galleryContainer) {
 
         function removeGalleryAndShowSlideshow() {
@@ -19,6 +92,7 @@ window.control = {
             const slideshow = document.getElementById('slideshow');
             if (slideshow) {
                 slideshow.style.display = 'block';
+                slideshow.focus();
                 console.log("Slideshow is now visible.");
             } else {
                 console.warn("Slideshow element not found.");

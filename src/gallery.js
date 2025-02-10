@@ -99,7 +99,7 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
         // Create the fetch cover button
         const fetchCoverButton = document.createElement('button');
-        fetchCoverButton.classList.add('fetchCoverButton');
+        fetchCoverButton.classList.add('fetch-cover-button');
         fetchCoverButton.setAttribute('title', `Fetch cover for ${fileNameWithoutExt}`);
         fetchCoverButton.setAttribute('data-game', fileNameWithoutExt);
         fetchCoverButton.setAttribute('data-platform', platform);
@@ -110,15 +110,97 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
             const gameName = event.target.getAttribute('data-game');
             const platform = event.target.getAttribute('data-platform');
 
+            // Function to display the dialog with multiple images
+            function showImageDialog(imageUrls, gameName) {
+                const dialog = document.getElementById('imageDialog');
+                const dialogTitle = document.getElementById('dialogTitle');
+                const imageGrid = document.getElementById('imageGrid');
+                const selectButton = document.getElementById('selectButton');
+
+                let selectedImageUrl = null; // Store the selected image URL
+
+                // Set the dialog title
+                dialogTitle.textContent = `Select a Cover for ${gameName}`;
+
+                // Clear any existing images in the grid
+                imageGrid.innerHTML = '';
+
+                // Add each image to the grid
+                imageUrls.forEach((url) => {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.classList.add('image-container');
+
+                    const img = document.createElement('img');
+                    img.src = url;
+
+                    // Add click handler to select the image visually
+                    imgContainer.addEventListener('click', () => {
+                        // Remove the 'selected' class from all image containers
+                        document.querySelectorAll('.image-container').forEach((container) => {
+                            container.classList.remove('selected');
+                        });
+
+                        // Add the 'selected' class to the clicked image container
+                        imgContainer.classList.add('selected');
+
+                        // Store the selected image URL
+                        selectedImageUrl = url;
+                    });
+
+                    imgContainer.appendChild(img);
+                    imageGrid.appendChild(imgContainer);
+                });
+
+                // Show the dialog
+                dialog.showModal();
+
+                // Handle the "Select" button click
+                selectButton.addEventListener('click', () => {
+                    if (selectedImageUrl) {
+                        console.log('Selected Image URL:', selectedImageUrl);
+
+                        // dialog.close(); // Close the dialog after selection
+
+                        // // Download the selected image and reload
+                        // downloadAndReload(selectedImageUrl, gameName)
+                        //     .then(() => {
+                        //         console.log('Selected image downloaded and reloaded!');
+                        //     })
+                        //     .catch((error) => {
+                        //         console.error('Error:', error.message);
+                        //     });
+                    } else {
+                        alert('Please select an image before pressing "Select".');
+                    }
+                });
+
+                // Close the dialog when the close button is clicked
+                document.getElementById('closeDialog').addEventListener('click', () => {
+                    dialog.close();
+                });
+            }
+
             fetchCoverButton.classList.add('rotate');
+
+            const isBatch = false;
 
             try {
                 const { imgSrcArray } = await window.coverDownloader.searchGame(gameName, platform);
-                if (imgSrcArray && imgSrcArray.length > 0) {
+
+                if (imgSrcArray.length > 1 && !isBatch) {
+                    showImageDialog(imgSrcArray, gameName);
+                } else if (imgSrcArray && imgSrcArray.length > 0) {
+                    // If there's only one image (or menu/fetch covers), download it directly
                     const coverPath = await window.coverDownloader.downloadCover(imgSrcArray[0], gameName, platform);
                     window.coverDownloader.reloadImage(imgElement, coverPath);
                     fetchCoverButton.setAttribute('data-image-status', 'found');
                 }
+
+                // if (imgSrcArray && imgSrcArray.length > 0) {
+                //     const coverPath = await window.coverDownloader.downloadCover(imgSrcArray[0], gameName, platform);
+                //     window.coverDownloader.reloadImage(imgElement, coverPath);
+                //     fetchCoverButton.setAttribute('data-image-status', 'found');
+                // }
             } catch (error) {
                 console.error('Error fetching cover:', error);
             } finally {

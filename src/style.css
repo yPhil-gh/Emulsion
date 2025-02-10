@@ -210,7 +210,7 @@ input.emulator-args {
 }
 
 /* Fetch Cover Button */
-.fetchCoverButton {
+.fetch-cover-button {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -229,14 +229,95 @@ input.emulator-args {
   align-items: center;
 }
 
-.fetchCoverButton::before {
+.fetch-cover-button::before {
   content: '+';
   font-size: 24px;
   font-weight: bold;
 }
 
-.game-container:hover .fetchCoverButton {
+.game-container:hover .fetch-cover-button {
   opacity: 1;
 }
 
-/* Rotate Animation
+
+/* Rotation animation */
+@keyframes rotate {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* Class to apply the rotation animation */
+.rotate {
+  animation: rotate 1s linear infinite;
+}
+
+.game-container:hover .round-button {
+  opacity: 1;
+}
+
+dialog {
+  width: 80%;
+  max-width: 800px;
+  border: none;
+  border-radius: 10px;
+  padding: 20px;
+  background-color: #353c3f;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+dialog h2 {
+  color: #fff;
+}
+
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.image-container {
+  cursor: pointer;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+.image-container.selected {
+  border-color: #007bff;
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.dialog-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}

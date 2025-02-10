@@ -61,7 +61,7 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
     gameFiles.forEach(gameFile => {
         const fileName = path.basename(gameFile);
         const fileNameWithoutExt = path.parse(fileName).name;
-        const coverImagePath = path.join(userDataPath, "covers", `${fileNameWithoutExt}.jpg`);
+        const coverImagePath = path.join(userDataPath, "covers", platform, `${fileNameWithoutExt}.jpg`);
         const missingImagePath = path.join(__dirname, './img/missing.png');
 
         // Create the game container

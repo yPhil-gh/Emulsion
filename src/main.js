@@ -1,7 +1,37 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const fs = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
 let childProcesses = [];
+
+console.log("yo: ");
+
+const pjson = JSON.parse(fs.readFileSync("package.json", "utf8"));
+const platforms = pjson.platforms || [];
+
+function createCoversDirectories(platforms) {
+  // Get the base path for covers using Electron's app.getPath('userData')
+  const baseCoversPath = path.join(app.getPath('userData'), 'covers');
+
+  // Create the base covers directory if it doesn't exist.
+  if (!fs.existsSync(baseCoversPath)) {
+    fs.mkdirSync(baseCoversPath, { recursive: true });
+    console.log(`Created base covers directory: ${baseCoversPath}`);
+  }
+
+  // For each platform, create its directory if it doesn't exist.
+  platforms.forEach(platform => {
+    const platformDir = path.join(baseCoversPath, platform);
+    if (!fs.existsSync(platformDir)) {
+      fs.mkdirSync(platformDir, { recursive: true });
+      console.log(`Created directory for platform '${platform}': ${platformDir}`);
+    } else {
+      console.log(`Directory for platform '${platform}' already exists: ${platformDir}`);
+    }
+  });
+}
+
+createCoversDirectories(platforms);
 
 function createWindow() {
   const win = new BrowserWindow({

@@ -26,7 +26,7 @@ async function downloadCover(imageUrl, gameName, platform) {
     const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
     console.log("response: ", response);
 
-    const coverPath = path.join(window.userDataPath, "covers", `${gameName}.jpg`);
+      const coverPath = path.join(window.userDataPath, "covers", platform, `${gameName}.jpg`);
     // Convert the ArrayBuffer to a Node.js Buffer
     const coverBuffer = Buffer.from(response.data);
     fs.writeFileSync(coverPath, coverBuffer);

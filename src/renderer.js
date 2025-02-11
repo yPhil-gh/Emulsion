@@ -1,9 +1,3 @@
-// Path to package.json
-const packageJsonPath = path.join(__dirname, 'package.json');
-
-// Read platforms from package.json
-const pjson = JSON.parse(fs.readFileSync("package.json", "utf8"));
-// const platforms = pjson.platforms || [];
 
 window.control.initGamepad();
 
@@ -11,9 +5,6 @@ window.control.initGamepad();
 const slideshow = document.getElementById("slideshow");
 
 slideshow.focus();
-
-// const platformz = await ipcRenderer.invoke('get-platform-names');
-// console.log("platformz: ", platformz);
 
 Promise.all([
     ipcRenderer.invoke('get-platform-names'),

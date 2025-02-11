@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
 let childProcesses = [];
+const pjson = require('../package.json');
 
 const platforms = [
     "amiga",
@@ -10,6 +11,23 @@ const platforms = [
     "dreamcast",
     "gamecube"
 ];
+
+function showHelp() {
+    console.log(`
+Usage: ${pjson.name.toLowerCase()} [options]
+
+Options:
+  --fullscreen  Start the app in full screen mode.
+  --dev         Enable developper menu (DevTools + Reload).
+  --help        Show this help message.
+  --version     Displays the version number / tag.
+    `);
+    app.quit();
+}
+
+if (process.argv.includes('--help')) {
+    showHelp();
+}
 
 function createCoversDirectories(platforms) {
     // Get the base path for covers using Electron's app.getPath('userData')

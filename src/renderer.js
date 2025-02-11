@@ -21,7 +21,7 @@ fetch('src/html/platform_form.html')
             const slide = document.createElement("div");
             slide.className = "slide";
             slide.id = platform;
-            slide.style.backgroundImage = `url('img/${platform}.png')`;
+            slide.style.backgroundImage = `url('img/platforms/${platform}.png')`;
 
             const prefString = localStorage.getItem(platform);
 

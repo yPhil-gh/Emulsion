@@ -82,6 +82,13 @@ function createWindow() {
         return result.response === 0 ? 'yes' : 'no';
     });
 
+    // Handle the 'change-window-title' event
+    ipcMain.on('change-window-title', (event, newTitle) => {
+        if (win) {
+            win.setTitle(newTitle); // Update the window title
+        }
+    });
+
         // Send platforms data to the renderer process
     win.webContents.on('did-finish-load', () => {
         win.webContents.send('platforms-data', platforms);

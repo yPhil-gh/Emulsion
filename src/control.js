@@ -126,6 +126,7 @@ window.control = {
                 slideshow.style.display = 'block';
                 slideshow.focus();
                 console.log("Slideshow is now visible.");
+                ipcRenderer.send('change-window-title', "EmumE - Select a Platform");
             } else {
                 console.warn("Slideshow element not found.");
             }
@@ -138,7 +139,7 @@ window.control = {
         let selectedIndex = 0;
         const columns = 4; // Fixed number of columns
 
-        // Add event listener for keyboard navigation
+        // Gallery nav
         document.addEventListener('keydown', (event) => {
 
             showStatusBar("up", "gallery"); // or showStatusBar("left") for leftward slide.

@@ -4,6 +4,7 @@
 
 window.gallery = {
     buildGallery: function(platform, gamesDir, emulator, emulatorArgs, userDataPath) {
+        ipcRenderer.send('change-window-title', "EmumE - Select a Game");
         buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath);
     }
 };
@@ -227,12 +228,13 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
 // Function to initialize the gallery for all platforms
 function initializeGallery() {
-  const platforms = JSON.parse(fs.readFileSync(path.join(__dirname, '../../package.json'), 'utf8')).platforms || [];
 
-  platforms.forEach(platform => {
-    const preferences = JSON.parse(localStorage.getItem(platform));
-    if (preferences && preferences.gamesDir && preferences.emulator) {
-      buildGallery(platform, preferences.gamesDir, preferences.emulator, preferences.emulatorArgs);
-    }
-  });
+    const platforms = JSON.parse(fs.readFileSync(path.join(__dirname, '../../package.json'), 'utf8')).platforms || [];
+
+    platforms.forEach(platform => {
+        const preferences = JSON.parse(localStorage.getItem(platform));
+        if (preferences && preferences.gamesDir && preferences.emulator) {
+            buildGallery(platform, preferences.gamesDir, preferences.emulator, preferences.emulatorArgs);
+        }
+    });
 }

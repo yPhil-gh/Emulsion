@@ -1,7 +1,3 @@
-// const { ipcRenderer } = require('electron');
-// const fs = require('fs');
-// const path = require('path');
-
 window.gallery = {
     buildGallery: function(platform, gamesDir, emulator, emulatorArgs, userDataPath) {
         ipcRenderer.send('change-window-title', "EmumE - Select a Game");
@@ -9,7 +5,7 @@ window.gallery = {
     }
 };
 
-// Function to recursively scan a directory for files with specific extensions.
+// Recursively scan a directory for files with specific extensions.
 // If recursive is false, only the top-level directory is scanned.
 // If gamesDir is invalid, it returns an empty array.
 function scanDirectory(gamesDir, extensions, recursive = true) {
@@ -41,7 +37,7 @@ function scanDirectory(gamesDir, extensions, recursive = true) {
 }
 
 
-// Function to build the gallery for a specific platform
+// Build the gallery for a specific platform
 function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) {
     const galleryContainer = document.createElement('div');
     galleryContainer.id = `${platform}-gallery`;
@@ -55,7 +51,7 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
     const extensions = extensionsArrays[platform];
 
-    // Scan the games directory for valid files
+    // Scan the platform games directory for valid files
     const gameFiles = scanDirectory(gamesDir, extensions, false);
 
     // Create a gallery item for each game
@@ -70,8 +66,6 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
         gameContainer.classList.add('game-container');
         // gameContainer.setAttribute('tabindex', 0);
         gameContainer.setAttribute('data-command', `${emulator} ${emulatorArgs || ""} "${gameFile}"`);
-
-        // fetchCoverButton.setAttribute('data-game', fileNameWithoutExt);
 
         // Add click event to launch the game
         gameContainer.addEventListener('click', (event) => {
@@ -113,7 +107,7 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
             // Function to display the dialog with multiple images
             function showImageDialog(imageUrls, gameName) {
-                const dialog = document.getElementById('imageDialog');
+                const coversDialog = document.getElementById('imageDialog');
                 const dialogTitle = document.getElementById('dialogTitle');
                 const imageGrid = document.getElementById('imageGrid');
                 const selectButton = document.getElementById('selectButton');
@@ -130,7 +124,7 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
                 imageUrls.forEach((url) => {
                     const imgContainer = document.createElement('div');
                     imgContainer.classList.add('image-container');
-
+                    imgContainer.tabindex = 0;
                     const img = document.createElement('img');
                     img.src = url;
 
@@ -153,7 +147,18 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
                 });
 
                 // Show the dialog
-                dialog.showModal();
+                coversDialog.showModal();
+
+                document.querySelector('.image-container').click();
+                document.querySelector('.image-container').click();
+
+                // const focusableElements = coversDialog.querySelectorAll(
+                //     'button, div, [tabindex]:not([tabindex="-1"])'
+                // );
+
+                coversDialog.addEventListener('keydown', () => {
+                    console.log('Dialog was closed');
+                });
 
                 // Handle the "Select" button click
                 selectButton.addEventListener('click', () => {
@@ -177,7 +182,7 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
                 // Close the dialog when the close button is clicked
                 document.getElementById('closeDialog').addEventListener('click', () => {
-                    dialog.close();
+                    coversDialog.close();
                 });
             }
 
@@ -224,17 +229,4 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
     // Initialize navigation for the gallery
     // initializeGalleryNavigation(galleryContainer);
     window.control.initNav(galleryContainer);
-}
-
-// Function to initialize the gallery for all platforms
-function initializeGallery() {
-
-    const platforms = JSON.parse(fs.readFileSync(path.join(__dirname, '../../package.json'), 'utf8')).platforms || [];
-
-    platforms.forEach(platform => {
-        const preferences = JSON.parse(localStorage.getItem(platform));
-        if (preferences && preferences.gamesDir && preferences.emulator) {
-            buildGallery(platform, preferences.gamesDir, preferences.emulator, preferences.emulatorArgs);
-        }
-    });
 }

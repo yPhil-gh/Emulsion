@@ -137,12 +137,18 @@ window.control = {
         if (gameContainers.length === 0) return;
 
         let selectedIndex = 0;
-        const columns = 4; // Fixed number of columns
+        const columns = 6; // Fixed number of columns
+
+        galleryContainer.tabIndex = 0; // Make the container focusable
+
+        galleryContainer.focus();
 
         // Gallery nav
-        document.addEventListener('keydown', (event) => {
+        galleryContainer.addEventListener('keydown', (event) => {
 
-            showStatusBar("up", "gallery"); // or showStatusBar("left") for leftward slide.
+            console.log("plop: ");
+
+            // showStatusBar("up", "gallery"); // or showStatusBar("left") for leftward slide.
 
             switch (event.key) {
             case 'ArrowRight':
@@ -153,13 +159,23 @@ window.control = {
                 break;
             case 'ArrowDown':
                 console.log("ArrowDown selectedIndex Before: ", selectedIndex);
-                selectedIndex = Math.min(selectedIndex + columns, gameContainers.length) + 2;
+                selectedIndex = Math.min(selectedIndex + columns, gameContainers.length);
                 console.log("ArrowDown selectedIndex After: ", selectedIndex);
                 break;
             case 'ArrowUp':
                 console.log("ArrowUp selectedIndex Before: ", selectedIndex);
-                selectedIndex = Math.max(selectedIndex - columns, 0) - 2;
+                selectedIndex = Math.max(selectedIndex - columns, 0);
                 console.log("ArrowUp selectedIndex After: ", selectedIndex);
+                break;
+            case 'i':
+                console.log("I!");
+                const plop = gameContainers[selectedIndex].classList;
+                const pElement = gameContainers[selectedIndex].querySelector('p');
+                const fetchCoverButton = gameContainers[selectedIndex].querySelector('button');
+
+                fetchCoverButton.click();
+
+                console.log("pElement: ", pElement);
                 break;
             case 'Enter':
                 if (document.querySelector('.gallery')) {

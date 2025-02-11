@@ -5,7 +5,7 @@ const packageJsonPath = path.join(__dirname, 'package.json');
 const pjson = JSON.parse(fs.readFileSync("package.json", "utf8"));
 const platforms = pjson.platforms || [];
 
-window.control.logStatus();
+window.control.initGamepad();
 
 // Build the slideshow content dynamically
 const slideshow = document.getElementById("slideshow");

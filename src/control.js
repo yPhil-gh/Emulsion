@@ -37,7 +37,7 @@ window.control = {
         }
 
         // Keyboard navigation
-        slideshow.addEventListener('keydown', (event) => {
+        slideshow.addEventListener('keydown', async (event) => {
 
             showStatusBar("slideshow"); // or showStatusBar("left") for leftward slide.
             // event.stopPropagation();
@@ -45,6 +45,11 @@ window.control = {
             if (event.key === 'ArrowRight') {
                 currentSlide = (currentSlide + 1) % slides.length;
                 showSlide(currentSlide);
+            } else if (event.key === 'Escape') {
+                const result = await ipcRenderer.invoke('show-quit-dialog');
+                if (result === 'yes') {
+                    ipcRenderer.send('quit');
+                }
             } else if (event.key === 'ArrowLeft') {
                 currentSlide = (currentSlide - 1 + slides.length) % slides.length;
                 showSlide(currentSlide);
@@ -146,13 +151,14 @@ window.control = {
                 selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
                 break;
             case 'ArrowDown':
+                console.log("ArrowDown selectedIndex Before: ", selectedIndex);
                 selectedIndex = Math.min(selectedIndex + columns, gameContainers.length) + 2;
-                console.log("ArrowDown selectedIndex: ", selectedIndex);
-                console.log("gameContainers.length: ", gameContainers.length);
+                console.log("ArrowDown selectedIndex After: ", selectedIndex);
                 break;
             case 'ArrowUp':
+                console.log("ArrowUp selectedIndex Before: ", selectedIndex);
                 selectedIndex = Math.max(selectedIndex - columns, 0) - 2;
-                console.log("ArrowUp selectedIndex: ", selectedIndex);
+                console.log("ArrowUp selectedIndex After: ", selectedIndex);
                 break;
             case 'Enter':
                 if (document.querySelector('.gallery')) {
@@ -172,7 +178,7 @@ window.control = {
                 container.classList.toggle('selected', index === selectedIndex);
             });
 
-            if (gameContainers.length !== selectedIndex) {
+            if (selectedIndex < gameContainers.length && selectedIndex > 0) {
                 gameContainers[selectedIndex].scrollIntoView({
                     behavior: 'smooth',
                     block: 'center',

@@ -18,15 +18,21 @@ Usage: ${pjson.name.toLowerCase()} [options]
 
 Options:
   --fullscreen  Start the app in full screen mode.
-  --dev         Enable developper menu (DevTools + Reload).
   --help        Show this help message.
   --version     Displays the version number / tag.
     `);
     app.quit();
 }
 
+const isFullScreen = process.argv.includes('--fullscreen');
+
 if (process.argv.includes('--help')) {
     showHelp();
+}
+
+if (process.argv.includes('--version')) {
+    console.log(`${pjson.version}`);
+    app.quit();
 }
 
 function createCoversDirectories(platforms) {
@@ -58,6 +64,22 @@ function createWindow() {
             nodeIntegration: true, // Enable Node.js integration
             contextIsolation: false, // Disable context isolation
         },
+        fullscreen: isFullScreen
+    });
+
+
+    // Handle the 'show-quit-dialog' event
+    ipcMain.handle('show-quit-dialog', async () => {
+        const result = await dialog.showMessageBox(win, {
+            type: 'question',
+            buttons: ['Yes', 'Cancel'],
+            title: 'Confirm Quit',
+            message: 'Really quit?',
+            detail: 'Are you sure you want to quit the application?'
+        });
+
+        // Return 'yes' if the user clicks Yes, otherwise 'no'
+        return result.response === 0 ? 'yes' : 'no';
     });
 
         // Send platforms data to the renderer process
@@ -71,7 +93,7 @@ function createWindow() {
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit();
+    if (process.platform !== 'darwin') app.quit(); // MacOs is weird
 });
 
 app.on('activate', () => {
@@ -101,7 +123,6 @@ ipcMain.handle('get-platform-names', () => {
     return platforms;
 });
 
-
 // Handle the command execution sent from the renderer process (gallery.js)
 ipcMain.on('run-command', (event, command) => {
     const child = exec(command, (err, stdout, stderr) => {
@@ -115,4 +136,20 @@ ipcMain.on('run-command', (event, command) => {
     child.on('exit', () => {
         childProcesses = childProcesses.filter(cp => cp !== child);
     });
+});
+
+
+ipcMain.on('quit', () => {
+    app.quit();
+});
+
+// Clean up all child processes before quitting
+app.on('before-quit', () => {
+  childProcesses.forEach(child => {
+    try {
+      child.kill();
+    } catch (e) {
+      console.error('Error killing child process:', e);
+    }
+  });
 });

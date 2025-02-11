@@ -1,8 +1,6 @@
+const slideshow = document.getElementById("slideshow");
 
 window.control.initGamepad();
-
-// Build the slideshow content dynamically
-const slideshow = document.getElementById("slideshow");
 
 slideshow.focus();
 

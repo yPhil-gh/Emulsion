@@ -49,7 +49,8 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
     // Define valid extensions for the platform
     const extensionsArrays = {
         gamecube:[".iso", ".ciso"],
-        amiga:[".lha", ".adf"]
+        amiga:[".lha", ".adf"],
+        pcengine:[".srm"]
     };
 
     const extensions = extensionsArrays[platform];

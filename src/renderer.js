@@ -45,9 +45,16 @@ Promise.all([
             const platformForm = form.querySelector('#platform-form');
             platformForm.id = `${platform}-form`;
 
+            function capitalizeWord(word) {
+                if (!word) return word; // Handle empty strings
+                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            }
+
             const gamesDirInput = form.querySelector('#games-dir');
             gamesDirInput.id = `${platform}-games-dir`;
             gamesDirInput.value = (prefs && prefs.gamesDir) ? prefs.gamesDir : "";
+
+            gamesDirInput.placeholder = `${capitalizeWord(platform)} Games Directory`;
 
             console.log("prefs: ", prefs);
 
@@ -59,10 +66,13 @@ Promise.all([
             emulatorInput.id = `${platform}-emulator`;
             emulatorInput.value = (prefs && prefs.emulator) ?  prefs.emulator : "";
 
+            emulatorInput.placeholder = `${platform} Emulator`;
+
             const emulatorArgsInput = form.querySelector('#emulator-args');
             emulatorArgsInput.id = `${platform}-emulator-args`;
             emulatorArgsInput.classList.add('emulator-args');
             emulatorArgsInput.value = (prefs && prefs.emulatorArgs) ? prefs.emulatorArgs : "";
+            emulatorArgsInput.placeholder = `args`;
 
             const browseEmulatorButton = form.querySelector('.browse-button-file');
             browseEmulatorButton.setAttribute('data-platform', platform);

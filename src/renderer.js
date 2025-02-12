@@ -39,6 +39,7 @@ Promise.all([
             // Create the form using the template
             const form = document.createElement("div");
             form.innerHTML = formTemplate;
+            form.className = "slide-form-container";
 
             // Update form IDs and attributes for the current platform
             const platformForm = form.querySelector('#platform-form');

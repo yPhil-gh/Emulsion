@@ -8,7 +8,7 @@ body {
   height: 100vh;
   font-family: sans-serif;
   overflow: hidden;
-  perspective: 1200px; /* Add perspective for 3D effect */
+  perspective: 2400px; /* Add perspective for 3D effect */
 }
 
 #slideshow {
@@ -23,7 +23,7 @@ body {
 
 .slide {
   position: absolute;
-  width: 300px;
+  width: 400px;
   height: 400px;
   background-size: cover;
   background-position: center;
@@ -57,20 +57,40 @@ body {
 }
 
 .platform-form {
-  position: absolute;
+  /* position: absolute; */
+  margin: 10px;
   bottom: 20px;
   left: 50%;
-  transform: translateX(-50%);
+  /* transform: translateX(-50%); */
   background: rgba(0, 0, 0, 0.9);
-  padding: 20px;
-  border-radius: 16px;
+  /* padding: 10px; */
   color: white;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  /* text-align: center; */
+  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); */
   backdrop-filter: blur(8px);
+  /* border: 1px solid rgba(255, 255, 255, 0.1); */
+  /* border-radius: 16px; */
+  /* width: 100%; */
+  /* max-width: 400px; */
+}
+
+.slide-content {
+  position: relative;
+  height: 100%; /* Ensure it takes the full height of the slide */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* Align content to the bottom */
+  align-items: center; /* Center horizontally */
+}
+
+.slide-form-container {
+  width: 100%; /* Take up full width */
+  /* padding: 20px; /\* Add some padding *\/ */
   border: 1px solid rgba(255, 255, 255, 0.1);
-  width: 100%;
-  max-width: 400px;
+  border-radius: 0 0 16px 16px;
+  background: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+  border-top: 1px solid rgba(255, 255, 255, 0.1); /* Add a subtle border */
+  backdrop-filter: blur(8px); /* Add a blur effect */
 }
 
 .form-group {

@@ -213,8 +213,8 @@ window.control = {
             const slideshow = document.getElementById('slideshow');
             if (slideshow) {
 
-                slideshow.style.justifyContent = 'center';
-                slideshow.style.alignItems = 'center';
+                // slideshow.style.justifyContent = 'center';
+                // slideshow.style.alignItems = 'center';
 
                 slideshow.style.display = 'flex';
                 slideshow.focus();

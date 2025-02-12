@@ -8,88 +8,69 @@ body {
   height: 100vh;
   font-family: sans-serif;
   overflow: hidden;
-  position: relative;
+  perspective: 1200px; /* Add perspective for 3D effect */
 }
 
 #slideshow {
   position: relative;
-  width: 512px;
-  height: 512px;
-  overflow: visible;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform-style: preserve-3d; /* Enable 3D transformations */
 }
-/* Slide Styles */
+
 .slide {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 512px;
-  height: 512px;
+  width: 300px;
+  height: 400px;
   background-size: cover;
   background-position: center;
-  border-radius: 24px; /* More rounded corners */
-  border: 2px solid rgba(0, 123, 255, 0.3); /* Subtle border */
-  opacity: 0.5;
-  transition: transform 0.5s ease, opacity 0.5s ease, box-shadow 0.5s ease, background-color 0.5s ease, border-color 0.5s ease;
+  border-radius: 24px;
+  border: 2px solid rgba(0, 123, 255, 0.3);
+  opacity: 0.8;
+  transition: transform 0.5s ease, opacity 0.5s ease, box-shadow 0.5s ease;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-}
-
-div:focus {
-  outline: none;
-}
-
-#imageDialog:focus {
-  outline: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform-style: preserve-3d;
 }
 
 .slide.active {
-  opacity: 1; /* Fully visible */
-outline: none;  transform: translateX(0) scale(1);
+  opacity: 1;
+  transform: translateZ(0) scale(1);
   z-index: 2;
-  pointer-events: auto;
-  background-color: rgba(34, 34, 34, 0.9); /* Darker background */
-  border-color: #007bff; /* Bright blue border */
-  box-shadow: 0 8px 24px rgba(0, 123, 255, 0.4); /* Glowing shadow */
+  box-shadow: 0 8px 24px rgba(0, 123, 255, 0.4);
 }
 
-.slide.adjacent.active-left {
-  transform: translateX(-200px) scale(0.9);
+.slide.adjacent {
+  opacity: 0.7;
+  transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px));
   z-index: 1;
-  opacity: 0.7; /* Slightly more visible */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.slide.adjacent.active-right {
-  transform: translateX(200px) scale(0.9);
-  z-index: 1;
-  opacity: 0.7; /* Slightly more visible */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-}
-
-/* Hover Effect */
 .slide:hover {
-  opacity: 0.8;
-  border-color: rgba(0, 123, 255, 0.7); /* Brighter border on hover */
-  box-shadow: 0 8px 24px rgba(0, 123, 255, 0.3); /* Glowing shadow on hover */
+  opacity: 0.9;
+  border-color: rgba(0, 123, 255, 0.7);
+  box-shadow: 0 8px 24px rgba(0, 123, 255, 0.3);
 }
 
-/* Platform Form Styles */
-/* Platform Form Styles */
 .platform-form {
   position: absolute;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.9); /* Dark background */
+  background: rgba(0, 0, 0, 0.9);
   padding: 20px;
-  border-radius: 16px; /* Rounded corners */
+  border-radius: 16px;
   color: white;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Subtle shadow */
-  backdrop-filter: blur(8px); /* Frosted glass effect */
-  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   width: 100%;
-  max-width: 400px; /* Adjust as needed */
+  max-width: 400px;
 }
 
 .form-group {
@@ -101,29 +82,29 @@ outline: none;  transform: translateX(0) scale(1);
 .form-group label {
   margin-bottom: 5px;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.8); /* Light text */
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .input-group {
   display: flex;
-  gap: 10px; /* Space between inputs and buttons */
+  gap: 10px;
 }
 
 .input-group input {
   flex: 1;
   padding: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
-  border-radius: 8px; /* Rounded corners */
-  background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
   color: white;
   font-size: 14px;
   transition: border-color 0.3s ease, background 0.3s ease;
 }
 
 .input-group input:focus {
-  border-color: #007bff; /* Bright blue border on focus */
-  background: rgba(255, 255, 255, 0.2); /* Slightly lighter background */
-  outline: none; /* Remove default outline */
+  border-color: #007bff;
+  background: rgba(255, 255, 255, 0.2);
+  outline: none;
 }
 
 input.emulator-args {
@@ -133,8 +114,8 @@ input.emulator-args {
 .input-group button {
   padding: 10px 20px;
   border: none;
-  border-radius: 8px; /* Rounded corners */
-  background: #007bff; /* Bright blue background */
+  border-radius: 8px;
+  background: #007bff;
   color: white;
   font-size: 14px;
   cursor: pointer;
@@ -142,20 +123,20 @@ input.emulator-args {
 }
 
 .input-group button:hover {
-  background: #005bb5; /* Darker blue on hover */
-  transform: translateY(-2px); /* Slight lift */
+  background: #005bb5;
+  transform: translateY(-2px);
 }
 
 .input-group button:active {
-  transform: translateY(0); /* Reset lift on click */
+  transform: translateY(0);
 }
 
 .save-button {
   width: 100%;
   padding: 10px 20px;
   border: none;
-  border-radius: 8px; /* Rounded corners */
-  background: #007bff; /* Bright blue background */
+  border-radius: 8px;
+  background: #007bff;
   color: white;
   font-size: 14px;
   cursor: pointer;
@@ -163,48 +144,48 @@ input.emulator-args {
 }
 
 .save-button:hover {
-  background: #005bb5; /* Darker blue on hover */
-  transform: translateY(-2px); /* Slight lift */
+  background: #005bb5;
+  transform: translateY(-2px);
 }
 
 .save-button:active {
-  transform: translateY(0); /* Reset lift on click */
+  transform: translateY(0);
 }
 
 /* GALLERY */
 .gallery {
   display: grid;
-  grid-template-columns: repeat(6, 1fr); /* Always 6 columns */
+  grid-template-columns: repeat(6, 1fr);
   gap: 16px;
   padding: 10px;
   width: 100%;
-  max-width: 98%; /* Adjust as needed */
+  max-width: 98%;
   margin: 0 auto;
 }
 
 @media (max-width: 1200px) {
   .gallery {
-    grid-template-columns: repeat(4, 1fr); /* Adjust columns for smaller screens */
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 @media (max-width: 800px) {
   .gallery {
-    grid-template-columns: repeat(2, 1fr); /* Adjust columns for even smaller screens */
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 .game-container {
   position: relative;
-  width: 100%; /* Ensure all containers are the same width */
-  aspect-ratio: 1 / 1; /* Make containers square */
-  min-width: 150px; /* Minimum width */
-  max-width: 300px; /* Maximum width */
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  min-width: 150px;
+  max-width: 300px;
   border-radius: 16px;
   overflow: hidden;
   border: 2px solid transparent;
   transition: border-color 0.2s ease, transform 0.2s ease;
   cursor: pointer;
-  background-color: black; /* Background for the container */
+  background-color: black;
 }
 
 .game-container.selected {
@@ -224,7 +205,7 @@ input.emulator-args {
 .image-container img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Ensure the image covers the container */
+  object-fit: cover;
 }
 
 .game-name {
@@ -232,8 +213,8 @@ input.emulator-args {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 10%; /* Cover the bottom third of the container */
-  background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+  height: 10%;
+  background-color: rgba(0, 0, 0, 0.8);
   color: #caf5ca;
   font-size: 14px;
   text-align: center;
@@ -241,12 +222,12 @@ input.emulator-args {
   display: flex;
   align-items: center;
   justify-content: center;
-  white-space: nowrap; /* Prevent text from wrapping */
+  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* Add ellipsis for overflow */
+  text-overflow: ellipsis;
 }
 
-/* Fetch Cover Button */
+
 .fetch-cover-button {
   position: absolute;
   top: 50%;
@@ -273,10 +254,10 @@ input.emulator-args {
 }
 
 .game-container:hover .fetch-cover-button {
-  opacity: 1; /* Show button on hover */
+  opacity: 1;
 }
 
-/* Rotation animation */
+
 @keyframes rotate {
   from {
     transform: translate(-50%, -50%) rotate(0deg);
@@ -286,7 +267,7 @@ input.emulator-args {
   }
 }
 
-/* Class to apply the rotation animation */
+
 .rotate {
   animation: rotate 1s linear infinite;
 }
@@ -346,7 +327,6 @@ dialog::backdrop {
   color: green;
 }
 
-/* Style for each status item (icon and label) */
 .status-item {
   display: flex;
   flex-direction: row;
@@ -355,13 +335,11 @@ dialog::backdrop {
   font-size: 14px;
 }
 
-/* Optionally style the icons (assuming they are small images) */
 .status-item img {
   width: 30px;
   height: 30px;
 }
 
-/* When sliding from the right (if using "left" direction), we might override transform */
 .bar.slide-left {
   transform: translateX(100%);
   transition: transform 0.5s ease-in-out;

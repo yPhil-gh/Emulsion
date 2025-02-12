@@ -5,12 +5,8 @@ const { exec } = require('child_process');
 let childProcesses = [];
 const pjson = require('../package.json');
 
-const platforms = [
-    "amiga",
-    "pcengine",
-    "dreamcast",
-    "gamecube"
-];
+
+const platforms = pjson.platforms || [];
 
 function showHelp() {
     console.log(`

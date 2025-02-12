@@ -38,57 +38,64 @@ window.control = {
     showStatus: showStatus,
     showHelp: showHelp,
     initSlideShow: function(slideshow) {
-        const slides = document.querySelectorAll('.slide');
-        let currentSlide = 0;
 
-        function showSlide(index) {
-            slides.forEach((slide, i) => {
-                slide.classList.remove('active', 'adjacent', 'active-left', 'active-right');
-                if (i === index) {
+        // const slideshow = document.getElementById('slideshow');
+        const slides = Array.from(slideshow.querySelectorAll('.slide'));
+        const totalSlides = slides.length;
+        const radius = 500; // Radius of the carousel
+        let currentIndex = 0;
+
+        // Function to update the carousel
+        function updateCarousel() {
+            const angleIncrement = 360 / totalSlides; // Angle between each slide
+
+            slides.forEach((slide, index) => {
+                const angle = angleIncrement * (index - currentIndex);
+                slide.style.setProperty('--angle', angle); // Set rotation angle
+                slide.style.setProperty('--radius', radius); // Set distance from center
+
+                if (index === currentIndex) {
                     slide.classList.add('active');
-                } else if (i === (index - 1 + slides.length) % slides.length) {
-                    slide.classList.add('adjacent', 'active-left');
-                } else if (i === (index + 1) % slides.length) {
-                    slide.classList.add('adjacent', 'active-right');
+                    slide.classList.remove('adjacent');
+                } else {
+                    slide.classList.add('adjacent');
+                    slide.classList.remove('active');
                 }
             });
         }
 
-        slideshow.addEventListener('keydown', async (event) => {
+        // Function to move to the next slide
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % totalSlides;
+            updateCarousel();
+        }
 
-            showHelp();
+        // Function to move to the previous slide
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+            updateCarousel();
+        }
 
+        // Event listeners for navigation
+        document.addEventListener('keydown', (event) => {
             if (event.key === 'ArrowRight') {
-                currentSlide = (currentSlide + 1) % slides.length;
-                showSlide(currentSlide);
-            } else if (event.key === 'Escape') {
-                const result = await ipcRenderer.invoke('show-quit-dialog');
-                if (result === 'yes') {
-                    ipcRenderer.send('quit');
-                }
+                nextSlide();
             } else if (event.key === 'ArrowLeft') {
-                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-                showSlide(currentSlide);
-            } else if (event.key === 'i') {
-                console.log("i & I: ", currentSlide);
-                const platform = slides[currentSlide].getAttribute('data-platform');
-                console.log("platform: ", platform);
-                slides[currentSlide].querySelector('.platform-form').style.display = "block";
-
+                prevSlide();
             } else if (event.key === 'Enter') {
-                console.log(`Slide selected via RETURN: ${slides[currentSlide].textContent.trim()}`);
-                console.log('Current slide classList:', slides[currentSlide].classList);
+                console.log(`Slide selected via RETURN: ${slides[currentIndex].textContent.trim()}`);
+                console.log('Current slide classList:', slides[currentIndex].classList);
 
-                if (slides[currentSlide].classList.contains('runnable')) {
+                if (slides[currentIndex].classList.contains('runnable')) {
                     // Hide the slideshow div
                     document.getElementById('slideshow').style.display = 'none';
-                    console.log("platform: ", slides[currentSlide].getAttribute('data-platform'));
-                    console.log("games-dir: ", slides[currentSlide].getAttribute('data-games-dir'));
+                    console.log("platform: ", slides[currentIndex].getAttribute('data-platform'));
+                    console.log("games-dir: ", slides[currentIndex].getAttribute('data-games-dir'));
 
-                    const platform = slides[currentSlide].getAttribute('data-platform');
-                    const gamesDir = slides[currentSlide].getAttribute('data-games-dir');
-                    const emulator = slides[currentSlide].getAttribute('data-emulator');
-                    const emulatorArgs = slides[currentSlide].getAttribute('data-emulator-args');
+                    const platform = slides[currentIndex].getAttribute('data-platform');
+                    const gamesDir = slides[currentIndex].getAttribute('data-games-dir');
+                    const emulator = slides[currentIndex].getAttribute('data-emulator');
+                    const emulatorArgs = slides[currentIndex].getAttribute('data-emulator-args');
 
                     ipcRenderer.invoke('get-main-data')
                         .then(({ userDataPath }) => {
@@ -101,17 +108,83 @@ window.control = {
             }
         });
 
+        // Initialize the carousel
+        updateCarousel();
 
-        // Mouse navigation
-        slides.forEach((slide, index) => {
-            slide.addEventListener('click', () => {
-                currentSlide = index;
-                showSlide(currentSlide);
-            });
-        });
+        // const slides = document.querySelectorAll('.slide');
+        // let currentSlide = 0;
 
-        // Initialize slideshow
-        showSlide(currentSlide);
+        // function showSlide(index) {
+        //     slides.forEach((slide, i) => {
+        //         slide.classList.remove('active', 'adjacent', 'active-left', 'active-right');
+        //         if (i === index) {
+        //             slide.classList.add('active');
+        //         } else if (i === (index - 1 + slides.length) % slides.length) {
+        //             slide.classList.add('adjacent', 'active-left');
+        //         } else if (i === (index + 1) % slides.length) {
+        //             slide.classList.add('adjacent', 'active-right');
+        //         }
+        //     });
+        // }
+
+        // slideshow.addEventListener('keydown', async (event) => {
+
+        //     showHelp();
+
+        //     if (event.key === 'ArrowRight') {
+        //         currentSlide = (currentSlide + 1) % slides.length;
+        //         showSlide(currentSlide);
+        //     } else if (event.key === 'Escape') {
+        //         const result = await ipcRenderer.invoke('show-quit-dialog');
+        //         if (result === 'yes') {
+        //             ipcRenderer.send('quit');
+        //         }
+        //     } else if (event.key === 'ArrowLeft') {
+        //         currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+        //         showSlide(currentSlide);
+        //     } else if (event.key === 'i') {
+        //         console.log("i & I: ", currentSlide);
+        //         const platform = slides[currentSlide].getAttribute('data-platform');
+        //         console.log("platform: ", platform);
+        //         slides[currentSlide].querySelector('.platform-form').style.display = "block";
+
+        //     } else if (event.key === 'Enter') {
+        //         console.log(`Slide selected via RETURN: ${slides[currentSlide].textContent.trim()}`);
+        //         console.log('Current slide classList:', slides[currentSlide].classList);
+
+        //         if (slides[currentSlide].classList.contains('runnable')) {
+        //             // Hide the slideshow div
+        //             document.getElementById('slideshow').style.display = 'none';
+        //             console.log("platform: ", slides[currentSlide].getAttribute('data-platform'));
+        //             console.log("games-dir: ", slides[currentSlide].getAttribute('data-games-dir'));
+
+        //             const platform = slides[currentSlide].getAttribute('data-platform');
+        //             const gamesDir = slides[currentSlide].getAttribute('data-games-dir');
+        //             const emulator = slides[currentSlide].getAttribute('data-emulator');
+        //             const emulatorArgs = slides[currentSlide].getAttribute('data-emulator-args');
+
+        //             ipcRenderer.invoke('get-main-data')
+        //                 .then(({ userDataPath }) => {
+        //                     window.userDataPath = userDataPath;
+        //                     if (!document.querySelector('.gallery')) {
+        //                         gallery.buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath);
+        //                     }
+        //                 });
+        //         }
+        //     }
+        // });
+
+
+        // // Mouse navigation
+        // slides.forEach((slide, index) => {
+        //     slide.addEventListener('click', () => {
+        //         currentSlide = index;
+        //         showSlide(currentSlide);
+        //     });
+        // });
+
+        // // Initialize slideshow
+        // showSlide(currentSlide);
     },
     initGalleryNav: function(galleryContainer) {
 

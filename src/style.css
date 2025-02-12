@@ -172,56 +172,79 @@ input.emulator-args {
 }
 
 /* GALLERY */
-/* Gallery Container */
 .gallery {
   display: grid;
-  grid-template-columns: repeat(6, 1fr); /* Default to 8 columns */
-  gap: 10px;
+  grid-template-columns: repeat(6, 1fr); /* Always 6 columns */
+  gap: 16px;
   padding: 10px;
   width: 100%;
   max-width: 98%; /* Adjust as needed */
   margin: 0 auto;
 }
 
-/* Game Container */
+@media (max-width: 1200px) {
+  .gallery {
+    grid-template-columns: repeat(4, 1fr); /* Adjust columns for smaller screens */
+  }
+}
+@media (max-width: 800px) {
+  .gallery {
+    grid-template-columns: repeat(2, 1fr); /* Adjust columns for even smaller screens */
+  }
+}
+
 .game-container {
   position: relative;
-  /* width: 100%; /\* Take up full width of the grid cell *\/ */
-  /* height: 100%; /\* Fixed height *\/ */
+  width: 100%; /* Ensure all containers are the same width */
+  aspect-ratio: 1 / 1; /* Make containers square */
   min-width: 150px; /* Minimum width */
-  /* min-height: 150px; */
-  /* max-width: 250px; /\* Maximum width *\/ */
-  /* max-height: 250px; /\* Maximum height *\/ */
+  max-width: 300px; /* Maximum width */
   border-radius: 16px;
   overflow: hidden;
   border: 2px solid transparent;
   transition: border-color 0.2s ease, transform 0.2s ease;
   cursor: pointer;
+  background-color: black; /* Background for the container */
 }
 
 .game-container.selected {
-  border-color: #007bff; /* Blue outline for selected game */
+  border-color: #007bff;
   transform: scale(1.05);
 }
 
-/* Game Image */
-.game-container img {
+.image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.image-container img {
   width: 100%;
   height: 100%;
   object-fit: cover; /* Ensure the image covers the container */
-  border-radius: 16px;
 }
 
-.game-container p {
-  margin-top: 8px;
+.game-name {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 10%; /* Cover the bottom third of the container */
+  background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+  color: #caf5ca;
   font-size: 14px;
   text-align: center;
-  color: #d5daeb;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add ellipsis for overflow */
 }
-
-/* .game-container p { */
-/*   display:none; */
-/* } */
 
 /* Fetch Cover Button */
 .fetch-cover-button {
@@ -250,7 +273,7 @@ input.emulator-args {
 }
 
 .game-container:hover .fetch-cover-button {
-  opacity: 1;
+  opacity: 1; /* Show button on hover */
 }
 
 /* Rotation animation */
@@ -284,31 +307,6 @@ dialog h2 {
 
 dialog::backdrop {
   background-color: rgba(0, 0, 0, 0.5);
-}
-
-.image-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.image-container {
-  /* cursor: pointer; */
-  /* border: 2px solid #ddd; */
-  /* border-radius: 5px; */
-  /* overflow: hidden; */
-  transition: border-color 0.3s ease;
-}
-
-.image-container.selected {
-  border-color: #007bff;
-}
-
-.image-container img {
-  width: 100%;
-  height: auto;
-  display: block;
 }
 
 .dialog-buttons {

@@ -60,10 +60,28 @@ async function searchGame(gameName, platform) {
         links.each((_, element) => {
             const href = categoryPage$(element).attr('href');
             const title = categoryPage$(element).attr('title');
-            console.log("href: ", href);
-            if (href && title && title.toLowerCase().includes(details.name.toLowerCase())) {
-                const ignoredKeywords = ['coverart', 'cover art', 'box art', 'cover', 'game cover'];
-                if (!ignoredKeywords.some(keyword => title.toLowerCase().includes(keyword))) {
+            console.log(`href: ${href}, details.name: ${details.name}`);
+
+
+            if (href && title) {
+                // Normalize the href and gameName for comparison
+                const normalizedHref = href
+                    .replace('/wiki/File:', '')
+                    .replace(/_Coverart\.png$/i, '')
+                    .replace(/_/g, ' ')
+                    .toLowerCase();
+
+                // Extract the base game name (e.g., remove "v2.7 cd32" from "Syndicate_v2.7_CD32")
+                const baseGameName = gameName
+                    .replace(/[_\-]/g, ' ') // Replace underscores and hyphens with spaces
+                    .replace(/\s*v?\d+\.\d+.*$/i, '') // Remove version numbers (e.g., "v2.7 cd32")
+                    .trim()
+                    .toLowerCase();
+
+                console.log(`Normalized href: ${normalizedHref}, Base game name: ${baseGameName}`);
+
+                // Use includes for partial matching
+                if (normalizedHref.includes(baseGameName)) {
                     gamePageUrl = href;
                     return false; // Break the loop
                 }

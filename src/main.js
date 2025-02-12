@@ -36,7 +36,7 @@ if (process.argv.includes('--version')) {
 }
 
 function createCoversDirectories(platforms) {
-    // Get the base path for covers using Electron's app.getPath('userData')
+
     const baseCoversPath = path.join(app.getPath('userData'), 'covers');
 
     // Create the base covers directory if it doesn't exist.
@@ -61,35 +61,32 @@ function createWindow() {
         width: 800,
         height: 600,
         webPreferences: {
-            nodeIntegration: true, // Enable Node.js integration
-            contextIsolation: false, // Disable context isolation
+            nodeIntegration: true,
+            contextIsolation: false,
         },
-        fullscreen: isFullScreen
+        fullscreen: isFullScreen,
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
+            'AppleWebKit/537.36 (KHTML, like Gecko) ' +
+            'Chrome/115.0.0.0 Safari/537.36'
     });
 
 
-    // Handle the 'show-quit-dialog' event
     ipcMain.handle('show-quit-dialog', async () => {
         const result = await dialog.showMessageBox(win, {
             type: 'question',
             buttons: ['Yes', 'Cancel'],
-            title: 'Confirm Quit',
-            message: 'Really quit?',
-            detail: 'Are you sure you want to quit the application?'
+            message: 'Exit EmumE?'
         });
 
-        // Return 'yes' if the user clicks Yes, otherwise 'no'
         return result.response === 0 ? 'yes' : 'no';
     });
 
-    // Handle the 'change-window-title' event
     ipcMain.on('change-window-title', (event, newTitle) => {
         if (win) {
-            win.setTitle(newTitle); // Update the window title
+            win.setTitle(newTitle);
         }
     });
 
-        // Send platforms data to the renderer process
     win.webContents.on('did-finish-load', () => {
         win.webContents.send('platforms-data', platforms);
     });
@@ -118,14 +115,12 @@ ipcMain.handle('select-file', async () => {
     return result.filePaths[0];
 });
 
-// Register the handler for 'get-main-data'
 ipcMain.handle('get-main-data', () => {
     return {
         userDataPath: app.getPath('userData')
     };
 });
 
-// Register the handler for 'get-main-data'
 ipcMain.handle('get-platform-names', () => {
     return platforms;
 });
@@ -152,11 +147,11 @@ ipcMain.on('quit', () => {
 
 // Clean up all child processes before quitting
 app.on('before-quit', () => {
-  childProcesses.forEach(child => {
-    try {
-      child.kill();
-    } catch (e) {
-      console.error('Error killing child process:', e);
-    }
-  });
+    childProcesses.forEach(child => {
+        try {
+            child.kill();
+        } catch (e) {
+            console.error('Error killing child process:', e);
+        }
+    });
 });

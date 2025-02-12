@@ -2,9 +2,29 @@ const fs = require('fs');
 const path = require('path');
 const { ipcRenderer } = require('electron');
 
-function showStatusBar(context) {
-    const statusBar = document.getElementById("statusBar");
+function showHelp() {
+    const helpBar = document.getElementById("help-bar");
+    if (!helpBar) return;
+
+    helpBar.style.transform = "translateY(0)";
+
+    // After 6 seconds, hide the status bar again.
+    setTimeout(() => {
+        helpBar.style.transform = "translateY(100%)";
+    }, 6000);
+}
+
+function showStatus(message) {
+
+    const helpBar = document.getElementById("help-bar");
+    helpBar.style.transform = "translateY(100%)";
+
+    const statusBar = document.getElementById("status-bar");
     if (!statusBar) return;
+
+    console.log("message: ", message);
+
+    statusBar.textContent = message;
 
     statusBar.style.transform = "translateY(0)";
 
@@ -15,14 +35,12 @@ function showStatusBar(context) {
 }
 
 window.control = {
-    showStatusBar: function(slideshow) {
-        showStatusBar("slideshow");
-    },
+    showStatus: showStatus,
+    showHelp: showHelp,
     initSlideShow: function(slideshow) {
         const slides = document.querySelectorAll('.slide');
         let currentSlide = 0;
 
-        // Function to update slide classes
         function showSlide(index) {
             slides.forEach((slide, i) => {
                 slide.classList.remove('active', 'adjacent', 'active-left', 'active-right');
@@ -36,11 +54,9 @@ window.control = {
             });
         }
 
-        // Keyboard navigation
         slideshow.addEventListener('keydown', async (event) => {
 
-            showStatusBar("slideshow"); // or showStatusBar("left") for leftward slide.
-            // event.stopPropagation();
+            showHelp();
 
             if (event.key === 'ArrowRight') {
                 currentSlide = (currentSlide + 1) % slides.length;
@@ -97,7 +113,7 @@ window.control = {
         // Initialize slideshow
         showSlide(currentSlide);
     },
-    initNav: function(galleryContainer) {
+    initGalleryNav: function(galleryContainer) {
 
         // Function to simulate a key press
         function simulateKeyPress(key) {
@@ -146,9 +162,7 @@ window.control = {
         // Gallery nav
         galleryContainer.addEventListener('keydown', (event) => {
 
-            console.log("plop: ");
-
-            // showStatusBar("up", "gallery"); // or showStatusBar("left") for leftward slide.
+            showHelp();
 
             switch (event.key) {
             case 'ArrowRight':
@@ -208,6 +222,51 @@ window.control = {
         // Set the first game container as selected by default
         gameContainers[selectedIndex].classList.add('selected');
     },
+    initCoversDialogNav: function(coversDialog) {
+        const imageContainers = Array.from(coversDialog.querySelectorAll('.image-container'));
+
+        if (imageContainers.length === 0) return;
+
+        let selectedIndex = 0;
+
+        // Make the container focusable
+        coversDialog.tabIndex = 0;
+        coversDialog.focus();
+
+        // Gallery navigation
+        coversDialog.addEventListener('keydown', (event) => {
+            switch (event.key) {
+            case 'ArrowRight':
+                // Move to the next image container (wrap around if at the end)
+                selectedIndex = (selectedIndex + 1) % imageContainers.length;
+                break;
+            case 'ArrowLeft':
+                // Move to the previous image container (wrap around if at the start)
+                selectedIndex = (selectedIndex - 1 + imageContainers.length) % imageContainers.length;
+                break;
+            case 'Enter':
+                // Handle the 'Enter' key
+                if (document.querySelector('.gallery')) {
+                    imageContainers[selectedIndex].click();
+                }
+                break;
+            case 'Escape':
+                // Handle the 'Escape' key
+                console.log("Escape pressed");
+                break;
+            default:
+                return; // Ignore other keys
+            }
+
+            // Update the selected state
+            imageContainers.forEach((container, index) => {
+                container.classList.toggle('selected', index === selectedIndex);
+            });
+        });
+
+        // Set the first image container as selected by default
+        imageContainers[selectedIndex].classList.add('selected');
+    },
     initGamepad: function() {
         const gamepads = navigator.getGamepads();
         const connected = Array.from(gamepads).some(gamepad => gamepad !== null);
@@ -218,25 +277,24 @@ window.control = {
             console.log('No gamepad connected at startup.');
         }
 
-        // Listen for gamepad connection events
-        window.addEventListener('gamepadconnected', (event) => {
-            console.log('Gamepad connected:', event.gamepad.id);
-            requestAnimationFrame(pollGamepad);
-        });
-
-        window.addEventListener('gamepaddisconnected', (event) => {
-            console.log('Gamepad disconnected:', event.gamepad.id);
-            cancelAnimationFrame(pollGamepad);
-        });
-
-        // Track the state of each button
         const buttonStates = {
-            0: false, // X button
-            1: false, // O button
+            0: false, // Cross button (X)
+            1: false, // Circle button (O)
+            2: false, // Square button
+            3: false, // Triangle button
+            4: false, // L1 button
+            5: false, // R1 button
+            6: false, // L2 button
+            7: false, // R2 button
+            8: false, // Share button
+            9: false, // Options button
+            10: false, // L3 button (Left stick click)
+            11: false, // R3 button (Right stick click)
             12: false, // D-pad up
             13: false, // D-pad down
             14: false, // D-pad left
             15: false, // D-pad right
+            16: false, // PS button (Home button)
         };
 
         // Listen for gamepad connection events
@@ -265,7 +323,7 @@ window.control = {
 
             if (gamepad) {
                 // Check all relevant buttons
-                [0, 1, 12, 13, 14, 15].forEach((buttonIndex) => {
+                [0, 1, 2, 3, 12, 13, 14, 15].forEach((buttonIndex) => {
                     const button = gamepad.buttons[buttonIndex];
                     const wasPressed = buttonStates[buttonIndex];
 
@@ -303,45 +361,49 @@ window.control = {
             });
 
             const slideshow = document.getElementById('slideshow');
+            const gallery = document.getElementById('gallery');
 
             if (isElementVisible(slideshow)) {
                 slideshow.dispatchEvent(event);
             }
-            document.dispatchEvent(event);
+            if (isElementVisible(gallery)) {
+                gallery.dispatchEvent(event);
+            }
         }
 
         function handleButtonPress(buttonIndex) {
-            // Trigger the action only on button release
+
             switch (buttonIndex) {
-            case 0: // X button
-                simulateKeyPress('Enter'); // Simulate "up" arrow key
+            case 0:
+                simulateKeyPress('Enter');
                 ipcRenderer.send('un-focus');
                 const selectedContainer = document.querySelector('.game-container.selected');
                 if (selectedContainer) {
                     selectedContainer.click();
                 }
                 break;
-            case 1: // O button
-                console.log("O button pressed");
-                // Add your O button logic here
-                simulateKeyPress('Escape'); // Simulate "up" arrow key
+            case 1:
+                simulateKeyPress('Escape');
                 break;
-            case 12: // D-pad up
-                // navigateGameContainers('up');
-                simulateKeyPress('ArrowUp'); // Simulate "up" arrow key
+            case 2:
+                // simulateKeyPress('Escape');
+                console.log("2: ");
                 break;
-            case 13: // D-pad down
-                // navigateGameContainers('down');
-                simulateKeyPress('ArrowDown'); // Simulate "down" arrow key
+            case 3:
+                // simulateKeyPress('Escape');
+                console.log("3");
                 break;
-            case 14: // D-pad left
-                simulateKeyPress('ArrowLeft'); // Simulate "left" arrow ke
-                console.log("D-pad left: ");
-                // navigateGameContainers('left');
+            case 12:
+                simulateKeyPress('ArrowUp');
                 break;
-            case 15: // D-pad right
-                // navigateGameContainers('right');
-                simulateKeyPress('ArrowRight'); // Simulate "right" arrow key
+            case 13:
+                simulateKeyPress('ArrowDown');
+                break;
+            case 14:
+                simulateKeyPress('ArrowLeft');
+                break;
+            case 15:
+                simulateKeyPress('ArrowRight');
                 break;
             }
         }

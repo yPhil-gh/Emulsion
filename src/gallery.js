@@ -9,7 +9,9 @@ window.gallery = {
 // If recursive is false, only the top-level directory is scanned.
 // If gamesDir is invalid, it returns an empty array.
 function scanDirectory(gamesDir, extensions, recursive = true) {
-  let files = [];
+    let files = [];
+
+    console.log("gamesDir, extensions: ", gamesDir, extensions);
 
   // Validate the gamesDir argument
   if (!gamesDir || typeof gamesDir !== 'string') {
@@ -21,6 +23,7 @@ function scanDirectory(gamesDir, extensions, recursive = true) {
     const items = fs.readdirSync(gamesDir, { withFileTypes: true });
     for (const item of items) {
       const fullPath = path.join(gamesDir, item.name);
+        console.log("path.extname(item.name).toLowerCase(): ", path.extname(item.name).toLowerCase());
       if (item.isDirectory()) {
         if (recursive) {
           files = files.concat(scanDirectory(fullPath, extensions, recursive));
@@ -40,13 +43,13 @@ function scanDirectory(gamesDir, extensions, recursive = true) {
 // Build the gallery for a specific platform
 function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) {
     const galleryContainer = document.createElement('div');
-    galleryContainer.id = `${platform}-gallery`;
+    galleryContainer.id = `gallery`;
     galleryContainer.classList.add('gallery');
 
     // Define valid extensions for the platform
     const extensionsArrays = {
-        gamecube:['.iso', '.ciso'],
-        amiga:['.adf']
+        gamecube:[".iso", ".ciso"],
+        amiga:[".lha", ".adf"]
     };
 
     const extensions = extensionsArrays[platform];
@@ -82,6 +85,11 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
             ipcRenderer.send('run-command', event.target.dataset.command); // Send the command to the main process
         });
 
+
+        // Create the image container
+        const imgContainer = document.createElement('div');
+        imgContainer.classList.add('image-container');
+
         // Create the image element
         const imgElement = document.createElement('img');
         imgElement.src = fs.existsSync(coverImagePath) ? coverImagePath : missingImagePath;
@@ -91,6 +99,7 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
         const nameElement = document.createElement('p');
         nameElement.textContent = `${fileNameWithoutExt}`;
+        nameElement.classList.add('game-name');
 
         // Create the fetch cover button
         const fetchCoverButton = document.createElement('button');
@@ -101,6 +110,9 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
         fetchCoverButton.setAttribute('data-image-status', fs.existsSync(coverImagePath) ? 'found' : 'missing');
 
         fetchCoverButton.addEventListener('click', async (event) => {
+
+            fetchCoverButton.classList.add('rotate');
+
             event.stopPropagation();
             const gameName = event.target.getAttribute('data-game');
             const platform = event.target.getAttribute('data-platform');
@@ -149,32 +161,51 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
                 // Show the dialog
                 coversDialog.showModal();
 
-                document.querySelector('.image-container').click();
-                document.querySelector('.image-container').click();
+                window.control.initCoversDialogNav(coversDialog);
 
                 // const focusableElements = coversDialog.querySelectorAll(
                 //     'button, div, [tabindex]:not([tabindex="-1"])'
                 // );
 
-                coversDialog.addEventListener('keydown', () => {
-                    console.log('Dialog was closed');
-                });
+
+                window.coverDownloader.searchGame(gameName, platform)
+                    .then((details) => {
+
+                        console.log("details: ", details);
+
+                        // If there are multiple images, display them in the dialog
+                        if (details.imgSrcArray.length > 1 && !isBatch) {
+                            showImageDialog(details.imgSrcArray, gameName);
+                        } else {
+                            // If there's only one image (or menu/fetch covers), download it directly
+                            return downloadAndReload(details.imgSrcArray[0], gameName);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error!!!', error.message);
+                        // alert(error.message);
+                    })
+                    .finally(() => {
+                        // Remove the rotation class when the operation is complete
+                        button.classList.remove('rotate');
+                    });
+
 
                 // Handle the "Select" button click
                 selectButton.addEventListener('click', () => {
                     if (selectedImageUrl) {
                         console.log('Selected Image URL:', selectedImageUrl);
 
-                        // dialog.close(); // Close the dialog after selection
+                        dialog.close(); // Close the dialog after selection
 
-                        // // Download the selected image and reload
-                        // downloadAndReload(selectedImageUrl, gameName)
-                        //     .then(() => {
-                        //         console.log('Selected image downloaded and reloaded!');
-                        //     })
-                        //     .catch((error) => {
-                        //         console.error('Error:', error.message);
-                        //     });
+                        // Download the selected image and reload
+                        downloadAndReload(selectedImageUrl, gameName)
+                            .then(() => {
+                                console.log('Selected image downloaded and reloaded!');
+                            })
+                            .catch((error) => {
+                                console.error('Error:', error.message);
+                            });
                     } else {
                         alert('Please select an image before pressing "Select".');
                     }
@@ -186,47 +217,49 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
                 });
             }
 
-            fetchCoverButton.classList.add('rotate');
+            function downloadAndReload(imageUrl, gameName) {
+                return window.coverDownloader.downloadImage(imageUrl, gameName, platform)
+                    .then(() => {
+                        window.coverDownloader.reloadImage(imgElement, path.join(userDataPath, "covers", platform, `${gameName}.jpg`));
+                        window.control.showStatus(`Downloaded cover: ${gameName} (${platform})`);
+                    })
+                    .catch((error) => {
+                        console.error('Error downloading image:', error.message);
+                    });
+            }
+
 
             const isBatch = false;
 
-            try {
-                const { imgSrcArray } = await window.coverDownloader.searchGame(gameName, platform);
+            await window.coverDownloader.searchGame(gameName, platform)
+                .then((details) => {
 
-                if (imgSrcArray.length > 1 && !isBatch) {
-                    showImageDialog(imgSrcArray, gameName);
-                } else if (imgSrcArray && imgSrcArray.length > 0) {
-                    // If there's only one image (or menu/fetch covers), download it directly
-                    const coverPath = await window.coverDownloader.downloadCover(imgSrcArray[0], gameName, platform);
-                    window.coverDownloader.reloadImage(imgElement, coverPath);
-                    fetchCoverButton.setAttribute('data-image-status', 'found');
-                }
+                    // If there are multiple images, display them in the dialog
+                    if (details.imgSrcArray.length > 1 && !isBatch) {
+                        showImageDialog(details.imgSrcArray, gameName);
+                    } else {
+                        // If there's only one image (or menu/fetch covers), download it directly
+                        return downloadAndReload(details.imgSrcArray[0], gameName);
+                    }
+                })
+                .catch((error) => {
+                    // console.error('Error:', error.message);
+                    window.control.showStatus(`Cover not found: ${gameName} (${platform})`);
+                    // alert("plop: " + error.message);
+                })
+                .finally(() => {
+                    fetchCoverButton.classList.remove('rotate');
+                });
 
-                // if (imgSrcArray && imgSrcArray.length > 0) {
-                //     const coverPath = await window.coverDownloader.downloadCover(imgSrcArray[0], gameName, platform);
-                //     window.coverDownloader.reloadImage(imgElement, coverPath);
-                //     fetchCoverButton.setAttribute('data-image-status', 'found');
-                // }
-            } catch (error) {
-                console.error('Error fetching cover:', error);
-            } finally {
-                fetchCoverButton.classList.remove('rotate');
-            }
         });
 
-        // Append elements to the game container
-        gameContainer.appendChild(imgElement);
+        imgContainer.appendChild(imgElement);
+        imgContainer.appendChild(fetchCoverButton);
+        gameContainer.appendChild(imgContainer);
         gameContainer.appendChild(nameElement);
-        gameContainer.appendChild(fetchCoverButton);
-
-        // Append the game container to the gallery
         galleryContainer.appendChild(gameContainer);
     });
 
-    // Append the gallery to the body
     document.body.appendChild(galleryContainer);
-
-    // Initialize navigation for the gallery
-    // initializeGalleryNavigation(galleryContainer);
-    window.control.initNav(galleryContainer);
+    window.control.initGalleryNav(galleryContainer);
 }

@@ -38,6 +38,10 @@ div:focus {
   outline: none;
 }
 
+#imageDialog:focus {
+  outline: none;
+}
+
 .slide.active {
   opacity: 1; /* Fully visible */
 outline: none;  transform: translateX(0) scale(1);
@@ -182,12 +186,12 @@ input.emulator-args {
 /* Game Container */
 .game-container {
   position: relative;
-  width: 100%; /* Take up full width of the grid cell */
-  height: 100%; /* Fixed height */
+  /* width: 100%; /\* Take up full width of the grid cell *\/ */
+  /* height: 100%; /\* Fixed height *\/ */
   min-width: 150px; /* Minimum width */
-  min-height: 150px;
-  max-width: 250px; /* Maximum width */
-  max-height: 250px; /* Maximum height */
+  /* min-height: 150px; */
+  /* max-width: 250px; /\* Maximum width *\/ */
+  /* max-height: 250px; /\* Maximum height *\/ */
   border-radius: 16px;
   overflow: hidden;
   border: 2px solid transparent;
@@ -212,8 +216,12 @@ input.emulator-args {
   margin-top: 8px;
   font-size: 14px;
   text-align: center;
-  color: var(--text-color);
+  color: #d5daeb;
 }
+
+/* .game-container p { */
+/*   display:none; */
+/* } */
 
 /* Fetch Cover Button */
 .fetch-cover-button {
@@ -260,10 +268,6 @@ input.emulator-args {
   animation: rotate 1s linear infinite;
 }
 
-.game-container:hover .round-button {
-  opacity: 1;
-}
-
 dialog {
   width: 80%;
   max-width: 800px;
@@ -290,10 +294,10 @@ dialog::backdrop {
 }
 
 .image-container {
-  cursor: pointer;
-  border: 2px solid #ddd;
-  border-radius: 5px;
-  overflow: hidden;
+  /* cursor: pointer; */
+  /* border: 2px solid #ddd; */
+  /* border-radius: 5px; */
+  /* overflow: hidden; */
   transition: border-color 0.3s ease;
 }
 
@@ -327,8 +331,7 @@ dialog::backdrop {
   background-color: #0056b3;
 }
 
-/* Status Bar container */
-#statusBar {
+.bar {
   position: fixed;
   bottom: 0;
   right: 0;
@@ -337,11 +340,12 @@ dialog::backdrop {
   gap: 10px;
   background: #222;
   padding: 10px;
-  border-radius: 8px;
+  border-radius: 8px 0 0 0;
   /* Initially hidden off-screen. Default: slide up (translateY) */
   transform: translateY(100%);
   transition: transform 0.5s ease-in-out;
   z-index: 1000;
+  color: green;
 }
 
 /* Style for each status item (icon and label) */
@@ -350,7 +354,6 @@ dialog::backdrop {
   flex-direction: row;
   align-items: center;
   gap: 5px;
-  color: green;
   font-size: 14px;
 }
 
@@ -361,7 +364,7 @@ dialog::backdrop {
 }
 
 /* When sliding from the right (if using "left" direction), we might override transform */
-#statusBar.slide-left {
+.bar.slide-left {
   transform: translateX(100%);
   transition: transform 0.5s ease-in-out;
 }

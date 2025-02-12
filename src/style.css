@@ -52,20 +52,20 @@ body {
   transform: translateZ(0) scale(1);
   z-index: 2;
   /* box-shadow: 0 8px 24px rgba(0, 123, 255, 0.4); */
-  filter: drop-shadow(0 0 4px rgba(var(--glow-color), 0.8)); /* Cool blue glow */
+  filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8)); /* Cool blue glow */
   animation: pulse-glow 2s infinite ease-in-out; /* Slow pulsing animation */
 
 }
 
 @keyframes pulse-glow {
   0% {
-    filter: drop-shadow(0 0 4px rgba(var(--glow-color), 0.8)); /* Initial glow */
+    filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8)); /* Initial glow */
   }
   50% {
-    filter: drop-shadow(0 0 8px rgba(var(--glow-color), 1)); /* Stronger glow */
+    filter: drop-shadow(0 0 4px rgba(var(--glow-color), 1)); /* Stronger glow */
   }
   100% {
-    filter: drop-shadow(0 0 4px rgba(var(--glow-color), 0.8)); /* Back to initial glow */
+    filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8)); /* Back to initial glow */
   }
 }
 
@@ -76,11 +76,103 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.platform-form {
-  margin: 10px;
-  bottom: 20px;
-  left: 50%;
+/* CAROUSEL FORM */
+.slide-form-container {
+  width: 100%; /* Take up full width */
+  border-radius: 0 0 16px 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+input::placeholder {
+  color: greenyellow; /* Light gray color */
+  font-size: 18px; /* Smaller font size */
+  font-weight: bold; /* Bold text */
+}
+
+.input-group {
+  display: grid; /* Use CSS Grid for precise control */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.3fr) auto; /* emulator, emulator-args, browse button */
+  gap: 10px; /* Space between items */
+  align-items: center; /* Align items vertically */
+}
+
+.input-group input {
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgb(0 0 0 / 61%);
+  color: greenyellow;
+  font-size: 18px;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.input-group input:focus {
+  color: #000;
+  border-color: green;
+  background: rgba(255, 255, 255, 0.2);
+  outline: none;
+}
+
+/* Ensure emulator-args is at least 30% the size of its left sibling */
+.input-group input.emulator-args {
+  min-width: 30px; /* Minimum width to prevent it from becoming too small */
+}
+
+/* Ensure emulator-args is at least 30% the size of its left sibling */
+.input-group input.emulator {
+  max-width: 50px; /* Minimum width to prevent it from becoming too small */
+}
+
+.input-group button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #007bff;
   color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.input-group button:hover {
+  background: #005bb5;
+  transform: translateY(-2px);
+}
+
+.input-group button:active {
+  transform: translateY(0);
+}
+
+.save-button {
+  width: 100%;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #007bff;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.save-button:hover {
+  background: #005bb5;
+  transform: translateY(-2px);
+}
+
+.save-button:active {
+  transform: translateY(0);
 }
 
 .slide-content {
@@ -348,6 +440,7 @@ dialog::backdrop {
   right: 0;
   display: flex;
   flex-direction: row;
+  align-items: center; /* Vertically center the text and icon */
   gap: 10px;
   background: #222;
   padding: 10px;
@@ -365,6 +458,17 @@ dialog::backdrop {
   align-items: center;
   gap: 5px;
   font-size: 14px;
+}
+
+#status-span {
+  flex: 1; /* Allow the text to take up remaining space */
+    align-items: center; /* Vertically center the text */
+  text-align: center; /* Center the text horizontally */
+}
+
+.bar img {
+  width: 30px; /* Set the icon size */
+  height: 30px; /* Set the icon size */
 }
 
 .status-item img {

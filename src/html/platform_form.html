@@ -1,17 +1,32 @@
 <!-- /src/html/platform_form.html -->
 <form id="platform-form" class="platform-form">
-  <div class="form-group">
-    <div class="input-group">
-      <input type="text" id="games-dir">
-      <button type="button" class="browse-button-dir" data-input="games-dir">Browse</button>
+    <div class="form-group">
+        <div class="input-group">
+            <input
+                type="text"
+                title="Select your games directory"
+                id="games-dir">
+            <button
+                type="button"
+                class="browse-button-dir"
+                data-input="games-dir">Browse</button>
+        </div>
     </div>
-  </div>
-  <div class="form-group">
-    <div class="input-group">
-      <input type="text" id="emulator">
-      <input type="text" id="emulator-args">
-      <button type="button" class="browse-button-file" data-input="emulator">Browse</button>
+
+    <div class="form-group">
+        <div class="input-group">
+            <input
+                type="text"
+                title="Select your emulator (file or program name)"
+                id="emulator">
+            <input
+                type="text"
+                title="Important: The arguments to your emulator."
+                id="emulator-args">
+            <button type="button" class="browse-button-file" data-input="emulator">Browse</button>
+        </div>
     </div>
-  </div>
-  <button type="button" class="save-button">Save</button>
+    <button
+        type="button"
+        class="save-button">Save</button>
 </form>

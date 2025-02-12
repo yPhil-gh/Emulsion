@@ -26,7 +26,9 @@ function showStatus(message) {
     const statusBar = document.getElementById("status-bar");
     if (!statusBar) return;
 
-    statusBar.textContent = message;
+    const statusSpan = document.getElementById("status-span");
+
+    statusSpan.textContent = message;
 
     statusBar.style.transform = "translateY(0)";
 

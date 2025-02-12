@@ -110,7 +110,8 @@ Promise.all([
 function initPlatformPrefs() {
     // Platform form logic
     document.querySelectorAll('.browse-button-dir').forEach(button => {
-        button.addEventListener('click', async () => {
+        button.addEventListener('click', async (event) => {
+            event.stopPropagation();
             const platform = button.getAttribute('data-platform');
             const inputId = button.getAttribute('data-input');
             const inputElement = document.getElementById(inputId);
@@ -123,7 +124,8 @@ function initPlatformPrefs() {
     });
 
     document.querySelectorAll('.browse-button-file').forEach(button => {
-        button.addEventListener('click', async () => {
+        button.addEventListener('click', async (event) => {
+            event.stopPropagation();
             const platform = button.getAttribute('data-platform');
             const inputId = button.getAttribute('data-input');
             const inputElement = document.getElementById(inputId);
@@ -136,7 +138,8 @@ function initPlatformPrefs() {
     });
 
     document.querySelectorAll('.save-button').forEach(button => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', (event) => {
+            event.stopPropagation();
             const platform = button.getAttribute('data-platform');
             const gamesDir = document.getElementById(`${platform}-games-dir`).value;
             const emulator = document.getElementById(`${platform}-emulator`).value;
@@ -150,7 +153,8 @@ function initPlatformPrefs() {
             const preferences = { gamesDir, emulator, emulatorArgs };
             localStorage.setItem(platform, JSON.stringify(preferences));
 
-            alert('Preferences saved!');
+            // alert('Preferences saved!');
+            window.control.showStatus("Preferences saved!");
 
             const parentForm = button.closest('.platform-form');
             if (parentForm) {

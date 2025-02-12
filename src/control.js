@@ -212,7 +212,11 @@ window.control = {
             // Ensure the slideshow is visible
             const slideshow = document.getElementById('slideshow');
             if (slideshow) {
-                slideshow.style.display = 'block';
+
+                slideshow.style.justifyContent = 'center';
+                slideshow.style.alignItems = 'center';
+
+                slideshow.style.display = 'flex';
                 slideshow.focus();
                 console.log("Slideshow is now visible.");
                 ipcRenderer.send('change-window-title', "EmumE - Select a Platform");

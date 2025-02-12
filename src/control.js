@@ -36,6 +36,32 @@ function showStatus(message) {
     }, 6000);
 }
 
+function simulateKeyPress(key) {
+
+    function isElementVisible(el) {
+        if (!el) return false;
+        const style = window.getComputedStyle(el);
+        return style.display !== 'none' && style.visibility !== 'hidden' && parseFloat(style.opacity) > 0;
+    }
+
+    console.log("simulateKeyPress: ");
+    const event = new KeyboardEvent('keydown', {
+        key: key, // The value of the key (e.g., "ArrowUp", "Escape")
+        code: key === 'Escape' ? 'Escape' : `Arrow${key.slice(5)}`, // Handle Escape and arrow keys
+        bubbles: true,
+    });
+
+    const slideshow = document.getElementById('slideshow');
+    const gallery = document.getElementById('gallery');
+
+    if (isElementVisible(slideshow)) {
+        slideshow.dispatchEvent(event);
+    }
+    if (isElementVisible(gallery)) {
+        gallery.dispatchEvent(event);
+    }
+}
+
 window.control = {
     showStatus: showStatus,
     showHelp: showHelp,
@@ -93,6 +119,7 @@ window.control = {
                     currentIndex = index; // Set the clicked slide as the current slide
                     updateCarousel();
                 } else if (slide.classList.contains('active')) {
+                    simulateKeyPress('Enter');
                     console.log('Selected slide clicked:', slide.textContent.trim()); // Log the selected slide
                 }
             });
@@ -378,32 +405,6 @@ window.control = {
 
             // Continue polling
             animationFrameId = requestAnimationFrame(pollGamepad);
-        }
-
-        function simulateKeyPress(key) {
-
-            function isElementVisible(el) {
-                if (!el) return false;
-                const style = window.getComputedStyle(el);
-                return style.display !== 'none' && style.visibility !== 'hidden' && parseFloat(style.opacity) > 0;
-            }
-
-            console.log("simulateKeyPress: ");
-            const event = new KeyboardEvent('keydown', {
-                key: key, // The value of the key (e.g., "ArrowUp", "Escape")
-                code: key === 'Escape' ? 'Escape' : `Arrow${key.slice(5)}`, // Handle Escape and arrow keys
-                bubbles: true,
-            });
-
-            const slideshow = document.getElementById('slideshow');
-            const gallery = document.getElementById('gallery');
-
-            if (isElementVisible(slideshow)) {
-                slideshow.dispatchEvent(event);
-            }
-            if (isElementVisible(gallery)) {
-                gallery.dispatchEvent(event);
-            }
         }
 
         function handleButtonPress(buttonIndex) {

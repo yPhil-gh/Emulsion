@@ -76,28 +76,11 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* .slide:hover { */
-/*   opacity: 0.9; */
-/*   border-color: rgba(0, 123, 255, 0.7); */
-/*   box-shadow: 0 8px 24px rgba(0, 123, 255, 0.3); */
-/* } */
-
 .platform-form {
-  /* position: absolute; */
   margin: 10px;
   bottom: 20px;
   left: 50%;
-  /* transform: translateX(-50%); */
-  /* background: rgba(0, 0, 0, 0.9); */
-  /* padding: 10px; */
   color: white;
-  /* text-align: center; */
-  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); */
-  /* backdrop-filter: blur(8px); */
-  /* border: 1px solid rgba(255, 255, 255, 0.1); */
-  /* border-radius: 16px; */
-  /* width: 100%; */
-  /* max-width: 400px; */
 }
 
 .slide-content {
@@ -109,14 +92,10 @@ body {
   align-items: center; /* Center horizontally */
 }
 
+/* CAROUSEL FORM */
 .slide-form-container {
   width: 100%; /* Take up full width */
-  /* padding: 20px; /\* Add some padding *\/ */
-  /* border: 1px solid rgba(0, 0, 0, 0.8); */
   border-radius: 0 0 16px 16px;
-  /* background: rgba(0, 0, 0, 0.8); /\* Semi-transparent black background *\/ */
-  /* border-top: 1px solid rgba(255, 255, 255, 0.1); /\* Add a subtle border *\/ */
-  /* backdrop-filter: blur(8px); /\* Add a blur effect *\/ */
 }
 
 .form-group {
@@ -144,18 +123,18 @@ input::placeholder {
 
 .input-group input {
   flex: 1;
-  padding: 10px;
+  padding: 4px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
   background: rgb(0 0 0 / 61%);
-  color: greenyellow; /* Light gray color */
-  /* font-style: bolder; /\* Italic text *\/ */
-
+  color: greenyellow;
+  font-size: 18px;
   transition: border-color 0.3s ease, background 0.3s ease;
 }
 
 .input-group input:focus {
-  border-color: #007bff;
+  color: #000;
+  border-color: green;
   background: rgba(255, 255, 255, 0.2);
   outline: none;
 }

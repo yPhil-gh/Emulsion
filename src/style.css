@@ -5,7 +5,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh; /* Use min-height to allow content to grow */
   font-family: sans-serif;
   overflow: hidden;
   perspective: 600px; /* Add perspective for 3D effect */
@@ -26,7 +26,6 @@ body {
 #gallery:focus {
   outline: none;
 }
-
 
 :root {
   --glow-color: 225, 117, 100; /* Define RGB values */
@@ -102,13 +101,12 @@ input::placeholder {
 }
 
 .input-group {
-  display: grid; /* Use CSS Grid for precise control */
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0.3fr) auto; /* emulator, emulator-args, browse button */
-  gap: 10px; /* Space between items */
-  align-items: center; /* Align items vertically */
+  display: flex;
+  gap: 10px;
 }
 
 .input-group input {
+  flex: 1;
   padding: 4px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
@@ -125,14 +123,12 @@ input::placeholder {
   outline: none;
 }
 
-/* Ensure emulator-args is at least 30% the size of its left sibling */
 .input-group input.emulator-args {
-  min-width: 30px; /* Minimum width to prevent it from becoming too small */
+  min-width: 30px;
 }
 
-/* Ensure emulator-args is at least 30% the size of its left sibling */
 .input-group input.emulator {
-  max-width: 50px; /* Minimum width to prevent it from becoming too small */
+  max-width: 50px;
 }
 
 .input-group button {
@@ -183,98 +179,6 @@ input::placeholder {
   flex-direction: column;
   justify-content: flex-end; /* Align content to the bottom */
   align-items: center; /* Center horizontally */
-}
-
-/* CAROUSEL FORM */
-.slide-form-container {
-  width: 100%; /* Take up full width */
-  border-radius: 0 0 16px 16px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  margin-bottom: 5px;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-input::placeholder {
-  color: greenyellow; /* Light gray color */
-  font-size: 18px; /* Smaller font size */
-  font-style: bolder; /* Italic text */
-}
-
-.input-group {
-  display: flex;
-  gap: 10px;
-}
-
-.input-group input {
-  flex: 1;
-  padding: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  background: rgb(0 0 0 / 61%);
-  color: greenyellow;
-  font-size: 18px;
-  transition: border-color 0.3s ease, background 0.3s ease;
-}
-
-.input-group input:focus {
-  color: #000;
-  border-color: green;
-  background: rgba(255, 255, 255, 0.2);
-  outline: none;
-}
-
-input.emulator-args {
-  min-width: 28px;
-}
-
-.input-group button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  background: #007bff;
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.3s ease;
-}
-
-.input-group button:hover {
-  background: #005bb5;
-  transform: translateY(-2px);
-}
-
-.input-group button:active {
-  transform: translateY(0);
-}
-
-.save-button {
-  width: 100%;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  background: #007bff;
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.3s ease;
-}
-
-.save-button:hover {
-  background: #005bb5;
-  transform: translateY(-2px);
-}
-
-.save-button:active {
-  transform: translateY(0);
 }
 
 /* GALLERY */
@@ -382,7 +286,6 @@ input.emulator-args {
   opacity: 1;
 }
 
-
 @keyframes rotate {
   from {
     transform: translate(-50%, -50%) rotate(0deg);
@@ -435,10 +338,11 @@ dialog::backdrop {
   background-color: #0056b3;
 }
 
+
 .bar {
-  position: fixed;
-  bottom: 0;
-  right: 0;
+  position: fixed; /* Fixed positioning relative to the viewport */
+  bottom: 0; /* Stick to the bottom of the viewport */
+  right: 0; /* Stick to the right of the viewport */
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -446,11 +350,14 @@ dialog::backdrop {
   background: #222;
   padding: 10px;
   border-radius: 8px 0 0 0;
-  /* Initially hidden off-screen. Default: slide up (translateY) */
-  transform: translateY(100%);
-  transition: transform 0.5s ease-in-out;
-  z-index: 1000;
+  transform: translateY(100%); /* Initially hidden off-screen */
+  transition: transform 0.5s ease-in-out; /* Smooth transition */
+  z-index: 1000; /* Ensure it stays on top of other elements */
   color: green;
+}
+
+#status-bar {
+  display: none;
 }
 
 .status-item {
@@ -479,4 +386,17 @@ dialog::backdrop {
 .bar.slide-left {
   transform: translateX(100%);
   transition: transform 0.5s ease-in-out;
+}
+
+#footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.8); /* semi-transparent black */
+  color: #fff;
+  text-align: center;
+  padding: 10px 0;
+  font-size: 14px;
+  z-index: 9999;
 }

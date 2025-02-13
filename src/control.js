@@ -220,6 +220,7 @@ window.control = {
                 // slideshow.style.alignItems = 'center';
 
                 slideshow.style.display = 'flex';
+                document.body.style.perspective = "600px";
                 slideshow.focus();
                 console.log("Slideshow is now visible.");
                 ipcRenderer.send('change-window-title', "EmumE - Select a Platform");

@@ -261,6 +261,7 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
         galleryContainer.appendChild(gameContainer);
     });
 
+    document.body.style.perspective = "unset";
     document.body.appendChild(galleryContainer);
     window.control.initGalleryNav(galleryContainer);
 }

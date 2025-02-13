@@ -78,6 +78,7 @@ body {
 
 /* CAROUSEL FORM */
 .slide-form-container {
+  display: none;
   width: 100%; /* Take up full width */
   border-radius: 0 0 16px 16px;
 }
@@ -440,7 +441,7 @@ dialog::backdrop {
   right: 0;
   display: flex;
   flex-direction: row;
-  align-items: center; /* Vertically center the text and icon */
+  align-items: center;
   gap: 10px;
   background: #222;
   padding: 10px;
@@ -467,8 +468,7 @@ dialog::backdrop {
 }
 
 .bar img {
-  width: 30px; /* Set the icon size */
-  height: 30px; /* Set the icon size */
+  width: 30px;
 }
 
 .status-item img {

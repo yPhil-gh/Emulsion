@@ -48,8 +48,8 @@ function simulateKeyPress(key) {
 
     console.log("simulateKeyPress: ");
     const event = new KeyboardEvent('keydown', {
-        key: key, // The value of the key (e.g., "ArrowUp", "Escape")
-        code: key === 'Escape' ? 'Escape' : `Arrow${key.slice(5)}`, // Handle Escape and arrow keys
+        key: key,
+        code: key === 'Escape' ? 'Escape' : `Arrow${key.slice(5)}`,
         bubbles: true,
     });
 
@@ -70,17 +70,17 @@ window.control = {
     initSlideShow: function (slideshow) {
         const slides = Array.from(slideshow.querySelectorAll('.slide'));
         const totalSlides = slides.length;
-        const radius = 500; // Radius of the carousel
+        const radius = 500;
         let currentIndex = 0;
 
-        // Function to update the carousel
+
         function updateCarousel() {
-            const angleIncrement = 360 / totalSlides; // Angle between each slide
+            const angleIncrement = 360 / totalSlides;
 
             slides.forEach((slide, index) => {
                 const angle = angleIncrement * (index - currentIndex);
-                slide.style.setProperty('--angle', angle); // Set rotation angle
-                slide.style.setProperty('--radius', radius); // Set distance from center
+                slide.style.setProperty('--angle', angle);
+                slide.style.setProperty('--radius', radius);
 
                 if (index === currentIndex) {
                     slide.classList.add('active');
@@ -92,25 +92,31 @@ window.control = {
             });
         }
 
-        // Function to move to the next slide
+        function showForm(slide) {
+            const isRunnable = slide.classList.contains('runnable');
+            const form = slides[currentIndex].querySelector('.slide-form-container');
+            if (!isRunnable) {
+                form.style.display = 'block';
+            }
+        }
+
         function nextSlide() {
             currentIndex = (currentIndex + 1) % totalSlides;
             updateCarousel();
+            showForm(slides[currentIndex]);
         }
 
-        // Function to move to the previous slide
         function prevSlide() {
             currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
             updateCarousel();
         }
 
-        // Mousewheel rotation
         slideshow.addEventListener('wheel', (event) => {
             event.preventDefault(); // Prevent default scrolling behavior
             if (event.deltaY > 0) {
-                nextSlide(); // Scroll down -> next slide
+                nextSlide();
             } else if (event.deltaY < 0) {
-                prevSlide(); // Scroll up -> previous slide
+                prevSlide();
             }
         });
 
@@ -127,6 +133,13 @@ window.control = {
             });
         });
 
+        async function showExitDialog() {
+            const response = await ipcRenderer.invoke('show-quit-dialog');
+            if (response === 'yes') {
+                ipcRenderer.send('quit');
+            }
+        }
+
         // Keyboard navigation
         slideshow.addEventListener('keydown', (event) => {
             showHelp({ square: "Platform Preferences" });
@@ -134,16 +147,19 @@ window.control = {
                 nextSlide();
             } else if (event.key === 'ArrowLeft') {
                 prevSlide();
-            } else if (event.key === 'i') {
-                console.log("i & I: ", currentIndex);
-                const form = slides[currentIndex].querySelector('.platform-form');
+            } else if (event.key === 'Escape') {
 
-                // Toggle the display between 'block' and 'none'
+                showStatus("Really Exit?");
+                showExitDialog();
+            } else if (event.key === 'i') {
+                const form = slides[currentIndex].querySelector('.slide-form-container');
+
                 if (form.style.display === 'block') {
                     form.style.display = 'none';
                 } else {
                     form.style.display = 'block';
                 }
+
             } else if (event.key === 'Enter') {
                 console.log(`Slide selected via RETURN: ${slides[currentIndex].textContent.trim()}`);
                 console.log('Current slide classList:', slides[currentIndex].classList);
@@ -170,7 +186,6 @@ window.control = {
             }
         });
 
-        // Initialize the carousel
         updateCarousel();
     },
     initGalleryNav: function(galleryContainer) {
@@ -236,24 +251,15 @@ window.control = {
                 selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
                 break;
             case 'ArrowDown':
-                console.log("ArrowDown selectedIndex Before: ", selectedIndex);
                 selectedIndex = Math.min(selectedIndex + columns, gameContainers.length);
-                console.log("ArrowDown selectedIndex After: ", selectedIndex);
                 break;
             case 'ArrowUp':
-                console.log("ArrowUp selectedIndex Before: ", selectedIndex);
                 selectedIndex = Math.max(selectedIndex - columns, 0);
-                console.log("ArrowUp selectedIndex After: ", selectedIndex);
                 break;
             case 'i':
-                console.log("I!");
-                const plop = gameContainers[selectedIndex].classList;
-                const pElement = gameContainers[selectedIndex].querySelector('p');
                 const fetchCoverButton = gameContainers[selectedIndex].querySelector('button');
 
                 fetchCoverButton.click();
-
-                console.log("pElement: ", pElement);
                 break;
             case 'Enter':
                 if (document.querySelector('.gallery')) {
@@ -261,7 +267,6 @@ window.control = {
                 }
                 break;
             case 'Escape':
-                console.log("Escape pressed");
                 removeGalleryAndShowSlideshow();
                 break;
             default:

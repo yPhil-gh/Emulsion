@@ -12,7 +12,9 @@ async function searchGame(gameName, platform) {
         backend = exotica;
         break;
     case 'gamecube':
+        backend = uvlist;
     case 'dreamcast':
+        backend = uvlist;
     default:
         backend = uvlist;
         break;

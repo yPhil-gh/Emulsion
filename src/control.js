@@ -109,6 +109,7 @@ window.control = {
         function prevSlide() {
             currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
             updateCarousel();
+            showForm(slides[currentIndex]);
         }
 
         slideshow.addEventListener('wheel', (event) => {
@@ -179,7 +180,7 @@ window.control = {
                         .then(({ userDataPath }) => {
                             window.userDataPath = userDataPath;
                             if (!document.querySelector('.gallery')) {
-                                gallery.buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath);
+                                window.gallery.buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath);
                             }
                         });
                 }

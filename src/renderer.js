@@ -10,6 +10,7 @@ Promise.all([
         .then(response => response.text())
 ])
     .then(([platforms, formTemplate]) => {
+        window.platforms = platforms;
         platforms.forEach((platform) => {
             // Create the slide container
             const slide = document.createElement("div");
@@ -84,11 +85,11 @@ Promise.all([
             // Append the form to the content
             content.appendChild(form);
 
-            // if (prefString) {
-            //     // Hide the form if preferences exist.
-            //     platformForm.style.display = 'none';
-            //     // platformForm.style.pointerEvents = 'none';
-            // }
+            if (prefString) {
+                // Hide the form if preferences exist.
+                platformForm.style.display = 'none';
+                // platformForm.style.pointerEvents = 'none';
+            }
 
             // Append the content to the slide
             slide.appendChild(content);

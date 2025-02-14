@@ -6,6 +6,9 @@
         <link rel="stylesheet" href="src/style.css">
     </head>
     <body>
+        <header id="platform-menu" class="menu">
+            platforms menu
+        </header>
 
         <div id="slideshow" tabindex="0"></div>
 
@@ -17,13 +20,13 @@
             </div>
         </dialog>
 
-        <div id="help-bar" class="bar">
+        <footer id="controls-menu" class="menu">
             <div id="dpad" class="status-item">
                 <img src="./img/controls/dpad-active.png" alt="Icon 1">
                 <span>Browse</span>
             </div>
-            <div class="status-item">
-                <img id="cross" src="./img/controls/button-cross.png" alt="Icon 2">
+            <div id="cross" class="status-item">
+                <img src="./img/controls/button-cross.png" alt="Icon 2">
                 <span>Select</span>
             </div>
             <div id="square" class="status-item">
@@ -34,20 +37,13 @@
                 <img src="./img/controls/button-circle.png" alt="Icon 2">
                 <span id="circle-span">Exit</span>
             </div>
-        </div>
-
-        <div id="status-bar" class="bar">
-            <span id="status-span"></span>
-            <img src="./img/emume.png" alt="Emume">
-        </div>
-
-        <footer id="footer">
-            <p>© 2025 My Website. All rights reserved.</p>
+            <span id="message"></span>
         </footer>
 
         <script src="src/control.js"></script>
         <script src="src/cover_downloader.js"></script>
         <script src="src/gallery.js"></script>
+        <!-- <script src="src/menu.js"></script> -->
         <script src="src/renderer.js"></script>
     </body>
 </html>

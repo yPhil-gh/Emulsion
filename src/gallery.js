@@ -222,7 +222,7 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
                 return window.coverDownloader.downloadImage(imageUrl, gameName, platform)
                     .then(() => {
                         window.coverDownloader.reloadImage(imgElement, path.join(userDataPath, "covers", platform, `${gameName}.jpg`));
-                        window.control.showStatus(`Downloaded cover: ${gameName} (${platform})`);
+                        window.control.updateControlsMenu({message : `OK: ${gameName} (${platform})`});
                     })
                     .catch((error) => {
                         console.error('Error downloading image:', error.message);

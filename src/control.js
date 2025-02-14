@@ -2,20 +2,15 @@ const fs = require('fs');
 const path = require('path');
 const { ipcRenderer } = require('electron');
 
-function showHelp({ pad = "Browse", cross = "Select", square = "Config", circle = "Exit" } = {}) {
-    const helpBar = document.getElementById("help-bar");
-    if (!helpBar) return;
-
+function updatePlatormsMenu({ pad = "Browse", cross = "Select", square = "Config", circle = "Exit" } = {}) {
     const squareSpan = document.getElementById("square-span");
-
     squareSpan.textContent = square;
+}
 
-    helpBar.style.transform = "translateY(0)";
+function updateControlsMenu({ message = "plop" }) {
+    const msgSpan = document.getElementById("message");
 
-    // After 6 seconds, hide the status bar again.
-    setTimeout(() => {
-        helpBar.style.transform = "translateY(100%)";
-    }, 6000);
+    msgSpan.textContent = message;
 }
 
 function showStatus(message) {
@@ -65,14 +60,13 @@ function simulateKeyPress(key) {
 }
 
 window.control = {
+    updateControlsMenu: updateControlsMenu,
     showStatus: showStatus,
-    showHelp: showHelp,
     initSlideShow: function (slideshow) {
         const slides = Array.from(slideshow.querySelectorAll('.slide'));
         const totalSlides = slides.length;
         const radius = 500;
         let currentIndex = 0;
-
 
         function updateCarousel() {
             const angleIncrement = 360 / totalSlides;
@@ -143,14 +137,13 @@ window.control = {
 
         // Keyboard navigation
         slideshow.addEventListener('keydown', (event) => {
-            showHelp({ square: "Platform Preferences" });
             if (event.key === 'ArrowRight') {
                 nextSlide();
             } else if (event.key === 'ArrowLeft') {
                 prevSlide();
             } else if (event.key === 'Escape') {
 
-                showStatus("Really Exit?");
+                updateControlsMenu({message: "Really Exit?"});
                 showExitDialog();
             } else if (event.key === 'i') {
                 const form = slides[currentIndex].querySelector('.slide-form-container');
@@ -203,29 +196,19 @@ window.control = {
         }
 
         function removeGalleryAndShowSlideshow() {
-            // Remove the gallery element (all elements with class "gallery")
+
             const galleryElement = document.querySelector('.gallery');
             if (galleryElement) {
                 galleryElement.remove();
                 console.log("Gallery removed from DOM.");
-            } else {
-                console.log("No gallery element found to remove.");
             }
 
-            // Ensure the slideshow is visible
             const slideshow = document.getElementById('slideshow');
             if (slideshow) {
-
-                // slideshow.style.justifyContent = 'center';
-                // slideshow.style.alignItems = 'center';
-
                 slideshow.style.display = 'flex';
                 document.body.style.perspective = "600px";
                 slideshow.focus();
-                console.log("Slideshow is now visible.");
                 ipcRenderer.send('change-window-title', "EmumE - Select a Platform");
-            } else {
-                console.warn("Slideshow element not found.");
             }
         }
 
@@ -242,8 +225,6 @@ window.control = {
 
         // Gallery nav
         galleryContainer.addEventListener('keydown', (event) => {
-
-            showHelp({ square: "Fetch Game Cover" });
 
             switch (event.key) {
             case 'ArrowRight':

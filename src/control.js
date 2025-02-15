@@ -48,7 +48,7 @@ function simulateKeyPress(key) {
         return style.display !== 'none' && style.visibility !== 'hidden' && parseFloat(style.opacity) > 0;
     }
 
-    console.log("simulateKeyPress: ");
+    console.log("simulateKeyPress: ", key);
     const event = new KeyboardEvent('keydown', {
         key: key,
         code: key === 'Escape' ? 'Escape' : `Arrow${key.slice(5)}`,
@@ -129,8 +129,8 @@ window.control = {
                     currentIndex = index; // Set the clicked slide as the current slide
                     updateCarousel();
                 } else if (slide.classList.contains('active')) {
-                    simulateKeyPress('Enter');
                     console.log('Selected slide clicked:', slide.textContent.trim()); // Log the selected slide
+                    simulateKeyPress('Enter');
                 }
             });
         });
@@ -164,7 +164,7 @@ window.control = {
 
             } else if (event.key === 'Enter') {
 
-                if (slides[currentIndex].classList.contains('runnable')) {
+                if (slides[currentIndex].classList.contains('ready')) {
                     // Hide the slideshow div
                     document.getElementById('slideshow').style.display = 'none';
 

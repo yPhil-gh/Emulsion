@@ -159,7 +159,24 @@ function initPlatformPrefs() {
     ipcRenderer.invoke('get-main-data')
         .then(({ userDataPath }) => {
             window.userDataPath = userDataPath;
+            ipcRenderer.invoke('get-platform-names')
 
+        });
+
+    Promise.all([
+        ipcRenderer.invoke('get-platform-names'),
+        fetch('src/html/platform_form.html')
+            .then(response => response.text())
+    ])
+        .then(([platforms, formTemplate]) => {
+            platforms.forEach((platform) => {
+                console.log("platform: ", platform);
+            });
+
+
+        })
+        .catch(error => {
+            console.error('Failed to load form template:', error);
         });
 
 }

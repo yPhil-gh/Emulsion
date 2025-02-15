@@ -29,8 +29,7 @@ Promise.all([
                 slide.setAttribute('data-games-dir', prefs.gamesDir);
                 slide.setAttribute('data-emulator', prefs.emulator);
                 slide.setAttribute('data-emulator-args', prefs.emulatorArgs);
-
-                slide.classList.add('runnable');
+                slide.classList.add('ready');
             }
 
             // Create the content container
@@ -57,8 +56,6 @@ Promise.all([
 
             gamesDirInput.placeholder = `${capitalizeWord(platform)} Games Directory`;
 
-            console.log("prefs: ", prefs);
-
             const browseDirButton = form.querySelector('.browse-button-dir');
             browseDirButton.setAttribute('data-platform', platform);
             browseDirButton.setAttribute('data-input', `${platform}-games-dir`);
@@ -84,12 +81,6 @@ Promise.all([
 
             // Append the form to the content
             content.appendChild(form);
-
-            if (prefString) {
-                // Hide the form if preferences exist.
-                platformForm.style.display = 'none';
-                // platformForm.style.pointerEvents = 'none';
-            }
 
             // Append the content to the slide
             slide.appendChild(content);
@@ -165,18 +156,10 @@ function initPlatformPrefs() {
         });
     });
 
-    window.addEventListener('load', async () => {
-        platforms.forEach(async platform => {
-            try {
-                const prefString = localStorage.getItem(platform);
-                if (prefString) {
-                    const preferences = JSON.parse(prefString);
-                    document.getElementById(`${platform}-games-dir`).value = preferences.gamesDir;
-                    document.getElementById(`${platform}-emulator`).value = preferences.emulator;
-                }
-            } catch (error) {
-                console.error(`Error loading preferences for ${platform}:`, error);
-            }
+    ipcRenderer.invoke('get-main-data')
+        .then(({ userDataPath }) => {
+            window.userDataPath = userDataPath;
+
         });
-    });
+
 }

@@ -103,6 +103,9 @@ ipcMain.handle('show-quit-dialog', async () => {
             action = "yes";
         } else if (result.response === 1) {
             shell.openExternal('https://yphil.gitlab.io/ext/support.html');
+        } else if (result.response === 2) {
+            action= "cancel";
+            console.log("plop? ");
         }
 
     });

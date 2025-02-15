@@ -8,9 +8,16 @@ function updatePlatormsMenu({ pad = "Browse", cross = "Select", square = "Config
 }
 
 function updateControlsMenu({ message = "plop" }) {
-    const msgSpan = document.getElementById("message");
+    const msgDiv = document.getElementById("message");
+    const msgSpan = document.getElementById("message-span");
 
+    msgDiv.style.visibility = "visible";
     msgSpan.textContent = message;
+
+    setTimeout(() => {
+        msgDiv.style.visibility = "hidden";
+    }, 1000);
+
 }
 
 function showStatus(message) {
@@ -87,9 +94,9 @@ window.control = {
         }
 
         function showForm(slide) {
-            const isRunnable = slide.classList.contains('runnable');
+            const isReady = slide.classList.contains('ready');
             const form = slides[currentIndex].querySelector('.slide-form-container');
-            if (!isRunnable) {
+            if (!isReady) {
                 form.style.display = 'block';
             }
         }
@@ -133,6 +140,7 @@ window.control = {
             if (response === 'yes') {
                 ipcRenderer.send('quit');
             }
+
         }
 
         // Keyboard navigation
@@ -148,21 +156,17 @@ window.control = {
             } else if (event.key === 'i') {
                 const form = slides[currentIndex].querySelector('.slide-form-container');
 
-                if (form.style.display === 'block') {
+                if (form.style.display === 'block' && slides[currentIndex].classList.contains("ready")) {
                     form.style.display = 'none';
                 } else {
                     form.style.display = 'block';
                 }
 
             } else if (event.key === 'Enter') {
-                console.log(`Slide selected via RETURN: ${slides[currentIndex].textContent.trim()}`);
-                console.log('Current slide classList:', slides[currentIndex].classList);
 
                 if (slides[currentIndex].classList.contains('runnable')) {
                     // Hide the slideshow div
                     document.getElementById('slideshow').style.display = 'none';
-                    console.log("platform: ", slides[currentIndex].getAttribute('data-platform'));
-                    console.log("games-dir: ", slides[currentIndex].getAttribute('data-games-dir'));
 
                     const platform = slides[currentIndex].getAttribute('data-platform');
                     const gamesDir = slides[currentIndex].getAttribute('data-games-dir');

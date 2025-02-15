@@ -383,8 +383,30 @@ dialog::backdrop {
 }
 
 
-.menu #message {
-  text-overflow: ellipsis;
+#message {
+  display: flex;
+  /* text-overflow: ellipsis; */
+  margin-left: auto;
+  visibility: hidden;
+  transition: opacity 2s ease, visibility 2s ease; /* Smooth transition */
+}
+
+.fade-out {
+  animation: fadeAway 3s forwards; /* Apply the animation */
+}
+
+@keyframes fadeAway {
+  0% {
+    opacity: 1; /* Start with full opacity */
+  }
+  100% {
+    opacity: 0; /* End with zero opacity */
+  }
+}
+
+.icon {
+  width: 30px;
+  height: 30px;
 }
 
 #platform-menu {
@@ -402,16 +424,4 @@ dialog::backdrop {
   flex-direction: row;
   align-items: center;
   gap: 5px;
-}
-
-
-#status-span {
-  flex: 1; /* Allow the text to take up remaining space */
-  align-items: center; /* Vertically center the text */
-  text-align: center; /* Center the text horizontally */
-}
-
-.status-item img {
-  width: 30px;
-  height: 30px;
 }

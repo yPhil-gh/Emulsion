@@ -170,6 +170,7 @@ window.control = {
                     // Hide the slideshow div
                     document.getElementById('slideshow').style.display = 'none';
                     document.getElementById('galleries').style.display = "block";
+                    document.getElementById('top-menu').style.display = "flex";
 
                     const platform = slides[currentIndex].getAttribute('data-platform');
                     const gamesDir = slides[currentIndex].getAttribute('data-games-dir');
@@ -190,8 +191,8 @@ window.control = {
 
                     window.control.initGalleryNav(galleryToShow);
 
-                    window.control.initMenuNav();
-                    setDisplayedPlatform(platform);
+                    // window.control.initMenuNav();
+                    // setDisplayedPlatform(platform);
                 }
             }
         });
@@ -231,15 +232,53 @@ window.control = {
             }
         };
 
+        const galleries = document.getElementById('galleries');
+
         // Function to handle left arrow click or key press
         const goToPreviousSlide = () => {
             currentIndex = (currentIndex - 1 + slides.length) % slides.length; // Wrap around
+            displayGallery(currentIndex - 1);
             updateSlidePosition();
         };
 
+        function displayGallery(index) {
+
+            const galleries = document.querySelectorAll('.gallery');
+
+            currentIndex = (index) % slides.length; // Wrap around
+
+            galleries.forEach(gallery => {
+                gallery.style.display = "none";
+            });
+
+            const allGalleries = Array.from(galleries);
+
+            const galleryToDisplay = allGalleries[currentIndex];
+
+            galleryToDisplay.style.display = "grid";
+
+        }
+
+
         // Function to handle right arrow click or key press
         const goToNextSlide = () => {
+
+            // const galleries = document.querySelectorAll('.gallery');
+
             currentIndex = (currentIndex + 1) % slides.length; // Wrap around
+
+            displayGallery(currentIndex + 1);
+
+            // galleries.forEach(gallery => {
+            //     gallery.style.display = "none";
+            // });
+
+            // const allGalleries = Array.from(galleries);
+
+            // const galleryToDisplay = allGalleries[currentIndex];
+
+            // galleryToDisplay.style.display = "grid";
+
             updateSlidePosition();
         };
 
@@ -252,10 +291,12 @@ window.control = {
             // Perform another action (e.g., hide the menu or do something else)
             console.log('Menu listeners unregistered. Perform another action here.');
 
-            const gallery = document.getElementById('gallery-amiga');
+            const galleries = document.querySelectorAll('.gallery');
+
+            const visibleGallery = Array.from(galleries).find(el => window.getComputedStyle(el).display !== 'none');
             // window.control.initGalleryNav(gallery);
 
-            gallery.focus();
+            visibleGallery.focus();
 
         };
 
@@ -280,6 +321,9 @@ window.control = {
             case 'ArrowDown':
                 unregisterListeners();
 
+                break;
+            case 'Escape':
+                window.control.removeGalleryAndShowSlideshow();
                 break;
             case 'ArrowUp':
                 // Do nothing
@@ -318,6 +362,20 @@ window.control = {
         // Expose the setDisplayedPlatform function externally
         window.setDisplayedPlatform = setDisplayedPlatform;
     },
+    removeGalleryAndShowSlideshow: function() {
+
+        document.getElementById('galleries').style.display = "none";
+        document.getElementById('top-menu').style.display = "none";
+
+        const slideshow = document.getElementById('slideshow');
+        if (slideshow) {
+            slideshow.style.display = 'flex';
+            document.body.style.perspective = "600px";
+            slideshow.focus();
+            ipcRenderer.send('change-window-title', "EmumE - Select a Platform");
+        }
+
+    },
     initGalleryNav: function(galleryContainer) {
 
         // Function to simulate a key press
@@ -329,20 +387,6 @@ window.control = {
                 bubbles: true,
             });
             document.dispatchEvent(event);
-        }
-
-        function removeGalleryAndShowSlideshow() {
-
-            document.getElementById('galleries').style.display = "none";
-            document.getElementById('top-menu').style.display = "none";
-
-            const slideshow = document.getElementById('slideshow');
-            if (slideshow) {
-                slideshow.style.display = 'flex';
-                document.body.style.perspective = "600px";
-                slideshow.focus();
-                ipcRenderer.send('change-window-title', "EmumE - Select a Platform");
-            }
         }
 
         const gameContainers = Array.from(galleryContainer.querySelectorAll('.game-container'));
@@ -392,7 +436,7 @@ window.control = {
                 }
                 break;
             case 'Escape':
-                removeGalleryAndShowSlideshow();
+                window.control.removeGalleryAndShowSlideshow();
                 break;
             default:
                 return; // Exit if no relevant key is pressed

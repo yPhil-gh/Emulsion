@@ -81,7 +81,7 @@ function buildSlide(platform, formTemplate) {
     return homeSlide;
 }
 
-function buildMenuItem(platform) {
+function buildTopMenuItem(platform) {
 
     const prefString = localStorage.getItem(platform);
 
@@ -99,18 +99,24 @@ function buildMenuItem(platform) {
 
     // Create the slide container
     const menuSlide = document.createElement("div");
-    menuSlide.className = "menu-slide";
+    menuSlide.className = "top-menu-slide";
     // menuSlide.id = platform;
     // menuSlide.style.backgroundImage = `url('img/platforms/${platform}.png')`;
 
-    const menuIcon = document.createElement("img");
-    menuIcon.src = `img/platforms/${platform}.png`;
-    menuIcon.className = "menu-icon";
+    const menuSlideIcon = document.createElement("img");
+    menuSlideIcon.src = `img/platforms/${platform}.png`;
+    menuSlideIcon.className = "menu-icon";
 
     const menuSlideContent = document.createElement("div");
-    menuSlideContent.className = "menu-slide-content";
+    menuSlideContent.className = "top-menu-slide-content";
 
-    menuSlideContent.appendChild(menuIcon);
+    const menuSlideLabel = document.createElement("div");
+    menuSlideLabel.className = "top-menu-slide-label";
+
+    menuSlideLabel.textContent = platform;
+
+    menuSlideContent.appendChild(menuSlideLabel);
+    menuSlideContent.appendChild(menuSlideIcon);
     menuSlide.appendChild(menuSlideContent);
 
     return menuSlide;
@@ -131,11 +137,13 @@ Promise.all([
             });
     })
     .then(({ platforms, formTemplate }) => {
+        document.getElementById("loading").style.display = "none";
+
         window.platforms = platforms;
         platforms.forEach((platform) => {
 
             const homeSlide = buildSlide(platform, formTemplate);
-            const menuItem = buildMenuItem(platform);
+            const menuItem = buildTopMenuItem(platform);
 
             if (menuItem) {
                 window.topMenuItems.appendChild(menuItem);

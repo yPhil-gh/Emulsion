@@ -186,25 +186,89 @@ window.control = {
 
                     galleryToShow.style.display = "grid";
 
-                    window.topMenu.style .visibility = "visible";
+                    window.topMenu.style.visibility = "visible";
 
                     window.control.initGalleryNav(galleryToShow);
 
-                    // ipcRenderer.invoke('get-user-data')
-                    //     .then(({ userDataPath }) => {
-                    //         window.userDataPath = userDataPath;
-                    //         if (!document.querySelector(`#gallery-${platform}`)) {
-                    //             const gallery = window.gallery.buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath);
-                    //             document.body.appendChild(gallery);
-                    //             window.topMenu.style .visibility = "visible";
-                    //         }
-                    //     });
 
                 }
             }
         });
 
         updateCarousel();
+    },
+    initMenuNav: function() {
+        let currentIndex = 0; // Track the current slide index
+
+        // Get references to the slider and items
+        const slider = document.getElementById('top-menu-slider');
+        const items = document.getElementById('top-menu-items');
+        const slides = document.querySelectorAll('.top-menu-slide');
+        const slideWidth = slides[0].offsetWidth; // Width of one slide
+
+        // Function to update the slide position
+        const updateSlidePosition = () => {
+            items.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+        };
+
+        // Function to handle left arrow click or key press
+        const goToPreviousSlide = () => {
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length; // Wrap around
+            updateSlidePosition();
+        };
+
+        // Function to handle right arrow click or key press
+        const goToNextSlide = () => {
+            currentIndex = (currentIndex + 1) % slides.length; // Wrap around
+            updateSlidePosition();
+        };
+
+        // Function to unregister menu listeners and perform another action
+        const unregisterListeners = () => {
+            // Remove event listeners
+            topMenu.removeEventListener('click', handleClick);
+            document.removeEventListener('keydown', handleKeyDown);
+
+            // Perform another action (e.g., hide the menu or do something else)
+            console.log('Menu listeners unregistered. Perform another action here.');
+        };
+
+        // Event handler for clicks (event delegation)
+        const handleClick = (event) => {
+            if (event.target.closest('.left-arrow')) {
+                goToPreviousSlide();
+            } else if (event.target.closest('.right-arrow')) {
+                goToNextSlide();
+            }
+        };
+
+        // Event handler for keyboard input
+        const handleKeyDown = (event) => {
+            switch (event.key) {
+            case 'ArrowLeft':
+                goToPreviousSlide();
+                break;
+            case 'ArrowRight':
+                goToNextSlide();
+                break;
+            case 'ArrowDown':
+                unregisterListeners();
+                break;
+            case 'ArrowUp':
+                // Do nothing
+                break;
+            default:
+                // Ignore other keys
+                break;
+            }
+        };
+
+        // Get the top menu element
+        const topMenu = document.getElementById('top-menu');
+
+        // Add event listeners
+        topMenu.addEventListener('click', handleClick);
+        document.addEventListener('keydown', handleKeyDown);
     },
     initGalleryNav: function(galleryContainer) {
 
@@ -257,6 +321,12 @@ window.control = {
                 selectedIndex = Math.min(selectedIndex + columns, gameContainers.length);
                 break;
             case 'ArrowUp':
+
+                if (selectedIndex < 6) {
+                    console.log("MENU!: ");
+                    window.control.initMenuNav();
+                }
+
                 selectedIndex = Math.max(selectedIndex - columns, 0);
                 break;
             case 'i':

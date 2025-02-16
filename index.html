@@ -6,11 +6,28 @@
         <link rel="stylesheet" href="src/style.css">
     </head>
     <body>
+
+        <div id="loading">
+            <img class="big" src="./img/emume.png" alt="Emume logo">
+            <div id="loading-message">
+                <h2>
+                    <span id="loading-platform"></span>
+                </h2>
+                <h3>
+                    Loading <span id="loading-game">...</span>
+                </h3>
+            </div>
+        </div>
+
         <header id="top-menu" class="menu">
             <img class="menu-icon left-arrow" src="./img/controls/left.png" alt="Left">
-            <div id="top-menu-items"></div>
+
+            <div id="top-menu-slider">
+                <div id="top-menu-items"></div>
+            </div>
             <img class="menu-icon right-arrow" src="./img/controls/right.png" alt="Right">
         </header>
+
 
         <div id="slideshow" tabindex="0"></div>
         <div id="galleries"></div>

@@ -191,16 +191,16 @@ input::placeholder {
   margin: 0 auto;
 }
 
-@media (max-width: 1200px) {
-  .gallery {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-@media (max-width: 800px) {
-  .gallery {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
+/* @media (max-width: 1200px) { */
+/*   .gallery { */
+/*     grid-template-columns: repeat(4, 1fr); */
+/*   } */
+/* } */
+/* @media (max-width: 800px) { */
+/*   .gallery { */
+/*     grid-template-columns: repeat(2, 1fr); */
+/*   } */
+/* } */
 
 .game-container {
   position: relative;
@@ -388,7 +388,6 @@ dialog::backdrop {
 .menu {
   font-size: 24px;
   display: flex;
-  gap: 20px;
   align-items: center;
   position: fixed;
   left: 0;
@@ -405,7 +404,6 @@ dialog::backdrop {
   visibility: hidden;
 }
 
-
 /* Left Arrow */
 .left-arrow {
   margin-right: auto; /* Pushes the left arrow to the far left */
@@ -416,16 +414,32 @@ dialog::backdrop {
   margin-left: auto; /* Pushes the right arrow to the far right */
 }
 
-#top-menu-items {
-  display: flex;
-  gap: 20px; /* Adjust the gap between platform icons */
-  justify-content: center; /* Centers the platform icons */
-  flex-grow: 1; /* Allows the center section to take up remaining space */
+/* Container for sliding items */
+#top-menu-slider {
+  width: 200px; /* Adjust based on the width of one slide */
+  overflow: hidden; /* Hide overflow to show only one slide at a time */
 }
 
-.menu-slide {
+/* Container for all slides */
+#top-menu-items {
+  display: flex;
+  transition: transform 0.5s ease; /* Smooth sliding animation */
+}
+
+/* Individual slide */
+.top-menu-slide {
+  flex: 0 0 200px; /* Each slide takes up 200px (adjust as needed) */
   display: flex;
   align-items: center;
+  justify-content: center;
+}
+
+/* Slide content (label + icon) */
+.top-menu-slide-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px; /* Space between label and icon */
 }
 
 #controls-menu {
@@ -450,4 +464,35 @@ dialog::backdrop {
 
 .menu-icon {
   width: 50px;
+}
+
+#loading {
+    position: fixed; /* Fixed position to cover the entire viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black; /* Black background */
+    display: flex; /* Use flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    z-index: 9999; /* Ensure it's on top of everything */
+}
+
+/* Style the message */
+#loading-message {
+    text-color: white; /* White text */
+    font-size: 24px; /* Adjust font size as needed */
+    font-family: Arial, sans-serif; /* Use a clean font */
+    text-align: center; /* Center the text */
+}
+
+/* Style the message */
+#loading-message h3 {
+    color: white; /* White text */
+}
+
+#loading-platform,
+#loading-game {
+  color: red;
 }

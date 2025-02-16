@@ -13,17 +13,16 @@ window.gallery = {
                     const prefString = localStorage.getItem(platform);
                     let prefs;
 
+                    document.getElementById('loading-platform').textContent = platform;
+
                     if (prefString) {
                         prefs = JSON.parse(prefString);
                         let gamesDir = prefs.gamesDir;
                         let emulator = prefs.emulator;
                         let emulatorArgs = prefs.emulatorArgs;
 
-                        console.log("gamesDir, emulator, emulatorArgs: ", gamesDir, emulator, emulatorArgs);
-
                         const thisGallery = buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath.userDataPath);
                         thisGallery.style.display = "none";
-                        console.log("thisGallery: ", thisGallery);
 
                         // Append the gallery to the container
                         galleriesContainer.appendChild(thisGallery);
@@ -79,6 +78,7 @@ function scanDirectory(gamesDir, extensions, recursive = true) {
 
 // Build the gallery for a specific platform
 function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) {
+
     const galleryContainer = document.createElement('div');
     galleryContainer.id = `gallery-${platform}`;
     galleryContainer.classList.add('gallery');
@@ -95,9 +95,15 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
     // Scan the platform games directory for valid files
     const gameFiles = scanDirectory(gamesDir, extensions, false);
 
+    let i = 1;
+
     // Create a gallery item for each game
     gameFiles.forEach(gameFile => {
+
         const fileName = path.basename(gameFile);
+
+        document.getElementById('loading-game').textContent = i + " - " + fileName;
+
         const fileNameWithoutExt = path.parse(fileName).name;
         const coverImagePath = path.join(userDataPath, "covers", platform, `${fileNameWithoutExt}.jpg`);
         const missingImagePath = path.join(__dirname, './img/missing.png');
@@ -107,6 +113,7 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
         gameContainer.classList.add('game-container');
         // gameContainer.setAttribute('tabindex', 0);
         gameContainer.setAttribute('data-command', `${emulator} ${emulatorArgs || ""} "${gameFile}"`);
+        gameContainer.setAttribute('data-index', i++);
 
         // Add click event to launch the game
         gameContainer.addEventListener('click', (event) => {
@@ -299,7 +306,6 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
     });
 
     document.body.style.perspective = "unset";
-
 
     return galleryContainer;
 

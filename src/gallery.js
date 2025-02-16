@@ -82,6 +82,7 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
     const galleryContainer = document.createElement('div');
     galleryContainer.id = `gallery-${platform}`;
     galleryContainer.classList.add('gallery');
+    galleryContainer.tabindex = -1;
 
     // Define valid extensions for the platform
     const extensionsArrays = {

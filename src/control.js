@@ -251,6 +251,12 @@ window.control = {
 
             // Perform another action (e.g., hide the menu or do something else)
             console.log('Menu listeners unregistered. Perform another action here.');
+
+            const gallery = document.getElementById('gallery-amiga');
+            // window.control.initGalleryNav(gallery);
+
+            gallery.focus();
+
         };
 
         // Event handler for clicks (event delegation)
@@ -273,6 +279,7 @@ window.control = {
                 break;
             case 'ArrowDown':
                 unregisterListeners();
+
                 break;
             case 'ArrowUp':
                 // Do nothing
@@ -364,8 +371,11 @@ window.control = {
                 break;
             case 'ArrowUp':
 
+                const topMenu = document.getElementById('top-menu');
+
                 if (selectedIndex < 6) {
                     console.log("MENU!: ");
+                    topMenu.focus();
                     window.control.initMenuNav();
                 }
 
@@ -394,6 +404,7 @@ window.control = {
             });
 
             if (selectedIndex < gameContainers.length && selectedIndex > 0) {
+                console.log("scrollIntoView: ");
                 gameContainers[selectedIndex].scrollIntoView({
                     behavior: 'smooth',
                     block: 'center',

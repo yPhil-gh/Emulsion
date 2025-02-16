@@ -116,14 +116,23 @@ function buildMenuItem(platform) {
     return menuSlide;
 }
 
-
 Promise.all([
     ipcRenderer.invoke('get-platform-names'),
-    fetch('src/html/platform_form.html')
-        .then(response => response.text())
+    fetch('src/html/platform_form.html').then(response => response.text())
 ])
     .then(([platforms, formTemplate]) => {
-        window.platforms = platforms;
+
+        platforms.forEach((platform) => {
+
+        });
+
+
+        console.log("platforms, formTemplate: ", platforms, formTemplate);
+        // Return the result to pass it to the next .then
+        return { platforms, formTemplate };
+    })
+    .then(({ platforms, formTemplate, resultFromStep1 }) => {
+                window.platforms = platforms;
         platforms.forEach((platform) => {
 
             const homeSlide = buildSlide(platform, formTemplate);
@@ -141,7 +150,7 @@ Promise.all([
         initPlatformPrefs();
     })
     .catch(error => {
-        console.error('Failed to load form template:', error);
+        console.error('Failed to load platforms or form template:', error);
     });
 
 

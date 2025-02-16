@@ -23,7 +23,7 @@ body {
 
 
 #slideshow:focus,
-#gallery:focus {
+.gallery:focus {
   outline: none;
 }
 

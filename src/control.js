@@ -177,7 +177,8 @@ window.control = {
                         .then(({ userDataPath }) => {
                             window.userDataPath = userDataPath;
                             if (!document.querySelector('.gallery')) {
-                                window.gallery.buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath);
+                                const gallery = window.gallery.buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath);
+                                document.body.appendChild(gallery);
                                 window.topMenu.style .visibility = "visible";
                             }
                         });

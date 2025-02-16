@@ -1,7 +1,7 @@
 window.gallery = {
     buildGallery: function(platform, gamesDir, emulator, emulatorArgs, userDataPath) {
         ipcRenderer.send('change-window-title', "EmumE - Select a Game");
-        buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath);
+        return buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath);
     }
 };
 
@@ -43,7 +43,7 @@ function scanDirectory(gamesDir, extensions, recursive = true) {
 // Build the gallery for a specific platform
 function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) {
     const galleryContainer = document.createElement('div');
-    galleryContainer.id = `gallery`;
+    galleryContainer.id = `gallery-${platform}`;
     galleryContainer.classList.add('gallery');
 
     // Define valid extensions for the platform
@@ -262,6 +262,9 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
     });
 
     document.body.style.perspective = "unset";
-    document.body.appendChild(galleryContainer);
+
     window.control.initGalleryNav(galleryContainer);
+
+    return galleryContainer;
+
 }

@@ -22,7 +22,7 @@ window.gallery = {
                         console.log("gamesDir, emulator, emulatorArgs: ", gamesDir, emulator, emulatorArgs);
 
                         const thisGallery = buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath.userDataPath);
-                        thisGallery.style.visibility = "hidden";
+                        thisGallery.style.display = "none";
                         console.log("thisGallery: ", thisGallery);
 
                         // Append the gallery to the container
@@ -300,7 +300,6 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
     document.body.style.perspective = "unset";
 
-    window.control.initGalleryNav(galleryContainer);
 
     return galleryContainer;
 

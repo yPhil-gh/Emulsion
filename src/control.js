@@ -169,15 +169,26 @@ window.control = {
                 if (slides[currentIndex].classList.contains('ready')) {
                     // Hide the slideshow div
                     document.getElementById('slideshow').style.display = 'none';
+                    document.getElementById('galleries').style.display = "block";
 
                     const platform = slides[currentIndex].getAttribute('data-platform');
                     const gamesDir = slides[currentIndex].getAttribute('data-games-dir');
                     const emulator = slides[currentIndex].getAttribute('data-emulator');
                     const emulatorArgs = slides[currentIndex].getAttribute('data-emulator-args');
 
+                    const galleries = document.querySelectorAll('.gallery');
+
+                    galleries.forEach(gallery => {
+                        gallery.style.display = "none";
+                    });
+
                     const galleryToShow = document.querySelector(`#gallery-${platform}`);
 
-                    galleryToShow.style.visibility = "visible";
+                    galleryToShow.style.display = "grid";
+
+                    window.topMenu.style .visibility = "visible";
+
+                    window.control.initGalleryNav(galleryToShow);
 
                     // ipcRenderer.invoke('get-user-data')
                     //     .then(({ userDataPath }) => {
@@ -210,11 +221,7 @@ window.control = {
 
         function removeGalleryAndShowSlideshow() {
 
-            const galleryElement = document.querySelector('.gallery');
-            if (galleryElement) {
-                galleryElement.remove();
-                console.log("Gallery removed from DOM.");
-            }
+            document.getElementById('galleries').style.display = "none";
 
             const slideshow = document.getElementById('slideshow');
             if (slideshow) {

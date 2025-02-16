@@ -190,7 +190,8 @@ window.control = {
 
                     window.control.initGalleryNav(galleryToShow);
 
-
+                    window.control.initMenuNav();
+                    setDisplayedPlatform(platform);
                 }
             }
         });
@@ -198,7 +199,10 @@ window.control = {
         updateCarousel();
     },
     initMenuNav: function() {
+        document.getElementById('top-menu').style.display = "flex";
+
         let currentIndex = 0; // Track the current slide index
+        let isFirstSet = true; // Flag to track if it's the first time setting the slide
 
         // Get references to the slider and items
         const slider = document.getElementById('top-menu-slider');
@@ -208,7 +212,23 @@ window.control = {
 
         // Function to update the slide position
         const updateSlidePosition = () => {
+            if (isFirstSet) {
+                // Disable transition for the first set
+                items.style.transition = 'none';
+            } else {
+                // Enable transition for subsequent sets
+                items.style.transition = 'transform 0.5s ease';
+            }
+
             items.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+
+            // Force a reflow to apply the transition change
+            void items.offsetWidth;
+
+            // Reset the transition after the first set
+            if (isFirstSet) {
+                isFirstSet = false;
+            }
         };
 
         // Function to handle left arrow click or key press
@@ -269,6 +289,27 @@ window.control = {
         // Add event listeners
         topMenu.addEventListener('click', handleClick);
         document.addEventListener('keydown', handleKeyDown);
+
+        // Function to set the displayed platform by name
+        const setDisplayedPlatform = (platformName) => {
+            // Find the index of the slide with the matching platform name
+            const index = Array.from(slides).findIndex(slide => {
+                const label = slide.querySelector('.top-menu-slide-label').textContent.toLowerCase();
+                return label === platformName.toLowerCase();
+            });
+
+            if (index === -1) {
+                console.error(`Platform "${platformName}" not found.`);
+                return;
+            }
+
+            // Update the current index and slide position
+            currentIndex = index;
+            updateSlidePosition();
+        };
+
+        // Expose the setDisplayedPlatform function externally
+        window.setDisplayedPlatform = setDisplayedPlatform;
     },
     initGalleryNav: function(galleryContainer) {
 
@@ -286,6 +327,7 @@ window.control = {
         function removeGalleryAndShowSlideshow() {
 
             document.getElementById('galleries').style.display = "none";
+            document.getElementById('top-menu').style.display = "none";
 
             const slideshow = document.getElementById('slideshow');
             if (slideshow) {

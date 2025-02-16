@@ -178,6 +178,7 @@ window.control = {
                             window.userDataPath = userDataPath;
                             if (!document.querySelector('.gallery')) {
                                 window.gallery.buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath);
+                                window.topMenu.style .visibility = "visible";
                             }
                         });
                 }

@@ -53,7 +53,15 @@ body {
   /* box-shadow: 0 8px 24px rgba(0, 123, 255, 0.4); */
   filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8)); /* Cool blue glow */
   animation: pulse-glow 2s infinite ease-in-out; /* Slow pulsing animation */
+}
 
+.slide-content {
+  position: relative;
+  height: 100%; /* Ensure it takes the full height of the slide */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* Align content to the bottom */
+  align-items: center; /* Center horizontally */
 }
 
 @keyframes pulse-glow {
@@ -170,15 +178,6 @@ input::placeholder {
 
 .save-button:active {
   transform: translateY(0);
-}
-
-.slide-content {
-  position: relative;
-  height: 100%; /* Ensure it takes the full height of the slide */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end; /* Align content to the bottom */
-  align-items: center; /* Center horizontally */
 }
 
 /* GALLERY */
@@ -368,29 +367,6 @@ dialog::backdrop {
   transition: transform 0.5s ease-in-out;
 }
 
-.menu {
-  font-size: 24px;
-  position: fixed;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  padding: 10px 0;
-  z-index: 9999;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  left: 0;
-}
-
-
-#message {
-  display: flex;
-  /* text-overflow: ellipsis; */
-  margin-left: auto;
-  visibility: hidden;
-  transition: opacity 2s ease, visibility 2s ease; /* Smooth transition */
-}
-
 .fade-out {
   animation: fadeAway 3s forwards; /* Apply the animation */
 }
@@ -409,14 +385,60 @@ dialog::backdrop {
   height: 30px;
 }
 
-#platform-menu {
+.menu {
+  font-size: 24px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 10px 0;
+  z-index: 9999;
+  width: 100%;
+}
+
+#top-menu {
   top: 0;
   justify-content: center;
+  visibility: hidden;
+}
+
+
+/* Left Arrow */
+.left-arrow {
+  margin-right: auto; /* Pushes the left arrow to the far left */
+}
+
+/* Right Arrow */
+.right-arrow {
+  margin-left: auto; /* Pushes the right arrow to the far right */
+}
+
+#top-menu-items {
+  display: flex;
+  gap: 20px; /* Adjust the gap between platform icons */
+  justify-content: center; /* Centers the platform icons */
+  flex-grow: 1; /* Allows the center section to take up remaining space */
+}
+
+.menu-slide {
+  display: flex;
+  align-items: center;
 }
 
 #controls-menu {
-  justify-content: left;
   bottom: 0;
+  justify-content: left;
+}
+
+#message {
+  display: flex;
+  /* text-overflow: ellipsis; */
+  margin-left: auto;
+  visibility: hidden;
+  transition: opacity 2s ease, visibility 2s ease; /* Smooth transition */
 }
 
 .status-item {
@@ -424,4 +446,8 @@ dialog::backdrop {
   flex-direction: row;
   align-items: center;
   gap: 5px;
+}
+
+.menu-icon {
+  width: 50px;
 }

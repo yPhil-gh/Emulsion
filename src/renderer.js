@@ -1,8 +1,121 @@
 const slideshow = document.getElementById("slideshow");
+window.topMenu = document.getElementById("top-menu");
+window.topMenuItems = document.getElementById("top-menu-items");
 
 window.control.initGamepad();
 
 slideshow.focus();
+
+function buildSlide(platform, formTemplate) {
+
+    // Create the slide container
+    const homeSlide = document.createElement("div");
+    homeSlide.className = "slide";
+    homeSlide.id = platform;
+    homeSlide.style.backgroundImage = `url('img/platforms/${platform}.png')`;
+
+    const prefString = localStorage.getItem(platform);
+
+    let prefs;
+
+    if (prefString) {
+        prefs = JSON.parse(prefString);
+
+        homeSlide.setAttribute('data-platform', platform);
+        homeSlide.setAttribute('data-games-dir', prefs.gamesDir);
+        homeSlide.setAttribute('data-emulator', prefs.emulator);
+        homeSlide.setAttribute('data-emulator-args', prefs.emulatorArgs);
+        homeSlide.classList.add('ready');
+    }
+
+    const slideContent = document.createElement("div");
+    slideContent.className = "slide-content";
+
+    const form = document.createElement("div");
+    form.innerHTML = formTemplate;
+    form.className = "slide-form-container";
+
+    const platformForm = form.querySelector('#platform-form');
+    platformForm.id = `${platform}-form`;
+
+    function capitalizeWord(word) {
+        if (!word) return word;
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    }
+
+    const gamesDirInput = form.querySelector('#games-dir');
+    gamesDirInput.id = `${platform}-games-dir`;
+    gamesDirInput.value = (prefs && prefs.gamesDir) ? prefs.gamesDir : "";
+
+    gamesDirInput.placeholder = `${capitalizeWord(platform)} Games Directory`;
+
+    const browseDirButton = form.querySelector('.browse-button-dir');
+    browseDirButton.setAttribute('data-platform', platform);
+    browseDirButton.setAttribute('data-input', `${platform}-games-dir`);
+
+    const emulatorInput = form.querySelector('#emulator');
+    emulatorInput.id = `${platform}-emulator`;
+    emulatorInput.value = (prefs && prefs.emulator) ?  prefs.emulator : "";
+
+    emulatorInput.placeholder = `${platform} Emulator`;
+
+    const emulatorArgsInput = form.querySelector('#emulator-args');
+    emulatorArgsInput.id = `${platform}-emulator-args`;
+    emulatorArgsInput.classList.add('emulator-args');
+    emulatorArgsInput.value = (prefs && prefs.emulatorArgs) ? prefs.emulatorArgs : "";
+    emulatorArgsInput.placeholder = `args`;
+
+    const browseEmulatorButton = form.querySelector('.browse-button-file');
+    browseEmulatorButton.setAttribute('data-platform', platform);
+    browseEmulatorButton.setAttribute('data-input', `${platform}-emulator`);
+
+    const saveButton = form.querySelector('.save-button');
+    saveButton.setAttribute('data-platform', platform);
+
+    // Append the form to the content
+    slideContent.appendChild(form);
+
+    // Append the content to the slide
+    homeSlide.appendChild(slideContent);
+
+    return homeSlide;
+}
+
+function buildMenuItem(platform) {
+
+    const prefString = localStorage.getItem(platform);
+
+    let prefs;
+
+    if (prefString) {
+        prefs = JSON.parse(prefString);
+        if (!prefs.gamesDir && !prefs.emulator) {
+            return null;
+        }
+    } else {
+        return null;
+    }
+
+
+    // Create the slide container
+    const menuSlide = document.createElement("div");
+    menuSlide.className = "menu-slide";
+    // menuSlide.id = platform;
+    // menuSlide.style.backgroundImage = `url('img/platforms/${platform}.png')`;
+
+    const menuIcon = document.createElement("img");
+    menuIcon.src = `img/platforms/${platform}.png`;
+    menuIcon.className = "menu-icon";
+
+    const menuSlideContent = document.createElement("div");
+    menuSlideContent.className = "menu-slide-content";
+
+    menuSlideContent.appendChild(menuIcon);
+    menuSlide.appendChild(menuSlideContent);
+
+    return menuSlide;
+}
+
 
 Promise.all([
     ipcRenderer.invoke('get-platform-names'),
@@ -12,81 +125,15 @@ Promise.all([
     .then(([platforms, formTemplate]) => {
         window.platforms = platforms;
         platforms.forEach((platform) => {
-            // Create the slide container
-            const slide = document.createElement("div");
-            slide.className = "slide";
-            slide.id = platform;
-            slide.style.backgroundImage = `url('img/platforms/${platform}.png')`;
 
-            const prefString = localStorage.getItem(platform);
+            const homeSlide = buildSlide(platform, formTemplate);
+            const menuItem = buildMenuItem(platform);
 
-            let prefs;
-
-            if (prefString) {
-                prefs = JSON.parse(prefString);
-
-                slide.setAttribute('data-platform', platform);
-                slide.setAttribute('data-games-dir', prefs.gamesDir);
-                slide.setAttribute('data-emulator', prefs.emulator);
-                slide.setAttribute('data-emulator-args', prefs.emulatorArgs);
-                slide.classList.add('ready');
+            if (menuItem) {
+                window.topMenuItems.appendChild(menuItem);
             }
 
-            // Create the content container
-            const content = document.createElement("div");
-            content.className = "slide-content";
-
-            // Create the form using the template
-            const form = document.createElement("div");
-            form.innerHTML = formTemplate;
-            form.className = "slide-form-container";
-
-            // Update form IDs and attributes for the current platform
-            const platformForm = form.querySelector('#platform-form');
-            platformForm.id = `${platform}-form`;
-
-            function capitalizeWord(word) {
-                if (!word) return word; // Handle empty strings
-                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-            }
-
-            const gamesDirInput = form.querySelector('#games-dir');
-            gamesDirInput.id = `${platform}-games-dir`;
-            gamesDirInput.value = (prefs && prefs.gamesDir) ? prefs.gamesDir : "";
-
-            gamesDirInput.placeholder = `${capitalizeWord(platform)} Games Directory`;
-
-            const browseDirButton = form.querySelector('.browse-button-dir');
-            browseDirButton.setAttribute('data-platform', platform);
-            browseDirButton.setAttribute('data-input', `${platform}-games-dir`);
-
-            const emulatorInput = form.querySelector('#emulator');
-            emulatorInput.id = `${platform}-emulator`;
-            emulatorInput.value = (prefs && prefs.emulator) ?  prefs.emulator : "";
-
-            emulatorInput.placeholder = `${platform} Emulator`;
-
-            const emulatorArgsInput = form.querySelector('#emulator-args');
-            emulatorArgsInput.id = `${platform}-emulator-args`;
-            emulatorArgsInput.classList.add('emulator-args');
-            emulatorArgsInput.value = (prefs && prefs.emulatorArgs) ? prefs.emulatorArgs : "";
-            emulatorArgsInput.placeholder = `args`;
-
-            const browseEmulatorButton = form.querySelector('.browse-button-file');
-            browseEmulatorButton.setAttribute('data-platform', platform);
-            browseEmulatorButton.setAttribute('data-input', `${platform}-emulator`);
-
-            const saveButton = form.querySelector('.save-button');
-            saveButton.setAttribute('data-platform', platform);
-
-            // Append the form to the content
-            content.appendChild(form);
-
-            // Append the content to the slide
-            slide.appendChild(content);
-
-            // Append the slide to the slideshow container
-            slideshow.appendChild(slide);
+            slideshow.appendChild(homeSlide);
         });
 
         window.control.initSlideShow(slideshow);

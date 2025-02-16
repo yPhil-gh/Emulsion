@@ -117,22 +117,21 @@ function buildMenuItem(platform) {
 }
 
 Promise.all([
-    ipcRenderer.invoke('get-platform-names'),
-    fetch('src/html/platform_form.html').then(response => response.text())
+    ipcRenderer.invoke('get-platform-names'), // Fetch platforms
+    fetch('src/html/platform_form.html').then(response => response.text()), // Fetch form template
+    ipcRenderer.invoke('get-user-data') // Fetch user data
 ])
-    .then(([platforms, formTemplate]) => {
-
-        platforms.forEach((platform) => {
-
-        });
-
-
-        console.log("platforms, formTemplate: ", platforms, formTemplate);
-        // Return the result to pass it to the next .then
-        return { platforms, formTemplate };
+    .then(([platforms, formTemplate, userData]) => {
+        // Step 1: Build galleries and wait for it to complete
+        return window.gallery.buildGalleries(platforms, userData)
+            .then((res) => {
+                console.log("res: ", res);
+                // Return the result to pass it to the next .then
+                return { platforms, formTemplate };
+            });
     })
-    .then(({ platforms, formTemplate, resultFromStep1 }) => {
-                window.platforms = platforms;
+    .then(({ platforms, formTemplate }) => {
+        window.platforms = platforms;
         platforms.forEach((platform) => {
 
             const homeSlide = buildSlide(platform, formTemplate);
@@ -212,7 +211,7 @@ function initPlatformPrefs() {
         });
     });
 
-    ipcRenderer.invoke('get-main-data')
+    ipcRenderer.invoke('get-user-data')
         .then(({ userDataPath }) => {
             window.userDataPath = userDataPath;
             ipcRenderer.invoke('get-platform-names')

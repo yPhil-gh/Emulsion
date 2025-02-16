@@ -2,7 +2,45 @@ window.gallery = {
     buildGallery: function(platform, gamesDir, emulator, emulatorArgs, userDataPath) {
         ipcRenderer.send('change-window-title', "EmumE - Select a Game");
         return buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath);
+    },
+    buildGalleries: function(platforms, userDataPath) {
+        return new Promise((resolve, reject) => {
+            try {
+                const galleriesContainer = document.getElementById('galleries');
+                console.log("userDataPath: ", userDataPath.userDataPath);
+
+                platforms.forEach((platform) => {
+                    const prefString = localStorage.getItem(platform);
+                    let prefs;
+
+                    if (prefString) {
+                        prefs = JSON.parse(prefString);
+                        let gamesDir = prefs.gamesDir;
+                        let emulator = prefs.emulator;
+                        let emulatorArgs = prefs.emulatorArgs;
+
+                        console.log("gamesDir, emulator, emulatorArgs: ", gamesDir, emulator, emulatorArgs);
+
+                        const thisGallery = buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath.userDataPath);
+                        thisGallery.style.visibility = "hidden";
+                        console.log("thisGallery: ", thisGallery);
+
+                        // Append the gallery to the container
+                        galleriesContainer.appendChild(thisGallery);
+                    } else {
+                        console.log("No prefs for ", platform);
+                    }
+                });
+
+                // Resolve the promise with platforms
+                resolve(platforms);
+            } catch (error) {
+                // Reject the promise if something goes wrong
+                reject(error);
+            }
+        });
     }
+
 };
 
 // Recursively scan a directory for files with specific extensions.
@@ -23,7 +61,6 @@ function scanDirectory(gamesDir, extensions, recursive = true) {
     const items = fs.readdirSync(gamesDir, { withFileTypes: true });
     for (const item of items) {
       const fullPath = path.join(gamesDir, item.name);
-        console.log("path.extname(item.name).toLowerCase(): ", path.extname(item.name).toLowerCase());
       if (item.isDirectory()) {
         if (recursive) {
           files = files.concat(scanDirectory(fullPath, extensions, recursive));

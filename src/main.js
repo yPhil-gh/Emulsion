@@ -123,7 +123,7 @@ ipcMain.handle('select-file', async () => {
     return result.filePaths[0];
 });
 
-ipcMain.handle('get-main-data', () => {
+ipcMain.handle('get-user-data', () => {
     return {
         userDataPath: app.getPath('userData')
     };

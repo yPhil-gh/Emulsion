@@ -70,6 +70,8 @@ window.control = {
     updateControlsMenu: updateControlsMenu,
     showStatus: showStatus,
     initSlideShow: function (slideshow) {
+        document.body.style.display = "block";
+        console.log("yo!: ");
         const slides = Array.from(slideshow.querySelectorAll('.slide'));
         const totalSlides = slides.length;
         const radius = 500;
@@ -173,15 +175,20 @@ window.control = {
                     const emulator = slides[currentIndex].getAttribute('data-emulator');
                     const emulatorArgs = slides[currentIndex].getAttribute('data-emulator-args');
 
-                    ipcRenderer.invoke('get-main-data')
-                        .then(({ userDataPath }) => {
-                            window.userDataPath = userDataPath;
-                            if (!document.querySelector('.gallery')) {
-                                const gallery = window.gallery.buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath);
-                                document.body.appendChild(gallery);
-                                window.topMenu.style .visibility = "visible";
-                            }
-                        });
+                    const galleryToShow = document.querySelector(`#gallery-${platform}`);
+
+                    galleryToShow.style.visibility = "visible";
+
+                    // ipcRenderer.invoke('get-user-data')
+                    //     .then(({ userDataPath }) => {
+                    //         window.userDataPath = userDataPath;
+                    //         if (!document.querySelector(`#gallery-${platform}`)) {
+                    //             const gallery = window.gallery.buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath);
+                    //             document.body.appendChild(gallery);
+                    //             window.topMenu.style .visibility = "visible";
+                    //         }
+                    //     });
+
                 }
             }
         });

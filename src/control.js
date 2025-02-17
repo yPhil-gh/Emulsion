@@ -490,7 +490,7 @@ window.control = {
                 gameContainers[selectedIndex].scrollIntoView({
                     behavior: 'smooth',
                     block: 'center',
-                    inline: 'center'
+                    // inline: 'center'
                 });
 
             }

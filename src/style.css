@@ -181,8 +181,9 @@ input::placeholder {
 }
 
 #galleries {
-    overflow: hidden; /* Hide overflowing content */
-    width: 100%; /* Full width */
+  margin-top: 20px;
+  overflow: hidden; /* Hide overflowing content */
+  width: 100%; /* Full width */
 }
 
 /* GALLERY */
@@ -471,10 +472,9 @@ input::placeholder {
     opacity: 1;
   }
 }
-
 /* Container for sliding items */
 #top-menu-slider {
-  width: 200px; /* Adjust based on the width of one slide */
+  width: 300px; /* Increased width from 200px to 300px */
   overflow: hidden; /* Hide overflow to show only one slide at a time */
 }
 
@@ -482,13 +482,12 @@ input::placeholder {
 #top-menu-items {
   position: relative; /* Ensure absolutely positioned children are relative to this container */
   display: flex;
-  /* transition: transform 0.5s ease; /\* Smooth sliding animation *\/ */
+  /* transition: transform 0.5s ease;  -- if you're not using slide transitions */
 }
 
 /* Individual slide */
 .top-menu-slide {
-  flex: 0 0 200px; /* Each slide takes up 200px (adjust as needed) */
-  display: flex;
+  flex: 0 0 300px;
   align-items: center;
   justify-content: center;
 }
@@ -497,12 +496,12 @@ input::placeholder {
   display: none;
 }
 
-/* Slide content (label + icon) */
 .top-menu-slide-content {
   display: flex;
-  flex-direction: row;
+  justify-content: space-between; /* Push label and image to opposite ends */
   align-items: center;
-  gap: 10px; /* Space between label and icon */
+  width: 100%; /* Ensure it uses all available width */
+  padding: 0 10px; /* Optional: add some side padding if needed */
 }
 
 #controls-menu {

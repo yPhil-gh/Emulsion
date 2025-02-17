@@ -465,7 +465,7 @@ input::placeholder {
 /* Container for all slides */
 #top-menu-items {
   display: flex;
-  transition: transform 0.5s ease; /* Smooth sliding animation */
+  /* transition: transform 0.5s ease; /\* Smooth sliding animation *\/ */
 }
 
 /* Individual slide */

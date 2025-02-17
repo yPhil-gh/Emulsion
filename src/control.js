@@ -188,7 +188,7 @@ window.control = {
                     window.topMenu.style.visibility = "visible";
 
                     window.control.initGalleryNav(galleryToShow);
-                    // window.control.initMenuNav();
+                    // window.control.initTopMenuNav();
                     window.control.setTopMenuPlatform(platform);
 
                     // setDisplayedPlatform(platform);
@@ -198,7 +198,7 @@ window.control = {
 
         updateCarousel();
     },
-    initMenuNav: function() {
+    initTopMenuNav: function() {
 
         document.getElementById('dpad-icon').src = "./img/controls/dpad-horiz.png";
 
@@ -242,13 +242,6 @@ window.control = {
 
         const galleries = document.getElementById('galleries');
 
-        // Function to handle left arrow click or key press
-        const goToPreviousSlide = () => {
-            currentIndex = (currentIndex - 1 + slides.length) % slides.length; // Wrap around
-            displayGallery(currentIndex - 1);
-            updateSlidePosition();
-        };
-
         function displayGallery(index) {
             const galleries = document.querySelectorAll('.gallery');
             const totalGalleries = galleries.length;
@@ -266,15 +259,35 @@ window.control = {
             galleryToDisplay.style.display = "grid";
         }
 
+        function updatePlatformName(index) {
+            const allPlatformSlides = document.querySelectorAll('.top-menu-slide');
+            const slides = Array.from(allPlatformSlides);
+
+            allPlatformSlides.forEach(platform => {
+                platform.style.display = "none";
+            });
+
+            slides[index].style.display = "flex";
+
+            console.log("index: ", slides[index]);
+        }
+
+        // Function to handle left arrow click or key press
+        const goToPreviousSlide = () => {
+            console.log("currentIndex: ", currentIndex);
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length; // Wrap around
+            displayGallery(currentIndex - 1);
+            // updateSlidePosition();
+            console.log("currentIndex: ", currentIndex);
+            updatePlatformName(currentIndex);
+        };
 
         // Function to handle right arrow click or key press
         const goToNextSlide = () => {
-
             currentIndex = (currentIndex + 1) % slides.length; // Wrap around
-
             displayGallery(currentIndex + 1);
-
-            updateSlidePosition();
+            // updateSlidePosition();
+            updatePlatformName(currentIndex);
         };
 
         // Function to unregister menu listeners and perform another action
@@ -367,8 +380,8 @@ window.control = {
         const slideWidth = slides[0].offsetWidth;
 
         // Update the slide position
-        items.style.transition = 'transform 0.5s ease';
-        items.style.transform = `translateX(-${index * slideWidth}px)`;
+        // items.style.transition = 'transform 0.5s ease';
+        // items.style.transform = `translateX(-${index * slideWidth}px)`;
     },
     removeGalleryAndShowSlideshow: function() {
 
@@ -440,7 +453,7 @@ window.control = {
                     console.log("MENU: ");
                     isOpeningTheMenu = true;
                     topMenu.focus();
-                    window.control.initMenuNav();
+                    window.control.initTopMenuNav();
                 } else {
                     selectedIndex = Math.max(selectedIndex - columns, 0);
                 }

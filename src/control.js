@@ -188,8 +188,9 @@ window.control = {
                     window.topMenu.style.visibility = "visible";
 
                     window.control.initGalleryNav(galleryToShow);
-
                     // window.control.initMenuNav();
+                    window.control.setTopMenuPlatform(platform);
+
                     // setDisplayedPlatform(platform);
                 }
             }
@@ -341,26 +342,33 @@ window.control = {
         topMenu.addEventListener('click', handleClick);
         document.addEventListener('keydown', handleKeyDown);
 
-        // Function to set the displayed platform by name
-        const setDisplayedPlatform = (platformName) => {
-            // Find the index of the slide with the matching platform name
-            const index = Array.from(slides).findIndex(slide => {
-                const label = slide.querySelector('.top-menu-slide-label').textContent.toLowerCase();
-                return label === platformName.toLowerCase();
-            });
+    },
+    setTopMenuPlatform: function(platform) {
+        const slides = document.querySelectorAll('.top-menu-slide');
+        const items = document.getElementById('top-menu-items');
 
-            if (index === -1) {
-                console.error(`Platform "${platformName}" not found.`);
-                return;
-            }
+        if (!slides || !items) {
+            console.error('Slides or items container not found.');
+            return;
+        }
 
-            // Update the current index and slide position
-            currentIndex = index;
-            updateSlidePosition();
-        };
+        // Find the index of the slide with the matching platform name
+        const index = Array.from(slides).findIndex(slide => {
+            const label = slide.querySelector('.top-menu-slide-label').textContent.toLowerCase();
+            return label === platform.toLowerCase();
+        });
 
-        // Expose the setDisplayedPlatform function externally
-        window.setDisplayedPlatform = setDisplayedPlatform;
+        if (index === -1) {
+            console.error(`Platform "${platform}" not found.`);
+            return;
+        }
+
+        // Calculate the slide width (assuming all slides have the same width)
+        const slideWidth = slides[0].offsetWidth;
+
+        // Update the slide position
+        items.style.transition = 'transform 0.5s ease';
+        items.style.transform = `translateX(-${index * slideWidth}px)`;
     },
     removeGalleryAndShowSlideshow: function() {
 

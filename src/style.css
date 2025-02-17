@@ -456,6 +456,22 @@ input::placeholder {
   margin-left: auto; /* Pushes the right arrow to the far right */
 }
 
+.fadeIn {
+  animation: fadeIn 0.5s linear 1 forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 /* Container for sliding items */
 #top-menu-slider {
   width: 200px; /* Adjust based on the width of one slide */
@@ -464,6 +480,7 @@ input::placeholder {
 
 /* Container for all slides */
 #top-menu-items {
+  position: relative; /* Ensure absolutely positioned children are relative to this container */
   display: flex;
   /* transition: transform 0.5s ease; /\* Smooth sliding animation *\/ */
 }

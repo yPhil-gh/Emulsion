@@ -257,6 +257,8 @@ window.control = {
             // Display the selected gallery
             const galleryToDisplay = galleries[currentIndex];
             galleryToDisplay.style.display = "grid";
+            galleryToDisplay.classList.add('fadeIn');
+
         }
 
         function updatePlatformName(index) {
@@ -264,10 +266,12 @@ window.control = {
             const slides = Array.from(allPlatformSlides);
 
             allPlatformSlides.forEach(platform => {
+                platform.style.opacity = "0";
                 platform.style.display = "none";
             });
-
+            // document.body.offsetHeight; // force a reflow
             slides[index].style.display = "flex";
+            slides[index].classList.add('fadeIn');
 
             console.log("index: ", slides[index]);
         }

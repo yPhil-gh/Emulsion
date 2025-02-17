@@ -212,16 +212,17 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
                 selectButton.addEventListener('click', () => {
                     if (selectedImageUrl) {
                         console.log('Selected Image URL:', selectedImageUrl);
-                        coversDialog.close(); // Close the dialog after selection
 
-                        // Perform your download and reload logic here
-                        // downloadAndReload(selectedImageUrl, gameName)
-                        //   .then(() => {
-                        //     console.log('Selected image downloaded and reloaded!');
-                        //   })
-                        //   .catch((error) => {
-                        //     console.error('Error:', error.message);
-                        //   });
+                        downloadAndReload(selectedImageUrl, gameName)
+                          .then(() => {
+                            console.log('Selected image downloaded and reloaded!');
+                          })
+                          .catch((error) => {
+                            console.error('Error:', error.message);
+                          });
+
+                        coversDialog.classList.add('hidden');
+
                     } else {
                         alert('Please select an image before pressing "Select".');
                     }

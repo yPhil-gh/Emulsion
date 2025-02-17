@@ -79,6 +79,8 @@ async function searchGame(gameName, platform) {
 
 function getCompanyclass(platform) {
     switch (platform) {
+        case "pcengine":
+            return "comp_nec";
         case "gamecube":
             return "comp_ninte";
         case "dreamcast":

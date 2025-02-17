@@ -97,7 +97,7 @@ ipcMain.handle('show-quit-dialog', async () => {
         type: 'question',
         buttons: ['Yes', 'Donate', 'Cancel'],
         message: 'Really Exit EmumE?',
-        icon: './img/emume.png'
+        icon: './img/emume-logo.png'
     }).then(result => {
         if (result.response === 0) {
             action = "yes";

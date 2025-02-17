@@ -71,7 +71,6 @@ window.control = {
     showStatus: showStatus,
     initSlideShow: function (slideshow) {
         document.body.style.display = "block";
-        console.log("yo!: ");
         const slides = Array.from(slideshow.querySelectorAll('.slide'));
         const totalSlides = slides.length;
         const radius = 500;
@@ -131,7 +130,6 @@ window.control = {
                     currentIndex = index; // Set the clicked slide as the current slide
                     updateCarousel();
                 } else if (slide.classList.contains('active')) {
-                    console.log('Selected slide clicked:', slide.textContent.trim()); // Log the selected slide
                     simulateKeyPress('Enter');
                 }
             });
@@ -423,9 +421,9 @@ window.control = {
 
                 const topMenu = document.getElementById('top-menu');
 
-                gameContainers[selectedIndex].style.border = "none";
 
                 if (selectedIndex < 6) {
+                    gameContainers[selectedIndex].style.border = "none";
 
                     gameContainers.forEach((container, index) => {
                         container.classList.remove('selected');
@@ -471,6 +469,7 @@ window.control = {
                 });
 
             }
+
         });
 
         // Set the first game container as selected by default
@@ -478,6 +477,8 @@ window.control = {
     },
     initCoversDialogNav: function(coversDialog) {
         const imageContainers = Array.from(coversDialog.querySelectorAll('.image-container'));
+
+        console.log("initCoversDialogNav!!");
 
         if (imageContainers.length === 0) return;
 

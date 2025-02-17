@@ -34,7 +34,7 @@
                 "AppImage",
                 "deb"
             ],
-            "icon": "img/emume.png",
+            "icon": "img/emume-logo.png",
             "category": "Utility",
             "artifactName": "${productName}-${version}.${ext}"
         },

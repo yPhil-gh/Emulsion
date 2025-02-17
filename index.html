@@ -8,7 +8,7 @@
     <body>
 
         <div id="loading">
-            <img class="big" src="./img/emume.png" alt="Emume logo">
+            <img class="big" src="./img/emume-logo.png" alt="Emume logo">
             <div id="loading-message">
                 <h2>
                     <span id="loading-platform"></span>
@@ -28,19 +28,22 @@
             <img class="menu-icon right-arrow arrows" src="./img/controls/right.png" alt="Right">
         </header>
 
-
         <div id="slideshow" tabindex="0"></div>
         <div id="galleries" tabindex="-1"></div>
 
-        <dialog id="imageDialog" class="dialog">
-            <h2 id="dialogTitle">Select a Cover</h2>
-            <div class="dialog-buttons">
-                <button class="button" id="closeDialog">Close</button>
-                <button class="button" id="selectButton">Select</button>
+        <!-- Custom Modal Container -->
+        <div id="image-dialog" class="dialog hidden">
+            <div class="dialog-content">
+                <h2 id="dialog-title">Select a Cover</h2>
+                <div class="image-grid" id="image-grid"></div>
+                <div class="dialog-buttons">
+                    <button id="close-dialog">Close</button>
+                    <button id="select-button">Select</button>
+                </div>
             </div>
-        </dialog>
+        </div>
 
-        <footer id="controls-menu" class="menu">
+<footer id="controls-menu" class="menu">
             <div id="dpad" class="status-item">
                 <img id="dpad-icon" class="icon" src="./img/controls/dpad-horiz.png" alt="Dpad - Horiz">
                 <span>Browse</span>
@@ -58,7 +61,7 @@
                 <span id="circle-span">Exit</span>
             </div>
             <div id="message" class="status-item">
-                <img id="emume-icon" class="icon" src="./img/emume.png" alt="Emume icon">
+                <img id="emume-icon" class="icon" src="./img/emume-logo.png" alt="Emume icon">
                 <span id="message-span"></span>
             </div>
 
@@ -68,5 +71,6 @@
         <script src="src/cover_downloader.js"></script>
         <script src="src/gallery.js"></script>
         <script src="src/renderer.js"></script>
+
     </body>
 </html>

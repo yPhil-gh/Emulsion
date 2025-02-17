@@ -128,10 +128,10 @@ Promise.all([
     ipcRenderer.invoke('get-user-data') // Fetch user data
 ])
     .then(([platforms, formTemplate, userData]) => {
+        window.userDataPath = userData;
         // Step 1: Build galleries and wait for it to complete
         return window.gallery.buildGalleries(platforms, userData)
             .then((res) => {
-                console.log("res: ", res);
                 // Return the result to pass it to the next .then
                 return { platforms, formTemplate };
             });
@@ -209,7 +209,7 @@ function initPlatformPrefs() {
             localStorage.setItem(platform, JSON.stringify(preferences));
 
             // alert('Preferences saved!');
-            window.control.showStatus("Preferences saved!");
+            // window.control.showStatus("Preferences saved!");
 
             const parentForm = button.closest('.platform-form');
             if (parentForm) {
@@ -218,28 +218,5 @@ function initPlatformPrefs() {
             }
         });
     });
-
-    ipcRenderer.invoke('get-user-data')
-        .then(({ userDataPath }) => {
-            window.userDataPath = userDataPath;
-            ipcRenderer.invoke('get-platform-names')
-
-        });
-
-    Promise.all([
-        ipcRenderer.invoke('get-platform-names'),
-        fetch('src/html/platform_form.html')
-            .then(response => response.text())
-    ])
-        .then(([platforms, formTemplate]) => {
-            platforms.forEach((platform) => {
-                console.log("platform: ", platform);
-            });
-
-
-        })
-        .catch(error => {
-            console.error('Failed to load form template:', error);
-        });
 
 }

@@ -7,7 +7,6 @@ window.gallery = {
         return new Promise((resolve, reject) => {
             try {
                 const galleriesContainer = document.getElementById('galleries');
-                console.log("userDataPath: ", userDataPath.userDataPath);
 
                 platforms.forEach((platform) => {
                     const prefString = localStorage.getItem(platform);
@@ -47,8 +46,6 @@ window.gallery = {
 // If gamesDir is invalid, it returns an empty array.
 function scanDirectory(gamesDir, extensions, recursive = true) {
     let files = [];
-
-    console.log("gamesDir, extensions: ", gamesDir, extensions);
 
   // Validate the gamesDir argument
   if (!gamesDir || typeof gamesDir !== 'string') {
@@ -167,10 +164,12 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
             // Function to display the dialog with multiple images
             function showImageDialog(imageUrls, gameName) {
-                const coversDialog = document.getElementById('imageDialog');
-                const dialogTitle = document.getElementById('dialogTitle');
-                const imageGrid = document.getElementById('imageGrid');
-                const selectButton = document.getElementById('selectButton');
+                // Get references to the dialog and its elements
+                const coversDialog = document.getElementById('image-dialog');
+                const dialogTitle = document.getElementById('dialog-title');
+                const imageGrid = document.getElementById('image-grid');
+                const selectButton = document.getElementById('select-button');
+                const closeButton = document.getElementById('close-dialog');
 
                 let selectedImageUrl = null; // Store the selected image URL
 
@@ -184,7 +183,8 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
                 imageUrls.forEach((url) => {
                     const imgContainer = document.createElement('div');
                     imgContainer.classList.add('image-container');
-                    imgContainer.tabindex = 0;
+                    imgContainer.tabIndex = 0; // Make the container focusable
+
                     const img = document.createElement('img');
                     img.src = url;
 
@@ -206,61 +206,29 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
                     imageGrid.appendChild(imgContainer);
                 });
 
-                // Show the dialog
-                coversDialog.showModal();
-
-                window.control.initCoversDialogNav(coversDialog);
-
-                // const focusableElements = coversDialog.querySelectorAll(
-                //     'button, div, [tabindex]:not([tabindex="-1"])'
-                // );
-
-
-                window.coverDownloader.searchGame(gameName, platform)
-                    .then((details) => {
-
-                        console.log("details: ", details);
-
-                        // If there are multiple images, display them in the dialog
-                        if (details.imgSrcArray.length > 1 && !isBatch) {
-                            showImageDialog(details.imgSrcArray, gameName);
-                        } else {
-                            // If there's only one image (or menu/fetch covers), download it directly
-                            return downloadAndReload(details.imgSrcArray[0], gameName);
-                        }
-                    })
-                    .catch((error) => {
-                        console.error('Error!!!', error.message);
-                        // alert(error.message);
-                    })
-                    .finally(() => {
-                        // Remove the rotation class when the operation is complete
-                        button.classList.remove('rotate');
-                    });
-
+                coversDialog.classList.remove('hidden');
 
                 // Handle the "Select" button click
                 selectButton.addEventListener('click', () => {
                     if (selectedImageUrl) {
                         console.log('Selected Image URL:', selectedImageUrl);
+                        coversDialog.close(); // Close the dialog after selection
 
-                        dialog.close(); // Close the dialog after selection
-
-                        // Download the selected image and reload
-                        downloadAndReload(selectedImageUrl, gameName)
-                            .then(() => {
-                                console.log('Selected image downloaded and reloaded!');
-                            })
-                            .catch((error) => {
-                                console.error('Error:', error.message);
-                            });
+                        // Perform your download and reload logic here
+                        // downloadAndReload(selectedImageUrl, gameName)
+                        //   .then(() => {
+                        //     console.log('Selected image downloaded and reloaded!');
+                        //   })
+                        //   .catch((error) => {
+                        //     console.error('Error:', error.message);
+                        //   });
                     } else {
                         alert('Please select an image before pressing "Select".');
                     }
                 });
 
                 // Close the dialog when the close button is clicked
-                document.getElementById('closeDialog').addEventListener('click', () => {
+                closeButton.addEventListener('click', () => {
                     coversDialog.close();
                 });
             }
@@ -291,8 +259,8 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
                     }
                 })
                 .catch((error) => {
-                    // console.error('Error:', error.message);
-                    window.control.showStatus(`Cover not found: ${gameName} (${platform})`);
+                    console.info('Error:', error.message);
+                    // window.control.showStatus(`Cover not found: ${gameName} (${platform})`);
                     // alert("plop: " + error.message);
                 })
                 .finally(() => {

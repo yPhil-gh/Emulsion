@@ -32,11 +32,11 @@ async function searchGame(gameName, platform) {
 
 async function downloadImage(imageUrl, gameName, platform) {
     try {
-        console.log("window.userDataPath: ", window.userDataPath);
+        console.log("window.userDataPath: ", window.userDataPath.userDataPath);
         const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
         // console.log("response: ", response);
         console.log("gameName, platform: ", gameName, platform);
-        const coverPath = path.join(window.userDataPath, "covers", platform, `${gameName}.jpg`);
+        const coverPath = path.join(window.userDataPath.userDataPath, "covers", platform, `${gameName}.jpg`);
         console.log("coverPath: ", coverPath);
         // Convert the ArrayBuffer to a Node.js Buffer
         const coverBuffer = Buffer.from(response.data);

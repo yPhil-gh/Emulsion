@@ -116,6 +116,8 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
         gameContainer.setAttribute('data-command', `${emulator} ${emulatorArgs || ""} "${gameFile}"`);
         gameContainer.setAttribute('data-index', i++);
 
+        gameContainer.tabindex = -1;
+
         // Add click event to launch the game
         gameContainer.addEventListener('click', (event) => {
 

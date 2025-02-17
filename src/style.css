@@ -21,7 +21,7 @@ body {
   transform-style: preserve-3d; /* Enable 3D transformations */
 }
 
-
+#top-menu:focus,
 #slideshow:focus,
 .gallery:focus {
   outline: none;
@@ -180,15 +180,21 @@ input::placeholder {
   transform: translateY(0);
 }
 
+#galleries {
+    overflow: hidden; /* Hide overflowing content */
+    width: 100%; /* Full width */
+}
+
 /* GALLERY */
 .gallery {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 16px;
-  padding: 70px 10px 70px 10px;
-  width: 100%;
-  max-width: 98%;
-  margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 6 columns */
+    gap: 16px;
+    padding: 70px 10px 70px 10px;
+    width: 100%;
+    max-width: 98%;
+    margin: 0 auto;
+    transition: transform 0.5s ease-in-out; /* Smooth slide transition */
 }
 
 /* @media (max-width: 1200px) { */
@@ -393,12 +399,13 @@ dialog::backdrop {
   left: 0;
   background: rgba(0, 0, 0, 0.8);
   color: #fff;
-  padding: 10px 0;
+  padding: 10px 0 10px 5px;
   z-index: 9999;
   width: 100%;
 }
 
 #top-menu {
+
   top: 0;
   justify-content: center;
   visibility: hidden;
@@ -434,6 +441,10 @@ dialog::backdrop {
   justify-content: center;
 }
 
+.arrows {
+  display: none;
+}
+
 /* Slide content (label + icon) */
 .top-menu-slide-content {
   display: flex;
@@ -445,6 +456,7 @@ dialog::backdrop {
 #controls-menu {
   bottom: 0;
   justify-content: left;
+  gap: 10px;
 }
 
 #message {

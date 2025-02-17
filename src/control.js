@@ -200,6 +200,15 @@ window.control = {
         updateCarousel();
     },
     initMenuNav: function() {
+
+        document.getElementById('dpad-icon').src = "./img/controls/dpad-horiz.png";
+
+        const arrows = document.querySelectorAll('.arrows');
+
+        arrows.forEach(arrow => {
+            arrow.style.display = "block";
+        });
+
         document.getElementById('top-menu').style.display = "flex";
 
         let currentIndex = 0; // Track the current slide index
@@ -242,42 +251,29 @@ window.control = {
         };
 
         function displayGallery(index) {
-
             const galleries = document.querySelectorAll('.gallery');
+            const totalGalleries = galleries.length;
 
-            currentIndex = (index) % slides.length; // Wrap around
+            // Calculate the current index with wrap-around
+            currentIndex = (index + totalGalleries) % totalGalleries;
 
+            // Hide all galleries
             galleries.forEach(gallery => {
                 gallery.style.display = "none";
             });
 
-            const allGalleries = Array.from(galleries);
-
-            const galleryToDisplay = allGalleries[currentIndex];
-
+            // Display the selected gallery
+            const galleryToDisplay = galleries[currentIndex];
             galleryToDisplay.style.display = "grid";
-
         }
 
 
         // Function to handle right arrow click or key press
         const goToNextSlide = () => {
 
-            // const galleries = document.querySelectorAll('.gallery');
-
             currentIndex = (currentIndex + 1) % slides.length; // Wrap around
 
             displayGallery(currentIndex + 1);
-
-            // galleries.forEach(gallery => {
-            //     gallery.style.display = "none";
-            // });
-
-            // const allGalleries = Array.from(galleries);
-
-            // const galleryToDisplay = allGalleries[currentIndex];
-
-            // galleryToDisplay.style.display = "grid";
 
             updateSlidePosition();
         };
@@ -285,7 +281,7 @@ window.control = {
         // Function to unregister menu listeners and perform another action
         const unregisterListeners = () => {
             // Remove event listeners
-            topMenu.removeEventListener('click', handleClick);
+            // topMenu.removeEventListener('click', handleClick);
             document.removeEventListener('keydown', handleKeyDown);
 
             // Perform another action (e.g., hide the menu or do something else)
@@ -294,7 +290,13 @@ window.control = {
             const galleries = document.querySelectorAll('.gallery');
 
             const visibleGallery = Array.from(galleries).find(el => window.getComputedStyle(el).display !== 'none');
-            // window.control.initGalleryNav(gallery);
+            window.control.initGalleryNav(visibleGallery);
+
+            const arrows = document.querySelectorAll('.arrows');
+
+            arrows.forEach(arrow => {
+                arrow.style.display = "none";
+            });
 
             visibleGallery.focus();
 
@@ -378,6 +380,8 @@ window.control = {
     },
     initGalleryNav: function(galleryContainer) {
 
+        document.getElementById('dpad-icon').src = "./img/controls/dpad-active.png";
+
         // Function to simulate a key press
         function simulateKeyPress(key) {
             const event = new KeyboardEvent('keydown', {
@@ -396,9 +400,11 @@ window.control = {
         let selectedIndex = 0;
         const columns = 6; // Fixed number of columns
 
-        galleryContainer.tabIndex = 0; // Make the container focusable
+        galleryContainer.tabIndex = -1; // Make the container focusable
 
         galleryContainer.focus();
+
+        let isOpeningTheMenu = false;
 
         // Gallery nav
         galleryContainer.addEventListener('keydown', (event) => {
@@ -417,13 +423,22 @@ window.control = {
 
                 const topMenu = document.getElementById('top-menu');
 
+                gameContainers[selectedIndex].style.border = "none";
+
                 if (selectedIndex < 6) {
-                    console.log("MENU!: ");
+
+                    gameContainers.forEach((container, index) => {
+                        container.classList.remove('selected');
+                    });
+
+                    console.log("MENU: ");
+                    isOpeningTheMenu = true;
                     topMenu.focus();
                     window.control.initMenuNav();
+                } else {
+                    selectedIndex = Math.max(selectedIndex - columns, 0);
                 }
 
-                selectedIndex = Math.max(selectedIndex - columns, 0);
                 break;
             case 'i':
                 const fetchCoverButton = gameContainers[selectedIndex].querySelector('button');
@@ -448,7 +463,7 @@ window.control = {
             });
 
             if (selectedIndex < gameContainers.length && selectedIndex > 0) {
-                console.log("scrollIntoView: ");
+
                 gameContainers[selectedIndex].scrollIntoView({
                     behavior: 'smooth',
                     block: 'center',
@@ -472,7 +487,6 @@ window.control = {
         coversDialog.tabIndex = 0;
         coversDialog.focus();
 
-        // Gallery navigation
         coversDialog.addEventListener('keydown', (event) => {
             switch (event.key) {
             case 'ArrowRight':

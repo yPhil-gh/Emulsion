@@ -52,34 +52,52 @@ function createCoversDirectories(platforms) {
 
 createCoversDirectories(platforms);
 
-function createWindow() {
-    const win = new BrowserWindow({
-        width: 800,
-        height: 600,
-        webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
-        },
-        fullscreen: isFullScreen,
-        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
-            'AppleWebKit/537.36 (KHTML, like Gecko) ' +
-            'Chrome/115.0.0.0 Safari/537.36'
+// Ensure only one instance of the app runs
+const gotTheLock = app.requestSingleInstanceLock();
+
+let win;
+
+if (!gotTheLock) {
+    console.log('Another instance is already running. Exiting...');
+    app.quit(); // Exit the second instance
+} else {
+    app.on('ready', () => {
+        win = new BrowserWindow({
+            width: 800,
+            height: 600,
+            icon: path.join(__dirname, "img", "emume.png"),
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: false,
+            },
+            fullscreen: isFullScreen,
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
+                'AppleWebKit/537.36 (KHTML, like Gecko) ' +
+                'Chrome/115.0.0.0 Safari/537.36'
+        });
+
+        win.loadFile(path.join(__dirname, '../index.html'));
+
+        ipcMain.on('change-window-title', (event, newTitle) => {
+            if (win) {
+                win.setTitle(newTitle);
+            }
+        });
+
+        win.webContents.on('did-finish-load', () => {
+            win.webContents.send('platforms-data', platforms);
+        });
+
     });
 
-    ipcMain.on('change-window-title', (event, newTitle) => {
+    // Handle the second instance attempt
+    app.on('second-instance', () => {
         if (win) {
-            win.setTitle(newTitle);
+            if (win.isMinimized()) win.restore(); // Restore the window if minimized
+            win.focus(); // Focus the existing window
         }
     });
-
-    win.webContents.on('did-finish-load', () => {
-        win.webContents.send('platforms-data', platforms);
-    });
-
-    win.loadFile(path.join(__dirname, '../index.html'));
 }
-
-app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit(); // MacOs is weird

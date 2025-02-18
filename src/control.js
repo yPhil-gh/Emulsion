@@ -46,11 +46,9 @@ function simulateKeyPress(key) {
         if (!el) return false;
         const style = window.getComputedStyle(el);
         const test = style.display !== 'none' && style.visibility !== 'hidden' && parseFloat(style.opacity) > 0;
-        console.log("test: ", test);
         return style.display !== 'none' && style.visibility !== 'hidden' && parseFloat(style.opacity) > 0;
     }
 
-    console.log("simulateKeyPress: ", key);
     const event = new KeyboardEvent('keydown', {
         key: key,
         code: key === 'Escape' ? 'Escape' : `Arrow${key.slice(5)}`,
@@ -62,10 +60,9 @@ function simulateKeyPress(key) {
     const gallery = document.querySelector('.gallery');
 
     if (isElementVisible(slideshow)) {
-        console.log("yu: ");
         slideshow.dispatchEvent(event);
     } else {
-        console.log("yoou: ", event);
+        console.log("yoes: ");
         gallery.dispatchEvent(event);
     }
 }
@@ -276,17 +273,12 @@ window.control = {
             // document.body.offsetHeight; // force a reflow
             slides[index].style.display = "flex";
             slides[index].classList.add('fadeIn');
-
-            console.log("index: ", slides[index]);
         }
 
         // Function to handle left arrow click or key press
         const goToPreviousSlide = () => {
-            console.log("currentIndex: ", currentIndex);
             currentIndex = (currentIndex - 1 + slides.length) % slides.length; // Wrap around
             displayGallery(currentIndex - 1);
-            // updateSlidePosition();
-            console.log("currentIndex: ", currentIndex);
             updatePlatformName(currentIndex);
         };
 
@@ -425,8 +417,6 @@ window.control = {
         // Gallery nav
         galleryContainer.addEventListener('keydown', (event) => {
 
-            console.log("Listener event: ", event);
-
             switch (event.key) {
             case 'ArrowRight':
                 selectedIndex = (selectedIndex + 1) % gameContainers.length;
@@ -497,8 +487,6 @@ window.control = {
     },
     initCoversDialogNav: function(coversDialog) {
         const imageContainers = Array.from(coversDialog.querySelectorAll('.image-container'));
-
-        console.log("initCoversDialogNav!!");
 
         if (imageContainers.length === 0) return;
 
@@ -635,11 +623,11 @@ window.control = {
                 break;
             case 2:
                 // simulateKeyPress('Escape');
-                console.log("2: ");
+                simulateKeyPress('i');
                 break;
             case 3:
                 // simulateKeyPress('Escape');
-                console.log("3");
+                console.log("3 (triangle)");
                 break;
             case 12:
                 simulateKeyPress('ArrowUp');

@@ -361,6 +361,9 @@ window.control = {
 
     },
     setTopMenuPlatform: function(platform) {
+
+        console.log("platform: ", platform);
+
         const slides = document.querySelectorAll('.top-menu-slide');
         const items = document.getElementById('top-menu-items');
 
@@ -372,13 +375,24 @@ window.control = {
         // Find the index of the slide with the matching platform name
         const index = Array.from(slides).findIndex(slide => {
             const label = slide.querySelector('.top-menu-slide-label').textContent.toLowerCase();
+            console.log("label: ", label);
             return label === platform.toLowerCase();
         });
+
+        console.log("index: ", index);
 
         if (index === -1) {
             console.error(`Platform "${platform}" not found.`);
             return;
         }
+
+        console.log("slides[index]: ", slides[index]);
+
+        slides.forEach(slide => {
+            slide.style.display = "none";
+        });
+
+        slides[index].style.display = "flex";
 
         // Calculate the slide width (assuming all slides have the same width)
         const slideWidth = slides[0].offsetWidth;

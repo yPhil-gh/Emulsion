@@ -162,16 +162,14 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
             const gameName = event.target.getAttribute('data-game');
             const platform = event.target.getAttribute('data-platform');
 
-            // Function to display the dialog with multiple images
             function showImageDialog(imageUrls, gameName) {
-                // Get references to the dialog and its elements
                 const coversDialog = document.getElementById('image-dialog');
                 const dialogTitle = document.getElementById('dialog-title');
                 const imageGrid = document.getElementById('image-grid');
                 const selectButton = document.getElementById('select-button');
                 const closeButton = document.getElementById('close-dialog');
 
-                let selectedImageUrl = null; // Store the selected image URL
+                let selectedImageUrl = null;
 
                 // Set the dialog title
                 dialogTitle.textContent = `Select a Cover for ${gameName}`;
@@ -222,6 +220,8 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
                           });
 
                         coversDialog.classList.add('hidden');
+
+                        window.control.initGalleryNav(document.querySelector(`#gallery-${platform}`));
 
                     } else {
                         alert('Please select an image before pressing "Select".');

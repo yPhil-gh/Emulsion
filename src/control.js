@@ -49,20 +49,39 @@ function simulateKeyPress(key) {
         return style.display !== 'none' && style.visibility !== 'hidden' && parseFloat(style.opacity) > 0;
     }
 
+    function getAllEventListeners(target) {
+        const events = [];
+        for (const key in target) {
+            if (key.startsWith("on")) {
+                if (typeof target[key] === "function") {
+                    events.push({ type: key.slice(2), listener: target[key] });
+                }
+            }
+        }
+        return events;
+    }
+
+    console.log("window.context: ", window.context);
+
     const event = new KeyboardEvent('keydown', {
         key: key,
         code: key === 'Escape' ? 'Escape' : `Arrow${key.slice(5)}`,
         isTrusted: true,
-        bubbles: true,
+        bubbles: false,
     });
 
     const slideshow = document.getElementById('slideshow');
     const gallery = document.querySelector('.gallery');
 
     if (isElementVisible(slideshow)) {
+        console.log("window.context: ", window.context);
         slideshow.dispatchEvent(event);
-    } else {
+        return;
+    }
+    if (isElementVisible(gallery) && window.context === "gallery") {
         console.log("yoes: ");
+        console.log(getAllEventListeners(slideshow));
+
         gallery.dispatchEvent(event);
     }
 }
@@ -146,6 +165,8 @@ window.control = {
 
         // Keyboard navigation
         slideshow.addEventListener('keydown', (event) => {
+            event.stopPropagation();
+            event.stopImmediatePropagation(); // Stops other listeners on the same element
             if (event.key === 'ArrowRight') {
                 nextSlide();
             } else if (event.key === 'ArrowLeft') {
@@ -188,6 +209,8 @@ window.control = {
 
                     window.topMenu.style.visibility = "visible";
 
+
+                    window.context = "gallery";
                     window.control.initGalleryNav(galleryToShow);
                     // window.control.initTopMenuNav();
                     window.control.setTopMenuPlatform(platform);
@@ -383,6 +406,7 @@ window.control = {
             document.body.style.perspective = "600px";
             slideshow.focus();
             ipcRenderer.send('change-window-title', "EmumE - Select a Platform");
+            window.context = "slideshow";
         }
 
     },
@@ -612,7 +636,7 @@ window.control = {
             switch (buttonIndex) {
             case 0:
                 simulateKeyPress('Enter');
-                ipcRenderer.send('un-focus');
+                // ipcRenderer.send('un-focus');
                 // const selectedContainer = document.querySelector('.game-container.selected');
                 // if (selectedContainer) {
                 //     selectedContainer.click();

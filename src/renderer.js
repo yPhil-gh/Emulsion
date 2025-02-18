@@ -2,6 +2,8 @@ const slideshow = document.getElementById("slideshow");
 window.topMenu = document.getElementById("top-menu");
 window.topMenuItems = document.getElementById("top-menu-items");
 
+window.context = "slideshow";
+
 window.control.initGamepad();
 
 slideshow.focus();

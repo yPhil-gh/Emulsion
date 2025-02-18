@@ -71,14 +71,26 @@ function simulateKeyPress(key) {
     });
 
     const slideshow = document.getElementById('slideshow');
-    const gallery = document.querySelector('.gallery');
+    // const gallery = document.querySelector('.gallery');
+    let gallery = null;
+
+    const galleries = document.querySelectorAll('.gallery');
+
+    galleries.forEach(thisGallery => {
+        console.log("thisGallery: ", thisGallery);
+        if (thisGallery.style.display !== "none") {
+            gallery = thisGallery;
+        }
+    });
+
+    console.log("gallery: ", gallery);
 
     if (isElementVisible(slideshow)) {
         console.log("window.context: ", window.context);
         slideshow.dispatchEvent(event);
         return;
     }
-    if (isElementVisible(gallery) && window.context === "gallery") {
+    if (gallery) {
         console.log("yoes: ");
         console.log(getAllEventListeners(slideshow));
 

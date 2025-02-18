@@ -543,6 +543,9 @@ window.control = {
                     gameContainers[selectedIndex].click();
                 }
                 break;
+            case 'F5':
+                window.location.reload();
+                break;
             case 'Escape':
                 window.control.removeGalleryAndShowSlideshow();
                 break;

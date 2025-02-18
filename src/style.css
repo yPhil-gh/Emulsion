@@ -90,13 +90,13 @@ body {
   border-radius: 0 0 16px 16px;
 }
 
-.form-group {
+.platform-form-form-group {
   display: flex;
   flex-direction: column;
   margin-bottom: 15px;
 }
 
-.form-group label {
+.platform-form-form-group label {
   margin-bottom: 5px;
   font-size: 14px;
   color: rgba(255, 255, 255, 0.8);
@@ -108,12 +108,12 @@ input::placeholder {
   font-weight: bold; /* Bold text */
 }
 
-.input-group {
+.platform-form-input-group {
   display: flex;
   gap: 10px;
 }
 
-.input-group input {
+.platform-form-input-group input {
   flex: 1;
   padding: 4px;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -124,60 +124,48 @@ input::placeholder {
   transition: border-color 0.3s ease, background 0.3s ease;
 }
 
-.input-group input:focus {
+.platform-form-input-group input:focus {
   color: #000;
   border-color: green;
   background: rgba(255, 255, 255, 0.2);
   outline: none;
 }
 
-.input-group input.emulator-args {
+.platform-form-input-group input.emulator-args {
   min-width: 30px;
 }
 
-.input-group input.emulator {
+.platform-form-input-group input.emulator {
   max-width: 50px;
 }
 
-.input-group button {
-  padding: 10px 20px;
+button {
   border: none;
   border-radius: 8px;
-  background: #007bff;
-  color: white;
+  background: #89babc;
+  color: black;
   font-size: 14px;
   cursor: pointer;
   transition: background 0.3s ease, transform 0.3s ease;
 }
 
-.input-group button:hover {
+.platform-form-input-group button {
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+button:hover {
   background: #005bb5;
   transform: translateY(-2px);
 }
 
-.input-group button:active {
+button:active {
   transform: translateY(0);
 }
 
 .save-button {
   width: 100%;
   padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  background: #007bff;
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.3s ease;
-}
-
-.save-button:hover {
-  background: #005bb5;
-  transform: translateY(-2px);
-}
-
-.save-button:active {
-  transform: translateY(0);
 }
 
 #galleries {
@@ -326,6 +314,10 @@ input::placeholder {
   z-index: 1000;
 }
 
+#emume-big-logo {
+  width: -webkit-fill-available;
+}
+
 /* Hidden state */
 .hidden {
   display: none;
@@ -357,58 +349,6 @@ input::placeholder {
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 10px;
   margin: 20px 0;
-}
-
-
-/* Buttons container */
-.dialog-buttons {
-  text-align: right;
-}
-
-/* Button styling */
-.dialog-buttons button {
-  padding: 8px 12px;
-  margin-left: 10px;
-  background: #444;
-  border: none;
-  border-radius: 4px;
-  color: #e0e0e0;
-  cursor: pointer;
-}
-
-.dialog-buttons button:hover {
-  background: #555;
-}
-
-
-.bar {
-  position: fixed; /* Fixed positioning relative to the viewport */
-  bottom: 0; /* Stick to the bottom of the viewport */
-  right: 0; /* Stick to the right of the viewport */
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-  background: #222;
-  padding: 10px;
-  border-radius: 8px 0 0 0;
-  transform: translateY(100%); /* Initially hidden off-screen */
-  transition: transform 0.5s ease-in-out; /* Smooth transition */
-  z-index: 1000; /* Ensure it stays on top of other elements */
-  color: green;
-}
-
-#status-bar {
-  display: none;
-}
-
-.bar img {
-  width: 30px;
-}
-
-.bar.slide-left {
-  transform: translateX(100%);
-  transition: transform 0.5s ease-in-out;
 }
 
 .fade-out {
@@ -562,7 +502,38 @@ input::placeholder {
   color: red;
 }
 
-button.test {
-  position: absolute;
-  top: 0;
+.dialog-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 10px; /* Space between buttons */
+  width: 100%;
+}
+
+.dialog-buttons button {
+  width: 100%;
+  padding: 15px; /* Bigger padding */
+  font-size: 18px; /* Bigger text */
+}
+
+button:hover {
+  background: #005bb5;
+  transform: translateY(-2px);
+}
+
+button:focus {
+  outline: none;
+  background: rgb(63 158 8);
+  transform: translateY(-2px);
+}
+
+exit-dialog-exit-button:focus {
+  background: #42a110
+}
+
+exit-dialog-donate-button:focus {
+  background: #42a110
+}
+
+exit-dialog-cancel-button:focus {
+  background: #42a110
 }

@@ -61,8 +61,6 @@ function simulateKeyPress(key) {
         return events;
     }
 
-    console.log("window.context: ", window.context);
-
     const event = new KeyboardEvent('keydown', {
         key: key,
         code: key === 'Escape' ? 'Escape' : `Arrow${key.slice(5)}`,
@@ -86,12 +84,10 @@ function simulateKeyPress(key) {
     console.log("gallery: ", gallery);
 
     if (isElementVisible(slideshow)) {
-        console.log("window.context: ", window.context);
         slideshow.dispatchEvent(event);
         return;
     }
     if (gallery) {
-        console.log("yoes: ");
         console.log(getAllEventListeners(slideshow));
 
         gallery.dispatchEvent(event);
@@ -101,6 +97,68 @@ function simulateKeyPress(key) {
 window.control = {
     updateControlsMenu: updateControlsMenu,
     showStatus: showStatus,
+    showExitDialog: function () {
+        const exitDialog = document.getElementById('exit-dialog');
+        const cancelButton = document.getElementById('exit-dialog-cancel-button');
+        const donateButton = document.getElementById('exit-dialog-donate-button');
+        const slideshow = document.getElementById('slideshow');
+
+        exitDialog.classList.remove('hidden');
+
+        // Force focus to the dialog so key events apply to it
+        exitDialog.setAttribute('tabindex', '-1');
+        cancelButton.focus();
+
+        exitDialog.addEventListener('keydown', (event) => {
+            event.stopPropagation();
+            event.stopImmediatePropagation(); // Stops other listeners on the same element
+
+            console.log("event: ", event.target.id);
+            if (event.key === 'ArrowRight' || event.key === 'ArrowDown' || event.key === 'Tab') {
+                event.preventDefault();
+                cycleFocus(1);
+            } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp' || event.key === 'Shift' && event.key === 'Tab') {
+                event.preventDefault();
+                cycleFocus(-1);
+            } else if (event.key === 'Enter') {
+
+                if (event.target.id === "exit-dialog-cancel-button") {
+                    closeDialog();
+                } else if (event.target.id === "exit-dialog-donate-button") {
+                    ipcRenderer.invoke('go-to-donate-page');
+                } else if (event.target.id === "exit-dialog-exit-button") {
+                    ipcRenderer.invoke('exit');
+                }
+
+            } else if (event.key === 'Escape') {
+                closeDialog();
+            }
+        });
+
+        function cycleFocus(direction) {
+            const focusable = Array.from(document.querySelectorAll('#exit-dialog button'));
+            const currentIndex = focusable.indexOf(document.activeElement);
+            const nextIndex = (currentIndex + direction + focusable.length) % focusable.length;
+            focusable[nextIndex].focus();
+        }
+
+
+        function closeDialog() {
+            exitDialog.classList.add('hidden');
+            window.control.initSlideShow(slideshow);
+            slideshow.focus(); // Return focus to the page
+        }
+
+        // Close the dialog when cancel is pressed
+        cancelButton.addEventListener('click', () => {
+            closeDialog();
+        });
+
+        donateButton.addEventListener('click', async () => {
+            ipcRenderer.invoke('go-to-donate-page');
+        });
+
+    },
     initSlideShow: function (slideshow) {
         document.body.style.display = "block";
         const slides = Array.from(slideshow.querySelectorAll('.slide'));
@@ -167,14 +225,6 @@ window.control = {
             });
         });
 
-        async function showExitDialog() {
-            const response = await ipcRenderer.invoke('show-quit-dialog');
-            if (response === 'yes') {
-                ipcRenderer.send('quit');
-            }
-
-        }
-
         // Keyboard navigation
         slideshow.addEventListener('keydown', (event) => {
             event.stopPropagation();
@@ -185,8 +235,9 @@ window.control = {
                 prevSlide();
             } else if (event.key === 'Escape') {
 
-                updateControlsMenu({message: "Really Exit?"});
-                showExitDialog();
+                window.control.showExitDialog();
+                // updateControlsMenu({message: "Really Exit?"});
+                // showExitDialog();
             } else if (event.key === 'i') {
                 const form = slides[currentIndex].querySelector('.slide-form-container');
 
@@ -222,7 +273,6 @@ window.control = {
                     window.topMenu.style.visibility = "visible";
 
 
-                    window.context = "gallery";
                     window.control.initGalleryNav(galleryToShow);
                     // window.control.initTopMenuNav();
                     window.control.setTopMenuPlatform(platform);
@@ -418,7 +468,6 @@ window.control = {
             document.body.style.perspective = "600px";
             slideshow.focus();
             ipcRenderer.send('change-window-title', "EmumE - Select a Platform");
-            window.context = "slideshow";
         }
 
     },

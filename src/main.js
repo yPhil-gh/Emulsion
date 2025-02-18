@@ -109,31 +109,13 @@ app.on('activate', () => {
 
 // IPC Handlers
 
-ipcMain.handle('show-quit-dialog', async () => {
-    let action;
-    const result = await dialog.showMessageBox({
-        type: 'question',
-        buttons: ['Yes', 'Donate', 'Cancel'],
-        message: 'Really Exit EmumE?',
-        icon: './img/emume-logo.png'
-    }).then(result => {
-        if (result.response === 0) {
-            action = "yes";
-        } else if (result.response === 1) {
-            shell.openExternal('https://yphil.gitlab.io/ext/support.html');
-        } else if (result.response === 2) {
-            action= "cancel";
-            console.log("plop? ");
-        }
-
-    });
-
-    return action;
+ipcMain.handle('go-to-donate-page', async () => {
+    shell.openExternal('https://yphil.gitlab.io/ext/support.html');
+    return true;
 });
 
 ipcMain.handle('select-directory', async () => {
-    const result = await dialog.showOpenDialog({ properties: ['openDirectory'] });
-    return result.filePaths[0];
+    await dialog.showOpenDialog({ properties: ['openDirectory'] });
 });
 
 ipcMain.handle('select-file', async () => {
@@ -149,6 +131,10 @@ ipcMain.handle('get-user-data', () => {
 
 ipcMain.handle('get-platform-names', () => {
     return platforms;
+});
+
+ipcMain.handle('exit', () => {
+    app.quit();
 });
 
 // Handle the command execution sent from the renderer process (gallery.js)

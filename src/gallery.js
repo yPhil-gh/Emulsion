@@ -164,10 +164,10 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
             function showImageDialog(imageUrls, gameName) {
                 const coversDialog = document.getElementById('image-dialog');
-                const dialogTitle = document.getElementById('dialog-title');
+                const dialogTitle = document.getElementById('image-dialog-title');
                 const imageGrid = document.getElementById('image-grid');
-                const selectButton = document.getElementById('select-button');
-                const closeButton = document.getElementById('close-dialog');
+                const selectButton = document.getElementById('image-dialog-select-button');
+                const closeButton = document.getElementById('image-dialog-close-button');
 
                 let selectedImageUrl = null;
 
@@ -230,7 +230,7 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
                 // Close the dialog when the close button is clicked
                 closeButton.addEventListener('click', () => {
-                    coversDialog.close();
+                    coversDialog.classList.add('hidden');
                 });
             }
 

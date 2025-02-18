@@ -34,16 +34,29 @@
         <!-- Custom Modal Container -->
         <div id="image-dialog" class="dialog hidden">
             <div class="dialog-content">
-                <h2 id="dialog-title">Select a Cover</h2>
+                <h2 id="image-dialog-title">Select a Cover</h2>
                 <div class="image-grid" id="image-grid"></div>
                 <div class="dialog-buttons">
-                    <button id="close-dialog">Close</button>
-                    <button id="select-button">Select</button>
+                    <button id="image-dialog-close-button">Close</button>
+                    <button id="image-dialog-select-button">Select</button>
                 </div>
             </div>
         </div>
 
-<footer id="controls-menu" class="menu">
+        <!-- Custom Modal Container -->
+        <div id="exit-dialog" class="dialog hidden">
+            <div class="dialog-content">
+                <h2 id="exit-dialog-title">Exit EmulE?</h2>
+                <img id="emume-big-logo" alt="EmumE Big Logo" src="./img/emume-logo-text.png"/>
+                <div class="dialog-buttons">
+                    <button id="exit-dialog-exit-button">Exit</button>
+                    <button id="exit-dialog-donate-button">Donate</button>
+                    <button id="exit-dialog-cancel-button">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <footer id="controls-menu" class="menu">
             <div id="dpad" class="status-item">
                 <img id="dpad-icon" class="icon" src="./img/controls/dpad-horiz.png" alt="Dpad - Horiz">
                 <span>Browse</span>

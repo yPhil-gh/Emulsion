@@ -45,6 +45,8 @@ function simulateKeyPress(key) {
     function isElementVisible(el) {
         if (!el) return false;
         const style = window.getComputedStyle(el);
+        const test = style.display !== 'none' && style.visibility !== 'hidden' && parseFloat(style.opacity) > 0;
+        console.log("test: ", test);
         return style.display !== 'none' && style.visibility !== 'hidden' && parseFloat(style.opacity) > 0;
     }
 
@@ -52,16 +54,18 @@ function simulateKeyPress(key) {
     const event = new KeyboardEvent('keydown', {
         key: key,
         code: key === 'Escape' ? 'Escape' : `Arrow${key.slice(5)}`,
+        isTrusted: true,
         bubbles: true,
     });
 
     const slideshow = document.getElementById('slideshow');
-    const gallery = document.getElementById('gallery');
+    const gallery = document.querySelector('.gallery');
 
     if (isElementVisible(slideshow)) {
+        console.log("yu: ");
         slideshow.dispatchEvent(event);
-    }
-    if (isElementVisible(gallery)) {
+    } else {
+        console.log("yoou: ", event);
         gallery.dispatchEvent(event);
     }
 }
@@ -362,44 +366,19 @@ window.control = {
     },
     setTopMenuPlatform: function(platform) {
 
-        console.log("platform: ", platform);
-
         const slides = document.querySelectorAll('.top-menu-slide');
-        const items = document.getElementById('top-menu-items');
-
-        if (!slides || !items) {
-            console.error('Slides or items container not found.');
-            return;
-        }
 
         // Find the index of the slide with the matching platform name
         const index = Array.from(slides).findIndex(slide => {
             const label = slide.querySelector('.top-menu-slide-label').textContent.toLowerCase();
-            console.log("label: ", label);
             return label === platform.toLowerCase();
         });
-
-        console.log("index: ", index);
-
-        if (index === -1) {
-            console.error(`Platform "${platform}" not found.`);
-            return;
-        }
-
-        console.log("slides[index]: ", slides[index]);
 
         slides.forEach(slide => {
             slide.style.display = "none";
         });
 
         slides[index].style.display = "flex";
-
-        // Calculate the slide width (assuming all slides have the same width)
-        const slideWidth = slides[0].offsetWidth;
-
-        // Update the slide position
-        // items.style.transition = 'transform 0.5s ease';
-        // items.style.transform = `translateX(-${index * slideWidth}px)`;
     },
     removeGalleryAndShowSlideshow: function() {
 
@@ -445,6 +424,8 @@ window.control = {
 
         // Gallery nav
         galleryContainer.addEventListener('keydown', (event) => {
+
+            console.log("Listener event: ", event);
 
             switch (event.key) {
             case 'ArrowRight':
@@ -644,10 +625,10 @@ window.control = {
             case 0:
                 simulateKeyPress('Enter');
                 ipcRenderer.send('un-focus');
-                const selectedContainer = document.querySelector('.game-container.selected');
-                if (selectedContainer) {
-                    selectedContainer.click();
-                }
+                // const selectedContainer = document.querySelector('.game-container.selected');
+                // if (selectedContainer) {
+                //     selectedContainer.click();
+                // }
                 break;
             case 1:
                 simulateKeyPress('Escape');

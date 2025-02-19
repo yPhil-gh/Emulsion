@@ -62,9 +62,15 @@ async function downloadImage(imageUrl, gameName, platform) {
 
 
 function reloadImage(imgElement, coverPath) {
-    imgElement.src = coverPath;
-    console.log(`Image reloaded: ${coverPath}`);
+    const cacheBuster = new Date().getTime(); // Unique timestamp
+    const newSrc = `${coverPath}?t=${cacheBuster}`;
+
+    console.log("Previous imgElement.src:", imgElement.src);
+    imgElement.src = newSrc;
+    console.log("Updated imgElement.src:", imgElement.src);
+    console.log(`Image reloaded: ${newSrc}`);
 }
+
 
 window.coverDownloader = {
     searchGame: searchGame,

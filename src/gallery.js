@@ -253,7 +253,7 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
                     // If there are multiple images, display them in the dialog
                     if (details.imgSrcArray.length > 1 && !isBatch) {
-                        window.control.showCoversDialog(details.imgSrcArray, gameName);
+                        window.control.showCoversDialog(details.imgSrcArray, gameName, platform, imgElement);
                         // showImageDialog(details.imgSrcArray, gameName);
                     } else {
                         // If there's only one image (or menu/fetch covers), download it directly

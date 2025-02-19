@@ -97,7 +97,7 @@ function simulateKeyPress(key) {
     }
 }
 
-function initDialogNav (dialog, buttons) {
+function initDialogNav (dialog, buttons, onImageSelect) {
 
     let isImageDialog = false;
 
@@ -129,6 +129,8 @@ function initDialogNav (dialog, buttons) {
             if (isImageDialog) {
                 const imageUrl = document.activeElement.querySelector("img").src;
                 console.log("Enter: ", imageUrl);
+                onImageSelect(imageUrl);
+                closeDialog();
             }
 
 
@@ -208,7 +210,7 @@ function showExitDialog () {
 
 }
 
-function showCoversDialog(imageUrls, gameName) {
+function showCoversDialog(imageUrls, gameName, platform, imgElement) {
     const coversDialog = document.getElementById('image-dialog');
     const dialogTitle = document.getElementById('image-dialog-title');
     const imageGrid = document.getElementById('image-grid');
@@ -216,11 +218,6 @@ function showCoversDialog(imageUrls, gameName) {
     const cancelButton = document.getElementById('image-dialog-cancel-button');
 
     let selectedImageUrl = null;
-
-    const buttons = {
-        selectButton: selectButton,
-        cancelButton: cancelButton
-    };
 
     // Set the dialog title
     dialogTitle.textContent = `Select a Cover for ${gameName}`;
@@ -232,24 +229,10 @@ function showCoversDialog(imageUrls, gameName) {
     imageUrls.forEach((url) => {
         const imgContainer = document.createElement('div');
         imgContainer.classList.add('image-container');
-        imgContainer.tabIndex = 0; // Make the container focusable
+        imgContainer.tabIndex = -1; // Make the container focusable
 
         const img = document.createElement('img');
         img.src = url;
-
-        // // Add click handler to select the image visually
-        // imgContainer.addEventListener('click', () => {
-        //     // Remove the 'selected' class from all image containers
-        //     document.querySelectorAll('.image-container').forEach((container) => {
-        //         container.classList.remove('selected');
-        //     });
-
-        //     // Add the 'selected' class to the clicked image container
-        //     imgContainer.classList.add('selected');
-
-        //     // Store the selected image URL
-        //     selectedImageUrl = url;
-        // });
 
         imgContainer.appendChild(img);
         imageGrid.appendChild(imgContainer);
@@ -257,43 +240,21 @@ function showCoversDialog(imageUrls, gameName) {
 
     coversDialog.classList.remove('hidden');
 
-    initDialogNav(coversDialog, buttons);
+    initDialogNav(coversDialog, { selectButton, cancelButton }, (imageUrl) => {
+        // Callback to handle image selection via keyboard (Enter key)
+        selectedImageUrl = imageUrl;
+        console.log("selectedImageUrl: ", selectedImageUrl);
 
-    // // Handle the "Select" button click
-    // selectButton.addEventListener('click', () => {
-    //     if (selectedImageUrl) {
-    //         console.log('Selected Image URL:', selectedImageUrl);
+        console.log("imgElement: ", imgElement);
 
-    //         downloadAndReload(selectedImageUrl, gameName, platform, imgElement)
-    //             .then(() => {
-    //                 console.log('Selected image downloaded and reloaded!');
-    //             })
-    //             .catch((error) => {
-    //                 console.error('Error:', error.message);
-    //             });
-
-    //         coversDialog.classList.add('hidden');
-
-    //         window.control.initGalleryNav(document.querySelector(`#gallery-${platform}`));
-
-    //     } else {
-    //         alert('Please select an image before pressing "Select".');
-    //     }
-    // });
-
-    // // Close the dialog when the close button is clicked
-    // closeButton.addEventListener('click', () => {
-    //     coversDialog.classList.add('hidden');
-    // });
-
-    // const firstImage = coversDialog.querySelector(".image-container");
-
-    // console.log("firstImage: ", firstImage);
-
-    // // Force focus to the dialog so key events apply to it
-    // coversDialog.setAttribute('tabindex', '-1');
-    // firstImage.setAttribute('tabindex', '-1');
-    // firstImage.focus();
+        window.coverDownloader.downloadAndReload(selectedImageUrl, gameName, platform, imgElement)
+            .then(() => {
+                console.log('Selected image downloaded and reloaded!');
+            })
+            .catch((error) => {
+                console.error('Error:', error.message);
+            });
+    });
 
 }
 

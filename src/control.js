@@ -149,10 +149,20 @@ function initDialogNav (dialog, buttons, onImageSelect) {
     });
 
     function closeDialog() {
-        const slideshow = document.getElementById('slideshow');
+
+        if (isImageDialog) {
+            const galleries = document.querySelectorAll(".gallery");
+            const visibleGallery = Array.from(galleries).find(gallery =>
+                window.getComputedStyle(gallery).display !== "none"
+            );
+            visibleGallery.focus();
+        } else {
+            const slideshow = document.getElementById('slideshow');
+            window.control.initSlideShow(slideshow);
+            slideshow.focus();
+        }
+
         dialog.classList.add('hidden');
-        window.control.initSlideShow(slideshow);
-        slideshow.focus(); // Return focus to the page
     }
 
     function cycleFocus(direction) {
@@ -183,10 +193,7 @@ function initDialogNav (dialog, buttons, onImageSelect) {
         }
     });
 
-    // Force focus to the dialog so key events apply to it
     dialog.setAttribute('tabindex', '-1');
-
-    console.log("elementToFocus: ", elementToFocus);
 
     elementToFocus.focus();
 
@@ -249,7 +256,10 @@ function showCoversDialog(imageUrls, gameName, platform, imgElement) {
 
         window.coverDownloader.downloadAndReload(selectedImageUrl, gameName, platform, imgElement)
             .then(() => {
-                console.log('Selected image downloaded and reloaded!');
+                console.log('Selected image downloaded and reloaded!', imgElement);
+                const grandParent = imgElement.parentElement.parentElement;
+                console.log("grandParent: ", grandParent);
+                grandParent.focus();
             })
             .catch((error) => {
                 console.error('Error:', error.message);

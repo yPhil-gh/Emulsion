@@ -162,114 +162,26 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
             const gameName = event.target.getAttribute('data-game');
             const platform = event.target.getAttribute('data-platform');
 
-            function showImageDialog(imageUrls, gameName) {
-                const coversDialog = document.getElementById('image-dialog');
-                const dialogTitle = document.getElementById('image-dialog-title');
-                const imageGrid = document.getElementById('image-grid');
-                const selectButton = document.getElementById('image-dialog-select-button');
-                const closeButton = document.getElementById('image-dialog-close-button');
-
-                let selectedImageUrl = null;
-
-                // Set the dialog title
-                dialogTitle.textContent = `Select a Cover for ${gameName}`;
-
-                // Clear any existing images in the grid
-                imageGrid.innerHTML = '';
-
-                // Add each image to the grid
-                imageUrls.forEach((url) => {
-                    const imgContainer = document.createElement('div');
-                    imgContainer.classList.add('image-container');
-                    imgContainer.tabIndex = 0; // Make the container focusable
-
-                    const img = document.createElement('img');
-                    img.src = url;
-
-                    // Add click handler to select the image visually
-                    imgContainer.addEventListener('click', () => {
-                        // Remove the 'selected' class from all image containers
-                        document.querySelectorAll('.image-container').forEach((container) => {
-                            container.classList.remove('selected');
-                        });
-
-                        // Add the 'selected' class to the clicked image container
-                        imgContainer.classList.add('selected');
-
-                        // Store the selected image URL
-                        selectedImageUrl = url;
-                    });
-
-                    imgContainer.appendChild(img);
-                    imageGrid.appendChild(imgContainer);
-                });
-
-                coversDialog.classList.remove('hidden');
-
-                // Handle the "Select" button click
-                selectButton.addEventListener('click', () => {
-                    if (selectedImageUrl) {
-                        console.log('Selected Image URL:', selectedImageUrl);
-
-                        downloadAndReload(selectedImageUrl, gameName)
-                          .then(() => {
-                            console.log('Selected image downloaded and reloaded!');
-                          })
-                          .catch((error) => {
-                            console.error('Error:', error.message);
-                          });
-
-                        coversDialog.classList.add('hidden');
-
-                        window.control.initGalleryNav(document.querySelector(`#gallery-${platform}`));
-
-                    } else {
-                        alert('Please select an image before pressing "Select".');
-                    }
-                });
-
-                // Close the dialog when the close button is clicked
-                closeButton.addEventListener('click', () => {
-                    coversDialog.classList.add('hidden');
-                });
-            }
-
-            function downloadAndReload(imageUrl, gameName) {
-                return window.coverDownloader.downloadImage(imageUrl, gameName, platform)
-                    .then(() => {
-                        window.coverDownloader.reloadImage(imgElement, path.join(userDataPath, "covers", platform, `${gameName}.jpg`));
-                        window.control.updateControlsMenu({message : `OK: ${gameName} (${platform})`});
-                    })
-                    .catch((error) => {
-                        console.error('Error downloading image:', error.message);
-                    });
-            }
-
-
             const isBatch = false;
 
             await window.coverDownloader.searchGame(gameName, platform)
                 .then((details) => {
 
-                    // If there are multiple images, display them in the dialog
                     if (details.imgSrcArray.length > 1 && !isBatch) {
                         window.control.showCoversDialog(details.imgSrcArray, gameName, platform, imgElement);
-                        // showImageDialog(details.imgSrcArray, gameName);
                     } else {
-                        // If there's only one image (or menu/fetch covers), download it directly
                         return window.control.downloadAndReload(details.imgSrcArray[0], gameName, platform, imgElement);
                     }
                 })
                 .catch((error) => {
-                    console.info('Error:', error.message);
-                    // window.control.showStatus(`Cover not found: ${gameName} (${platform})`);
-                    // alert("plop: " + error.message);
+                    console.info('Error (probably image not found):', error.message);
                 })
                 .finally(() => {
                     console.log("finally: ");
+                    // window.control.initGalleryNav(galleryContainer);
+                    gameContainer.focus();
                     fetchCoverButton.classList.remove('rotate');
                 });
-
         });
 
         imgContainer.appendChild(imgElement);

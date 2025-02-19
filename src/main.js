@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell, Menu } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
@@ -75,6 +75,8 @@ if (!gotTheLock) {
                 'AppleWebKit/537.36 (KHTML, like Gecko) ' +
                 'Chrome/115.0.0.0 Safari/537.36'
         });
+
+        // Menu.setApplicationMenu(null);
 
         win.loadFile(path.join(__dirname, '../index.html'));
 

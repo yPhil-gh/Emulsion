@@ -63,25 +63,28 @@ function simulateKeyPress(key) {
 
     const event = new KeyboardEvent('keydown', {
         key: key,
-        code: key === 'Escape' ? 'Escape' : `Arrow${key.slice(5)}`,
+        code: key,
         isTrusted: true,
         bubbles: false,
     });
 
     const slideshow = document.getElementById('slideshow');
+    const exitDialog = document.getElementById('exit-dialog');
     // const gallery = document.querySelector('.gallery');
     let gallery = null;
 
     const galleries = document.querySelectorAll('.gallery');
 
     galleries.forEach(thisGallery => {
-        console.log("thisGallery: ", thisGallery);
         if (thisGallery.style.display !== "none") {
             gallery = thisGallery;
         }
     });
 
-    console.log("gallery: ", gallery);
+    if (isElementVisible(exitDialog)) {
+        exitDialog.dispatchEvent(event);
+        return;
+    }
 
     if (isElementVisible(slideshow)) {
         slideshow.dispatchEvent(event);
@@ -94,71 +97,211 @@ function simulateKeyPress(key) {
     }
 }
 
-window.control = {
-    updateControlsMenu: updateControlsMenu,
-    showStatus: showStatus,
-    showExitDialog: function () {
-        const exitDialog = document.getElementById('exit-dialog');
-        const cancelButton = document.getElementById('exit-dialog-cancel-button');
-        const donateButton = document.getElementById('exit-dialog-donate-button');
-        const slideshow = document.getElementById('slideshow');
+function initDialogNav (dialog, buttons) {
 
-        exitDialog.classList.remove('hidden');
+    let isImageDialog = false;
 
-        // Force focus to the dialog so key events apply to it
-        exitDialog.setAttribute('tabindex', '-1');
-        cancelButton.focus();
+    let elementToFocus;
 
-        exitDialog.addEventListener('keydown', (event) => {
-            event.stopPropagation();
-            event.stopImmediatePropagation(); // Stops other listeners on the same element
+    if (dialog.id === "image-dialog") {
+        console.log("image-dialog!");
+        isImageDialog = true;
+        elementToFocus = document.querySelector("#image-dialog .image-container");
+    } else {
+        elementToFocus = buttons.donateButton;
+    }
 
-            console.log("event: ", event.target.id);
-            if (event.key === 'ArrowRight' || event.key === 'ArrowDown' || event.key === 'Tab') {
-                event.preventDefault();
-                cycleFocus(1);
-            } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp' || event.key === 'Shift' && event.key === 'Tab') {
-                event.preventDefault();
-                cycleFocus(-1);
-            } else if (event.key === 'Enter') {
+    dialog.addEventListener('keydown', (event) => {
 
-                if (event.target.id === "exit-dialog-cancel-button") {
-                    closeDialog();
-                } else if (event.target.id === "exit-dialog-donate-button") {
-                    ipcRenderer.invoke('go-to-donate-page');
-                } else if (event.target.id === "exit-dialog-exit-button") {
-                    ipcRenderer.invoke('exit');
-                }
+        console.log("buttons: ", buttons, dialog.id);
+        // event.stopPropagation();
+        // event.stopImmediatePropagation(); // Stops other listeners on the same element
 
-            } else if (event.key === 'Escape') {
-                closeDialog();
+        console.log("event: ", event);
+        if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            cycleFocus(1);
+        } else if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            cycleFocus(-1);
+        } else if (event.key === 'Enter') {
+
+            if (isImageDialog) {
+                const imageUrl = document.activeElement.querySelector("img").src;
+                console.log("Enter: ", imageUrl);
             }
-        });
 
-        function cycleFocus(direction) {
-            const focusable = Array.from(document.querySelectorAll('#exit-dialog button'));
-            const currentIndex = focusable.indexOf(document.activeElement);
-            const nextIndex = (currentIndex + direction + focusable.length) % focusable.length;
-            focusable[nextIndex].focus();
+
+            if (event.target.id === "exit-dialog-cancel-button" || document.activeElement.id === "exit-dialog-cancel-button") {
+                closeDialog();
+            } else if (event.target.id === "exit-dialog-donate-button" || document.activeElement.id === "exit-dialog-donate-button") {
+                ipcRenderer.invoke('go-to-donate-page');
+            } else if (event.target.id === "exit-dialog-exit-button" || document.activeElement.id === "exit-dialog-exit-button") {
+                console.log("dude: ");
+                ipcRenderer.invoke('exit');
+            }
+
+        } else if (event.key === 'Escape') {
+            closeDialog();
         }
+    });
 
+    function closeDialog() {
+        const slideshow = document.getElementById('slideshow');
+        dialog.classList.add('hidden');
+        window.control.initSlideShow(slideshow);
+        slideshow.focus(); // Return focus to the page
+    }
 
-        function closeDialog() {
-            exitDialog.classList.add('hidden');
-            window.control.initSlideShow(slideshow);
-            slideshow.focus(); // Return focus to the page
-        }
+    function cycleFocus(direction) {
+        const focusable = Array.from(document.querySelectorAll(isImageDialog ? '#image-dialog .image-container' : '#exit-dialog button'));
+        const currentIndex = focusable.indexOf(document.activeElement);
+        const nextIndex = (currentIndex + direction + focusable.length) % focusable.length;
+        focusable[nextIndex].focus();
+    }
 
-        // Close the dialog when cancel is pressed
-        cancelButton.addEventListener('click', () => {
+    if (!isImageDialog) {
+        buttons.cancelButton.addEventListener('click', () => {
             closeDialog();
         });
 
-        donateButton.addEventListener('click', async () => {
-            ipcRenderer.invoke('go-to-donate-page');
+        buttons.exitButton.addEventListener('click', () => {
+            ipcRenderer.invoke('exit');
         });
 
-    },
+        buttons.donateButton.addEventListener('click', async () => {
+            ipcRenderer.invoke('go-to-donate-page');
+        });
+    }
+
+    dialog.addEventListener('click', (event) => {
+        const dialogContent = document.querySelector('#exit-dialog .dialog-content');
+        if (!dialogContent.contains(event.target)) {
+            closeDialog();
+        }
+    });
+
+    // Force focus to the dialog so key events apply to it
+    dialog.setAttribute('tabindex', '-1');
+
+    console.log("elementToFocus: ", elementToFocus);
+
+    elementToFocus.focus();
+
+}
+
+function showExitDialog () {
+    const exitDialog = document.getElementById('exit-dialog');
+    const exitButton = document.getElementById('exit-dialog-exit-button');
+    const cancelButton = document.getElementById('exit-dialog-cancel-button');
+    const donateButton = document.getElementById('exit-dialog-donate-button');
+
+    exitDialog.classList.remove('hidden');
+
+    const buttons = {
+        exitButton: exitButton,
+        cancelButton: cancelButton,
+        donateButton: donateButton
+    };
+
+    initDialogNav(exitDialog, buttons);
+
+}
+
+function showCoversDialog(imageUrls, gameName) {
+    const coversDialog = document.getElementById('image-dialog');
+    const dialogTitle = document.getElementById('image-dialog-title');
+    const imageGrid = document.getElementById('image-grid');
+    const selectButton = document.getElementById('image-dialog-select-button');
+    const cancelButton = document.getElementById('image-dialog-cancel-button');
+
+    let selectedImageUrl = null;
+
+    const buttons = {
+        selectButton: selectButton,
+        cancelButton: cancelButton
+    };
+
+    // Set the dialog title
+    dialogTitle.textContent = `Select a Cover for ${gameName}`;
+
+    // Clear any existing images in the grid
+    imageGrid.innerHTML = '';
+
+    // Add each image to the grid
+    imageUrls.forEach((url) => {
+        const imgContainer = document.createElement('div');
+        imgContainer.classList.add('image-container');
+        imgContainer.tabIndex = 0; // Make the container focusable
+
+        const img = document.createElement('img');
+        img.src = url;
+
+        // // Add click handler to select the image visually
+        // imgContainer.addEventListener('click', () => {
+        //     // Remove the 'selected' class from all image containers
+        //     document.querySelectorAll('.image-container').forEach((container) => {
+        //         container.classList.remove('selected');
+        //     });
+
+        //     // Add the 'selected' class to the clicked image container
+        //     imgContainer.classList.add('selected');
+
+        //     // Store the selected image URL
+        //     selectedImageUrl = url;
+        // });
+
+        imgContainer.appendChild(img);
+        imageGrid.appendChild(imgContainer);
+    });
+
+    coversDialog.classList.remove('hidden');
+
+    initDialogNav(coversDialog, buttons);
+
+    // // Handle the "Select" button click
+    // selectButton.addEventListener('click', () => {
+    //     if (selectedImageUrl) {
+    //         console.log('Selected Image URL:', selectedImageUrl);
+
+    //         downloadAndReload(selectedImageUrl, gameName, platform, imgElement)
+    //             .then(() => {
+    //                 console.log('Selected image downloaded and reloaded!');
+    //             })
+    //             .catch((error) => {
+    //                 console.error('Error:', error.message);
+    //             });
+
+    //         coversDialog.classList.add('hidden');
+
+    //         window.control.initGalleryNav(document.querySelector(`#gallery-${platform}`));
+
+    //     } else {
+    //         alert('Please select an image before pressing "Select".');
+    //     }
+    // });
+
+    // // Close the dialog when the close button is clicked
+    // closeButton.addEventListener('click', () => {
+    //     coversDialog.classList.add('hidden');
+    // });
+
+    // const firstImage = coversDialog.querySelector(".image-container");
+
+    // console.log("firstImage: ", firstImage);
+
+    // // Force focus to the dialog so key events apply to it
+    // coversDialog.setAttribute('tabindex', '-1');
+    // firstImage.setAttribute('tabindex', '-1');
+    // firstImage.focus();
+
+}
+
+window.control = {
+    updateControlsMenu: updateControlsMenu,
+    showStatus: showStatus,
+    showCoversDialog: showCoversDialog,
+    showExitDialog: showExitDialog,
     initSlideShow: function (slideshow) {
         document.body.style.display = "block";
         const slides = Array.from(slideshow.querySelectorAll('.slide'));
@@ -475,16 +618,16 @@ window.control = {
 
         document.getElementById('dpad-icon').src = "./img/controls/dpad-active.png";
 
-        // Function to simulate a key press
-        function simulateKeyPress(key) {
-            const event = new KeyboardEvent('keydown', {
-                key: key,
-                keyCode: key === 'ArrowUp' ? 38 : key === 'ArrowDown' ? 40 : key === 'ArrowLeft' ? 37 : 39, // Key codes for arrow keys
-                code: `Arrow${key.slice(5)}`, // Extract direction from key (e.g., "ArrowUp")
-                bubbles: true,
-            });
-            document.dispatchEvent(event);
-        }
+        // // Function to simulate a key press
+        // function simulateKeyPress(key) {
+        //     const event = new KeyboardEvent('keydown', {
+        //         key: key,
+        //         keyCode: key === 'ArrowUp' ? 38 : key === 'ArrowDown' ? 40 : key === 'ArrowLeft' ? 37 : 39, // Key codes for arrow keys
+        //         code: `Arrow${key.slice(5)}`, // Extract direction from key (e.g., "ArrowUp")
+        //         bubbles: false,
+        //     });
+        //     document.dispatchEvent(event);
+        // }
 
         const gameContainers = Array.from(galleryContainer.querySelectorAll('.game-container'));
 
@@ -539,6 +682,7 @@ window.control = {
                 fetchCoverButton.click();
                 break;
             case 'Enter':
+                console.log("yaa: ");
                 if (document.querySelector('.gallery')) {
                     gameContainers[selectedIndex].click();
                 }

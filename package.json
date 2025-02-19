@@ -1,6 +1,6 @@
 {
     "name": "EmumE",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "context": "prod",
     "description": "A frontend to launch games",
     "homepage": "https://gitlab.com/yphil/emume",

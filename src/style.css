@@ -158,12 +158,13 @@ button {
   font-size: 14px;
 }
 
+button:focus,
 button:hover {
   /* background: #005bb5; */
   /* transform: translateY(-2px); */
 
   background: linear-gradient(135deg, #E4007C, #5D00FF);
-  transform: rotate(-2deg) scale(1.1);
+  transform: rotate(-2deg) scale(1.0);
   box-shadow: 0 0 15px #E4007C;
 }
 
@@ -521,17 +522,6 @@ button:active {
   width: 100%;
   padding: 15px; /* Bigger padding */
   font-size: 18px; /* Bigger text */
-}
-
-button:hover {
-  background: #005bb5;
-  transform: translateY(-2px);
-}
-
-button:focus {
-  outline: none;
-  background: rgb(63 158 8);
-  transform: translateY(-2px);
 }
 
 exit-dialog-exit-button:focus {

@@ -30,13 +30,23 @@ async function searchGame(gameName, platform) {
     // return null;
 }
 
+function downloadAndReload(imageUrl, gameName, platform, imgElement) {
+    return window.coverDownloader.downloadImage(imageUrl, gameName, platform)
+        .then(() => {
+            window.coverDownloader.reloadImage(imgElement, path.join(window.userDataPath, "covers", platform, `${gameName}.jpg`));
+            window.control.updateControlsMenu({message : `OK: ${gameName} (${platform})`});
+        })
+        .catch((error) => {
+            console.error('Error downloading image:', error.message);
+        });
+}
+
 async function downloadImage(imageUrl, gameName, platform) {
     try {
-        console.log("window.userDataPath: ", window.userDataPath.userDataPath);
         const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
         // console.log("response: ", response);
         console.log("gameName, platform: ", gameName, platform);
-        const coverPath = path.join(window.userDataPath.userDataPath, "covers", platform, `${gameName}.jpg`);
+        const coverPath = path.join(window.userDataPath, "covers", platform, `${gameName}.jpg`);
         console.log("coverPath: ", coverPath);
         // Convert the ArrayBuffer to a Node.js Buffer
         const coverBuffer = Buffer.from(response.data);
@@ -59,5 +69,6 @@ function reloadImage(imgElement, coverPath) {
 window.coverDownloader = {
     searchGame: searchGame,
     downloadImage: downloadImage,
-    reloadImage: reloadImage
+    reloadImage: reloadImage,
+    downloadAndReload: downloadAndReload
 };

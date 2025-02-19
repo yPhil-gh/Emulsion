@@ -128,7 +128,7 @@ Promise.all([
     ipcRenderer.invoke('get-user-data') // Fetch user data
 ])
     .then(([platforms, formTemplate, userData]) => {
-        window.userDataPath = userData;
+        window.userDataPath = userData.userDataPath;
         // Step 1: Build galleries and wait for it to complete
         return window.gallery.buildGalleries(platforms, userData)
             .then((res) => {

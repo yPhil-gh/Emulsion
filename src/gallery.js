@@ -253,10 +253,11 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
                     // If there are multiple images, display them in the dialog
                     if (details.imgSrcArray.length > 1 && !isBatch) {
-                        showImageDialog(details.imgSrcArray, gameName);
+                        window.control.showCoversDialog(details.imgSrcArray, gameName);
+                        // showImageDialog(details.imgSrcArray, gameName);
                     } else {
                         // If there's only one image (or menu/fetch covers), download it directly
-                        return downloadAndReload(details.imgSrcArray[0], gameName);
+                        return window.control.downloadAndReload(details.imgSrcArray[0], gameName, platform, imgElement);
                     }
                 })
                 .catch((error) => {
@@ -265,6 +266,7 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
                     // alert("plop: " + error.message);
                 })
                 .finally(() => {
+                    console.log("finally: ");
                     fetchCoverButton.classList.remove('rotate');
                 });
 

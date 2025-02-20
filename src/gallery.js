@@ -85,13 +85,15 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
     const extensionsArrays = {
         gamecube:[".iso", ".ciso"],
         amiga:[".lha", ".adf"],
-        pcengine:[".srm"]
+        pcengine:[".srm"],
+        n64:[".z64"],
+        dreamcast:[".gdi", ".cdi"]
     };
 
     const extensions = extensionsArrays[platform];
 
     // Scan the platform games directory for valid files
-    const gameFiles = scanDirectory(gamesDir, extensions, false);
+    const gameFiles = scanDirectory(gamesDir, extensions, true);
 
     let i = 1;
 

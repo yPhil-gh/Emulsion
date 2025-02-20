@@ -8,6 +8,7 @@ slideshow.focus();
 
 function buildSlide(platform, formTemplate) {
 
+
     // Create the slide container
     const homeSlide = document.createElement("div");
     homeSlide.className = "slide";
@@ -83,6 +84,7 @@ function buildSlide(platform, formTemplate) {
 
 function buildTopMenuItem(platform) {
 
+
     const prefString = localStorage.getItem(platform);
 
     let prefs;
@@ -95,7 +97,7 @@ function buildTopMenuItem(platform) {
     } else {
         return null;
     }
-
+    console.log("platform build item: ", platform);
 
     // Create the slide container
     const menuSlide = document.createElement("div");
@@ -150,73 +152,13 @@ Promise.all([
             }
 
             slideshow.appendChild(homeSlide);
+            window.control.initPlatformForm(homeSlide);
         });
 
         window.control.initSlideShow(slideshow);
 
-        initPlatformPrefs();
     })
     .catch(error => {
         console.error('Failed to load platforms or form template:', error);
     });
 
-
-// Function to initialize form logic
-function initPlatformPrefs() {
-    // Platform form logic
-    document.querySelectorAll('.browse-button-dir').forEach(button => {
-        button.addEventListener('click', async (event) => {
-            event.stopPropagation();
-            const platform = button.getAttribute('data-platform');
-            const inputId = button.getAttribute('data-input');
-            const inputElement = document.getElementById(inputId);
-
-            if (button.textContent === 'Browse') {
-                const selectedPath = await ipcRenderer.invoke('select-directory');
-                if (selectedPath) inputElement.value = selectedPath;
-            }
-        });
-    });
-
-    document.querySelectorAll('.browse-button-file').forEach(button => {
-        button.addEventListener('click', async (event) => {
-            event.stopPropagation();
-            const platform = button.getAttribute('data-platform');
-            const inputId = button.getAttribute('data-input');
-            const inputElement = document.getElementById(inputId);
-
-            if (button.textContent === 'Browse') {
-                const selectedPath = await ipcRenderer.invoke('select-file');
-                if (selectedPath) inputElement.value = selectedPath;
-            }
-        });
-    });
-
-    document.querySelectorAll('.save-button').forEach(button => {
-        button.addEventListener('click', (event) => {
-            event.stopPropagation();
-            const platform = button.getAttribute('data-platform');
-            const gamesDir = document.getElementById(`${platform}-games-dir`).value;
-            const emulator = document.getElementById(`${platform}-emulator`).value;
-            const emulatorArgs = document.getElementById(`${platform}-emulator-args`).value;
-
-            if (!gamesDir || !emulator) {
-                alert('Please specify both the Games Directory and Emulator.');
-                return;
-            }
-
-            const preferences = { gamesDir, emulator, emulatorArgs };
-            localStorage.setItem(platform, JSON.stringify(preferences));
-
-            // alert('Preferences saved!');
-            // window.control.showStatus("Preferences saved!");
-
-            const parentForm = button.closest('.platform-form');
-            if (parentForm) {
-                parentForm.style.display = 'none';
-                // parentForm.style.pointerEvents = 'none';
-            }
-        });
-    });
-
-}

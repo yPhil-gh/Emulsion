@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'Orbitron';
+    src: url('../font/Orbitron-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900; /* Variable font weight range */
+    font-style: normal;
+}
+
 body {
   background-color: #0D021F;
   color: #93FFD8;
@@ -461,14 +468,6 @@ button:active {
   gap: 10px;
 }
 
-#message {
-  display: flex;
-  /* text-overflow: ellipsis; */
-  margin-left: auto;
-  visibility: hidden;
-  transition: opacity 2s ease, visibility 2s ease; /* Smooth transition */
-}
-
 .status-item {
   display: flex;
   flex-direction: row;
@@ -534,4 +533,24 @@ exit-dialog-donate-button:focus {
 
 exit-dialog-cancel-button:focus {
   background: #42a110
+}
+
+#message {
+  display: flex;
+  justify-content: flex-end; /* Align content to the right */
+  margin-left: auto; /* Push the container to the right */
+  opacity: 0;
+  transition: opacity 2s ease-out;
+  width: 100%;
+  max-width: 600px;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-right: 1em;
+}
+
+#message-span {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-align: right; /* Align text to the right */
 }

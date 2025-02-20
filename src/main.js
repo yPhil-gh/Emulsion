@@ -117,7 +117,11 @@ ipcMain.handle('go-to-donate-page', async () => {
 });
 
 ipcMain.handle('select-directory', async () => {
-    await dialog.showOpenDialog({ properties: ['openDirectory'] });
+    const result = await dialog.showOpenDialog({ properties: ['openDirectory'] });
+    if (!result.canceled && result.filePaths.length > 0) {
+        return result.filePaths[0]; // Return the first selected directory path
+    }
+    return null; // Return null if no directory was selected
 });
 
 ipcMain.handle('select-file', async () => {

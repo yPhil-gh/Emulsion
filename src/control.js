@@ -2,6 +2,73 @@ const fs = require('fs');
 const path = require('path');
 const { ipcRenderer } = require('electron');
 
+function initPlatformForm(slide) {
+
+    slide.querySelectorAll('.browse-button-dir').forEach(button => {
+        button.addEventListener('click', async (event) => {
+            event.stopPropagation();
+            const platform = button.getAttribute('data-platform');
+            const inputId = button.getAttribute('data-input');
+            console.log("inputId: ", inputId);
+            const inputElement = document.getElementById(inputId);
+
+            if (button.textContent === 'Browse') {
+                console.log("yo: ");
+                const selectedPath = await ipcRenderer.invoke('select-directory');
+                console.log("selectedPath: ", selectedPath);
+                if (selectedPath) inputElement.value = selectedPath;
+            }
+        });
+    });
+
+    slide.querySelectorAll('.browse-button-file').forEach(button => {
+        button.addEventListener('click', async (event) => {
+            event.stopPropagation();
+            const platform = button.getAttribute('data-platform');
+            const inputId = button.getAttribute('data-input');
+            const inputElement = document.getElementById(inputId);
+
+            if (button.textContent === 'Browse') {
+                const selectedPath = await ipcRenderer.invoke('select-file');
+                if (selectedPath) inputElement.value = selectedPath;
+            }
+        });
+    });
+
+    slide.querySelectorAll('.save-button').forEach(button => {
+        button.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const platform = button.getAttribute('data-platform');
+            const gamesDir = document.getElementById(`${platform}-games-dir`).value;
+            const emulator = document.getElementById(`${platform}-emulator`).value;
+            const emulatorArgs = document.getElementById(`${platform}-emulator-args`).value;
+
+            if (!gamesDir || !emulator) {
+                alert('Please specify both the Games Directory and Emulator.');
+                return;
+            }
+
+            const preferences = { gamesDir, emulator, emulatorArgs };
+            localStorage.setItem(platform, JSON.stringify(preferences));
+
+            // alert('Preferences saved!');
+
+            slide.classList.add('ready');
+
+            window.control.updateControlsMenu({message : `${platform.charAt(0).toUpperCase() + platform.slice(1)} Preferences Saved!`});
+
+            // window.control.initSlideShow(document.getElementById('slideshow'));
+
+            const parentForm = button.closest('.platform-form');
+            if (parentForm) {
+                parentForm.style.display = 'none';
+                // parentForm.style.pointerEvents = 'none';
+            }
+        });
+    });
+
+}
+
 function updatePlatormsMenu({ pad = "Browse", cross = "Select", square = "Config", circle = "Exit" } = {}) {
     const squareSpan = document.getElementById("square-span");
     squareSpan.textContent = square;
@@ -10,34 +77,15 @@ function updatePlatormsMenu({ pad = "Browse", cross = "Select", square = "Config
 function updateControlsMenu({ message = "plop" }) {
     const msgDiv = document.getElementById("message");
     const msgSpan = document.getElementById("message-span");
+    msgDiv.style.opacity = "1";
 
     msgDiv.style.visibility = "visible";
     msgSpan.textContent = message;
 
     setTimeout(() => {
-        msgDiv.style.visibility = "hidden";
-    }, 1000);
+        msgDiv.style.opacity = "0";
+    }, 3000);
 
-}
-
-function showStatus(message) {
-
-    const helpBar = document.getElementById("help-bar");
-    helpBar.style.transform = "translateY(100%)";
-
-    const statusBar = document.getElementById("status-bar");
-    if (!statusBar) return;
-
-    const statusSpan = document.getElementById("status-span");
-
-    statusSpan.textContent = message;
-
-    statusBar.style.transform = "translateY(0)";
-
-    // After 6 seconds, hide the status bar again.
-    setTimeout(() => {
-        statusBar.style.transform = "translateY(100%)";
-    }, 6000);
 }
 
 function simulateKeyPress(key) {
@@ -269,8 +317,8 @@ function showCoversDialog(imageUrls, gameName, platform, imgElement) {
 }
 
 window.control = {
+    initPlatformForm: initPlatformForm,
     updateControlsMenu: updateControlsMenu,
-    showStatus: showStatus,
     showCoversDialog: showCoversDialog,
     showExitDialog: showExitDialog,
     initSlideShow: function (slideshow) {
@@ -404,43 +452,27 @@ window.control = {
 
         const arrows = document.querySelectorAll('.arrows');
 
-        arrows.forEach(arrow => {
-            arrow.style.display = "block";
-        });
-
         document.getElementById('top-menu').style.display = "flex";
 
-        let currentIndex = 0; // Track the current slide index
+        // let currentIndex = 0; // Track the current slide index
         let isFirstSet = true; // Flag to track if it's the first time setting the slide
 
         // Get references to the slider and items
         const slider = document.getElementById('top-menu-slider');
         const items = document.getElementById('top-menu-items');
         const slides = document.querySelectorAll('.top-menu-slide');
+
         const slideWidth = slides[0].offsetWidth; // Width of one slide
 
-        // Function to update the slide position
-        const updateSlidePosition = () => {
-            if (isFirstSet) {
-                // Disable transition for the first set
-                items.style.transition = 'none';
-            } else {
-                // Enable transition for subsequent sets
-                items.style.transition = 'transform 0.5s ease';
-            }
-
-            items.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-
-            // Force a reflow to apply the transition change
-            void items.offsetWidth;
-
-            // Reset the transition after the first set
-            if (isFirstSet) {
-                isFirstSet = false;
-            }
-        };
+        if (slides.length > 1) {
+            arrows.forEach(arrow => {
+                arrow.style.display = "block";
+            });
+        }
 
         const galleries = document.getElementById('galleries');
+
+        let currentIndex = 0; // Initialize currentIndex globally
 
         function displayGallery(index) {
             const galleries = document.querySelectorAll('.gallery');
@@ -458,34 +490,36 @@ window.control = {
             const galleryToDisplay = galleries[currentIndex];
             galleryToDisplay.style.display = "grid";
             galleryToDisplay.classList.add('fadeIn');
-
         }
 
         function updatePlatformName(index) {
             const allPlatformSlides = document.querySelectorAll('.top-menu-slide');
             const slides = Array.from(allPlatformSlides);
 
+            // Hide all slides
             allPlatformSlides.forEach(platform => {
                 platform.style.opacity = "0";
                 platform.style.display = "none";
             });
-            // document.body.offsetHeight; // force a reflow
+
+            // Show the current slide
             slides[index].style.display = "flex";
             slides[index].classList.add('fadeIn');
         }
 
         // Function to handle left arrow click or key press
         const goToPreviousSlide = () => {
+            const slides = document.querySelectorAll('.top-menu-slide');
             currentIndex = (currentIndex - 1 + slides.length) % slides.length; // Wrap around
-            displayGallery(currentIndex - 1);
+            displayGallery(currentIndex);
             updatePlatformName(currentIndex);
         };
 
         // Function to handle right arrow click or key press
         const goToNextSlide = () => {
+            const slides = document.querySelectorAll('.top-menu-slide');
             currentIndex = (currentIndex + 1) % slides.length; // Wrap around
-            displayGallery(currentIndex + 1);
-            // updateSlidePosition();
+            displayGallery(currentIndex);
             updatePlatformName(currentIndex);
         };
 
@@ -501,6 +535,7 @@ window.control = {
             const galleries = document.querySelectorAll('.gallery');
 
             const visibleGallery = Array.from(galleries).find(el => window.getComputedStyle(el).display !== 'none');
+            console.log("visibleGallery: ", visibleGallery);
             window.control.initGalleryNav(visibleGallery);
 
             const arrows = document.querySelectorAll('.arrows');
@@ -529,6 +564,7 @@ window.control = {
                 goToPreviousSlide();
                 break;
             case 'ArrowRight':
+                console.log("event: ", event);
                 goToNextSlide();
                 break;
             case 'ArrowDown':

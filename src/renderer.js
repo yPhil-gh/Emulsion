@@ -84,7 +84,6 @@ function buildSlide(platform, formTemplate) {
 
 function buildTopMenuItem(platform) {
 
-
     const prefString = localStorage.getItem(platform);
 
     let prefs;

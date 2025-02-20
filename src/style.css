@@ -148,7 +148,7 @@ input::placeholder {
   max-width: 50px;
 }
 
-button {
+.button {
   background: linear-gradient(135deg, #FF5E00, #E4007C);
   color: #0D021F;
   /* border: 3px solid #5D00FF; */
@@ -167,15 +167,16 @@ button {
 
 button:focus,
 button:hover {
-  /* background: #005bb5; */
-  /* transform: translateY(-2px); */
-
   background: linear-gradient(135deg, #E4007C, #5D00FF);
-  transform: rotate(-2deg) scale(1.0);
   box-shadow: 0 0 15px #E4007C;
 }
 
-button:active {
+.button:focus,
+.button:hover {
+  transform: rotate(-2deg) scale(1.0);
+}
+
+.button:active {
   transform: translateY(0);
 }
 

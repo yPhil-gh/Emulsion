@@ -56,6 +56,7 @@
         "pcengine",
         "dreamcast",
         "gamecube",
-        "n64"
+        "n64",
+        "settings"
     ]
 }

@@ -2,20 +2,20 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 async function searchGame(gameName, platform) {
-    console.log("Searching UVList for:", gameName, platform);
+    // console.log("Searching UVList for:", gameName, platform);
 
     const nameParts = gameName.split(' ');
     let searchResults = null;
 
     for (let i = nameParts.length; i >= 1; i--) {
         const partialName = nameParts.slice(0, i).join(' ');
-        console.log(`Trying search with: "${partialName}"`);
+        // console.log(`Trying search with: "${partialName}"`);
 
         try {
             const formattedName = sanitizeGameName(partialName);
             const searchUrl = `https://www.uvlist.net/globalsearch/?t=${formattedName}`;
 
-            console.log('Search URL:', searchUrl);
+            // console.log('Search URL:', searchUrl);
 
             const response = await axios.get(searchUrl);
             if (response.status !== 200) {
@@ -24,7 +24,7 @@ async function searchGame(gameName, platform) {
 
             const resultsPage$ = cheerio.load(response.data);
             const resultsPageTitle = resultsPage$('title').text();
-            console.log("title: ", resultsPageTitle);
+            // console.log("title: ", resultsPageTitle);
 
             const targetRow = resultsPage$('span.badge-companies.comp_ninte').closest('tr');
             const gamePageUrl = resultsPage$(`span.badge-companies.${getCompanyclass(platform)}`)
@@ -33,11 +33,9 @@ async function searchGame(gameName, platform) {
                 .attr('href');
 
             if (!gamePageUrl) {
-                console.log(`No results found for "${partialName}" (${platform}).`);
+                // console.log(`No results found for "${partialName}" (${platform}).`);
                 continue;
             }
-
-            console.log('Game Page URL:', gamePageUrl);
 
             const gamePageResponse = await axios.get(`https://www.uvlist.net${gamePageUrl}`);
             if (gamePageResponse.status !== 200) {
@@ -46,7 +44,6 @@ async function searchGame(gameName, platform) {
 
             const gamePage$ = cheerio.load(gamePageResponse.data);
             const gamePageTitle = gamePage$('title').text();
-            console.log("title: ", gamePageTitle);
 
             let imgSrcArray = [];
             const colGold1Images = gamePage$('div.col_gold1 img')

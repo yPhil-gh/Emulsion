@@ -1,36 +1,25 @@
 const axios = require('axios');
-
-const uvlist = require('./src/backends/uvlist.js');
-const lemonamiga = require('./src/backends/lemonamiga.js');
-const wikipedia = require('./src/backends/wikipedia.js');
-const exotica = require('./src/backends/exotica.js');
+const backends = {
+    amiga: { module: require('./src/backends/exotica.js'), name: 'Exotica' },
+    gamecube: { module: require('./src/backends/uvlist.js'), name: 'UVList' },
+    dreamcast: { module: require('./src/backends/uvlist.js'), name: 'UVList' },
+    default: { module: require('./src/backends/uvlist.js'), name: 'UVList' }
+};
 
 async function searchGame(gameName, platform) {
-    let backend;
-    switch (platform) {
-    case 'amiga':
-        backend = exotica;
-        break;
-    case 'gamecube':
-        backend = uvlist;
-    case 'dreamcast':
-        backend = uvlist;
-    default:
-        backend = uvlist;
-        break;
-    }
+    const backend = backends[platform] || backends.default;
 
-    console.log(`Using backend for platform: ${platform}`);
+    console.log(`Using backend ${backend.name} for platform: ${platform}`);
 
-    const res = await backend.searchGame(gameName, platform);
+    const res = await backend.module.searchGame(gameName, platform);
 
     console.log("res: ", res);
 
     return res || null;
-    // return null;
 }
 
 function downloadAndReload(imageUrl, gameName, platform, imgElement) {
+    console.log("downloadAndReload imageUrl: ", imageUrl);
     return window.coverDownloader.downloadImage(imageUrl, gameName, platform)
         .then(() => {
             window.coverDownloader.reloadImage(imgElement, path.join(window.userDataPath, "covers", platform, `${gameName}.jpg`));
@@ -42,6 +31,7 @@ function downloadAndReload(imageUrl, gameName, platform, imgElement) {
 }
 
 async function downloadImage(imageUrl, gameName, platform) {
+    console.log("downloadImage imageUrl: ", imageUrl);
     try {
         const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
         // console.log("response: ", response);

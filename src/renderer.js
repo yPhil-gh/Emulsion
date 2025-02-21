@@ -6,8 +6,7 @@ window.control.initGamepad();
 
 slideshow.focus();
 
-function buildSlide(platform, formTemplate) {
-
+function buildSlide(platform) {
 
     // Create the slide container
     const homeSlide = document.createElement("div");
@@ -15,66 +14,10 @@ function buildSlide(platform, formTemplate) {
     homeSlide.id = platform;
     homeSlide.style.backgroundImage = `url('img/platforms/${platform}.png')`;
 
-    const prefString = localStorage.getItem(platform);
-
-    let prefs;
-
-    if (prefString) {
-        prefs = JSON.parse(prefString);
-
-        homeSlide.setAttribute('data-platform', platform);
-        homeSlide.setAttribute('data-games-dir', prefs.gamesDir);
-        homeSlide.setAttribute('data-emulator', prefs.emulator);
-        homeSlide.setAttribute('data-emulator-args', prefs.emulatorArgs);
-        homeSlide.classList.add('ready');
-    }
-
     const slideContent = document.createElement("div");
     slideContent.className = "slide-content";
 
-    const form = document.createElement("div");
-    form.innerHTML = formTemplate;
-    form.className = "slide-form-container";
-
-    const platformForm = form.querySelector('#platform-form');
-    platformForm.id = `${platform}-form`;
-
-    function capitalizeWord(word) {
-        if (!word) return word;
-        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-    }
-
-    const gamesDirInput = form.querySelector('#games-dir');
-    gamesDirInput.id = `${platform}-games-dir`;
-    gamesDirInput.value = (prefs && prefs.gamesDir) ? prefs.gamesDir : "";
-
-    gamesDirInput.placeholder = `${capitalizeWord(platform)} Games Directory`;
-
-    const browseDirButton = form.querySelector('.browse-button-dir');
-    browseDirButton.setAttribute('data-platform', platform);
-    browseDirButton.setAttribute('data-input', `${platform}-games-dir`);
-
-    const emulatorInput = form.querySelector('#emulator');
-    emulatorInput.id = `${platform}-emulator`;
-    emulatorInput.value = (prefs && prefs.emulator) ?  prefs.emulator : "";
-
-    emulatorInput.placeholder = `${platform} Emulator`;
-
-    const emulatorArgsInput = form.querySelector('#emulator-args');
-    emulatorArgsInput.id = `${platform}-emulator-args`;
-    emulatorArgsInput.classList.add('emulator-args');
-    emulatorArgsInput.value = (prefs && prefs.emulatorArgs) ? prefs.emulatorArgs : "";
-    emulatorArgsInput.placeholder = `args`;
-
-    const browseEmulatorButton = form.querySelector('.browse-button-file');
-    browseEmulatorButton.setAttribute('data-platform', platform);
-    browseEmulatorButton.setAttribute('data-input', `${platform}-emulator`);
-
-    const saveButton = form.querySelector('.save-button');
-    saveButton.setAttribute('data-platform', platform);
-
-    // Append the form to the content
-    slideContent.appendChild(form);
+    homeSlide.setAttribute('data-platform', platform);
 
     // Append the content to the slide
     homeSlide.appendChild(slideContent);
@@ -88,19 +31,26 @@ function buildTopMenuItem(platform) {
 
     let prefs;
 
-    if (prefString) {
-        prefs = JSON.parse(prefString);
-        if (!prefs.gamesDir && !prefs.emulator) {
+    if (platform !== "settings") {
+
+        if (prefString) {
+            prefs = JSON.parse(prefString);
+            if (!prefs.gamesDir && !prefs.emulator) {
+                return null;
+            }
+        } else {
             return null;
         }
-    } else {
-        return null;
+
     }
-    console.log("platform build item: ", platform);
+
+    console.log("Building platform top menu item: ", platform);
 
     // Create the slide container
     const menuSlide = document.createElement("div");
     menuSlide.className = "top-menu-slide";
+    menuSlide.classList.add(platform);
+
     // menuSlide.id = platform;
     // menuSlide.style.backgroundImage = `url('img/platforms/${platform}.png')`;
 
@@ -123,6 +73,15 @@ function buildTopMenuItem(platform) {
     return menuSlide;
 }
 
+// const platforms = [
+//     "amiga",
+//     "pcengine",
+//     "dreamcast",
+//     "gamecube",
+//     "n64",
+//     "settings"
+// ];
+
 Promise.all([
     ipcRenderer.invoke('get-platform-names'), // Fetch platforms
     fetch('src/html/platform_form.html').then(response => response.text()), // Fetch form template
@@ -132,6 +91,9 @@ Promise.all([
         window.userDataPath = userData.userDataPath;
         // Step 1: Build galleries and wait for it to complete
         return window.gallery.buildGalleries(platforms, userData)
+            .then((res) => {
+                window.gallery.buildSettingsForms(platforms, formTemplate);
+            })
             .then((res) => {
                 // Return the result to pass it to the next .then
                 return { platforms, formTemplate };
@@ -143,7 +105,7 @@ Promise.all([
         window.platforms = platforms;
         platforms.forEach((platform) => {
 
-            const homeSlide = buildSlide(platform, formTemplate);
+            const homeSlide = buildSlide(platform);
             const menuItem = buildTopMenuItem(platform);
 
             if (menuItem) {
@@ -160,4 +122,6 @@ Promise.all([
     .catch(error => {
         console.error('Failed to load platforms or form template:', error);
     });
+
+
 

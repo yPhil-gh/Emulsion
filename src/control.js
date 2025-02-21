@@ -9,13 +9,10 @@ function initPlatformForm(slide) {
             event.stopPropagation();
             const platform = button.getAttribute('data-platform');
             const inputId = button.getAttribute('data-input');
-            console.log("inputId: ", inputId);
             const inputElement = document.getElementById(inputId);
 
             if (button.textContent === 'Browse') {
-                console.log("yo: ");
                 const selectedPath = await ipcRenderer.invoke('select-directory');
-                console.log("selectedPath: ", selectedPath);
                 if (selectedPath) inputElement.value = selectedPath;
             }
         });
@@ -139,7 +136,6 @@ function simulateKeyPress(key) {
         return;
     }
     if (gallery) {
-        console.log(getAllEventListeners(slideshow));
 
         gallery.dispatchEvent(event);
     }
@@ -152,7 +148,6 @@ function initDialogNav (dialog, buttons, onImageSelect) {
     let elementToFocus;
 
     if (dialog.id === "image-dialog") {
-        console.log("image-dialog!");
         isImageDialog = true;
         elementToFocus = document.querySelector("#image-dialog .image-container");
     } else {
@@ -161,11 +156,7 @@ function initDialogNav (dialog, buttons, onImageSelect) {
 
     dialog.addEventListener('keydown', (event) => {
 
-        console.log("buttons: ", buttons, dialog.id);
-        // event.stopPropagation();
-        // event.stopImmediatePropagation(); // Stops other listeners on the same element
 
-        console.log("event: ", event);
         if (event.key === 'ArrowRight') {
             event.preventDefault();
             cycleFocus(1);
@@ -176,7 +167,6 @@ function initDialogNav (dialog, buttons, onImageSelect) {
 
             if (isImageDialog) {
                 const imageUrl = document.activeElement.querySelector("img").src;
-                console.log("Enter: ", imageUrl);
                 onImageSelect(imageUrl);
                 closeDialog();
             }
@@ -187,7 +177,6 @@ function initDialogNav (dialog, buttons, onImageSelect) {
             } else if (event.target.id === "exit-dialog-donate-button" || document.activeElement.id === "exit-dialog-donate-button") {
                 ipcRenderer.invoke('go-to-donate-page');
             } else if (event.target.id === "exit-dialog-exit-button" || document.activeElement.id === "exit-dialog-exit-button") {
-                console.log("dude: ");
                 ipcRenderer.invoke('exit');
             }
 
@@ -298,9 +287,6 @@ function showCoversDialog(imageUrls, gameName, platform, imgElement) {
     initDialogNav(coversDialog, { selectButton, cancelButton }, (imageUrl) => {
         // Callback to handle image selection via keyboard (Enter key)
         selectedImageUrl = imageUrl;
-        console.log("selectedImageUrl: ", selectedImageUrl);
-
-        console.log("imgElement: ", imgElement);
 
         window.coverDownloader.downloadAndReload(selectedImageUrl, gameName, platform, imgElement)
             .then(() => {
@@ -346,24 +332,24 @@ window.control = {
             });
         }
 
-        function showForm(slide) {
-            const isReady = slide.classList.contains('ready');
-            const form = slides[currentIndex].querySelector('.slide-form-container');
-            if (!isReady) {
-                form.style.display = 'block';
-            }
-        }
+        // function showForm(slide) {
+        //     const isReady = slide.classList.contains('ready');
+        //     const form = slides[currentIndex].querySelector('.slide-form-container');
+        //     if (!isReady) {
+        //         form.style.display = 'block';
+        //     }
+        // }
 
         function nextSlide() {
             currentIndex = (currentIndex + 1) % totalSlides;
             updateCarousel();
-            showForm(slides[currentIndex]);
+            // showForm(slides[currentIndex]);
         }
 
         function prevSlide() {
             currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
             updateCarousel();
-            showForm(slides[currentIndex]);
+            // showForm(slides[currentIndex]);
         }
 
         slideshow.addEventListener('wheel', (event) => {
@@ -411,36 +397,36 @@ window.control = {
 
             } else if (event.key === 'Enter') {
 
-                if (slides[currentIndex].classList.contains('ready')) {
-                    // Hide the slideshow div
-                    document.getElementById('slideshow').style.display = 'none';
-                    document.getElementById('galleries').style.display = "block";
-                    document.getElementById('top-menu').style.display = "flex";
+                console.log("Enter!!: ");
+                // Hide the slideshow div
+                document.getElementById('slideshow').style.display = 'none';
+                document.getElementById('galleries').style.display = "block";
+                document.getElementById('top-menu').style.display = "flex";
 
-                    const platform = slides[currentIndex].getAttribute('data-platform');
-                    const gamesDir = slides[currentIndex].getAttribute('data-games-dir');
-                    const emulator = slides[currentIndex].getAttribute('data-emulator');
-                    const emulatorArgs = slides[currentIndex].getAttribute('data-emulator-args');
+                const platform = slides[currentIndex].getAttribute('data-platform');
 
-                    const galleries = document.querySelectorAll('.gallery');
+                const galleries = document.querySelectorAll('.gallery');
 
-                    galleries.forEach(gallery => {
-                        gallery.style.display = "none";
-                    });
+                galleries.forEach(gallery => {
+                    gallery.style.display = "none";
+                });
 
-                    const galleryToShow = document.querySelector(`#gallery-${platform}`);
+                const galleryToShow = document.querySelector(`#gallery-${platform}`);
 
-                    galleryToShow.style.display = "grid";
+                console.log("platform!!: ", platform);
 
-                    window.topMenu.style.visibility = "visible";
+                console.log("galleryToShow: ", galleryToShow);
+
+                galleryToShow.style.display = "grid";
+
+                window.topMenu.style.visibility = "visible";
 
 
-                    window.control.initGalleryNav(galleryToShow);
-                    // window.control.initTopMenuNav();
-                    window.control.setTopMenuPlatform(platform);
+                window.control.initGalleryNav(galleryToShow);
+                // window.control.initTopMenuNav();
+                window.control.setTopMenuPlatform(platform);
 
                     // setDisplayedPlatform(platform);
-                }
             }
         });
 
@@ -451,18 +437,9 @@ window.control = {
         document.getElementById('dpad-icon').src = "./img/controls/dpad-horiz.png";
 
         const arrows = document.querySelectorAll('.arrows');
-
         document.getElementById('top-menu').style.display = "flex";
 
-        // let currentIndex = 0; // Track the current slide index
-        let isFirstSet = true; // Flag to track if it's the first time setting the slide
-
-        // Get references to the slider and items
-        const slider = document.getElementById('top-menu-slider');
-        const items = document.getElementById('top-menu-items');
         const slides = document.querySelectorAll('.top-menu-slide');
-
-        const slideWidth = slides[0].offsetWidth; // Width of one slide
 
         if (slides.length > 1) {
             arrows.forEach(arrow => {
@@ -470,85 +447,91 @@ window.control = {
             });
         }
 
-        const galleries = document.getElementById('galleries');
-
-        let currentIndex = 0; // Initialize currentIndex globally
+        let currentIndex = 0; // Initialize globally
 
         function displayGallery(index) {
             const galleries = document.querySelectorAll('.gallery');
             const totalGalleries = galleries.length;
 
-            // Calculate the current index with wrap-around
-            currentIndex = (index + totalGalleries) % totalGalleries;
+            console.log("Total Galleries:", totalGalleries);
+            console.log("Total Slides:", slides.length);
+
+            if (totalGalleries !== slides.length) {
+                console.warn("Mismatch between .gallery and .top-menu-slide elements!");
+            }
+
+            // Ensure index wraps around properly
+            index = (index + totalGalleries) % totalGalleries;
 
             // Hide all galleries
             galleries.forEach(gallery => {
                 gallery.style.display = "none";
             });
 
-            // Display the selected gallery
-            const galleryToDisplay = galleries[currentIndex];
-            galleryToDisplay.style.display = "grid";
-            galleryToDisplay.classList.add('fadeIn');
+            // Show the correct gallery
+            const galleryToDisplay = galleries[index];
+            if (galleryToDisplay) {
+                console.log("Displaying gallery:", galleryToDisplay.id);
+                galleryToDisplay.style.display = galleryToDisplay.id === "gallery-settings" ? "flex" : "grid";
+                galleryToDisplay.classList.add('fadeIn');
+            }
         }
 
         function updatePlatformName(index) {
             const allPlatformSlides = document.querySelectorAll('.top-menu-slide');
-            const slides = Array.from(allPlatformSlides);
 
-            // Hide all slides
-            allPlatformSlides.forEach(platform => {
-                platform.style.opacity = "0";
-                platform.style.display = "none";
+            // Normalize index
+            const safeIndex = (index - 1 + allPlatformSlides.length) % allPlatformSlides.length;
+
+            console.log("Updating Platform Name - Index:", index, "Safe Index:", safeIndex);
+
+            allPlatformSlides.forEach((platformSlide, i) => {
+                platformSlide.style.opacity = "0";
+                platformSlide.style.display = "none";
+                platformSlide.classList.remove("fadeIn");
+
+                if (i === safeIndex) {
+                    console.log("Displaying platform slide:", i);
+                    platformSlide.style.display = "flex";
+                    platformSlide.classList.add('fadeIn');
+                }
             });
-
-            // Show the current slide
-            slides[index].style.display = "flex";
-            slides[index].classList.add('fadeIn');
         }
 
-        // Function to handle left arrow click or key press
+
         const goToPreviousSlide = () => {
-            const slides = document.querySelectorAll('.top-menu-slide');
-            currentIndex = (currentIndex - 1 + slides.length) % slides.length; // Wrap around
-            displayGallery(currentIndex);
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+            console.log("Prev Slide - New Index:", currentIndex);
             updatePlatformName(currentIndex);
+            displayGallery(currentIndex);
         };
 
-        // Function to handle right arrow click or key press
         const goToNextSlide = () => {
-            const slides = document.querySelectorAll('.top-menu-slide');
-            currentIndex = (currentIndex + 1) % slides.length; // Wrap around
-            displayGallery(currentIndex);
+            currentIndex = (currentIndex + 1) % slides.length;
+            console.log("Next Slide - New Index:", currentIndex);
             updatePlatformName(currentIndex);
+            displayGallery(currentIndex);
         };
 
-        // Function to unregister menu listeners and perform another action
         const unregisterListeners = () => {
-            // Remove event listeners
-            // topMenu.removeEventListener('click', handleClick);
             document.removeEventListener('keydown', handleKeyDown);
 
-            // Perform another action (e.g., hide the menu or do something else)
-            console.log('Menu listeners unregistered. Perform another action here.');
+            console.log('Menu listeners unregistered.');
 
             const galleries = document.querySelectorAll('.gallery');
-
             const visibleGallery = Array.from(galleries).find(el => window.getComputedStyle(el).display !== 'none');
-            console.log("visibleGallery: ", visibleGallery);
-            window.control.initGalleryNav(visibleGallery);
 
-            const arrows = document.querySelectorAll('.arrows');
+            if (visibleGallery) {
+                console.log("Initializing gallery navigation for:", visibleGallery);
+                window.control.initGalleryNav(visibleGallery);
+                visibleGallery.focus();
+            }
 
             arrows.forEach(arrow => {
                 arrow.style.display = "none";
             });
-
-            visibleGallery.focus();
-
         };
 
-        // Event handler for clicks (event delegation)
         const handleClick = (event) => {
             if (event.target.closest('.left-arrow')) {
                 goToPreviousSlide();
@@ -557,39 +540,30 @@ window.control = {
             }
         };
 
-        // Event handler for keyboard input
         const handleKeyDown = (event) => {
             switch (event.key) {
             case 'ArrowLeft':
                 goToPreviousSlide();
                 break;
             case 'ArrowRight':
-                console.log("event: ", event);
                 goToNextSlide();
                 break;
             case 'ArrowDown':
                 unregisterListeners();
-
                 break;
             case 'Escape':
                 window.control.removeGalleryAndShowSlideshow();
                 break;
             case 'ArrowUp':
-                // Do nothing
                 break;
             default:
-                // Ignore other keys
                 break;
             }
         };
 
-        // Get the top menu element
         const topMenu = document.getElementById('top-menu');
-
-        // Add event listeners
         topMenu.addEventListener('click', handleClick);
         document.addEventListener('keydown', handleKeyDown);
-
     },
     setTopMenuPlatform: function(platform) {
 
@@ -624,17 +598,6 @@ window.control = {
     initGalleryNav: function(galleryContainer) {
 
         document.getElementById('dpad-icon').src = "./img/controls/dpad-active.png";
-
-        // // Function to simulate a key press
-        // function simulateKeyPress(key) {
-        //     const event = new KeyboardEvent('keydown', {
-        //         key: key,
-        //         keyCode: key === 'ArrowUp' ? 38 : key === 'ArrowDown' ? 40 : key === 'ArrowLeft' ? 37 : 39, // Key codes for arrow keys
-        //         code: `Arrow${key.slice(5)}`, // Extract direction from key (e.g., "ArrowUp")
-        //         bubbles: false,
-        //     });
-        //     document.dispatchEvent(event);
-        // }
 
         const gameContainers = Array.from(galleryContainer.querySelectorAll('.game-container'));
 
@@ -674,7 +637,6 @@ window.control = {
                         container.classList.remove('selected');
                     });
 
-                    console.log("MENU: ");
                     isOpeningTheMenu = true;
                     topMenu.focus();
                     window.control.initTopMenuNav();
@@ -689,7 +651,6 @@ window.control = {
                 fetchCoverButton.click();
                 break;
             case 'Enter':
-                console.log("yaa: ");
                 if (document.querySelector('.gallery')) {
                     gameContainers[selectedIndex].click();
                 }
@@ -710,6 +671,22 @@ window.control = {
             });
 
             if (selectedIndex < gameContainers.length && selectedIndex > 0) {
+
+                const fetchCoverButton = gameContainers[selectedIndex].querySelector('.fetch-cover-button');
+
+
+                const imageStatus = fetchCoverButton.getAttribute('data-image-status');
+
+                const fetchCoverButtons = document.querySelectorAll('.fetch-cover-button');
+
+                // fetchCoverButtons.forEach(fetchCoverButton => {
+                //     fetchCoverButton.style.opacity = 0;
+                // });
+
+                if (imageStatus === "missing") {
+                    fetchCoverButton.dispatchEvent(new Event('mouseover'));
+                    // fetchCoverButton.style.opacity = 1;
+                }
 
                 gameContainers[selectedIndex].scrollIntoView({
                     behavior: 'smooth',
@@ -753,7 +730,6 @@ window.control = {
                 break;
             case 'Escape':
                 // Handle the 'Escape' key
-                console.log("Escape pressed");
                 break;
             default:
                 return; // Ignore other keys

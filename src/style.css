@@ -94,7 +94,6 @@ body {
 
 /* CAROUSEL FORM */
 .slide-form-container {
-  display: none;
   width: 100%; /* Take up full width */
   border-radius: 0 0 16px 16px;
 }
@@ -279,9 +278,11 @@ button:hover {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 40px;
+  width: auto;
+  min-width: 160px; /* Increased width */
   height: 40px;
-  border-radius: 50%;
+  padding: 5px 25px; /* More padding for extra width */
+  border-radius: 10px;
   background-color: #007bff;
   color: white;
   border: none;
@@ -291,11 +292,19 @@ button:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 4px; /* Reduced spacing between columns */
 }
 
-.fetch-cover-button::before {
-  content: '+';
-  font-size: 24px;
+div.game-container.selected .fetch-cover-button {
+  opacity: 1;
+}
+
+.fetch-icon {
+  font-size: 18px;
+}
+
+.fetch-label {
+  font-size: 16px;
   font-weight: bold;
 }
 
@@ -554,4 +563,16 @@ exit-dialog-cancel-button:focus {
   white-space: nowrap;
   overflow: hidden;
   text-align: right; /* Align text to the right */
+}
+
+#gallery-settings {
+    display: flex; /* Change from grid to flex */
+    flex-direction: column; /* Stack children vertically */
+    gap: 20px; /* Add spacing between forms */
+    align-items: center; /* Center the forms horizontally */
+}
+
+.settings-form-container {
+    width: 100%; /* Ensure each form takes full width */
+    max-width: 600px; /* Optional: Set a max width for better readability */
 }

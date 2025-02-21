@@ -37,6 +37,22 @@ window.gallery = {
                 reject(error);
             }
         });
+    },
+    buildSettingsForm: function(platform, formTemplate) {
+        return buildSettingsForm(platform, formTemplate);
+    },
+    buildSettingsForms: function(platforms, formTemplate) {
+
+        const settingsGallery = document.getElementById("gallery-settings");
+
+        platforms.forEach((platform) => {
+            console.log("buildSettingsForm: ", platform);
+            if (platform !== "settings") {
+                const form = buildSettingsForm(platform, formTemplate);
+                settingsGallery.appendChild(form);
+            }
+        });
+
     }
 
 };
@@ -73,6 +89,62 @@ function scanDirectory(gamesDir, extensions, recursive = true) {
 }
 
 
+function buildSettingsForm(platform, formTemplate) {
+
+    console.log("YO! Platform: ", platform);
+
+    const prefString = localStorage.getItem(platform);
+
+    let prefs;
+
+    if (prefString) {
+        prefs = JSON.parse(prefString);
+    }
+
+    function capitalizeWord(word) {
+        if (!word) return word;
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    }
+
+    const form = document.createElement("div");
+    form.innerHTML = formTemplate;
+    form.className = "settings-form-container";
+
+    const platformForm = form.querySelector('#platform-form');
+    platformForm.id = `${platform}-form`;
+
+    const gamesDirInput = form.querySelector('#games-dir');
+    gamesDirInput.id = `${platform}-games-dir`;
+    gamesDirInput.value = (prefs && prefs.gamesDir) ? prefs.gamesDir : "";
+
+    gamesDirInput.placeholder = `${capitalizeWord(platform)} Games Directory`;
+
+    const browseDirButton = form.querySelector('.browse-button-dir');
+    browseDirButton.setAttribute('data-platform', platform);
+    browseDirButton.setAttribute('data-input', `${platform}-games-dir`);
+
+    const emulatorInput = form.querySelector('#emulator');
+    emulatorInput.id = `${platform}-emulator`;
+    emulatorInput.value = (prefs && prefs.emulator) ?  prefs.emulator : "";
+
+    emulatorInput.placeholder = `${platform} Emulator`;
+
+    const emulatorArgsInput = form.querySelector('#emulator-args');
+    emulatorArgsInput.id = `${platform}-emulator-args`;
+    emulatorArgsInput.classList.add('emulator-args');
+    emulatorArgsInput.value = (prefs && prefs.emulatorArgs) ? prefs.emulatorArgs : "";
+    emulatorArgsInput.placeholder = `args`;
+
+    const browseEmulatorButton = form.querySelector('.browse-button-file');
+    browseEmulatorButton.setAttribute('data-platform', platform);
+    browseEmulatorButton.setAttribute('data-input', `${platform}-emulator`);
+
+    const saveButton = form.querySelector('.save-button');
+    saveButton.setAttribute('data-platform', platform);
+
+    return form;
+}
+
 // Build the gallery for a specific platform
 function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) {
 
@@ -106,7 +178,7 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
         const fileNameWithoutExt = path.parse(fileName).name;
         const coverImagePath = path.join(userDataPath, "covers", platform, `${fileNameWithoutExt}.jpg`);
-        const missingImagePath = path.join(__dirname, './img/missing.png');
+        const missingImagePath = path.join(__dirname, "img", 'missing.png');
 
         // Create the game container
         const gameContainer = document.createElement('div');
@@ -120,15 +192,12 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
         // Add click event to launch the game
         gameContainer.addEventListener('click', (event) => {
 
-            console.log("data-plop:", event.target.dataset.command);
-
             event.stopPropagation();
             // const command = `${emulator} ${emulatorArgs} "${gameFile}"`;
             const command = `${emulator} -b -e "${gameFile}"`;
 
             const escapedCommand = process.platform === 'win32' ? `"${event.target.dataset.command}"` : event.target.dataset.command.replace(/(["'`\\\s!$&*(){}\[\]|<>?;])/g, '\\$1');
 
-            console.log("command, fileName: ", command, fileName);
             ipcRenderer.send('run-command', event.target.dataset.command); // Send the command to the main process
         });
 
@@ -156,7 +225,37 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
         fetchCoverButton.setAttribute('data-platform', platform);
         fetchCoverButton.setAttribute('data-image-status', fs.existsSync(coverImagePath) ? 'found' : 'missing');
 
+
+        // Create the first icon (F key)
+        const icon1 = document.createElement('img');
+        icon1.classList.add('fetch-icon');
+
+        icon1.src = path.join(__dirname, "img", "controls", 'button-square.png');
+
+        icon1.alt = 'F Key';
+
+        // Create the second icon (G key)
+        const icon2 = document.createElement('img');
+        icon2.classList.add('fetch-icon');
+        icon2.src = path.join(__dirname, "img", "controls", 'key-f.png');
+        icon2.alt = 'G Key';
+
+        // Create the label
+        const label = document.createElement('span');
+        label.classList.add('fetch-label');
+        label.textContent = "Fetch";
+
+        // Append elements to the button
+        fetchCoverButton.appendChild(icon1);
+        fetchCoverButton.appendChild(icon2);
+        fetchCoverButton.appendChild(label);
+
         fetchCoverButton.addEventListener('click', async (event) => {
+
+
+            const parentContainer = event.target.parentElement;
+
+            const img = fetchCoverButton.previousElementSibling;
 
             fetchCoverButton.classList.add('rotate');
 
@@ -169,10 +268,10 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
             await window.coverDownloader.searchGame(gameName, platform)
                 .then((details) => {
 
-                    if (details.imgSrcArray.length > 1 && !isBatch) {
-                        window.control.showCoversDialog(details.imgSrcArray, gameName, platform, imgElement);
+                    if (!isBatch) {
+                        window.control.showCoversDialog(details.imgSrcArray, gameName, platform, img);
                     } else {
-                        return window.control.downloadAndReload(details.imgSrcArray[0], gameName, platform, imgElement);
+                        return window.control.downloadAndReload(details.imgSrcArray[0], gameName, platform, img);
                     }
                 })
                 .catch((error) => {

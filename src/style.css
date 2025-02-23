@@ -98,90 +98,85 @@ body {
   border-radius: 0 0 16px 16px;
 }
 
-.platform-form-form-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 15px;
+.platform-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.platform-form-form-group label {
-  margin-bottom: 5px;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
+.form-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-input::placeholder {
-  color: greenyellow; /* Light gray color */
-  font-size: 18px; /* Smaller font size */
-  font-weight: bold; /* Bold text */
+.form-icon,
+.form-label,
+.form-checkbox,
+.form-input,
+.form-button,
+.form-submit,
+.form-spacer {
+    flex: 1;
 }
 
-.platform-form-input-group {
-  display: flex;
-  gap: 10px;
+.form-icon {
+    max-width: 50px; /* Adjust based on icon size */
 }
 
-.platform-form-input-group input {
-  flex: 1;
-  padding: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  background: rgb(0 0 0 / 61%);
-  color: greenyellow;
-  font-size: 18px;
-  transition: border-color 0.3s ease, background 0.3s ease;
+.form-label {
+    max-width: 100px; /* Adjust based on label length */
 }
 
-.platform-form-input-group input:focus {
-  color: #000;
-  border-color: green;
-  background: rgba(255, 255, 255, 0.2);
-  outline: none;
+.form-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
-.platform-form-input-group input.emulator-args {
-  min-width: 30px;
+.form-input input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgb(0 0 0 / 61%);
+    color: greenyellow;
+    font-size: 18px;
+    transition: border-color 0.3s ease, background 0.3s ease;
 }
 
-.platform-form-input-group input.emulator {
-  max-width: 50px;
+.form-input input:focus {
+    color: #000;
+    border-color: green;
+    background: rgba(255, 255, 255, 0.2);
+    outline: none;
 }
 
-.button {
-  background: linear-gradient(135deg, #FF5E00, #E4007C);
-  color: #0D021F;
-  /* border: 3px solid #5D00FF; */
-  border-radius: 8px;
-  font-weight: bold;
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.3s ease;
+.form-button button,
+.form-submit button {
+    padding: 10px 20px;
+    font-size: 14px;
+    background: linear-gradient(135deg, #FF5E00, #E4007C);
+    color: #0D021F;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
 }
 
-.platform-form-input-group button {
-  padding: 10px 20px;
-  font-size: 14px;
+.form-button button:hover,
+.form-submit button:hover {
+    background: linear-gradient(135deg, #E4007C, #5D00FF);
+    box-shadow: 0 0 15px #E4007C;
 }
 
-button:focus,
-button:hover {
-  background: linear-gradient(135deg, #E4007C, #5D00FF);
-  box-shadow: 0 0 15px #E4007C;
+.form-button button:active,
+.form-submit button:active {
+    transform: translateY(2px);
 }
 
-.button:focus,
-.button:hover {
-  transform: rotate(-2deg) scale(1.0);
-}
-
-.button:active {
-  transform: translateY(0);
-}
-
-.save-button {
-  width: 100%;
-  padding: 10px 20px;
+.form-spacer {
+    visibility: hidden; /* Hide spacer for alignment */
 }
 
 #galleries {
@@ -573,6 +568,59 @@ exit-dialog-cancel-button:focus {
 }
 
 .settings-form-container {
+  border: 1px solid red;
     width: 100%; /* Ensure each form takes full width */
     max-width: 600px; /* Optional: Set a max width for better readability */
+}
+
+/* FORM */
+.platform-form {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.platform-form table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.platform-form td {
+    padding: 8px;
+    vertical-align: middle;
+}
+
+.form-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-icon img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.button {
+    padding: 8px 12px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.form-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.form-checkbox input {
+    margin: 0;
 }

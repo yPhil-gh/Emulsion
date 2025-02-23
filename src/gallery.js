@@ -91,8 +91,6 @@ function scanDirectory(gamesDir, extensions, recursive = true) {
 
 function buildSettingsForm(platform, formTemplate) {
 
-    console.log("YO! Platform: ", platform);
-
     const prefString = localStorage.getItem(platform);
 
     let prefs;
@@ -109,6 +107,19 @@ function buildSettingsForm(platform, formTemplate) {
     const form = document.createElement("div");
     form.innerHTML = formTemplate;
     form.className = "settings-form-container";
+
+    // Row 3: Checkbox, Emulator Args
+    // const enableArgsCheckbox = form.getElementById('enable-args'); // Enable args checkbox
+    const iconDiv = form.querySelector('#platform-icon'); // Image element
+
+    const icon = document.createElement("img");
+
+    icon.src = `img/platforms/${platform}.png`; // Update the image source
+    icon.alt = `${platform} Icon`; // Update the alt text
+
+    icon.className = `platform-form-icon`; // Update the alt text
+
+    iconDiv.appendChild(icon);
 
     const platformForm = form.querySelector('#platform-form');
     platformForm.id = `${platform}-form`;

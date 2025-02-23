@@ -397,8 +397,6 @@ window.control = {
 
             } else if (event.key === 'Enter') {
 
-                console.log("Enter!!: ");
-                // Hide the slideshow div
                 document.getElementById('slideshow').style.display = 'none';
                 document.getElementById('galleries').style.display = "block";
                 document.getElementById('top-menu').style.display = "flex";
@@ -417,12 +415,18 @@ window.control = {
 
                 console.log("galleryToShow: ", galleryToShow);
 
-                galleryToShow.style.display = "grid";
+                console.log("galleryToShow.id: ", galleryToShow.id);
+
+                if (galleryToShow.id === "gallery-settings") {
+                    galleryToShow.style.display = "flex";
+                } else {
+                    galleryToShow.style.display = "grid";
+                    window.control.initGalleryNav(galleryToShow);
+                }
+
 
                 window.topMenu.style.visibility = "visible";
 
-
-                window.control.initGalleryNav(galleryToShow);
                 // window.control.initTopMenuNav();
                 window.control.setTopMenuPlatform(platform);
 

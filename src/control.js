@@ -6,6 +6,7 @@ function initPlatformForm(slide) {
 
     slide.querySelectorAll('.browse-button-dir').forEach(button => {
         button.addEventListener('click', async (event) => {
+            console.log("event: ", event);
             event.stopPropagation();
             const platform = button.getAttribute('data-platform');
             const inputId = button.getAttribute('data-input');

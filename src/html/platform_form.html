@@ -2,15 +2,16 @@
     <table border="1">
         <!-- Row 1: Icon, Games Directory, Browse, Save -->
         <tr>
-            <td>Platform</td>
-            <td>
-                <input type="checkbox" id="enable-args">
+            <td class="first-col">
+                <label class="switch">
+                    <input type="checkbox" id="enable">
+                    <span class="slider"></span>
+                </label>
             </td>
+            <td class="wide"><span id="form-label">Platform</span></td>
             <td></td>
             <td>
-                <span id="platform-icon" class="form-icon">
-                    <!-- Icon will be dynamically inserted here -->
-                </span>
+                <span id="platform-icon" class="form-icon"></span>
             </td>
         </tr>
 

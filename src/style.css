@@ -163,9 +163,11 @@ button {
     transition: background 0.3s ease, transform 0.3s ease;
 }
 
+button:focus,
 button:hover {
     background: linear-gradient(135deg, #E4007C, #5D00FF);
     box-shadow: 0 0 15px #E4007C;
+    outline: none;
 }
 
 button:active {
@@ -567,13 +569,12 @@ exit-dialog-cancel-button:focus {
 .settings-form-container {
   border: 1px solid red;
     width: 100%; /* Ensure each form takes full width */
-    max-width: 600px; /* Optional: Set a max width for better readability */
 }
 
 /* FORM */
 .platform-form {
     width: 100%;
-    max-width: 800px;
+    /* max-width: 800px; */
     margin: 0 auto;
 }
 
@@ -606,11 +607,11 @@ input[type="text"] {
     box-sizing: border-box;
 }
 
-.button {
-    padding: 8px 12px;
-    cursor: pointer;
-    width: 100%;
-}
+/* .button { */
+/*     padding: 8px 12px; */
+/*     cursor: pointer; */
+/*     width: 100%; */
+/* } */
 
 .form-checkbox {
     display: flex;
@@ -624,6 +625,7 @@ input[type="text"] {
 
 table {
   width: 100%;
+  table-layout: fixed;
   height: 100%;
   border-collapse: collapse; /* Remove spacing between cells */
 }
@@ -637,8 +639,73 @@ td[rowspan="3"] {
   height: 100%;
 }
 
+/* Make the rowspan cell and button 100% height */
+td[colspan="1"] {
+  width: 100%;
+}
+
+td.wide {
+  width: 70%;
+}
+
+td.first-col {
+  width: 10%;
+  white-space: nowrap;
+}
+
 .save-button {
   height: 100%;
   width: 100%; /* Optional: Make the button fill the cell width */
   box-sizing: border-box; /* Ensure padding and border are included in height/width */
+}
+
+/* SWITCH */
+/* Container for the switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide the default checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider (the visible part of the switch) */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+/* Slider circle */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+/* When the checkbox is checked, move the slider */
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
 }

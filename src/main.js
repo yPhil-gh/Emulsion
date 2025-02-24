@@ -116,6 +116,14 @@ ipcMain.handle('go-to-donate-page', async () => {
     return true;
 });
 
+ipcMain.handle('select-file-or-directory', async () => {
+    const result = await dialog.showOpenDialog({ properties: ['openDirectory'] });
+    if (!result.canceled && result.filePaths.length > 0) {
+        return result.filePaths[0]; // Return the first selected directory path
+    }
+    return null; // Return null if no directory was selected
+});
+
 ipcMain.handle('select-directory', async () => {
     const result = await dialog.showOpenDialog({ properties: ['openDirectory'] });
     if (!result.canceled && result.filePaths.length > 0) {

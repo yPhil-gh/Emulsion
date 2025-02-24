@@ -104,15 +104,36 @@ function buildSettingsForm(platform, formTemplate) {
         return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     }
 
+    async function browse(event) {
+        console.log("event.target: ", event.target);
+        let type;
+        if (event.target.classList.contains("browse-button-dir")) {
+            type = "directory";
+        } else {
+            type = "file";
+        }
+
+        event.stopPropagation();
+        const inputId = browseDirButton.getAttribute('data-input');
+        const inputElement = document.getElementById(inputId);
+        const selectedPath = await ipcRenderer.invoke('select-file-or-directory', { type: type });
+        if (selectedPath) {
+            inputElement.value = selectedPath;
+            inputElement.title = selectedPath;
+        }
+    }
+
     const form = document.createElement("div");
     form.innerHTML = formTemplate;
     form.className = "settings-form-container";
 
     // Row 3: Checkbox, Emulator Args
     // const enableArgsCheckbox = form.getElementById('enable-args'); // Enable args checkbox
-    const iconDiv = form.querySelector('#platform-icon'); // Image element
-
+    const iconDiv = form.querySelector('#platform-icon');
     const icon = document.createElement("img");
+
+    const formLabel = form.querySelector('#form-label');
+    formLabel.textContent = platform;
 
     icon.src = `img/platforms/${platform}.png`; // Update the image source
     icon.alt = `${platform} Icon`; // Update the alt text
@@ -134,6 +155,8 @@ function buildSettingsForm(platform, formTemplate) {
     browseDirButton.setAttribute('data-platform', platform);
     browseDirButton.setAttribute('data-input', `${platform}-games-dir`);
 
+    browseDirButton.addEventListener('click', browse);
+
     const emulatorInput = form.querySelector('#emulator');
     emulatorInput.id = `${platform}-emulator`;
     emulatorInput.value = (prefs && prefs.emulator) ?  prefs.emulator : "";
@@ -149,6 +172,8 @@ function buildSettingsForm(platform, formTemplate) {
     const browseEmulatorButton = form.querySelector('.browse-button-file');
     browseEmulatorButton.setAttribute('data-platform', platform);
     browseEmulatorButton.setAttribute('data-input', `${platform}-emulator`);
+
+    browseEmulatorButton.addEventListener('click', browse);
 
     const saveButton = form.querySelector('.save-button');
     saveButton.setAttribute('data-platform', platform);

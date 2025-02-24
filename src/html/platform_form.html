@@ -1,11 +1,22 @@
 <form id="platform-form" class="platform-form">
-    <table>
+    <table border="1">
         <!-- Row 1: Icon, Games Directory, Browse, Save -->
         <tr>
+            <td>Platform</td>
+            <td>
+                <input type="checkbox" id="enable-args">
+            </td>
+            <td></td>
             <td>
                 <span id="platform-icon" class="form-icon">
                     <!-- Icon will be dynamically inserted here -->
                 </span>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label for="games-dir">Games Directory</label>
             </td>
             <td>
                 <input
@@ -43,16 +54,12 @@
                     class="button browse-button-file"
                     data-input="emulator">Browse</button>
             </td>
-            <td></td> <!-- Empty cell for alignment -->
         </tr>
 
         <!-- Row 3: Checkbox, Emulator Args -->
         <tr>
             <td>
-                <span class="form-checkbox">
-                    <input type="checkbox" id="enable-args">
-                    <label for="enable-args">Enable Args</label>
-                </span>
+                <label for="emulator-args">Args</label>
             </td>
             <td colspan="2">
                 <input
@@ -61,7 +68,6 @@
                     id="emulator-args"
                     placeholder="Emulator Args">
             </td>
-            <td></td> <!-- Empty cell for alignment -->
         </tr>
     </table>
 </form>

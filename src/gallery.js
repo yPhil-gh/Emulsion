@@ -53,6 +53,8 @@ window.gallery = {
             }
         });
 
+        settingsGallery.style.display = "none";
+
     }
 
 };
@@ -126,6 +128,8 @@ function buildSettingsForm(platform, formTemplate) {
     const form = document.createElement("div");
     form.innerHTML = formTemplate;
     form.className = "settings-form-container";
+    form.id = `${platform}-form-container`;
+
 
     // Row 3: Checkbox, Emulator Args
     // const enableArgsCheckbox = form.getElementById('enable-args'); // Enable args checkbox
@@ -177,6 +181,29 @@ function buildSettingsForm(platform, formTemplate) {
 
     const saveButton = form.querySelector('.save-button');
     saveButton.setAttribute('data-platform', platform);
+
+    const toggleCheckbox = form.querySelector('#platform-toggle');
+    toggleCheckbox.checked = window.control.isEnabled(platform);
+
+    saveButton.addEventListener('click', () => {
+        const gamesDir = gamesDirInput.value;
+        const emulator = emulatorInput.value;
+        const emulatorArgs = emulatorArgsInput.value;
+
+        if (!gamesDir || !emulator) {
+            alert('Please specify both the Games Directory and Emulator.');
+            return;
+        }
+
+        toggleCheckbox.checked = true;
+
+        const preferences = { gamesDir, emulator, emulatorArgs };
+        localStorage.setItem(platform, JSON.stringify(preferences));
+
+        alert('Preferences saved!');
+
+    });
+
 
     return form;
 }

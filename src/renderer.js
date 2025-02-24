@@ -8,6 +8,13 @@ slideshow.focus();
 
 function buildSlide(platform) {
 
+    if (!window.control.isEnabled(platform)) {
+        console.log("Disabled: ", platform);
+        return null;
+    } else {
+        console.log("Enabled: ", platform);
+    }
+
     // Create the slide container
     const homeSlide = document.createElement("div");
     homeSlide.className = "slide";
@@ -27,21 +34,8 @@ function buildSlide(platform) {
 
 function buildTopMenuItem(platform) {
 
-    const prefString = localStorage.getItem(platform);
-
-    let prefs;
-
-    if (platform !== "settings") {
-
-        if (prefString) {
-            prefs = JSON.parse(prefString);
-            if (!prefs.gamesDir && !prefs.emulator) {
-                return null;
-            }
-        } else {
-            return null;
-        }
-
+    if (!window.control.isEnabled(platform)) {
+        return null;
     }
 
     console.log("Building platform top menu item: ", platform);
@@ -112,8 +106,11 @@ Promise.all([
                 window.topMenuItems.appendChild(menuItem);
             }
 
-            slideshow.appendChild(homeSlide);
-            window.control.initPlatformForm(homeSlide);
+            if (homeSlide) {
+                slideshow.appendChild(homeSlide);
+            }
+
+            // window.control.initPlatformForm(homeSlide);
         });
 
         window.control.initSlideShow(slideshow);

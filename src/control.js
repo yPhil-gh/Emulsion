@@ -303,7 +303,30 @@ function showCoversDialog(imageUrls, gameName, platform, imgElement) {
 
 }
 
+function isEnabled(platform) {
+
+    if (platform === "settings") {
+        return true;
+    }
+
+    const prefString = localStorage.getItem(platform);
+
+    let prefs;
+
+    if (prefString) {
+        prefs = JSON.parse(prefString);
+        if (!prefs.gamesDir && !prefs.emulator) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
 window.control = {
+    isEnabled: isEnabled,
     initPlatformForm: initPlatformForm,
     updateControlsMenu: updateControlsMenu,
     showCoversDialog: showCoversDialog,
@@ -605,10 +628,7 @@ window.control = {
 
         const formContainers = galleryContainer.querySelectorAll('.settings-form-container');
 
-        console.log("formContainers: ", formContainers);
-
-        galleryContainer.tabIndex = -1; // Make the container focusable
-
+        galleryContainer.tabIndex = -1;
         galleryContainer.focus();
 
         let currentIndex = 0;
@@ -616,9 +636,32 @@ window.control = {
         const highlightCurrent = () => {
             formContainers.forEach((container, index) => {
                 if (index === currentIndex) {
-                    container.classList.add('highlighted'); // Add highlight class
+                    container.classList.add('highlighted');
+
+                    container.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center',
+                    });
+
                 } else {
-                    container.classList.remove('highlighted'); // Remove highlight class
+                    container.classList.remove('highlighted');
+                }
+            });
+        };
+
+        const toggleCurrent = () => {
+            formContainers.forEach((container, index) => {
+                if (index === currentIndex) {
+                    container.classList.add('highlighted');
+                    const toggleCheckbox = container.querySelector('#platform-toggle');
+
+                    const platform = container.id.split('-')[0];
+
+                    if (window.control.isEnabled(platform)) {
+                        toggleCheckbox.checked = !toggleCheckbox.checked;
+                    } else {
+                        console.log("Condition not met, checkbox not toggled.");
+                    }
                 }
             });
         };
@@ -633,13 +676,16 @@ window.control = {
                 window.control.initTopMenuNav();
                 break;
             case 'ArrowDown':
-                console.log("ArrowDown: ");
                 currentIndex = (currentIndex + 1) % formContainers.length;
                 highlightCurrent();
                 break;
             case 'ArrowUp':
                 currentIndex = (currentIndex - 1 + formContainers.length) % formContainers.length;
                 highlightCurrent();
+                break;
+            case 'Enter':
+                toggleCurrent();
+                break;
             default:
                 return;
             }
@@ -647,7 +693,6 @@ window.control = {
         });
 
         highlightCurrent();
-
 
     },
     initGalleryNav: function(galleryContainer) {

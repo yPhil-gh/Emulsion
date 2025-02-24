@@ -134,7 +134,7 @@ body {
     gap: 5px;
 }
 
-.form-input input {
+input {
     width: 100%;
     padding: 8px;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -145,15 +145,14 @@ body {
     transition: border-color 0.3s ease, background 0.3s ease;
 }
 
-.form-input input:focus {
+input:focus {
     color: #000;
     border-color: green;
     background: rgba(255, 255, 255, 0.2);
     outline: none;
 }
 
-.form-button button,
-.form-submit button {
+button {
     padding: 10px 20px;
     font-size: 14px;
     background: linear-gradient(135deg, #FF5E00, #E4007C);
@@ -164,14 +163,12 @@ body {
     transition: background 0.3s ease, transform 0.3s ease;
 }
 
-.form-button button:hover,
-.form-submit button:hover {
+button:hover {
     background: linear-gradient(135deg, #E4007C, #5D00FF);
     box-shadow: 0 0 15px #E4007C;
 }
 
-.form-button button:active,
-.form-submit button:active {
+button:active {
     transform: translateY(2px);
 }
 
@@ -623,4 +620,25 @@ input[type="text"] {
 
 .form-checkbox input {
     margin: 0;
+}
+
+table {
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse; /* Remove spacing between cells */
+}
+
+td {
+  border: 1px solid #000; /* Optional: Add borders for visualization */
+}
+
+/* Make the rowspan cell and button 100% height */
+td[rowspan="3"] {
+  height: 100%;
+}
+
+.save-button {
+  height: 100%;
+  width: 100%; /* Optional: Make the button fill the cell width */
+  box-sizing: border-box; /* Ensure padding and border are included in height/width */
 }

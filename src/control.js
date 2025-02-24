@@ -420,6 +420,7 @@ window.control = {
 
                 if (galleryToShow.id === "gallery-settings") {
                     galleryToShow.style.display = "flex";
+                    window.control.initSettingsNav(galleryToShow);
                 } else {
                     galleryToShow.style.display = "grid";
                     window.control.initGalleryNav(galleryToShow);
@@ -600,6 +601,45 @@ window.control = {
         }
 
     },
+    initSettingsNav: function(galleryContainer) {
+
+        const formContainers = galleryContainer.querySelectorAll('.settings-form-container');
+
+        console.log("formContainers: ", formContainers);
+
+        galleryContainer.tabIndex = -1; // Make the container focusable
+
+        galleryContainer.focus();
+
+        let currentIndex = 0;
+
+        const highlightCurrent = () => {
+            formContainers.forEach((container, index) => {
+                if (index === currentIndex) {
+                    container.classList.add('highlighted'); // Add highlight class
+                } else {
+                    container.classList.remove('highlighted'); // Remove highlight class
+                }
+            });
+        };
+
+        galleryContainer.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowDown') {
+                console.log("ArrowDown: ");
+                // Move to the next form container
+                currentIndex = (currentIndex + 1) % formContainers.length;
+                highlightCurrent();
+            } else if (event.key === 'ArrowUp') {
+                // Move to the previous form container
+                currentIndex = (currentIndex - 1 + formContainers.length) % formContainers.length;
+                highlightCurrent();
+            }
+        });
+
+        highlightCurrent();
+
+
+    },
     initGalleryNav: function(galleryContainer) {
 
         document.getElementById('dpad-icon').src = "./img/controls/dpad-active.png";
@@ -614,8 +654,6 @@ window.control = {
         galleryContainer.tabIndex = -1; // Make the container focusable
 
         galleryContainer.focus();
-
-        let isOpeningTheMenu = false;
 
         // Gallery nav
         galleryContainer.addEventListener('keydown', (event) => {
@@ -642,7 +680,6 @@ window.control = {
                         container.classList.remove('selected');
                     });
 
-                    isOpeningTheMenu = true;
                     topMenu.focus();
                     window.control.initTopMenuNav();
                 } else {

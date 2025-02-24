@@ -645,7 +645,7 @@ td[colspan="1"] {
 }
 
 td.wide {
-  width: 70%;
+  width: 60%;
 }
 
 td.first-col {
@@ -708,4 +708,9 @@ input:checked + .slider {
 
 input:checked + .slider:before {
   transform: translateX(26px);
+}
+
+.highlighted {
+  border: 2px solid #2196F3;
+  background-color: #ccc;
 }

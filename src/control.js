@@ -624,16 +624,26 @@ window.control = {
         };
 
         galleryContainer.addEventListener('keydown', (event) => {
-            if (event.key === 'ArrowDown') {
+
+            switch (event.key) {
+            case 'ArrowRight':
+                window.control.initTopMenuNav();
+                break;
+            case 'ArrowLeft':
+                window.control.initTopMenuNav();
+                break;
+            case 'ArrowDown':
                 console.log("ArrowDown: ");
-                // Move to the next form container
                 currentIndex = (currentIndex + 1) % formContainers.length;
                 highlightCurrent();
-            } else if (event.key === 'ArrowUp') {
-                // Move to the previous form container
+                break;
+            case 'ArrowUp':
                 currentIndex = (currentIndex - 1 + formContainers.length) % formContainers.length;
                 highlightCurrent();
+            default:
+                return;
             }
+
         });
 
         highlightCurrent();

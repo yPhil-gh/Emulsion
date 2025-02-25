@@ -91,6 +91,12 @@ function scanDirectory(gamesDir, extensions, recursive = true) {
 }
 
 
+function capitalizeWord(word) {
+    if (!word) return word;
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+}
+
+
 function buildSettingsForm(platform, formTemplate) {
 
     const prefString = localStorage.getItem(platform);
@@ -99,11 +105,6 @@ function buildSettingsForm(platform, formTemplate) {
 
     if (prefString) {
         prefs = JSON.parse(prefString);
-    }
-
-    function capitalizeWord(word) {
-        if (!word) return word;
-        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     }
 
     async function browse(event) {
@@ -137,7 +138,7 @@ function buildSettingsForm(platform, formTemplate) {
     const icon = document.createElement("img");
 
     const formLabel = form.querySelector('#form-label');
-    formLabel.textContent = platform;
+    formLabel.textContent = capitalizeWord(platform);
 
     icon.src = `img/platforms/${platform}.png`; // Update the image source
     icon.alt = `${platform} Icon`; // Update the alt text
@@ -191,7 +192,9 @@ function buildSettingsForm(platform, formTemplate) {
         const emulatorArgs = emulatorArgsInput.value;
 
         if (!gamesDir || !emulator) {
-            alert('Please specify both the Games Directory and Emulator.');
+            window.control.updateControlsMenu({
+                message: "Please provide both a <strong>Games Directory</strong> and an <strong>Emulator</strong>."
+            });
             return;
         }
 
@@ -203,7 +206,6 @@ function buildSettingsForm(platform, formTemplate) {
         alert('Preferences saved!');
 
     });
-
 
     return form;
 }
@@ -237,6 +239,7 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
         const fileName = path.basename(gameFile);
 
+        document.getElementById('loading-platform').textContent = capitalizeWord(platform);
         document.getElementById('loading-game').textContent = i + " - " + fileName;
 
         const fileNameWithoutExt = path.parse(fileName).name;

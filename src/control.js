@@ -2,70 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const { ipcRenderer } = require('electron');
 
-function initPlatformForm(slide) {
-
-    slide.querySelectorAll('.browse-button-dir').forEach(button => {
-        button.addEventListener('click', async (event) => {
-            console.log("event: ", event);
-            event.stopPropagation();
-            const platform = button.getAttribute('data-platform');
-            const inputId = button.getAttribute('data-input');
-            const inputElement = document.getElementById(inputId);
-
-            if (button.textContent === 'Browse') {
-                const selectedPath = await ipcRenderer.invoke('select-directory');
-                if (selectedPath) inputElement.value = selectedPath;
-            }
-        });
-    });
-
-    slide.querySelectorAll('.browse-button-file').forEach(button => {
-        button.addEventListener('click', async (event) => {
-            event.stopPropagation();
-            const platform = button.getAttribute('data-platform');
-            const inputId = button.getAttribute('data-input');
-            const inputElement = document.getElementById(inputId);
-
-            if (button.textContent === 'Browse') {
-                const selectedPath = await ipcRenderer.invoke('select-file');
-                if (selectedPath) inputElement.value = selectedPath;
-            }
-        });
-    });
-
-    slide.querySelectorAll('.save-button').forEach(button => {
-        button.addEventListener('click', (event) => {
-            event.stopPropagation();
-            const platform = button.getAttribute('data-platform');
-            const gamesDir = document.getElementById(`${platform}-games-dir`).value;
-            const emulator = document.getElementById(`${platform}-emulator`).value;
-            const emulatorArgs = document.getElementById(`${platform}-emulator-args`).value;
-
-            if (!gamesDir || !emulator) {
-                alert('Please specify both the Games Directory and Emulator.');
-                return;
-            }
-
-            const preferences = { gamesDir, emulator, emulatorArgs };
-            localStorage.setItem(platform, JSON.stringify(preferences));
-
-            // alert('Preferences saved!');
-
-            slide.classList.add('ready');
-
-            window.control.updateControlsMenu({message : `${platform.charAt(0).toUpperCase() + platform.slice(1)} Preferences Saved!`});
-
-            // window.control.initSlideShow(document.getElementById('slideshow'));
-
-            const parentForm = button.closest('.platform-form');
-            if (parentForm) {
-                parentForm.style.display = 'none';
-                // parentForm.style.pointerEvents = 'none';
-            }
-        });
-    });
-
-}
 
 function updatePlatormsMenu({ pad = "Browse", cross = "Select", square = "Config", circle = "Exit" } = {}) {
     const squareSpan = document.getElementById("square-span");
@@ -75,15 +11,27 @@ function updatePlatormsMenu({ pad = "Browse", cross = "Select", square = "Config
 function updateControlsMenu({ message = "plop" }) {
     const msgDiv = document.getElementById("message");
     const msgSpan = document.getElementById("message-span");
+
+    // Reset the message container
     msgDiv.style.opacity = "1";
-
     msgDiv.style.visibility = "visible";
-    msgSpan.textContent = message;
+    msgSpan.innerHTML = message;
 
-    setTimeout(() => {
+    // Restart the animation
+    msgSpan.style.animation = "none";
+    void msgSpan.offsetWidth; // Trigger reflow
+    msgSpan.style.animation = null;
+
+    // Listen for the animation end event
+    msgSpan.addEventListener("animationend", () => {
+        // Fade out the message container quickly
         msgDiv.style.opacity = "0";
-    }, 3000);
 
+        // Hide the message container after the fade-out
+        setTimeout(() => {
+            msgDiv.style.visibility = "hidden";
+        }, 500); // Match this delay with the fade-out transition duration
+    }, { once: true }); // Ensure the event listener is removed after firing
 }
 
 function simulateKeyPress(key) {
@@ -327,7 +275,6 @@ function isEnabled(platform) {
 
 window.control = {
     isEnabled: isEnabled,
-    initPlatformForm: initPlatformForm,
     updateControlsMenu: updateControlsMenu,
     showCoversDialog: showCoversDialog,
     showExitDialog: showExitDialog,
@@ -660,7 +607,9 @@ window.control = {
                     if (window.control.isEnabled(platform)) {
                         toggleCheckbox.checked = !toggleCheckbox.checked;
                     } else {
-                        console.log("Condition not met, checkbox not toggled.");
+                        window.control.updateControlsMenu({
+                            message: "Please provide both the <strong>Games Directory</strong> and the <strong>Emulator</strong>."
+                        });
                     }
                 }
             });
@@ -685,6 +634,9 @@ window.control = {
                 break;
             case 'Enter':
                 toggleCurrent();
+                break;
+            case 'Escape':
+                window.control.removeGalleryAndShowSlideshow();
                 break;
             default:
                 return;
@@ -770,7 +722,6 @@ window.control = {
             if (selectedIndex < gameContainers.length && selectedIndex > 0) {
 
                 const fetchCoverButton = gameContainers[selectedIndex].querySelector('.fetch-cover-button');
-
 
                 const imageStatus = fetchCoverButton.getAttribute('data-image-status');
 

@@ -110,7 +110,6 @@ Promise.all([
                 slideshow.appendChild(homeSlide);
             }
 
-            // window.control.initPlatformForm(homeSlide);
         });
 
         window.control.initSlideShow(slideshow);

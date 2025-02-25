@@ -467,9 +467,20 @@ div.game-container.selected .fetch-cover-button {
 }
 
 #controls-menu {
-  bottom: 0;
-  justify-content: left;
-  gap: 10px;
+    letter-spacing: 1px;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    position: fixed; /* Ensure it stays fixed at the bottom */
+    left: 0;
+    bottom: 0; /* Stick it to the bottom of the viewport */
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 10px 0 10px 5px;
+    z-index: 9999;
+    width: 100%;
+    justify-content: left;
+    gap: 10px;
 }
 
 .status-item {
@@ -498,20 +509,14 @@ div.game-container.selected .fetch-cover-button {
 
 /* Style the message */
 #loading-message {
-    text-color: white; /* White text */
-    font-size: 24px; /* Adjust font size as needed */
-    font-family: Arial, sans-serif; /* Use a clean font */
+    font-size: 18px; /* Adjust font size as needed */
     text-align: center; /* Center the text */
 }
 
-/* Style the message */
-#loading-message h3 {
-    color: white; /* White text */
-}
 
 #loading-platform,
 #loading-game {
-  color: red;
+  color: #42a110;
 }
 
 .dialog-buttons {
@@ -544,19 +549,29 @@ exit-dialog-cancel-button:focus {
   justify-content: flex-end; /* Align content to the right */
   margin-left: auto; /* Push the container to the right */
   opacity: 0;
-  transition: opacity 2s ease-out;
   width: 100%;
-  max-width: 600px;
+  /* max-width: 600px; */
   white-space: nowrap;
   overflow: hidden;
   margin-right: 1em;
+  transition: opacity 0.5s ease; /* Faster fade-out transition */
 }
 
 #message-span {
-  text-overflow: ellipsis;
+  /* text-overflow: ellipsis; */
   white-space: nowrap;
-  overflow: hidden;
+  /* overflow: hidden; */
   text-align: right; /* Align text to the right */
+  animation: scroll-text 10s linear forwards; /* Use 'forwards' to keep the final state */
+}
+
+@keyframes scroll-text {
+    from {
+        transform: translateX(100%); /* Start from the right */
+    }
+    to {
+        transform: translateX(-100%); /* Move to the left */
+    }
 }
 
 #gallery-settings {

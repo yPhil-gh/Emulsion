@@ -85,8 +85,10 @@ async function downloadImage(imageUrl, gameName, platform) {
 function reloadImage(imgElement, coverPath) {
     // Ensure the image exists before updating the src
 
+    const newSrc = `${coverPath}?t=${Date.now()}`; // Add a timestamp to bypass cache
+
     // Update the imgElement.src
-    imgElement.src = coverPath;
+    imgElement.src = newSrc;
     console.log(`Image reloaded: ${coverPath}`);
 }
 

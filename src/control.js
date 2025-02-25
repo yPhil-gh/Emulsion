@@ -101,33 +101,6 @@ function initDialogNav(dialog, buttons, onImageSelect) {
         elementToFocus = buttons.donateButton;
     }
 
-    dialog.addEventListener('keydown', (event) => {
-        if (event.key === 'ArrowRight') {
-            event.preventDefault();
-            cycleFocus(1);
-        } else if (event.key === 'ArrowLeft') {
-            event.preventDefault();
-            cycleFocus(-1);
-        } else if (event.key === 'Enter') {
-            if (isImageDialog) {
-                const activeElement = document.activeElement;
-                const imageUrl = activeElement.querySelector("img").src;
-                onImageSelect(imageUrl); // Pass the selected image URL to the callback
-                closeDialog();
-            }
-
-            if (event.target.id === "exit-dialog-cancel-button" || document.activeElement.id === "exit-dialog-cancel-button") {
-                closeDialog();
-            } else if (event.target.id === "exit-dialog-donate-button" || document.activeElement.id === "exit-dialog-donate-button") {
-                ipcRenderer.invoke('go-to-donate-page');
-            } else if (event.target.id === "exit-dialog-exit-button" || document.activeElement.id === "exit-dialog-exit-button") {
-                ipcRenderer.invoke('exit');
-            }
-        } else if (event.key === 'Escape') {
-            closeDialog();
-        }
-    });
-
     function closeDialog() {
         if (isImageDialog) {
             const galleries = document.querySelectorAll(".gallery");
@@ -143,6 +116,35 @@ function initDialogNav(dialog, buttons, onImageSelect) {
 
         dialog.classList.add('hidden');
     }
+
+    function onKeyDown (event) {
+        if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            cycleFocus(1);
+        } else if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            cycleFocus(-1);
+        } else if (event.key === 'Enter') {
+            if (isImageDialog) {
+                const activeElement = event.target.querySelector("img");
+                const imageUrl = activeElement.src;
+                onImageSelect(imageUrl); // Pass the selected image URL to the callback
+                // closeDialog();
+            }
+
+            if (event.target.id === "exit-dialog-cancel-button" || document.activeElement.id === "exit-dialog-cancel-button") {
+                closeDialog();
+            } else if (event.target.id === "exit-dialog-donate-button" || document.activeElement.id === "exit-dialog-donate-button") {
+                ipcRenderer.invoke('go-to-donate-page');
+            } else if (event.target.id === "exit-dialog-exit-button" || document.activeElement.id === "exit-dialog-exit-button") {
+                ipcRenderer.invoke('exit');
+            }
+        } else if (event.key === 'Escape') {
+            closeDialog();
+        }
+    }
+
+    dialog.addEventListener('keydown', onKeyDown);
 
     function cycleFocus(direction) {
         const focusable = Array.from(document.querySelectorAll(isImageDialog ? '#image-dialog .image-container' : '#exit-dialog button'));
@@ -173,7 +175,17 @@ function initDialogNav(dialog, buttons, onImageSelect) {
     });
 
     dialog.setAttribute('tabindex', '-1');
+
+    console.log("elementToFocus: ", elementToFocus);
+
     elementToFocus.focus();
+
+    return {
+        closeDialog,
+        cleanup: () => {
+            dialog.removeEventListener('keydown', onKeyDown);
+        },
+    };
 }
 
 function showExitDialog () {
@@ -195,6 +207,7 @@ function showExitDialog () {
 }
 
 function showCoversDialog(imageUrls, gameName, platform, imgElement) {
+    console.warn("showCoversDialog: ", showCoversDialog);
     const coversDialog = document.getElementById('image-dialog');
     const dialogTitle = document.getElementById('image-dialog-title');
     const imageGrid = document.getElementById('image-grid');
@@ -222,13 +235,14 @@ function showCoversDialog(imageUrls, gameName, platform, imgElement) {
         imageGrid.appendChild(imgContainer);
     });
 
+    // Remove the hidden class to show the dialog
     coversDialog.classList.remove('hidden');
 
-    initDialogNav(coversDialog, { selectButton, cancelButton }, (imageUrl) => {
-        // Ensure `imgElement` and `gameName` are correctly scoped
-        const selectedImageUrl = imageUrl;
+    // Initialize dialog navigation and get closeDialog and cleanup functions
+    const { closeDialog, cleanup } = initDialogNav(coversDialog, { selectButton, cancelButton }, (imageUrl) => {
+        console.warn("imageUrl: ", imageUrl, imgElement);
 
-        window.coverDownloader.downloadAndReload(selectedImageUrl, gameName, platform, imgElement)
+        window.coverDownloader.downloadAndReload(imageUrl, gameName, platform, imgElement)
             .then(() => {
                 const grandParent = imgElement.parentElement.parentElement;
                 grandParent.focus();
@@ -236,8 +250,20 @@ function showCoversDialog(imageUrls, gameName, platform, imgElement) {
             .catch((error) => {
                 console.error('Error:', error.message);
             });
+
+        cleanup();
+        // Close the dialog after selecting an image
+        closeDialog();
     });
 
+    // Add a cleanup mechanism when the dialog is closed
+    const handleClose = () => {
+        closeDialog();
+        cleanup(); // Clean up event listeners
+    };
+
+    // Example: Close the dialog when the cancel button is clicked
+    cancelButton.addEventListener('click', handleClose);
 }
 
 function isEnabled(platform) {

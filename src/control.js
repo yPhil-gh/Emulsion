@@ -1,4 +1,4 @@
-const fs = require('fs');
+let fs = require('fs');
 const path = require('path');
 const { ipcRenderer } = require('electron');
 
@@ -90,10 +90,8 @@ function simulateKeyPress(key) {
     }
 }
 
-function initDialogNav (dialog, buttons, onImageSelect) {
-
+function initDialogNav(dialog, buttons, onImageSelect) {
     let isImageDialog = false;
-
     let elementToFocus;
 
     if (dialog.id === "image-dialog") {
@@ -104,8 +102,6 @@ function initDialogNav (dialog, buttons, onImageSelect) {
     }
 
     dialog.addEventListener('keydown', (event) => {
-
-
         if (event.key === 'ArrowRight') {
             event.preventDefault();
             cycleFocus(1);
@@ -113,13 +109,12 @@ function initDialogNav (dialog, buttons, onImageSelect) {
             event.preventDefault();
             cycleFocus(-1);
         } else if (event.key === 'Enter') {
-
             if (isImageDialog) {
-                const imageUrl = document.activeElement.querySelector("img").src;
-                onImageSelect(imageUrl);
+                const activeElement = document.activeElement;
+                const imageUrl = activeElement.querySelector("img").src;
+                onImageSelect(imageUrl); // Pass the selected image URL to the callback
                 closeDialog();
             }
-
 
             if (event.target.id === "exit-dialog-cancel-button" || document.activeElement.id === "exit-dialog-cancel-button") {
                 closeDialog();
@@ -128,14 +123,12 @@ function initDialogNav (dialog, buttons, onImageSelect) {
             } else if (event.target.id === "exit-dialog-exit-button" || document.activeElement.id === "exit-dialog-exit-button") {
                 ipcRenderer.invoke('exit');
             }
-
         } else if (event.key === 'Escape') {
             closeDialog();
         }
     });
 
     function closeDialog() {
-
         if (isImageDialog) {
             const galleries = document.querySelectorAll(".gallery");
             const visibleGallery = Array.from(galleries).find(gallery =>
@@ -180,9 +173,7 @@ function initDialogNav (dialog, buttons, onImageSelect) {
     });
 
     dialog.setAttribute('tabindex', '-1');
-
     elementToFocus.focus();
-
 }
 
 function showExitDialog () {
@@ -234,14 +225,12 @@ function showCoversDialog(imageUrls, gameName, platform, imgElement) {
     coversDialog.classList.remove('hidden');
 
     initDialogNav(coversDialog, { selectButton, cancelButton }, (imageUrl) => {
-        // Callback to handle image selection via keyboard (Enter key)
-        selectedImageUrl = imageUrl;
+        // Ensure `imgElement` and `gameName` are correctly scoped
+        const selectedImageUrl = imageUrl;
 
         window.coverDownloader.downloadAndReload(selectedImageUrl, gameName, platform, imgElement)
             .then(() => {
-                console.log('Selected image downloaded and reloaded!', imgElement);
                 const grandParent = imgElement.parentElement.parentElement;
-                console.log("grandParent: ", grandParent);
                 grandParent.focus();
             })
             .catch((error) => {

@@ -18,16 +18,20 @@ async function searchGame(gameName, platform) {
     return res || null;
 }
 
-function downloadAndReload(imageUrl, gameName, platform, imgElement) {
-    console.log("downloadAndReload imageUrl: ", imageUrl);
-    return window.coverDownloader.downloadImage(imageUrl, gameName, platform)
-        .then(() => {
-            window.coverDownloader.reloadImage(imgElement, path.join(window.userDataPath, "covers", platform, `${gameName}.jpg`));
-            window.control.updateControlsMenu({message : `OK: ${gameName} (${platform})`});
-        })
-        .catch((error) => {
-            console.error('Error downloading image:', error.message);
-        });
+async function downloadAndReload(imageUrl, gameName, platform, imgElement) {
+    try {
+        const coverPath = await window.coverDownloader.downloadImage(imageUrl, gameName, platform);
+
+        // Small delay to ensure the file is fully written (optional)
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        // Reload the image
+        window.coverDownloader.reloadImage(imgElement, coverPath);
+        window.control.updateControlsMenu({ message: `OK: ${gameName} (${platform})` });
+    } catch (error) {
+        console.error('Error downloading image:', error.message);
+        imgElement.src = 'path/to/missing.png'; // Fallback to missing image
+    }
 }
 
 async function downloadImage(imageUrl, gameName, platform) {
@@ -50,15 +54,40 @@ async function downloadImage(imageUrl, gameName, platform) {
     }
 }
 
+// async function downloadImage(imageUrl, gameName, platform) {
+//     fsy = require('fs').promises; // Use promises for async file operations
+//     console.log("downloadImage imageUrl: ", imageUrl);
+//     try {
+//         const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+
+//         // Ensure the directory exists
+//         const coversDir = path.join(window.userDataPath, "covers", platform);
+//         await fsy.mkdir(coversDir, { recursive: true });
+
+//         // Create a unique file name
+//         const timestamp = Date.now();
+//         const uniqueFileName = `${gameName}_${timestamp}.jpg`;
+//         const coverPath = path.join(coversDir, uniqueFileName);
+
+//         // Convert the ArrayBuffer to a Node.js Buffer and write to disk
+//         const coverBuffer = Buffer.from(response.data);
+//         await fsy.writeFile(coverPath, coverBuffer);
+
+//         console.log(`Cover downloaded! for ${gameName} (${platform})`);
+//         return coverPath;
+//     } catch (error) {
+//         console.error(`Error downloading cover for ${gameName}:`, error.message);
+//         throw error;
+//     }
+// }
+
 
 function reloadImage(imgElement, coverPath) {
-    const cacheBuster = new Date().getTime(); // Unique timestamp
-    const newSrc = `${coverPath}?t=${cacheBuster}`;
+    // Ensure the image exists before updating the src
 
-    console.log("Previous imgElement.src:", imgElement.src);
-    imgElement.src = newSrc;
-    console.log("Updated imgElement.src:", imgElement.src);
-    console.log(`Image reloaded: ${newSrc}`);
+    // Update the imgElement.src
+    imgElement.src = coverPath;
+    console.log(`Image reloaded: ${coverPath}`);
 }
 
 

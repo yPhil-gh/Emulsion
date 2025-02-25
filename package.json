@@ -1,6 +1,6 @@
 {
     "name": "EmumE",
-    "version": "1.0.6",
+    "version": "1.0.9",
     "context": "prod",
     "description": "A frontend to launch games",
     "homepage": "https://gitlab.com/yphil/emume",
@@ -34,7 +34,7 @@
                 "AppImage",
                 "deb"
             ],
-            "icon": "img/emume-logo.png",
+            "icon": "img/emume.png",
             "category": "Utility",
             "artifactName": "${productName}-${version}.${ext}"
         },
@@ -56,6 +56,7 @@
         "pcengine",
         "dreamcast",
         "gamecube",
+        "snes",
         "n64",
         "settings"
     ]

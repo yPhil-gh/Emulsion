@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, shell, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell, Menu, globalShortcut } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
@@ -76,7 +76,7 @@ if (!gotTheLock) {
                 'Chrome/115.0.0.0 Safari/537.36'
         });
 
-        // Menu.setApplicationMenu(null);
+        Menu.setApplicationMenu(null);
 
         win.loadFile(path.join(__dirname, '../index.html'));
 
@@ -88,6 +88,16 @@ if (!gotTheLock) {
 
         win.webContents.on('did-finish-load', () => {
             win.webContents.send('platforms-data', platforms);
+        });
+
+        globalShortcut.register('F5', () => {
+            console.log('F5 pressed - Reloading the app...');
+            win.reload();
+        });
+
+        globalShortcut.register('F12', () => {
+            console.log('F12 pressed - Opening DevTools...');
+            win.webContents.openDevTools();
         });
 
     });

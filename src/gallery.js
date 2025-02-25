@@ -92,7 +92,17 @@ function scanDirectory(gamesDir, extensions, recursive = true) {
 
 
 function capitalizeWord(word) {
-    if (!word) return word;
+    switch (word) {
+    case 'snes':
+        return "SNES";
+        break;
+    case 'pcengine':
+        return "PCEngine";
+        break;
+    default:
+        break;
+    }
+
     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
 }
 
@@ -203,6 +213,10 @@ function buildSettingsForm(platform, formTemplate) {
         const preferences = { gamesDir, emulator, emulatorArgs };
         localStorage.setItem(platform, JSON.stringify(preferences));
 
+        window.control.updateControlsMenu({
+            message: capitalizeWord(platform) + "Preferences saved!"
+        });
+
         alert('Preferences saved!');
 
     });
@@ -218,12 +232,12 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
     galleryContainer.classList.add('gallery');
     galleryContainer.tabindex = -1;
 
-    // Define valid extensions for the platform
     const extensionsArrays = {
         gamecube:[".iso", ".ciso"],
         amiga:[".lha", ".adf"],
         pcengine:[".srm"],
         n64:[".z64"],
+        snes:[".smc"],
         dreamcast:[".gdi", ".cdi"]
     };
 
@@ -258,13 +272,14 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
         // Add click event to launch the game
         gameContainer.addEventListener('click', (event) => {
 
+            console.log("click: ");
+
             event.stopPropagation();
             // const command = `${emulator} ${emulatorArgs} "${gameFile}"`;
-            const command = `${emulator} -b -e "${gameFile}"`;
 
-            const escapedCommand = process.platform === 'win32' ? `"${event.target.dataset.command}"` : event.target.dataset.command.replace(/(["'`\\\s!$&*(){}\[\]|<>?;])/g, '\\$1');
+            // const escapedCommand = process.platform === 'win32' ? `"${event.target.dataset.command}"` : event.target.dataset.command.replace(/(["'`\\\s!$&*(){}\[\]|<>?;])/g, '\\$1');
 
-            ipcRenderer.send('run-command', event.target.dataset.command); // Send the command to the main process
+            // ipcRenderer.send('run-command', event.target.dataset.command);
         });
 
 
@@ -278,6 +293,13 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
         imgElement.alt = fileNameWithoutExt;
         imgElement.title = fileNameWithoutExt;
         imgElement.classList.add('game-image');
+
+        let debugClassName = fileNameWithoutExt.substring(0, 8);
+        debugClassName = debugClassName.replace(/[^a-zA-Z]/g, '');
+        if (debugClassName.length === 0) {
+            debugClassName = 'default';
+        }
+        imgElement.classList.add(debugClassName);
 
         const nameElement = document.createElement('p');
         nameElement.textContent = `${fileNameWithoutExt}`;
@@ -319,13 +341,16 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
         fetchCoverButton.addEventListener('click', async (event) => {
 
 
+            event.stopPropagation();
+
             const parentContainer = event.target.parentElement;
 
-            const img = fetchCoverButton.previousElementSibling;
+            console.log("fetchCoverButton: ", parentContainer);
+
+            const img = parentContainer.querySelector("img");
 
             fetchCoverButton.classList.add('rotate');
 
-            event.stopPropagation();
             const gameName = event.target.getAttribute('data-game');
             const platform = event.target.getAttribute('data-platform');
 
@@ -335,9 +360,9 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
                 .then((details) => {
 
                     if (!isBatch) {
-                        window.control.showCoversDialog(details.imgSrcArray, gameName, platform, img);
+                        return window.control.showCoversDialog(details.imgSrcArray, gameName, platform, img);
                     } else {
-                        return window.control.downloadAndReload(details.imgSrcArray[0], gameName, platform, img);
+                        return window.coverDownloader.downloadAndReload(details.imgSrcArray[0], gameName, platform, img);
                     }
                 })
                 .catch((error) => {

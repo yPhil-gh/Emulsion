@@ -409,14 +409,12 @@ div.game-container.selected .fetch-cover-button {
   visibility: hidden;
 }
 
-/* Left Arrow */
 .left-arrow {
-  margin-right: auto; /* Pushes the left arrow to the far left */
+  margin-right: auto;
 }
 
-/* Right Arrow */
 .right-arrow {
-  margin-left: auto; /* Pushes the right arrow to the far right */
+  margin-left: auto;
 }
 
 .fadeIn {
@@ -434,20 +432,19 @@ div.game-container.selected .fetch-cover-button {
     opacity: 1;
   }
 }
-/* Container for sliding items */
+
 #top-menu-slider {
-  width: 300px; /* Increased width from 200px to 300px */
-  overflow: hidden; /* Hide overflow to show only one slide at a time */
+  width: 300px;
+  overflow: hidden;
 }
 
-/* Container for all slides */
+
 #top-menu-items {
-  position: relative; /* Ensure absolutely positioned children are relative to this container */
+  position: relative;
   display: flex;
-  /* transition: transform 0.5s ease;  -- if you're not using slide transitions */
 }
 
-/* Individual slide */
+
 .top-menu-slide {
   flex: 0 0 300px;
   align-items: center;
@@ -460,10 +457,10 @@ div.game-container.selected .fetch-cover-button {
 
 .top-menu-slide-content {
   display: flex;
-  justify-content: space-between; /* Push label and image to opposite ends */
+  justify-content: space-between;
   align-items: center;
-  width: 100%; /* Ensure it uses all available width */
-  padding: 0 10px; /* Optional: add some side padding if needed */
+  width: 100%;
+  padding: 0 10px;
 }
 
 #controls-menu {
@@ -471,9 +468,9 @@ div.game-container.selected .fetch-cover-button {
     font-size: 24px;
     display: flex;
     align-items: center;
-    position: fixed; /* Ensure it stays fixed at the bottom */
+    position: fixed;
     left: 0;
-    bottom: 0; /* Stick it to the bottom of the viewport */
+    bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     color: #fff;
     padding: 10px 0 10px 5px;
@@ -495,7 +492,7 @@ div.game-container.selected .fetch-cover-button {
 }
 
 #loading {
-    position: fixed; /* Fixed position to cover the entire viewport */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;

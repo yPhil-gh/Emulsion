@@ -571,8 +571,7 @@ window.control = {
         }
 
     },
-    initSettingsNav: function(galleryContainer) {
-
+    initSettingsNav: function (galleryContainer) {
         const formContainers = galleryContainer.querySelectorAll('.settings-form-container');
 
         galleryContainer.tabIndex = -1;
@@ -597,26 +596,23 @@ window.control = {
         };
 
         const toggleCurrent = () => {
-            formContainers.forEach((container, index) => {
-                if (index === currentIndex) {
-                    container.classList.add('highlighted');
-                    const toggleCheckbox = container.querySelector('#platform-toggle');
+            const currentContainer = formContainers[currentIndex];
+            if (currentContainer) {
+                const toggleCheckbox = currentContainer.querySelector('#platform-toggle');
+                const platform = currentContainer.id.split('-')[0];
 
-                    const platform = container.id.split('-')[0];
-
-                    if (window.control.isEnabled(platform)) {
-                        toggleCheckbox.checked = !toggleCheckbox.checked;
-                    } else {
-                        window.control.updateControlsMenu({
-                            message: "Please provide both the <strong>Games Directory</strong> and the <strong>Emulator</strong>."
-                        });
-                    }
+                if (window.control.isEnabled(platform)) {
+                    toggleCheckbox.checked = !toggleCheckbox.checked;
+                } else {
+                    window.control.updateControlsMenu({
+                        message: "Please provide both the <strong>Games Directory</strong> and the <strong>Emulator</strong>."
+                    });
                 }
-            });
+            }
         };
 
+        // Handle keyboard navigation
         galleryContainer.addEventListener('keydown', (event) => {
-
             switch (event.key) {
             case 'ArrowRight':
                 window.control.initTopMenuNav();
@@ -641,11 +637,42 @@ window.control = {
             default:
                 return;
             }
-
         });
 
-        highlightCurrent();
+        // Handle mouse wheel navigation
+        let isScrolling = false;
 
+        galleryContainer.addEventListener('wheel', (event) => {
+            event.preventDefault();
+
+            if (isScrolling) return; // Exit if already scrolling
+
+            isScrolling = true;
+
+            if (event.deltaY > 0) {
+                currentIndex = (currentIndex + 1) % formContainers.length;
+            } else if (event.deltaY < 0) {
+                currentIndex = (currentIndex - 1 + formContainers.length) % formContainers.length;
+            }
+
+            highlightCurrent();
+
+            // Reset the scrolling flag after a short delay
+            setTimeout(() => {
+                isScrolling = false;
+            }, 200); // Adjust the delay as needed
+        });
+
+        // Handle click-to-select
+        formContainers.forEach((container, index) => {
+            container.addEventListener('click', () => {
+                currentIndex = index; // Update the current index to the clicked container
+                highlightCurrent(); // Highlight the clicked container
+            });
+        });
+
+        // Initial highlight
+        highlightCurrent();
     },
     initGalleryNav: function(galleryContainer) {
 

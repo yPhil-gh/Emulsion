@@ -217,8 +217,6 @@ function buildSettingsForm(platform, formTemplate) {
             message: capitalizeWord(platform) + "Preferences saved!"
         });
 
-        alert('Preferences saved!');
-
     });
 
     return form;

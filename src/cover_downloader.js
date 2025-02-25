@@ -10,7 +10,7 @@ const backends = {
 async function searchGame(gameName, platform) {
     const backend = backends[platform] || backends.default;
 
-    console.log(`Using backend ${backend.name} for platform: ${platform}`);
+    console.log(`Using backend ${backend.name} to search for ${gameName} (${platform})`);
 
     const nameParts = gameName.split(' ');
     let searchResults = null;
@@ -21,11 +21,12 @@ async function searchGame(gameName, platform) {
         const partialName = nameParts.slice(0, i).join(' ');
         try {
             res = await backend.module.searchGame(partialName, platform);
+            if (res) {
+                return res;
+            }
         } catch (error) {
             console.error(`Error searching for "${partialName}":`, error.message);
             continue;
-        } finally {
-            console.log("nope? ");
         }
     }
 

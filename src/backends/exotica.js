@@ -2,7 +2,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 async function searchGame(gameName, platform) {
-    console.log("Searching Exotica for:", gameName, platform);
+    console.log("Searching Exotica for:", gameName);
 
     // Extract the first letter of the game name
     const firstLetter = gameName.charAt(0).toUpperCase();

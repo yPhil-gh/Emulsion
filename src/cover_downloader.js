@@ -1,6 +1,7 @@
 const axios = require('axios');
 const backends = {
     amiga: { module: require('./src/backends/exotica.js'), name: 'Exotica' },
+    // amiga: { module: require('./src/backends/lemonamiga.js'), name: 'LemonAmiga' },
     gamecube: { module: require('./src/backends/uvlist.js'), name: 'UVList' },
     dreamcast: { module: require('./src/backends/uvlist.js'), name: 'UVList' },
     default: { module: require('./src/backends/uvlist.js'), name: 'UVList' }
@@ -11,7 +12,22 @@ async function searchGame(gameName, platform) {
 
     console.log(`Using backend ${backend.name} for platform: ${platform}`);
 
-    const res = await backend.module.searchGame(gameName, platform);
+    const nameParts = gameName.split(' ');
+    let searchResults = null;
+
+    let res;
+
+    for (let i = nameParts.length; i >= 1; i--) {
+        const partialName = nameParts.slice(0, i).join(' ');
+        try {
+            res = await backend.module.searchGame(partialName, platform);
+        } catch (error) {
+            console.error(`Error searching for "${partialName}":`, error.message);
+            continue;
+        } finally {
+            console.log("nope? ");
+        }
+    }
 
     console.log("res: ", res);
 

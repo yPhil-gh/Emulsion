@@ -3,7 +3,8 @@ const backends = {
     amiga: { module: require('./src/backends/exotica.js'), name: 'Exotica' },
     // amiga: { module: require('./src/backends/lemonamiga.js'), name: 'LemonAmiga' },
     gamecube: { module: require('./src/backends/uvlist.js'), name: 'UVList' },
-    dreamcast: { module: require('./src/backends/uvlist.js'), name: 'UVList' },
+    // dreamcast: { module: require('./src/backends/uvlist.js'), name: 'UVList' },
+    dreamcast: { module: require('./src/backends/mobygames.js'), name: 'MobyGames' },
     default: { module: require('./src/backends/uvlist.js'), name: 'UVList' }
 };
 

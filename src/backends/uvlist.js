@@ -21,6 +21,10 @@ async function searchGame(gameName, platform) {
               .find(`a:contains(${gameName})`)
               .attr('href');
 
+        if (!href) {
+            return null;
+        }
+
         const gamePageResponse = await axios.get(`https://www.uvlist.net${href}`);
         if (gamePageResponse.status !== 200) {
             throw new Error(`Failed to load game page. Status: ${gamePageResponse.status}`);

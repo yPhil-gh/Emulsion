@@ -107,10 +107,11 @@ if (!gotTheLock) {
 
     });
 
+    // Handle the second instance attempt
     app.on('second-instance', () => {
         if (win) {
-            if (win.isMinimized()) win.restore();
-            win.focus();
+            if (win.isMinimized()) win.restore(); // Restore the window if minimized
+            win.focus(); // Focus the existing window
         }
     });
 }
@@ -124,11 +125,6 @@ app.on('activate', () => {
 });
 
 // IPC Handlers
-ipcMain.handle('go-to-url', async (event, link) => {
-    console.log("url: ", link.url);
-    shell.openExternal(link.url);
-    return true;
-});
 
 ipcMain.handle('go-to-donate-page', async () => {
     shell.openExternal('https://yphil.gitlab.io/ext/support.html');
@@ -184,6 +180,7 @@ ipcMain.on('run-command', (event, command) => {
         childProcesses = childProcesses.filter(cp => cp !== child);
     });
 });
+
 
 ipcMain.on('quit', () => {
     app.quit();

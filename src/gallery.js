@@ -150,14 +150,33 @@ function buildSettingsForm(platform, formTemplate) {
         dialog.querySelector("#details-dialog-title").textContent = capitalizeWord(platformName);
         dialog.querySelector("#details-dialog-text").innerHTML = platformDetails;
 
+        const links = dialog.querySelectorAll("a");
+
+        links.forEach((link) => {
+            console.log("link: ", link);
+            link.addEventListener("click", (event) => {
+                ipcRenderer.invoke('go-to-url', { url: event.target.dataset.href });
+            });
+        });
+
+        dialog.querySelector("#details-dialog-ok-button").addEventListener("click", function (event) {
+            event.stopPropagation();
+            dialog.style.display = "none";
+            window.control.initSettingsNav();
+        });
+
         dialog.style.display = "block";
-    });
 
-    const dialog = document.getElementById("details-dialog");
+        function onKeyDown (event) {
+            event.stopImmediatePropagation(); // Stop other listeners on document
+            console.log("event!! ", event);
+            if (event.key === 'Escape') {
+                dialog.style.display = "none";
+                window.control.initSettingsNav();
+            }
+        }
 
-    dialog.querySelector("#details-dialog-ok-button").addEventListener("click", function (event) {
-        event.stopPropagation();
-        dialog.style.display = "none";
+        document.addEventListener('keydown', onKeyDown);
 
     });
 

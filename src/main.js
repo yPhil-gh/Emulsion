@@ -124,6 +124,12 @@ app.on('activate', () => {
 });
 
 // IPC Handlers
+ipcMain.handle('go-to-url', async (event, link) => {
+    console.log("url: ", link.url);
+    shell.openExternal(link.url);
+    return true;
+});
+
 ipcMain.handle('go-to-donate-page', async () => {
     shell.openExternal('https://yphil.gitlab.io/ext/support.html');
     return true;

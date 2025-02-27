@@ -91,6 +91,7 @@ function simulateKeyPress(key) {
 }
 
 function initDialogNav(dialog, buttons, onImageSelect) {
+    console.log("initDialogNav: ");
     let isImageDialog = false;
     let elementToFocus;
 
@@ -189,6 +190,13 @@ function initDialogNav(dialog, buttons, onImageSelect) {
 }
 
 function showExitDialog () {
+
+    const slideShow = document.getElementById('slideshow');
+
+    if (slideShow.style.display !== "none") {
+        return;
+    }
+
     const exitDialog = document.getElementById('exit-dialog');
     const exitButton = document.getElementById('exit-dialog-exit-button');
     const cancelButton = document.getElementById('exit-dialog-cancel-button');
@@ -369,7 +377,18 @@ window.control = {
                 prevSlide();
             } else if (event.key === 'Escape') {
 
-                window.control.showExitDialog();
+                const slideshow = document.getElementById('slideshow');
+                const detailsDialog = document.getElementById('details-dialog');
+
+                if (slideshow.style.display !== "none") {
+                    window.control.showExitDialog();
+                }
+
+                if (detailsDialog.style.display !== "none") {
+                    detailsDialog.style.display = "none";
+                    window.control.initSettingsNav();
+                }
+
                 // updateControlsMenu({message: "Really Exit?"});
                 // showExitDialog();
             } else if (event.key === 'i') {
@@ -405,7 +424,7 @@ window.control = {
 
                 if (galleryToShow.id === "gallery-settings") {
                     galleryToShow.style.display = "flex";
-                    window.control.initSettingsNav(galleryToShow);
+                    window.control.initSettingsNav();
                 } else {
                     galleryToShow.style.display = "grid";
                     window.control.initGalleryNav(galleryToShow);
@@ -424,6 +443,8 @@ window.control = {
         updateCarousel();
     },
     initTopMenuNav: function() {
+
+        console.log("initTopMenuNav: ");
 
         document.getElementById('dpad-icon').src = "./img/controls/dpad-horiz.png";
 
@@ -531,11 +552,16 @@ window.control = {
         };
 
         const handleKeyDown = (event) => {
+            console.log("event: ", event);
+            event.stopImmediatePropagation(); // Stops other listeners on the same element
+
             switch (event.key) {
             case 'ArrowLeft':
+                console.log("Menu ArrowLeft: ");
                 goToPreviousSlide();
                 break;
             case 'ArrowRight':
+                console.log("Menu ArrowRight: ");
                 goToNextSlide();
                 break;
             case 'ArrowDown':
@@ -553,7 +579,7 @@ window.control = {
 
         const topMenu = document.getElementById('top-menu');
         topMenu.addEventListener('click', handleClick);
-        document.addEventListener('keydown', handleKeyDown);
+        topMenu.addEventListener('keydown', handleKeyDown);
     },
     setTopMenuPlatform: function(platform) {
 
@@ -573,19 +599,34 @@ window.control = {
     },
     removeGalleryAndShowSlideshow: function() {
 
+        console.log("removeGalleryAndShowSlideshow: ");
+
+        const slideshow = document.getElementById('slideshow');
+        const detailsDialog = document.getElementById('details-dialog');
+
+        if (detailsDialog.style.display !== "none") {
+            detailsDialog.style.display = "none";
+            window.control.initSettingsNav();
+        }
+
+        if (slideshow.style.display === "none") {
+            console.log("return: ");
+            return;
+        } else {
+            console.log("no return: ");
+        }
+
         document.getElementById('galleries').style.display = "none";
         document.getElementById('top-menu').style.display = "none";
 
-        const slideshow = document.getElementById('slideshow');
-        if (slideshow) {
-            slideshow.style.display = 'flex';
-            document.body.style.perspective = "600px";
-            slideshow.focus();
-            ipcRenderer.send('change-window-title', "EmumE - Select a Platform");
-        }
+        slideshow.style.display = 'flex';
+        document.body.style.perspective = "600px";
+        slideshow.focus();
+        ipcRenderer.send('change-window-title', "EmumE - Select a Platform");
 
     },
-    initSettingsNav: function (galleryContainer) {
+    initSettingsNav: function () {
+        const galleryContainer = document.querySelector(`#gallery-settings`);
         const formContainers = galleryContainer.querySelectorAll('.settings-form-container');
 
         galleryContainer.tabIndex = -1;
@@ -630,9 +671,11 @@ window.control = {
             event.stopPropagation();
             switch (event.key) {
             case 'ArrowRight':
+                console.log("ArrowRight: ");
                 window.control.initTopMenuNav();
                 break;
             case 'ArrowLeft':
+                console.log("ArrowLeft: ");
                 window.control.initTopMenuNav();
                 break;
             case 'ArrowDown':

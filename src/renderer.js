@@ -71,7 +71,7 @@ function buildTopMenuItem(platform) {
 }
 
 const platforms = [
-    {name: "amiga", details: `Amiga is a bit special ; For now it only plays <code>.adf</code> files.<br><h4>Good emulator candidates</h4><ul><li><a href="https://fs-uae.net/">fs-uae</a> <code>--fullscreen</code></li></ul>`},
+    {name: "amiga", details: `Amiga is a bit special ; For now it only plays <code>.adf</code> files.<br><h4>Good emulator candidates</h4><ul><li><a data-href="https://fs-uae.net/">fs-uae</a> <code>--fullscreen</code></li></ul>`},
     {name: "pcengine", details: "<h4>Good emulator candidates</h4><ul><li>Mednafen <code>-fs 1 -pce.stretch aspect -pce.shader autoipsharper</code></li></ul>"},
     {name: "dreamcast", details: "Yeah, dreamcast"},
     {name: "gamecube", details: "Yeah, gamecube"},

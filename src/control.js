@@ -360,7 +360,7 @@ window.control = {
         });
 
         // Keyboard navigation
-        slideshow.addEventListener('keydown', (event) => {
+        document.addEventListener('keydown', (event) => {
             event.stopPropagation();
             event.stopImmediatePropagation(); // Stops other listeners on the same element
             if (event.key === 'ArrowRight') {
@@ -513,7 +513,6 @@ window.control = {
             const visibleGallery = Array.from(galleries).find(el => window.getComputedStyle(el).display !== 'none');
 
             if (visibleGallery) {
-                console.log("Initializing gallery navigation for:", visibleGallery);
                 window.control.initGalleryNav(visibleGallery);
                 visibleGallery.focus();
             }
@@ -600,6 +599,7 @@ window.control = {
                     container.classList.add('highlighted');
 
                     container.scrollIntoView({
+                        block: 'center',
                         behavior: 'smooth',
                     });
 
@@ -627,6 +627,7 @@ window.control = {
 
         // Handle keyboard navigation
         galleryContainer.addEventListener('keydown', (event) => {
+            event.stopPropagation();
             switch (event.key) {
             case 'ArrowRight':
                 window.control.initTopMenuNav();
@@ -689,6 +690,8 @@ window.control = {
         highlightCurrent();
     },
     initGalleryNav: function(galleryContainer) {
+
+        console.log("Initializing gallery navigation for:", galleryContainer);
 
         document.getElementById('dpad-icon').src = "./img/controls/dpad-active.png";
 

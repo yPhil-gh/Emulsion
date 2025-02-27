@@ -9,10 +9,10 @@ window.gallery = {
                 const galleriesContainer = document.getElementById('galleries');
 
                 platforms.forEach((platform) => {
-                    const prefString = localStorage.getItem(platform);
+                    const prefString = localStorage.getItem(platform.name);
                     let prefs;
 
-                    document.getElementById('loading-platform').textContent = platform;
+                    document.getElementById('loading-platform').textContent = platform.name;
 
                     if (prefString) {
                         prefs = JSON.parse(prefString);
@@ -20,13 +20,13 @@ window.gallery = {
                         let emulator = prefs.emulator;
                         let emulatorArgs = prefs.emulatorArgs;
 
-                        const thisGallery = buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath.userDataPath);
+                        const thisGallery = buildGallery(platform.name, gamesDir, emulator, emulatorArgs, userDataPath.userDataPath);
                         thisGallery.style.display = "none";
 
                         // Append the gallery to the container
                         galleriesContainer.appendChild(thisGallery);
                     } else {
-                        console.log("No prefs for ", platform);
+                        console.log("No prefs for ", platform.name);
                     }
                 });
 
@@ -47,7 +47,7 @@ window.gallery = {
 
         platforms.forEach((platform) => {
             console.log("buildSettingsForm: ", platform);
-            if (platform !== "settings") {
+            if (platform.name !== "settings") {
                 const form = buildSettingsForm(platform, formTemplate);
                 settingsGallery.appendChild(form);
             }
@@ -106,10 +106,12 @@ function capitalizeWord(word) {
     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
 }
 
-
 function buildSettingsForm(platform, formTemplate) {
 
-    const prefString = localStorage.getItem(platform);
+    const platformName = platform.name;
+    const platformDetails = platform.details;
+
+    const prefString = localStorage.getItem(platformName);
 
     let prefs;
 
@@ -139,8 +141,25 @@ function buildSettingsForm(platform, formTemplate) {
     const form = document.createElement("div");
     form.innerHTML = formTemplate;
     form.className = "settings-form-container";
-    form.id = `${platform}-form-container`;
+    form.id = `${platformName}-form-container`;
 
+    form.querySelector("#details-button").addEventListener("click", function (event) {
+        event.stopPropagation();
+        const dialog = document.getElementById("details-dialog");
+
+        dialog.querySelector("#details-dialog-title").textContent = capitalizeWord(platformName);
+        dialog.querySelector("#details-dialog-text").innerHTML = platformDetails;
+
+        dialog.style.display = "block";
+    });
+
+    const dialog = document.getElementById("details-dialog");
+
+    dialog.querySelector("#details-dialog-ok-button").addEventListener("click", function (event) {
+        event.stopPropagation();
+        dialog.style.display = "none";
+
+    });
 
     // Row 3: Checkbox, Emulator Args
     // const enableArgsCheckbox = form.getElementById('enable-args'); // Enable args checkbox
@@ -148,53 +167,53 @@ function buildSettingsForm(platform, formTemplate) {
     const icon = document.createElement("img");
 
     const formLabel = form.querySelector('#form-label');
-    formLabel.textContent = capitalizeWord(platform);
+    formLabel.textContent = capitalizeWord(platformName);
 
-    icon.src = `img/platforms/${platform}.png`; // Update the image source
-    icon.alt = `${platform} Icon`; // Update the alt text
+    icon.src = `img/platforms/${platformName}.png`; // Update the image source
+    icon.alt = `${platformName} Icon`; // Update the alt text
 
     icon.className = `platform-form-icon`; // Update the alt text
 
     iconDiv.appendChild(icon);
 
     const platformForm = form.querySelector('#platform-form');
-    platformForm.id = `${platform}-form`;
+    platformForm.id = `${platformName}-form`;
 
     const gamesDirInput = form.querySelector('#games-dir');
-    gamesDirInput.id = `${platform}-games-dir`;
+    gamesDirInput.id = `${platformName}-games-dir`;
     gamesDirInput.value = (prefs && prefs.gamesDir) ? prefs.gamesDir : "";
 
-    gamesDirInput.placeholder = `${capitalizeWord(platform)} Games Directory`;
+    gamesDirInput.placeholder = `${capitalizeWord(platformName)} Games Directory`;
 
     const browseDirButton = form.querySelector('.browse-button-dir');
-    browseDirButton.setAttribute('data-platform', platform);
-    browseDirButton.setAttribute('data-input', `${platform}-games-dir`);
+    browseDirButton.setAttribute('data-platform', platformName);
+    browseDirButton.setAttribute('data-input', `${platformName}-games-dir`);
 
     browseDirButton.addEventListener('click', browse);
 
     const emulatorInput = form.querySelector('#emulator');
-    emulatorInput.id = `${platform}-emulator`;
+    emulatorInput.id = `${platformName}-emulator`;
     emulatorInput.value = (prefs && prefs.emulator) ?  prefs.emulator : "";
 
-    emulatorInput.placeholder = `${platform} Emulator`;
+    emulatorInput.placeholder = `${platformName} Emulator`;
 
     const emulatorArgsInput = form.querySelector('#emulator-args');
-    emulatorArgsInput.id = `${platform}-emulator-args`;
+    emulatorArgsInput.id = `${platformName}-emulator-args`;
     emulatorArgsInput.classList.add('emulator-args');
     emulatorArgsInput.value = (prefs && prefs.emulatorArgs) ? prefs.emulatorArgs : "";
     emulatorArgsInput.placeholder = `args`;
 
     const browseEmulatorButton = form.querySelector('.browse-button-file');
-    browseEmulatorButton.setAttribute('data-platform', platform);
-    browseEmulatorButton.setAttribute('data-input', `${platform}-emulator`);
+    browseEmulatorButton.setAttribute('data-platform', platformName);
+    browseEmulatorButton.setAttribute('data-input', `${platformName}-emulator`);
 
     browseEmulatorButton.addEventListener('click', browse);
 
     const saveButton = form.querySelector('.save-button');
-    saveButton.setAttribute('data-platform', platform);
+    saveButton.setAttribute('data-platform', platformName);
 
     const toggleCheckbox = form.querySelector('#platform-toggle');
-    toggleCheckbox.checked = window.control.isEnabled(platform);
+    toggleCheckbox.checked = window.control.isEnabled(platformName);
 
     saveButton.addEventListener('click', () => {
         const gamesDir = gamesDirInput.value;
@@ -211,10 +230,10 @@ function buildSettingsForm(platform, formTemplate) {
         toggleCheckbox.checked = true;
 
         const preferences = { gamesDir, emulator, emulatorArgs };
-        localStorage.setItem(platform, JSON.stringify(preferences));
+        localStorage.setItem(platformName, JSON.stringify(preferences));
 
         window.control.updateControlsMenu({
-            message: capitalizeWord(platform) + "Preferences saved!"
+            message: capitalizeWord(platformName) + "Preferences saved!"
         });
 
     });
@@ -270,12 +289,16 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
         const coverImagePath = findImageFile(path.join(userDataPath, "covers", platform), fileNameWithoutExt);
 
         const missingImagePath = path.join(__dirname, "img", 'missing.png');
+        const isImgExists = fs.existsSync(coverImagePath);
 
         const gameContainer = document.createElement('div');
         gameContainer.classList.add('game-container');
         gameContainer.setAttribute('data-command', `${emulator} ${emulatorArgs || ""} "${gameFile}"`);
         gameContainer.setAttribute('data-index', i++);
 
+        if (!isImgExists) {
+            gameContainer.classList.add('image-missing');
+        }
         gameContainer.tabindex = -1;
 
         gameContainer.addEventListener('click', (event) => {
@@ -287,7 +310,7 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
         imgContainer.classList.add('image-container');
 
         const imgElement = document.createElement('img');
-        imgElement.src = fs.existsSync(coverImagePath) ? coverImagePath : missingImagePath;
+        imgElement.src = isImgExists ? coverImagePath : missingImagePath;
         imgElement.alt = fileNameWithoutExt;
         imgElement.title = fileNameWithoutExt;
         imgElement.classList.add('game-image');

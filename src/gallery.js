@@ -143,42 +143,42 @@ function buildSettingsForm(platform, formTemplate) {
     form.className = "settings-form-container";
     form.id = `${platformName}-form-container`;
 
-    form.querySelector("#details-button").addEventListener("click", function (event) {
-        event.stopPropagation();
-        const dialog = document.getElementById("details-dialog");
+    // form.querySelector("#details-button").addEventListener("click", function (event) {
+    //     event.stopPropagation();
+    //     const dialog = document.getElementById("details-dialog");
 
-        dialog.querySelector("#details-dialog-title").textContent = capitalizeWord(platformName);
-        dialog.querySelector("#details-dialog-text").innerHTML = platformDetails;
+    //     dialog.querySelector("#details-dialog-title").textContent = capitalizeWord(platformName);
+    //     dialog.querySelector("#details-dialog-text").innerHTML = platformDetails;
 
-        const links = dialog.querySelectorAll("a");
+    //     const links = dialog.querySelectorAll("a");
 
-        links.forEach((link) => {
-            console.log("link: ", link);
-            link.addEventListener("click", (event) => {
-                ipcRenderer.invoke('go-to-url', { url: event.target.dataset.href });
-            });
-        });
+    //     links.forEach((link) => {
+    //         console.log("link: ", link);
+    //         link.addEventListener("click", (event) => {
+    //             ipcRenderer.invoke('go-to-url', { url: event.target.dataset.href });
+    //         });
+    //     });
 
-        dialog.querySelector("#details-dialog-ok-button").addEventListener("click", function (event) {
-            event.stopPropagation();
-            dialog.style.display = "none";
-            window.control.initSettingsNav();
-        });
+    //     dialog.querySelector("#details-dialog-ok-button").addEventListener("click", function (event) {
+    //         event.stopPropagation();
+    //         dialog.style.display = "none";
+    //         window.control.initSettingsNav();
+    //     });
 
-        dialog.style.display = "block";
+    //     dialog.style.display = "block";
 
-        function onKeyDown (event) {
-            event.stopImmediatePropagation(); // Stop other listeners on document
-            console.log("event!! ", event);
-            if (event.key === 'Escape') {
-                dialog.style.display = "none";
-                window.control.initSettingsNav();
-            }
-        }
+    //     function onKeyDown (event) {
+    //         event.stopImmediatePropagation(); // Stop other listeners on document
+    //         console.log("event!! ", event);
+    //         if (event.key === 'Escape') {
+    //             dialog.style.display = "none";
+    //             window.control.initSettingsNav();
+    //         }
+    //     }
 
-        document.addEventListener('keydown', onKeyDown);
+    //     document.addEventListener('keydown', onKeyDown);
 
-    });
+    // });
 
     // Row 3: Checkbox, Emulator Args
     // const enableArgsCheckbox = form.getElementById('enable-args'); // Enable args checkbox
@@ -197,6 +197,8 @@ function buildSettingsForm(platform, formTemplate) {
 
     const platformForm = form.querySelector('#platform-form');
     platformForm.id = `${platformName}-form`;
+
+    platformForm.querySelector("#details-text-div").innerHTML = platformDetails;
 
     const gamesDirInput = form.querySelector('#games-dir');
     gamesDirInput.id = `${platformName}-games-dir`;

@@ -599,9 +599,12 @@ exit-dialog-cancel-button:focus {
 
 /* FORM */
 .platform-form {
-    width: 100%;
-    /* max-width: 800px; */
-    margin: 0 auto;
+  padding: 6px;
+  margin: 0 auto;
+}
+
+.platform-form button {
+  width: 100%;
 }
 
 .platform-form table {
@@ -613,14 +616,6 @@ exit-dialog-cancel-button:focus {
 /*     padding: 2px; */
 /*     vertical-align: middle; */
 /* } */
-
-.form-icon {
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
 .form-icon img {
     max-width: 100%;
@@ -651,15 +646,15 @@ input[type="text"] {
 
 table {
   width: 100%;
-  table-layout: fixed;
+  /* table-layout: fixed; */
   height: 100%;
   border-collapse: collapse; /* Remove spacing between cells */
 }
 
 /* Make the rowspan cell and button 100% height */
-td[rowspan="3"] {
-  height: 100%;
-}
+/* td[rowspan="3"] { */
+/*   height: 100%; */
+/* } */
 
 /* Make the rowspan cell and button 100% height */
 td[colspan="1"] {
@@ -745,10 +740,15 @@ input:checked + .slider:before {
 
 /* Details button styling */
 #details-button {
-    display: flex;
+  display: flex;
+    align-content: space-between;
     align-items: center;
     gap: 5px;
     cursor: pointer;
+}
+
+#details-button span {
+  flex-grow: 4; /* default 0 */
 }
 
 /* Arrow styling */
@@ -841,3 +841,6 @@ input:checked + .slider:before {
     margin-top: 10px;
 }
 
+#details-text-div {
+  display: none;
+}

@@ -1,5 +1,5 @@
 <form id="platform-form" class="platform-form">
-    <table>
+    <table border="2">
         <!-- Row 1: Icon, Games Directory, Browse, Save -->
         <tr>
             <td class="first-col">
@@ -12,14 +12,14 @@
             <td colspan="2">
                 <div class="details-container">
                     <button type="button" id="details-button" class="button">
-                        <span id="platform-icon" class="form-icon"></span> Infos
+                        <span id="platform-icon" class="form-icon"></span> <span>Infos</span>
                     </button>
                 </div>
             </td>
         </tr>
         <tr>
             <td colspan="4">
-                <div id="details-text-span">plop plop plop plop plop plop plop plop plop plop plop plop plop plop plop plop plop </div>
+                <div id="details-text-div" class="details-text-div">plop plop plop plop plop plop plop plop plop plop plop plop plop plop plop plop plop </div>
             </td>
         </tr>
 
@@ -39,9 +39,6 @@
                     type="button"
                     class="button browse-button-dir"
                     data-input="games-dir">Browse</button>
-            </td>
-            <td rowspan="3">
-                <button type="button" class="button save-button">Save</button>
             </td>
         </tr>
 
@@ -70,12 +67,15 @@
             <td>
                 <label for="emulator-args">Args</label>
             </td>
-            <td colspan="2">
+            <td>
                 <input
                     type="text"
                     title="Important: The arguments to your emulator."
                     id="emulator-args"
                     placeholder="Emulator Args">
+            </td>
+            <td>
+                <button type="button" class="button save-button">Save</button>
             </td>
         </tr>
     </table>

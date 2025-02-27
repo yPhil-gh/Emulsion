@@ -591,7 +591,29 @@ window.control = {
 
     },
     initSettingsNav: function (galleryContainer) {
+
         const formContainers = galleryContainer.querySelectorAll('.settings-form-container');
+
+        formContainers.forEach((container, index) => {
+
+            container.querySelector("#details-button").addEventListener("click", function (event) {
+                formContainers.forEach((container, index) => {
+                    container.querySelector(".details-text-div").style.display = "none";
+                });
+                container.querySelector("#details-text-div").style.display = "block";
+                console.log("event!!! ", event);
+            });
+
+            const links = container.querySelectorAll("a");
+
+            links.forEach((link) => {
+                console.log("link: ", link);
+                link.addEventListener("click", (event) => {
+                    ipcRenderer.invoke('go-to-url', { url: event.target.dataset.href });
+                });
+            });
+
+        });
 
         galleryContainer.tabIndex = -1;
         galleryContainer.focus();

@@ -464,6 +464,10 @@ window.control = {
             if (galleryToDisplay) {
                 console.log("Displaying gallery:", galleryToDisplay.id);
                 galleryToDisplay.style.display = galleryToDisplay.id === "gallery-settings" ? "flex" : "grid";
+                if (galleryToDisplay.id === "gallery-settings") {
+                    window.control.initSettingsNav(document.querySelector(`#gallery-settings`));
+
+                }
                 galleryToDisplay.classList.add('fadeIn');
             }
         }

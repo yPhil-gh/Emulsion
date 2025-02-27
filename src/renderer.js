@@ -70,29 +70,28 @@ function buildTopMenuItem(platform) {
     return menuSlide;
 }
 
-// const platforms = [
-//     "amiga",
-//     "pcengine",
-//     "dreamcast",
-//     "gamecube",
-//     "n64",
-//     "settings"
-// ];
+const platforms = [
+    {name: "amiga", details: `Amiga is a bit special ; For now it only plays <code>.adf</code> files.<br><h4>Good emulator candidates</h4><ul><li><a data-href="https://fs-uae.net/">fs-uae</a> <code>--fullscreen</code></li></ul>`},
+    {name: "pcengine", details: "<h4>Good emulator candidates</h4><ul><li>Mednafen <code>-fs 1 -pce.stretch aspect -pce.shader autoipsharper</code></li></ul>"},
+    {name: "dreamcast", details: "Yeah, dreamcast"},
+    {name: "gamecube", details: "Yeah, gamecube"},
+    {name: "snes", details: "Yeah, snes"},
+    {name: "n64", details: "Yeah, n64"},
+    {name: "settings", details: "Yeah, settings"}
+];
 
 Promise.all([
-    ipcRenderer.invoke('get-platform-names'), // Fetch platforms
-    fetch('src/html/platform_form.html').then(response => response.text()), // Fetch form template
-    ipcRenderer.invoke('get-user-data') // Fetch user data
+    // ipcRenderer.invoke('get-platform-names'),
+    fetch('src/html/platform_form.html').then(response => response.text()),
+    ipcRenderer.invoke('get-user-data')
 ])
-    .then(([platforms, formTemplate, userData]) => {
+    .then(([formTemplate, userData]) => {
         window.userDataPath = userData.userDataPath;
-        // Step 1: Build galleries and wait for it to complete
         return window.gallery.buildGalleries(platforms, userData)
             .then((res) => {
                 window.gallery.buildSettingsForms(platforms, formTemplate);
             })
             .then((res) => {
-                // Return the result to pass it to the next .then
                 return { platforms, formTemplate };
             });
     })
@@ -102,8 +101,8 @@ Promise.all([
         window.platforms = platforms;
         platforms.forEach((platform) => {
 
-            const homeSlide = buildSlide(platform);
-            const menuItem = buildTopMenuItem(platform);
+            const homeSlide = buildSlide(platform.name);
+            const menuItem = buildTopMenuItem(platform.name);
 
             if (menuItem) {
                 window.topMenuItems.appendChild(menuItem);

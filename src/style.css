@@ -44,6 +44,8 @@ a {
 
 :root {
   --glow-color: 225, 117, 100; /* Define RGB values */
+  --highlight-color: #a5be00; /* Define RGB values */
+
 }
 
 .slide {
@@ -220,21 +222,21 @@ button:hover {
   aspect-ratio: 5 / 6;
   min-width: 150px;
   max-width: 300px;
-  border-radius: 16px;
+  border-radius: 2px;
   overflow: hidden;
   border: 2px solid transparent;
   transition: border-color 0.2s ease, transform 0.2s ease;
   cursor: pointer;
-  background-color: black;
+  /* background-color: black; */
 }
 
 .game-container.selected {
-  border-color: #007bff !important;
-  transform: scale(1.05);
+  border-color: var(--highlight-color) !important;
+  transform: scale(1.15);
 }
 
 .image-container.selected {
-  outline: 2px solid blueviolet;
+  outline: 2px var(--highlight-color);
 }
 
 .image-container img {
@@ -731,7 +733,7 @@ input:checked + .slider:before {
 }
 
 .highlighted {
-  outline: 2px solid #ffc300;
+  outline: 2px solid var(--highlight-color);
 }
 
 /* Form details */

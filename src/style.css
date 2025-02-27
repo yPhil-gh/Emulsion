@@ -336,6 +336,13 @@ div.game-container.selected .fetch-cover-button {
 
 #emume-big-logo {
   width: -webkit-fill-available;
+  max-width: 150px;
+  margin-bottom: 10px;
+}
+
+#emume-big-logo-text {
+  max-width: 90px;
+  margin: 40px;
 }
 
 /* Hidden state */
@@ -345,6 +352,7 @@ div.game-container.selected .fetch-cover-button {
 
 /* The modal content box */
 .dialog-content {
+  text-align: center;
   background: #2d2d2d;
   padding: 20px;
   border: 1px solid #444;
@@ -354,6 +362,10 @@ div.game-container.selected .fetch-cover-button {
   max-width: 600px;
   color: #e0e0e0;
   font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center items horizontally */
+  justify-content: center; /* Center items vertically */
 }
 
 /* Title styling */

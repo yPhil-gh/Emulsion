@@ -17,23 +17,16 @@ async function searchGame(gameName, platform) {
 
         const firstHref = resultsPage$('#main > table a[href]').first().attr('href');
 
-        console.log("firstHref: ", firstHref);
-
         const platormCoverPage = `${firstHref}covers/${platform}`;
-
-        console.log("trying: ", platormCoverPage);
 
         let coversPage$;
 
         const coversResponse = await axios.get(platormCoverPage);
 
-        if (coversResponse.status !== 200) {
-            throw new Error(`Failed to load platform cover page. Status: ${coversResponse.status}`);
-        }
-
         coversPage$ = cheerio.load(coversResponse.data);
 
         const imgSources = [];
+
         coversPage$('.img-holder img[src]').each((index, element) => {
             const src = coversPage$(element).attr('src');
             imgSources.push(src);

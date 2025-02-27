@@ -246,7 +246,18 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
     let i = 1;
 
-    // Create a gallery item for each game
+    const imageFormats = ['jpg', 'png', 'webp'];
+
+    function findImageFile(basePath, fileNameWithoutExt) {
+        for (const format of imageFormats) {
+            const imagePath = path.join(basePath, `${fileNameWithoutExt}.${format}`);
+            if (fs.existsSync(imagePath)) {
+                return imagePath;
+            }
+        }
+        return null;
+    }
+
     gameFiles.forEach(gameFile => {
 
         const fileName = path.basename(gameFile);
@@ -255,37 +266,26 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
         document.getElementById('loading-game').textContent = i + " - " + fileName;
 
         const fileNameWithoutExt = path.parse(fileName).name;
-        const coverImagePath = path.join(userDataPath, "covers", platform, `${fileNameWithoutExt}.jpg`);
+
+        const coverImagePath = findImageFile(path.join(userDataPath, "covers", platform), fileNameWithoutExt);
+
         const missingImagePath = path.join(__dirname, "img", 'missing.png');
 
-        // Create the game container
         const gameContainer = document.createElement('div');
         gameContainer.classList.add('game-container');
-        // gameContainer.setAttribute('tabindex', 0);
         gameContainer.setAttribute('data-command', `${emulator} ${emulatorArgs || ""} "${gameFile}"`);
         gameContainer.setAttribute('data-index', i++);
 
         gameContainer.tabindex = -1;
 
-        // Add click event to launch the game
         gameContainer.addEventListener('click', (event) => {
-
-            console.log("click: ");
-
             event.stopPropagation();
-            // const command = `${emulator} ${emulatorArgs} "${gameFile}"`;
-
-            // const escapedCommand = process.platform === 'win32' ? `"${event.target.dataset.command}"` : event.target.dataset.command.replace(/(["'`\\\s!$&*(){}\[\]|<>?;])/g, '\\$1');
-
-            // ipcRenderer.send('run-command', event.target.dataset.command);
+            ipcRenderer.send('run-command', event.target.dataset.command);
         });
 
-
-        // Create the image container
         const imgContainer = document.createElement('div');
         imgContainer.classList.add('image-container');
 
-        // Create the image element
         const imgElement = document.createElement('img');
         imgElement.src = fs.existsSync(coverImagePath) ? coverImagePath : missingImagePath;
         imgElement.alt = fileNameWithoutExt;
@@ -303,7 +303,6 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
         nameElement.textContent = `${fileNameWithoutExt}`;
         nameElement.classList.add('game-name');
 
-        // Create the fetch cover button
         const fetchCoverButton = document.createElement('button');
         fetchCoverButton.classList.add('fetch-cover-button');
         fetchCoverButton.setAttribute('title', `Fetch cover for ${fileNameWithoutExt}`);
@@ -311,39 +310,29 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
         fetchCoverButton.setAttribute('data-platform', platform);
         fetchCoverButton.setAttribute('data-image-status', fs.existsSync(coverImagePath) ? 'found' : 'missing');
 
-
-        // Create the first icon (F key)
         const icon1 = document.createElement('img');
         icon1.classList.add('fetch-icon');
-
         icon1.src = path.join(__dirname, "img", "controls", 'button-square.png');
-
         icon1.alt = 'F Key';
 
-        // Create the second icon (G key)
         const icon2 = document.createElement('img');
         icon2.classList.add('fetch-icon');
         icon2.src = path.join(__dirname, "img", "controls", 'key-f.png');
         icon2.alt = 'G Key';
 
-        // Create the label
         const label = document.createElement('span');
         label.classList.add('fetch-label');
         label.textContent = "Fetch";
 
-        // Append elements to the button
         fetchCoverButton.appendChild(icon1);
         fetchCoverButton.appendChild(icon2);
         fetchCoverButton.appendChild(label);
 
         fetchCoverButton.addEventListener('click', async (event) => {
 
-
             event.stopPropagation();
 
             const parentContainer = event.target.parentElement;
-
-            console.log("fetchCoverButton: ", parentContainer);
 
             const img = parentContainer.querySelector("img");
 
@@ -368,7 +357,6 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
                 })
                 .finally(() => {
                     console.log("finally: ");
-                    // window.control.initGalleryNav(galleryContainer);
                     gameContainer.focus();
                     fetchCoverButton.classList.remove('rotate');
                 });

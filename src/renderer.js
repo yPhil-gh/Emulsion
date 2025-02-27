@@ -21,6 +21,9 @@ function buildSlide(platform) {
     homeSlide.id = platform;
     homeSlide.style.backgroundImage = `url('img/platforms/${platform}.png')`;
 
+    homeSlide.style.backgroundImage = platform === "settings" ? `url('img/emume.png')` : `url('img/platforms/${platform}.png')`;
+
+
     const slideContent = document.createElement("div");
     slideContent.className = "slide-content";
 
@@ -49,7 +52,7 @@ function buildTopMenuItem(platform) {
     // menuSlide.style.backgroundImage = `url('img/platforms/${platform}.png')`;
 
     const menuSlideIcon = document.createElement("img");
-    menuSlideIcon.src = `img/platforms/${platform}.png`;
+    menuSlideIcon.src = platform === "settings" ? "img/emume.png" : `img/platforms/${platform}.png`;
     menuSlideIcon.className = "menu-icon";
 
     const menuSlideContent = document.createElement("div");

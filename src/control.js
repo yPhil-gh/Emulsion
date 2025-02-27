@@ -601,7 +601,6 @@ window.control = {
 
                     container.scrollIntoView({
                         behavior: 'smooth',
-                        block: 'center',
                     });
 
                 } else {

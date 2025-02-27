@@ -95,6 +95,11 @@ if (!gotTheLock) {
             win.reload();
         });
 
+        globalShortcut.register('F11', () => {
+            console.log('F11 pressed - Toggling fullscreen...');
+            win.setFullScreen(!win.isFullScreen());
+        });
+
         globalShortcut.register('F12', () => {
             console.log('F12 pressed - Opening DevTools...');
             win.webContents.openDevTools();

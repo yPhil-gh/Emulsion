@@ -296,10 +296,6 @@ button:hover {
   gap: 4px;
 }
 
-div.game-container.image-missing.selected .fetch-cover-button {
-  opacity: 1;
-}
-
 .fetch-icon {
   font-size: 18px;
 }
@@ -309,7 +305,7 @@ div.game-container.image-missing.selected .fetch-cover-button {
   font-weight: bold;
 }
 
-.game-container.image-missing:hover .fetch-cover-button {
+div.game-container.image-missing.selected .fetch-cover-button {
   opacity: 1;
 }
 
@@ -843,4 +839,15 @@ input:checked + .slider:before {
 
 #details-text-div {
   display: none;
+}
+
+/* Override hover styles when .disable-hover is active. */
+.disable-hover *:hover {
+  /* This example disables pointer events on hover – adjust as needed */
+  pointer-events: none !important;
+  background-color: initial !important;
+  color: initial !important;
+  outline: initial !important;
+  border: initial !important;
+
 }

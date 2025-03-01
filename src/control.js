@@ -2,7 +2,6 @@ let fs = require('fs');
 const path = require('path');
 const { ipcRenderer } = require('electron');
 
-
 function updatePlatormsMenu({ pad = "Browse", cross = "Select", square = "Config", circle = "Exit" } = {}) {
     const squareSpan = document.getElementById("square-span");
     squareSpan.textContent = square;
@@ -131,7 +130,6 @@ function initDialogNav(dialog, buttons, onImageSelect) {
                 const activeElement = event.target.querySelector("img");
                 const imageUrl = activeElement.src;
                 onImageSelect(imageUrl); // Pass the selected image URL to the callback
-                // closeDialog();
             }
 
             if (event.target.id === "exit-dialog-cancel-button" || document.activeElement.id === "exit-dialog-cancel-button") {
@@ -171,9 +169,18 @@ function initDialogNav(dialog, buttons, onImageSelect) {
 
     dialog.addEventListener('click', (event) => {
         const dialogContent = document.querySelector('.dialog-content');
+        console.log("event.target: ", event.target);
         if (!dialogContent.contains(event.target)) {
             closeDialog();
         }
+
+        if (event.target.classList.contains()) {
+
+        }
+        // const activeElement = event.target.querySelector("img");
+        // const imageUrl = activeElement.src;
+        // onImageSelect(imageUrl); // Pass the selected image URL to the callback
+
     });
 
     dialog.setAttribute('tabindex', '-1');
@@ -723,14 +730,45 @@ function fetchAllPlatformCovers(galleryContainer) {
 
 }
 
+function sunMouse() {
+    let mouseInhibited = false;
+
+    // When a key is pressed, add a class that disables hover effects.
+    window.addEventListener('keydown', () => {
+        document.body.classList.add('disable-hover');
+        // Also set our flag to inhibit mouse events if needed.
+        mouseInhibited = true;
+    });
+
+    // On the next mousemove, remove the disable-hover class.
+    window.addEventListener('mousemove', () => {
+        document.body.classList.remove('disable-hover');
+        mouseInhibited = false;
+    });
+
+}
 
 function initGalleryNav(galleryContainer) {
 
     document.getElementById('dpad-icon').src = "./img/controls/dpad-active.png";
 
-    const gameContainers = Array.from(galleryContainer.querySelectorAll('.game-container'));
+    const allGamecontainers = galleryContainer.querySelectorAll('.game-container');
+    const gameContainersArray = Array.from(allGamecontainers);
 
-    if (gameContainers.length === 0) return;
+    // Sun mouse
+    allGamecontainers.forEach((container) => {
+        container.classList.remove("selected");
+        container.addEventListener('mousemove', () => {
+
+            allGamecontainers.forEach((container) => {
+                container.classList.remove("selected");
+            });
+
+            container.classList.add("selected");
+        });
+    });
+
+    if (gameContainersArray.length === 0) return;
 
     let selectedIndex = 0;
     const columns = 6; // Fixed number of columns
@@ -744,13 +782,13 @@ function initGalleryNav(galleryContainer) {
 
         switch (event.key) {
         case 'ArrowRight':
-            selectedIndex = (selectedIndex + 1) % gameContainers.length;
+            selectedIndex = (selectedIndex + 1) % gameContainersArray.length;
             break;
         case 'ArrowLeft':
-            selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
+            selectedIndex = (selectedIndex - 1 + gameContainersArray.length) % gameContainersArray.length;
             break;
         case 'ArrowDown':
-            selectedIndex = Math.min(selectedIndex + columns, gameContainers.length);
+            selectedIndex = Math.min(selectedIndex + columns, gameContainersArray.length);
             break;
         case 'ArrowUp':
 
@@ -758,9 +796,9 @@ function initGalleryNav(galleryContainer) {
 
 
             if (selectedIndex < 6) {
-                gameContainers[selectedIndex].style.border = "none";
+                gameContainersArray[selectedIndex].style.border = "none";
 
-                gameContainers.forEach((container, index) => {
+                gameContainersArray.forEach((container, index) => {
                     container.classList.remove('selected');
                 });
 
@@ -773,13 +811,13 @@ function initGalleryNav(galleryContainer) {
             break;
         case 'PageDown':
             // Jump 5 containers down in the same column
-            selectedIndex = Math.min(selectedIndex + (5 * columns), gameContainers.length - 1);
+            selectedIndex = Math.min(selectedIndex + (5 * columns), gameContainersArray.length - 1);
             break;
         case 'PageUp':
             selectedIndex = Math.max(selectedIndex - (5 * columns), 0);
             break;
         case 'i':
-            const fetchCoverButton = gameContainers[selectedIndex].querySelector('button');
+            const fetchCoverButton = gameContainersArray[selectedIndex].querySelector('button');
 
             fetchCoverButton.click();
             break;
@@ -788,7 +826,7 @@ function initGalleryNav(galleryContainer) {
             break;
         case 'Enter':
             if (document.querySelector('.gallery')) {
-                gameContainers[selectedIndex].click();
+                gameContainersArray[selectedIndex].click();
             }
             break;
         case 'F5':
@@ -802,13 +840,13 @@ function initGalleryNav(galleryContainer) {
         }
 
         // Update the selected state
-        gameContainers.forEach((container, index) => {
+        gameContainersArray.forEach((container, index) => {
             container.classList.toggle('selected', index === selectedIndex);
         });
 
-        if (selectedIndex < gameContainers.length && selectedIndex > 0) {
+        if (selectedIndex < gameContainersArray.length && selectedIndex > 0) {
 
-            const fetchCoverButton = gameContainers[selectedIndex].querySelector('.fetch-cover-button');
+            const fetchCoverButton = gameContainersArray[selectedIndex].querySelector('.fetch-cover-button');
 
             const imageStatus = fetchCoverButton.getAttribute('data-image-status');
 
@@ -823,7 +861,7 @@ function initGalleryNav(galleryContainer) {
                 // fetchCoverButton.style.opacity = 1;
             }
 
-            gameContainers[selectedIndex].scrollIntoView({
+            gameContainersArray[selectedIndex].scrollIntoView({
                 behavior: 'smooth',
                 block: 'center',
                 // inline: 'center'
@@ -834,7 +872,7 @@ function initGalleryNav(galleryContainer) {
     });
 
     // Set the first game container as selected by default
-    gameContainers[selectedIndex].classList.add('selected');
+    gameContainersArray[selectedIndex].classList.add('selected');
 }
 
 function initCoversDialogNav(coversDialog) {

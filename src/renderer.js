@@ -116,5 +116,6 @@ Promise.all([
         console.error('Failed to load platforms or form template:', error);
     });
 
-
-
+document.addEventListener('keydown', () => {
+    console.log("keydown: ");
+});

@@ -351,6 +351,7 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
         const fetchCoverButton = document.createElement('button');
         fetchCoverButton.classList.add('fetch-cover-button');
+        fetchCoverButton.classList.add('hoverable');
         fetchCoverButton.setAttribute('title', `Fetch cover for ${fileNameWithoutExt}`);
         fetchCoverButton.setAttribute('data-game', fileNameWithoutExt);
         fetchCoverButton.setAttribute('data-platform', platform);

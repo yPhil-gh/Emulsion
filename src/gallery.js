@@ -46,7 +46,6 @@ window.gallery = {
         const settingsGallery = document.getElementById("gallery-settings");
 
         platforms.forEach((platform) => {
-            console.log("buildSettingsForm: ", platform);
             if (platform.name !== "settings") {
                 const form = buildSettingsForm(platform, formTemplate);
                 settingsGallery.appendChild(form);
@@ -120,7 +119,6 @@ function buildSettingsForm(platform, formTemplate) {
     }
 
     async function browse(event) {
-        console.log("event.target: ", event.target);
         let type;
         if (event.target.classList.contains("browse-button-dir")) {
             type = "directory";

@@ -9,10 +9,7 @@ slideshow.focus();
 function buildSlide(platform) {
 
     if (!window.control.isEnabled(platform)) {
-        console.log("Disabled: ", platform);
         return null;
-    } else {
-        console.log("Enabled: ", platform);
     }
 
     // Create the slide container
@@ -40,8 +37,6 @@ function buildTopMenuItem(platform) {
     if (!window.control.isEnabled(platform)) {
         return null;
     }
-
-    console.log("Building platform top menu item: ", platform);
 
     // Create the slide container
     const menuSlide = document.createElement("div");

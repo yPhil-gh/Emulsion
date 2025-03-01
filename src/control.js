@@ -115,6 +115,7 @@ function initDialogNav(dialog, buttons, onImageSelect) {
         }
 
         dialog.classList.add('hidden');
+        dialog.removeEventListener('keydown', onKeyDown);
     }
 
     // initDialogNav
@@ -182,10 +183,7 @@ function initDialogNav(dialog, buttons, onImageSelect) {
     elementToFocus.focus();
 
     return {
-        closeDialog,
-        cleanup: () => {
-            dialog.removeEventListener('keydown', onKeyDown);
-        },
+        closeDialog
     };
 }
 
@@ -239,9 +237,8 @@ function showCoversDialog(imageUrls, gameName, platform, imgElement) {
     // Remove the hidden class to show the dialog
     coversDialog.classList.remove('hidden');
 
-    // Initialize dialog navigation and get closeDialog and cleanup functions
-    const { closeDialog, cleanup } = initDialogNav(coversDialog, { selectButton, cancelButton }, (imageUrl) => {
-        console.warn("imageUrl: ", imageUrl, imgElement);
+    // Initialize dialog navigation and get back the closeDialog fct
+    const { closeDialog } = initDialogNav(coversDialog, { selectButton, cancelButton }, (imageUrl) => {
 
         window.coverDownloader.downloadAndReload(imageUrl, gameName, platform, imgElement)
             .then(() => {
@@ -249,11 +246,9 @@ function showCoversDialog(imageUrls, gameName, platform, imgElement) {
                 grandParent.focus();
             })
             .catch((error) => {
-                console.error('Error:', error.message);
+                console.error('Woooow! Error!', error.message);
             });
 
-        cleanup();
-        // Close the dialog after selecting an image
         closeDialog();
     });
 

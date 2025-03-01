@@ -9,11 +9,10 @@ const backends = {
 };
 
 function cleanFileName(filename) {
-  // Remove file extension (if any)
-  filename = filename.replace(/\.[^/.]+$/, "");
 
-  // Split into parts based on underscores
-  const parts = filename.split("_");
+  filename = filename.replace(/\.[^/.]+$/, ""); // Remove file extension (if any)
+
+  const parts = filename.split("_"); // Split into parts based on underscores
 
   // Filter out unwanted parts: always keep the first part (game name)
   // and tokens that are exactly "AGA", "CD32", "3D", or "2D"
@@ -79,6 +78,7 @@ async function searchGame(gameName, platform) {
 }
 
 async function downloadAndReload(imageUrl, gameName, platform, imgElement) {
+    console.log("imageUrl, gameName, platform, imgElement: ", imageUrl, gameName, platform, imgElement);
     try {
         const coverPath = await window.coverDownloader.downloadImage(imageUrl, gameName, platform);
 
@@ -90,7 +90,6 @@ async function downloadAndReload(imageUrl, gameName, platform, imgElement) {
         window.control.updateControlsMenu({ message: `OK: ${gameName} (${platform})` });
     } catch (error) {
         console.error('Error downloading image:', error.message);
-        imgElement.src = 'path/to/missing.png'; // Fallback to missing image
     }
 }
 

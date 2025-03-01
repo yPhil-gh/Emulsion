@@ -314,6 +314,10 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
         const gameContainer = document.createElement('div');
         gameContainer.classList.add('game-container');
+
+        gameContainer.setAttribute('data-game-name', fileNameWithoutExt);
+        gameContainer.setAttribute('data-platform', platform);
+
         gameContainer.setAttribute('data-command', `${emulator} ${emulatorArgs || ""} "${gameFile}"`);
         gameContainer.setAttribute('data-index', i++);
 

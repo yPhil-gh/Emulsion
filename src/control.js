@@ -716,6 +716,38 @@ function initSettingsNav(galleryContainer) {
         highlightCurrent();
 }
 
+function fetchAllPlatformCovers(galleryContainer) {
+    const gameContainers = Array.from(galleryContainer.querySelectorAll('.game-container'));
+
+    gameContainers.forEach(async (container, index) => {
+        const fetchCoverButton = container.querySelector(".fetch-cover-button");
+        fetchCoverButton.dispatchEvent(new Event('mouseover'));
+        fetchCoverButton.classList.add('rotate');
+
+        if (container.classList.contains("image-missing")) {
+
+            console.log("container.dataset.gameName: ", container.dataset.gameName);
+
+            await window.coverDownloader.searchGame(container.dataset.gameName, container.dataset.platform)
+                .then((details) => {
+                    console.log("details: ", details);
+                    fetchCoverButton.classList.remove('rotate');
+                    // return window.coverDownloader.downloadAndReload(details.imgSrcArray[0], gameName, platform, img);
+                })
+                .catch((error) => {
+                    console.info('Error (probably image not found):', error.message);
+                })
+                .finally(() => {
+                    fetchCoverButton.classList.remove('rotate');
+                    console.log("finally it happened to me right yeah well ");
+                });
+
+        }
+    });
+
+}
+
+
 function initGalleryNav(galleryContainer) {
 
     document.getElementById('dpad-icon').src = "./img/controls/dpad-active.png";
@@ -774,6 +806,9 @@ function initGalleryNav(galleryContainer) {
             const fetchCoverButton = gameContainers[selectedIndex].querySelector('button');
 
             fetchCoverButton.click();
+            break;
+        case 'a':
+            fetchAllPlatformCovers(galleryContainer);
             break;
         case 'Enter':
             if (document.querySelector('.gallery')) {

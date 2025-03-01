@@ -8,12 +8,54 @@ const backends = {
     default: { module: require('./src/backends/uvlist.js'), name: 'UVList' }
 };
 
+function cleanFileName(filename) {
+  // Remove file extension (if any)
+  filename = filename.replace(/\.[^/.]+$/, "");
+
+  // Split into parts based on underscores
+  const parts = filename.split("_");
+
+  // Filter out unwanted parts: always keep the first part (game name)
+  // and tokens that are exactly "AGA", "CD32", "3D", or "2D"
+  const filteredParts = parts.filter((part, index) => {
+    return index === 0 || ["AGA", "CD32", "3D", "2D"].includes(part);
+  });
+
+  // Remove version numbers (e.g., "v1.1") and numeric ID parts (e.g., "0280")
+  const cleanedParts = filteredParts
+    .map((part) => part.replace(/^v\d+\.\d+$/, ""))
+    .filter((part) => !/^\d{3,}$/.test(part))
+    .filter((part) => part !== "");
+
+  // Process each part for proper spacing and capitalization
+  const processedParts = cleanedParts.map((part) => {
+    // If the part is exactly one of the protected tokens, leave it unchanged.
+    if (["AGA", "CD32", "3D", "2D"].includes(part)) {
+      return part;
+    }
+    // Isolate "3D" and "2D" occurrences by surrounding them with spaces.
+    let modifiedPart = part.replace(/(3D|2D)/g, ' $1 ');
+    // Ensure there's a space between a lowercase letter and an uppercase letter or digit.
+    modifiedPart = modifiedPart.replace(/([a-z])([A-Z0-9])/g, '$1 $2').trim();
+    // Capitalize the first letter of each resulting word.
+    return modifiedPart
+      .split(/\s+/)
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  });
+
+  // Join all processed parts with a space
+  return processedParts.join(" ");
+}
+
 async function searchGame(gameName, platform) {
     const backend = backends[platform] || backends.default;
 
-    console.log(`Using backend ${backend.name} to search for ${gameName} (${platform})`);
+    const cleanName = cleanFileName(gameName);
 
-    const nameParts = gameName.split(' ');
+    console.log(`Using backend ${backend.name} to search for ${cleanName} (${platform})`);
+
+    const nameParts = cleanName.split(' ');
     let searchResults = null;
 
     let res;
@@ -72,44 +114,13 @@ async function downloadImage(imageUrl, gameName, platform) {
     }
 }
 
-// async function downloadImage(imageUrl, gameName, platform) {
-//     fsy = require('fs').promises; // Use promises for async file operations
-//     console.log("downloadImage imageUrl: ", imageUrl);
-//     try {
-//         const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
-
-//         // Ensure the directory exists
-//         const coversDir = path.join(window.userDataPath, "covers", platform);
-//         await fsy.mkdir(coversDir, { recursive: true });
-
-//         // Create a unique file name
-//         const timestamp = Date.now();
-//         const uniqueFileName = `${gameName}_${timestamp}.jpg`;
-//         const coverPath = path.join(coversDir, uniqueFileName);
-
-//         // Convert the ArrayBuffer to a Node.js Buffer and write to disk
-//         const coverBuffer = Buffer.from(response.data);
-//         await fsy.writeFile(coverPath, coverBuffer);
-
-//         console.log(`Cover downloaded! for ${gameName} (${platform})`);
-//         return coverPath;
-//     } catch (error) {
-//         console.error(`Error downloading cover for ${gameName}:`, error.message);
-//         throw error;
-//     }
-// }
-
-
 function reloadImage(imgElement, coverPath) {
     // Ensure the image exists before updating the src
-
     const newSrc = `${coverPath}?t=${Date.now()}`; // Add a timestamp to bypass cache
 
-    // Update the imgElement.src
     imgElement.src = newSrc;
     console.log(`Image reloaded: ${coverPath}`);
 }
-
 
 window.coverDownloader = {
     searchGame: searchGame,

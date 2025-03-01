@@ -378,14 +378,12 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
             event.stopPropagation();
 
-            const parentContainer = event.target.parentElement;
-
-            const img = parentContainer.querySelector("img");
+            const img = event.currentTarget.parentElement.querySelector("img");
 
             fetchCoverButton.classList.add('rotate');
 
-            const gameName = event.target.getAttribute('data-game');
-            const platform = event.target.getAttribute('data-platform');
+            const gameName = event.currentTarget.getAttribute('data-game');
+            const platform = event.currentTarget.getAttribute('data-platform');
 
             const isBatch = false;
 

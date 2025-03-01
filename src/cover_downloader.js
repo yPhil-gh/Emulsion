@@ -48,6 +48,7 @@ function cleanFileName(filename) {
 }
 
 async function searchGame(gameName, platform) {
+    console.log("gameName, platform: ", gameName, platform);
     const backend = backends[platform] || backends.default;
 
     const cleanName = cleanFileName(gameName);

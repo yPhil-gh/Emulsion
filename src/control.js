@@ -170,15 +170,13 @@ function initDialogNav(dialog, buttons, onImageSelect) {
     }
 
     dialog.addEventListener('click', (event) => {
-        const dialogContent = document.querySelector('#exit-dialog .dialog-content');
+        const dialogContent = document.querySelector('.dialog-content');
         if (!dialogContent.contains(event.target)) {
             closeDialog();
         }
     });
 
     dialog.setAttribute('tabindex', '-1');
-
-    console.log("elementToFocus: ", elementToFocus);
 
     elementToFocus.focus();
 
@@ -361,16 +359,6 @@ function initSlideShow(slideshow) {
         } else if (event.key === 'Escape') {
 
             window.control.showExitDialog();
-            // updateControlsMenu({message: "Really Exit?"});
-            // showExitDialog();
-        } else if (event.key === 'i') {
-            const form = slides[currentIndex].querySelector('.slide-form-container');
-
-            if (form.style.display === 'block' && slides[currentIndex].classList.contains("ready")) {
-                form.style.display = 'none';
-            } else {
-                form.style.display = 'block';
-            }
 
         } else if (event.key === 'Enter') {
 
@@ -388,12 +376,6 @@ function initSlideShow(slideshow) {
 
             const galleryToShow = document.querySelector(`#gallery-${platform}`);
 
-            console.log("platform!!: ", platform);
-
-            console.log("galleryToShow: ", galleryToShow);
-
-            console.log("galleryToShow.id: ", galleryToShow.id);
-
             if (galleryToShow.id === "gallery-settings") {
                 galleryToShow.style.display = "flex";
                 window.control.initSettingsNav(galleryToShow);
@@ -401,7 +383,6 @@ function initSlideShow(slideshow) {
                 galleryToShow.style.display = "grid";
                 window.control.initGalleryNav(galleryToShow);
             }
-
 
             window.topMenu.style.visibility = "visible";
 

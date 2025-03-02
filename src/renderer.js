@@ -67,8 +67,8 @@ function buildTopMenuItem(platform, index) {
     //     console.log("currentIndex left: ", currentIndex);
     // });
 
-    menuSlide.addEventListener('mousemove', () => {
-        console.log("mousemove: ");
+    menuSlide.addEventListener('mouseenter', () => {
+        console.log("mouseenter");
         window.control.initTopMenuNav();
     });
 
@@ -96,8 +96,8 @@ function buildTopMenuItem(platform, index) {
     arrowLeftImg.classList.add('menu-icon', 'left-arrow', 'arrows');
     arrowRightImg.classList.add('menu-icon', 'right-arrow', 'arrows');
 
-    arrowLeftImg.src = './img/controls/left.png';
-    arrowRightImg.src = './img/controls/right.png';
+    arrowLeftImg.src = './img/controls/arrow-off.png';
+    arrowRightImg.src = './img/controls/arrow-off.png';
 
     arrowLeftDiv.appendChild(arrowLeftImg);
     arrowRightDiv.appendChild(arrowRightImg);

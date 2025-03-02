@@ -470,6 +470,29 @@ div.game-container.image-missing.selected .fetch-cover-button {
 
 .arrows {
   display: none;
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  transition: background-image 0.3s ease;
+  background-size: cover;
+}
+
+.left-arrow {
+  background-image: url('../img/controls/arrow-off.png');
+}
+
+.left-arrow:hover {
+  background-image: url('../img/controls/arrow-on.png');
+}
+
+.right-arrow {
+  background-image: url('../img/controls/arrow-off.png');
+  transform: scaleX(-1);
+}
+
+.right-arrow:hover {
+  transform: scaleX(-1);
+  background-image: url('../img/controls/arrow-on.png');
 }
 
 /* .arrows:hover { */

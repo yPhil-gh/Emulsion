@@ -449,25 +449,35 @@ div.game-container.image-missing.selected .fetch-cover-button {
 }
 
 #top-menu-slider {
-  width: 300px;
-  overflow: hidden;
+  width: 98%;
+  /* overflow: hidden; */
 }
 
 
 #top-menu-items {
   position: relative;
-  display: flex;
 }
 
-
 .top-menu-slide {
-  flex: 0 0 300px;
+  display: flex; /* Optional: for centering content */
   align-items: center;
   justify-content: center;
 }
 
+.top-menu-slide-element {
+  flex: 1;
+}
+
 .arrows {
   display: none;
+}
+
+/* .arrows:hover { */
+/*   display: block; */
+/* } */
+
+header:hover .arrows {
+  display: block;
 }
 
 .top-menu-slide-content {

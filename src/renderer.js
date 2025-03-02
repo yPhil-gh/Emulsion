@@ -1,6 +1,6 @@
 const slideshow = document.getElementById("slideshow");
 window.topMenu = document.getElementById("top-menu");
-window.topMenuItems = document.getElementById("top-menu-items");
+window.topMenuSlider = document.getElementById("top-menu-slider");
 
 window.control.initGamepad();
 
@@ -32,7 +32,7 @@ function buildSlide(platform) {
     return homeSlide;
 }
 
-function buildTopMenuItem(platform) {
+function buildTopMenuItem(platform, index) {
 
     if (!window.control.isEnabled(platform)) {
         return null;
@@ -42,9 +42,24 @@ function buildTopMenuItem(platform) {
     const menuSlide = document.createElement("div");
     menuSlide.className = "top-menu-slide";
     menuSlide.classList.add(platform);
+    menuSlide.setAttribute('data-index', index);
 
-    // menuSlide.id = platform;
-    // menuSlide.style.backgroundImage = `url('img/platforms/${platform}.png')`;
+    const arrowLeftDiv = document.createElement("div");
+    const arrowRightDiv = document.createElement("div");
+
+    const arrowLeftImg = document.createElement("img");
+    const arrowRightImg = document.createElement("img");
+
+    arrowLeftImg.classList.add('menu-icon', 'left-arrow', 'arrows');
+    arrowRightImg.classList.add('menu-icon', 'right-arrow', 'arrows');
+
+    arrowLeftImg.src = './img/controls/left.png';
+    arrowRightImg.src = './img/controls/right.png';
+
+    arrowLeftDiv.appendChild(arrowLeftImg);
+    arrowRightDiv.appendChild(arrowRightImg);
+    arrowLeftDiv.classList.add('top-menu-slide-element');
+    arrowRightDiv.classList.add('top-menu-slide-element');
 
     const menuSlideIcon = document.createElement("img");
     menuSlideIcon.src = platform === "settings" ? "img/emume.png" : `img/platforms/${platform}.png`;
@@ -52,6 +67,7 @@ function buildTopMenuItem(platform) {
 
     const menuSlideContent = document.createElement("div");
     menuSlideContent.className = "top-menu-slide-content";
+    menuSlideContent.classList.add('top-menu-slide-element');
 
     const menuSlideLabel = document.createElement("div");
     menuSlideLabel.className = "top-menu-slide-label";
@@ -60,7 +76,9 @@ function buildTopMenuItem(platform) {
 
     menuSlideContent.appendChild(menuSlideLabel);
     menuSlideContent.appendChild(menuSlideIcon);
+    menuSlide.appendChild(arrowLeftDiv);
     menuSlide.appendChild(menuSlideContent);
+    menuSlide.appendChild(arrowRightDiv);
 
     return menuSlide;
 }
@@ -94,20 +112,23 @@ Promise.all([
         document.getElementById("loading").style.display = "none";
 
         window.platforms = platforms;
-        platforms.forEach((platform) => {
 
+        let i = 0;
+        platforms.forEach((platform) => {
             const homeSlide = buildSlide(platform.name);
-            const menuItem = buildTopMenuItem(platform.name);
+            const menuItem = buildTopMenuItem(platform.name, i);
 
             if (menuItem) {
-                window.topMenuItems.appendChild(menuItem);
+                window.topMenuSlider.appendChild(menuItem);
             }
 
             if (homeSlide) {
                 slideshow.appendChild(homeSlide);
             }
 
+            i++;
         });
+
 
         window.control.initSlideShow(slideshow);
 

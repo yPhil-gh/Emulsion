@@ -403,6 +403,63 @@ function initSlideShow(slideshow) {
     updateCarousel();
 }
 
+function displayGallery(index) {
+
+    const galleries = document.querySelectorAll('.gallery');
+    const totalGalleries = galleries.length;
+    const slides = document.querySelectorAll('.top-menu-slide');
+
+    console.log("Total Galleries:", totalGalleries);
+    console.log("Total Slides:", slides.length);
+
+    if (totalGalleries !== slides.length) {
+        console.warn("Mismatch between .gallery and .top-menu-slide elements!");
+    }
+
+    // Ensure index wraps around properly
+    // index = (index + totalGalleries) % totalGalleries;
+
+    // Hide all galleries
+    galleries.forEach(gallery => {
+        gallery.style.display = "none";
+    });
+
+    // Show the correct gallery
+    const galleryToDisplay = galleries[index];
+    if (galleryToDisplay) {
+        console.log("Displaying gallery:", galleryToDisplay.id);
+        galleryToDisplay.style.display = galleryToDisplay.id === "gallery-settings" ? "flex" : "grid";
+        if (galleryToDisplay.id === "gallery-settings") {
+            window.control.initSettingsNav(document.querySelector(`#gallery-settings`));
+
+        }
+        galleryToDisplay.classList.add('fadeIn');
+    }
+
+    updatePlatformName(index);
+}
+
+function updatePlatformName(index) {
+    const allPlatformSlides = document.querySelectorAll('.top-menu-slide');
+
+    // Normalize index
+    const safeIndex = (index - 1 + allPlatformSlides.length) % allPlatformSlides.length;
+
+    console.log("Updating Platform Name - Index:", index, "Safe Index:", safeIndex);
+
+    allPlatformSlides.forEach((platformSlide, i) => {
+        platformSlide.style.opacity = "0";
+        platformSlide.style.display = "none";
+        platformSlide.classList.remove("fadeIn");
+
+        if (i === safeIndex) {
+            console.log("Displaying platform slide:", i);
+            platformSlide.style.display = "flex";
+            platformSlide.classList.add('fadeIn');
+        }
+    });
+}
+
 function initTopMenuNav() {
 
     document.getElementById('dpad-icon').src = "./img/controls/dpad-horiz.png";
@@ -420,71 +477,15 @@ function initTopMenuNav() {
 
     let currentIndex = 0; // Initialize globally
 
-    function displayGallery(index) {
-        const galleries = document.querySelectorAll('.gallery');
-        const totalGalleries = galleries.length;
-
-        console.log("Total Galleries:", totalGalleries);
-        console.log("Total Slides:", slides.length);
-
-        if (totalGalleries !== slides.length) {
-            console.warn("Mismatch between .gallery and .top-menu-slide elements!");
-        }
-
-        // Ensure index wraps around properly
-        index = (index + totalGalleries) % totalGalleries;
-
-        // Hide all galleries
-        galleries.forEach(gallery => {
-            gallery.style.display = "none";
-        });
-
-        // Show the correct gallery
-        const galleryToDisplay = galleries[index];
-        if (galleryToDisplay) {
-            console.log("Displaying gallery:", galleryToDisplay.id);
-            galleryToDisplay.style.display = galleryToDisplay.id === "gallery-settings" ? "flex" : "grid";
-            if (galleryToDisplay.id === "gallery-settings") {
-                window.control.initSettingsNav(document.querySelector(`#gallery-settings`));
-
-            }
-            galleryToDisplay.classList.add('fadeIn');
-        }
-    }
-
-    function updatePlatformName(index) {
-        const allPlatformSlides = document.querySelectorAll('.top-menu-slide');
-
-        // Normalize index
-        const safeIndex = (index - 1 + allPlatformSlides.length) % allPlatformSlides.length;
-
-        console.log("Updating Platform Name - Index:", index, "Safe Index:", safeIndex);
-
-        allPlatformSlides.forEach((platformSlide, i) => {
-            platformSlide.style.opacity = "0";
-            platformSlide.style.display = "none";
-            platformSlide.classList.remove("fadeIn");
-
-            if (i === safeIndex) {
-                console.log("Displaying platform slide:", i);
-                platformSlide.style.display = "flex";
-                platformSlide.classList.add('fadeIn');
-            }
-        });
-    }
-
-
-    const goToPreviousSlide = () => {
+    const goToPrevGallery = () => {
         currentIndex = (currentIndex - 1 + slides.length) % slides.length;
         console.log("Prev Slide - New Index:", currentIndex);
-        updatePlatformName(currentIndex);
         displayGallery(currentIndex);
     };
 
-    const goToNextSlide = () => {
+    const goToNextGallery = () => {
         currentIndex = (currentIndex + 1) % slides.length;
         console.log("Next Slide - New Index:", currentIndex);
-        updatePlatformName(currentIndex);
         displayGallery(currentIndex);
     };
 
@@ -508,10 +509,11 @@ function initTopMenuNav() {
     };
 
     const handleClick = (event) => {
+        console.log("event!! ", event);
         if (event.target.closest('.left-arrow')) {
-            goToPreviousSlide();
+            goToPrevGallery();
         } else if (event.target.closest('.right-arrow')) {
-            goToNextSlide();
+            goToNextGallery();
         }
     };
 
@@ -519,10 +521,10 @@ function initTopMenuNav() {
     const handleKeyDown = (event) => {
         switch (event.key) {
         case 'ArrowLeft':
-            goToPreviousSlide();
+            goToPrevGallery();
             break;
         case 'ArrowRight':
-            goToNextSlide();
+            goToNextGallery();
             break;
         case 'ArrowDown':
             unregisterListeners();
@@ -538,7 +540,14 @@ function initTopMenuNav() {
     };
 
     const topMenu = document.getElementById('top-menu');
-    topMenu.addEventListener('click', handleClick);
+
+
+    // topMenu.addEventListener("click", (event) => {
+    //     console.log("event: ", event.target);
+    // });
+
+
+    // topMenu.addEventListener('click', handleClick);
     document.addEventListener('keydown', handleKeyDown);
 }
 
@@ -730,24 +739,6 @@ function fetchAllPlatformCovers(galleryContainer) {
 
 }
 
-function sunMouse() {
-    let mouseInhibited = false;
-
-    // When a key is pressed, add a class that disables hover effects.
-    window.addEventListener('keydown', () => {
-        document.body.classList.add('disable-hover');
-        // Also set our flag to inhibit mouse events if needed.
-        mouseInhibited = true;
-    });
-
-    // On the next mousemove, remove the disable-hover class.
-    window.addEventListener('mousemove', () => {
-        document.body.classList.remove('disable-hover');
-        mouseInhibited = false;
-    });
-
-}
-
 function initGalleryNav(galleryContainer) {
 
     document.getElementById('dpad-icon').src = "./img/controls/dpad-active.png";
@@ -770,12 +761,22 @@ function initGalleryNav(galleryContainer) {
 
     if (gameContainersArray.length === 0) return;
 
+    const topMenu = document.getElementById('top-menu');
+
     let selectedIndex = 0;
     const columns = 6; // Fixed number of columns
 
     galleryContainer.tabIndex = -1; // Make the container focusable
 
     galleryContainer.focus();
+
+    // const leftArrow = document.querySelector('.left-arrow');
+
+    // leftArrow.addEventListener('click', (event) => {
+    //     console.log("event: ", event.target);
+    //     const index = event.target.closest('.top-menu-slide');
+    //     console.log("index: ", index);
+    // });
 
     // Gallery nav
     galleryContainer.addEventListener('keydown', (event) => {

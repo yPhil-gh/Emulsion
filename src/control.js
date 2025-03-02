@@ -405,19 +405,18 @@ function initSlideShow(slideshow) {
 
 function displayGallery(index) {
 
+    console.log("index: ", index);
+
     const galleries = document.querySelectorAll('.gallery');
     const totalGalleries = galleries.length;
     const slides = document.querySelectorAll('.top-menu-slide');
-
-    console.log("Total Galleries:", totalGalleries);
-    console.log("Total Slides:", slides.length);
 
     if (totalGalleries !== slides.length) {
         console.warn("Mismatch between .gallery and .top-menu-slide elements!");
     }
 
     // Ensure index wraps around properly
-    // index = (index + totalGalleries) % totalGalleries;
+    index = (index + totalGalleries) % totalGalleries;
 
     // Hide all galleries
     galleries.forEach(gallery => {
@@ -427,11 +426,10 @@ function displayGallery(index) {
     // Show the correct gallery
     const galleryToDisplay = galleries[index];
     if (galleryToDisplay) {
-        console.log("Displaying gallery:", galleryToDisplay.id);
         galleryToDisplay.style.display = galleryToDisplay.id === "gallery-settings" ? "flex" : "grid";
+        console.log("galleryToDisplay.id: ", galleryToDisplay.id);
         if (galleryToDisplay.id === "gallery-settings") {
             window.control.initSettingsNav(document.querySelector(`#gallery-settings`));
-
         }
         galleryToDisplay.classList.add('fadeIn');
     }
@@ -445,15 +443,12 @@ function updatePlatformName(index) {
     // Normalize index
     const safeIndex = (index - 1 + allPlatformSlides.length) % allPlatformSlides.length;
 
-    console.log("Updating Platform Name - Index:", index, "Safe Index:", safeIndex);
-
     allPlatformSlides.forEach((platformSlide, i) => {
         platformSlide.style.opacity = "0";
         platformSlide.style.display = "none";
         platformSlide.classList.remove("fadeIn");
 
         if (i === safeIndex) {
-            console.log("Displaying platform slide:", i);
             platformSlide.style.display = "flex";
             platformSlide.classList.add('fadeIn');
         }
@@ -541,13 +536,14 @@ function initTopMenuNav() {
 
     const topMenu = document.getElementById('top-menu');
 
+    console.log("topMenu: ", topMenu);
 
     // topMenu.addEventListener("click", (event) => {
     //     console.log("event: ", event.target);
     // });
 
 
-    // topMenu.addEventListener('click', handleClick);
+    topMenu.addEventListener('click', handleClick);
     document.addEventListener('keydown', handleKeyDown);
 }
 
@@ -769,14 +765,6 @@ function initGalleryNav(galleryContainer) {
     galleryContainer.tabIndex = -1; // Make the container focusable
 
     galleryContainer.focus();
-
-    // const leftArrow = document.querySelector('.left-arrow');
-
-    // leftArrow.addEventListener('click', (event) => {
-    //     console.log("event: ", event.target);
-    //     const index = event.target.closest('.top-menu-slide');
-    //     console.log("index: ", index);
-    // });
 
     // Gallery nav
     galleryContainer.addEventListener('keydown', (event) => {
@@ -1049,6 +1037,7 @@ window.control = {
     initSettingsNav: initSettingsNav,
     initGalleryNav: initGalleryNav,
     initCoversDialogNav: initCoversDialogNav,
-    initGamepad: initGamepad
+    initGamepad: initGamepad,
+    displayGallery: displayGallery
 };
 

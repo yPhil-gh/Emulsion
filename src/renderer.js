@@ -35,20 +35,63 @@ function buildSlide(platform) {
 function buildTopMenuItem(platform, index) {
 
     if (!window.control.isEnabled(platform)) {
+        console.log("Dropped index: ", index);
         return null;
     }
+
+    console.log("Item index: ", index);
 
     // Create the slide container
     const menuSlide = document.createElement("div");
     menuSlide.className = "top-menu-slide";
     menuSlide.classList.add(platform);
-    menuSlide.setAttribute('data-index', index);
 
     const arrowLeftDiv = document.createElement("div");
     const arrowRightDiv = document.createElement("div");
 
     const arrowLeftImg = document.createElement("img");
     const arrowRightImg = document.createElement("img");
+
+    arrowLeftImg.setAttribute('data-index', index);
+    arrowRightImg.setAttribute('data-index', index);
+
+    const galleries = document.querySelectorAll('.gallery');
+    const totalGalleries = galleries.length;
+
+    // arrowLeftImg.addEventListener('click', (event) => {
+    //     const currentIndex = Number(event.target.dataset.index);
+    //     console.log("currentIndex: ", currentIndex);
+    //     const newIndex = currentIndex > 0 ? currentIndex - 1 : totalGalleries - 1;
+    //     console.log("goto: newIndex: ", newIndex);
+    //     window.control.displayGallery(newIndex);
+    //     console.log("currentIndex left: ", currentIndex);
+    // });
+
+    menuSlide.addEventListener('mousemove', () => {
+        console.log("mousemove: ");
+        window.control.initTopMenuNav();
+    });
+
+    // arrowRightImg.addEventListener('click', (event) => {
+    //     // Use currentTarget to ensure we get the data-index from the arrow element itself
+    //     const currentIndex = Number(event.currentTarget.dataset.index);
+    //     console.log("currentIndex: ", currentIndex);
+    //     const galleries = document.querySelectorAll('.gallery');
+    //     const totalGalleries = galleries.length;
+    //     const newIndex = currentIndex < totalGalleries - 1 ? currentIndex + 1 : 0;
+    //     console.log("GOTO: newIndex: ", newIndex);
+    //     window.control.displayGallery(newIndex);
+    // });
+
+
+    // arrowRightImg.addEventListener('click', (event) => {
+    //     const galleries = document.querySelectorAll('.gallery');
+    //     // let newIndex = Number(event.target.dataset.index) + 1;
+    //     // newIndex = Math.min(galleries.length - 1, newIndex); // Prevent exceeding the last index
+    //     console.log("go to: ", newIndex);
+
+    //     // window.control.displayGallery(newIndex + 1);
+    // });
 
     arrowLeftImg.classList.add('menu-icon', 'left-arrow', 'arrows');
     arrowRightImg.classList.add('menu-icon', 'right-arrow', 'arrows');
@@ -84,9 +127,9 @@ function buildTopMenuItem(platform, index) {
 }
 
 const platforms = [
+    {name: "dreamcast", details: "Yeah, dreamcast"},
     {name: "amiga", details: `Amiga is a bit special ; For now it only plays <code>.adf</code> files.<br><h4>Good emulator candidates</h4><ul><li><a data-href="https://fs-uae.net/">fs-uae</a> <code>--fullscreen</code></li></ul>`},
     {name: "pcengine", details: "<h4>Good emulator candidates</h4><ul><li>Mednafen <code>-fs 1 -pce.stretch aspect -pce.shader autoipsharper</code></li></ul>"},
-    {name: "dreamcast", details: "Yeah, dreamcast"},
     {name: "gamecube", details: "Yeah, gamecube"},
     {name: "snes", details: "Yeah, snes"},
     {name: "n64", details: "Yeah, n64"},
@@ -120,13 +163,13 @@ Promise.all([
 
             if (menuItem) {
                 window.topMenuSlider.appendChild(menuItem);
+                i++;
             }
 
             if (homeSlide) {
                 slideshow.appendChild(homeSlide);
             }
 
-            i++;
         });
 
 
@@ -137,6 +180,6 @@ Promise.all([
         console.error('Failed to load platforms or form template:', error);
     });
 
-document.addEventListener('keydown', () => {
-    console.log("keydown: ");
-});
+// document.addEventListener('keydown', () => {
+//     console.log("keydown: ");
+// });

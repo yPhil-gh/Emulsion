@@ -5,9 +5,9 @@
     <script src="menu.js"></script>
   </head>
   <body>
-    <h1 id="message">Loading...</h1>
+    <h1>Menu</h1>
     <p>User Data Path: <span id="user-data-path"></span></p>
-    <button onclick="window.electronAPI.navigateTo('games')">Go to Games</button>
-    <button onclick="window.electronAPI.navigateTo('settings')">Go to Settings</button>
+    <button id="games-button" disabled>Go to Games</button>
+    <button id="settings-button" disabled>Go to Settings</button>
   </body>
 </html>

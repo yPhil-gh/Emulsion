@@ -1,67 +1,82 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 
-let mainWindow, page2Window, page3Window;
+let mainWindow, gamesWindow, settingsWindow;
 
 function createWindows() {
-  // Main window (Page 1)
+  // Create the main window (menu)
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    show: false, // Hide the window until all pages are ready
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
     },
   });
+
+  // Create the games window (hidden)
+  gamesWindow = new BrowserWindow({
+    show: false,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+    },
+  });
+
+  // Create the settings window (hidden)
+  settingsWindow = new BrowserWindow({
+    show: false,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+    },
+  });
+
+  // Load all pages
   mainWindow.loadFile('src/menu.html');
+  gamesWindow.loadFile('src/games.html');
+  settingsWindow.loadFile('src/settings.html');
 
-  // Preload Page 2
-  page2Window = new BrowserWindow({
-    show: false, // Hide the window
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-      contextIsolation: true,
-    },
-  });
-  page2Window.loadFile('src/games.html');
+  // Send data to each page and wait for confirmation
+  const userDataPath = app.getPath('userData');
 
-  // Preload Page 3
-  page3Window = new BrowserWindow({
-    show: false, // Hide the window
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-      contextIsolation: true,
-    },
-  });
-  page3Window.loadFile('src/settings.html');
-
-  // Send data to the renderer process after the window is ready
   mainWindow.webContents.on('did-finish-load', () => {
-    const userDataPath = app.getPath('userData');
-    const menuData = { message: 'Welcome to the Menu!', userDataPath };
-    mainWindow.webContents.send('populate-menu', menuData);
+    mainWindow.webContents.send('populate-menu', { userDataPath });
   });
 
-  page2Window.webContents.on('did-finish-load', () => {
-    const userDataPath = app.getPath('userData');
-    const gamesData = { message: 'Welcome to the Games Page!', userDataPath };
-    page2Window.webContents.send('populate-games', gamesData);
+  gamesWindow.webContents.on('did-finish-load', () => {
+    gamesWindow.webContents.send('populate-games', { userDataPath });
   });
 
-  page3Window.webContents.on('did-finish-load', () => {
-    const userDataPath = app.getPath('userData');
-    const settingsData = { message: 'Welcome to the Settings Page!', userDataPath };
-    page3Window.webContents.send('populate-settings', settingsData);
+  settingsWindow.webContents.on('did-finish-load', () => {
+    settingsWindow.webContents.send('populate-settings', { userDataPath });
+  });
+
+  // Wait for all pages to confirm they are ready
+  let pagesReady = 0;
+  ipcMain.on('page-ready', () => {
+    pagesReady++;
+    if (pagesReady === 3) {
+      // All pages are ready, show the main window and enable navigation
+      mainWindow.show();
+      mainWindow.webContents.send('enable-navigation');
+    }
   });
 }
 
+// Handle navigation requests
 ipcMain.on('navigate-to', (event, page) => {
-  if (page === 'menu') {
-    mainWindow.loadFile('src/menu.html');
-  } else if (page === 'games') {
-    mainWindow.loadFile('src/games.html');
+  if (page === 'games') {
+    // mainWindow.hide();
+    gamesWindow.show();
   } else if (page === 'settings') {
-    mainWindow.loadFile('src/settings.html');
+    // mainWindow.hide();
+    settingsWindow.show();
+  } else if (page === 'menu') {
+    // gamesWindow.hide();
+    // settingsWindow.hide();
+    mainWindow.show();
   }
 });
 

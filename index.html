@@ -1,93 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>EnumE - Select a Platform</title>
-        <link rel="stylesheet" href="src/style.css">
-    </head>
-    <body>
+<html>
+  <head>
+    <title>Multi-Page App</title>
+    <style>
+      iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        display: none;
+      }
+      iframe.active {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <iframe id="page1" src="page1.html" class="active"></iframe>
+    <iframe id="page2" src="page2.html"></iframe>
+    <iframe id="page3" src="page3.html"></iframe>
 
-        <div id="loading">
-            <img class="big" src="./img/emume.gif" alt="Emume logo">
-            <div id="loading-message">
-                <h2>
-                    <span id="loading-platform"></span>
-                </h2>
-                <h3>
-                    Loading <span id="loading-game">...</span>
-                </h3>
-            </div>
-        </div>
-
-        <header id="top-menu" class="menu" tabindex="-1">
-            <!-- <img class="menu-icon left-arrow arrows" src="./img/controls/left.png" alt="Left"> -->
-            <div id="top-menu-slider"></div>
-            <!-- <img class="menu-icon right-arrow arrows" src="./img/controls/right.png" alt="Right"> -->
-        </header>
-
-        <div id="slideshow" tabindex="0"></div>
-        <div id="galleries" tabindex="-1">
-            <div id="gallery-settings" class="gallery"></div>
-        </div>
-
-        <!-- Custom Modal Container -->
-        <div id="image-dialog" class="dialog hidden">
-            <div class="dialog-content">
-                <h2 id="image-dialog-title">Select a Cover</h2>
-                <div class="image-grid" id="image-grid"></div>
-            </div>
-        </div>
-
-        <!-- Custom Modal Container -->
-        <div id="exit-dialog" class="dialog hidden" role="dialog" aria-labelledby="exit-dialog-title" aria-modal="true">
-            <div class="dialog-content">
-                <h2 id="exit-dialog-title">Exit</h2>
-                <img id="emume-big-logo" alt="EmumE Big Logo" src="./img/emume.png"/>
-                <img id="emume-big-logo-text" alt="EmumE Big Logo" src="./img/emume-text.png"/>
-                <div class="dialog-buttons">
-                    <button id="exit-dialog-exit-button" class="button">Exit</button>
-                    <button id="exit-dialog-donate-button" class="button">Donate</button>
-                    <button id="exit-dialog-cancel-button" class="button">Cancel</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="details-dialog" class="dialog-hidden">
-            <div class="details-dialog-content">
-                <h3 id="details-dialog-title">Details</h3>
-                <p id="details-dialog-text">Here are some additional details about the platform.</p>
-                <button id="details-dialog-ok-button" class="button">OK</button>
-            </div>
-        </div>
-
-        <footer id="controls-menu" class="menu">
-            <div id="dpad" class="status-item">
-                <img id="dpad-icon" class="icon" src="./img/controls/dpad-horiz.png" alt="Dpad - Horiz">
-                <span>Browse</span>
-            </div>
-            <div id="cross" class="status-item">
-                <img id="cross-icon" class="icon" src="./img/controls/button-cross.png" alt="Button - Cross">
-                <span>Select</span>
-            </div>
-            <div id="square" class="status-item">
-                <img id="square-icon" class="icon" src="./img/controls/button-square.png" alt="Button - Square">
-                <span id="square-span">Config</span>
-            </div>
-            <div id="circle" class="status-item">
-                <img id="circle-icon" class="icon" src="./img/controls/button-circle.png" alt="Button - Circle">
-                <span id="circle-span">Exit</span>
-            </div>
-            <div id="message" class="status-item">
-                <span id="message-span"></span>
-                <img id="emume-icon" class="icon" src="./img/emume.png" alt="Emume icon">
-            </div>
-
-        </footer>
-
-        <script src="src/control.js"></script>
-        <script src="src/cover_downloader.js"></script>
-        <script src="src/gallery.js"></script>
-        <script src="src/renderer.js"></script>
-
-    </body>
+    <script>
+     function showPage(pageId) {
+         document.querySelectorAll('iframe').forEach(iframe => {
+             iframe.classList.remove('active');
+         });
+         document.getElementById(pageId).classList.add('active');
+     }
+    </script>
+  </body>
 </html>

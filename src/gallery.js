@@ -1,18 +1,140 @@
-window.gallery = {
+const LB = {};
+
+LB.control = {
+
+    // Scroll to the previous page
+    handleScrollLeft: function (currentIndex) {
+        const carousel = document.querySelector('.carousel');
+        const pageWidth = window.innerWidth;
+        const totalPages = 4; // Number of real pages
+
+        currentIndex--;
+        if (currentIndex < 0) {
+            // Instantly reset to the real last page without animation
+            carousel.style.transition = 'none';
+                carousel.style.transform = `translateX(${-currentIndex + 1 * pageWidth}px)`;
+            setTimeout(() => {
+                carousel.style.transition = 'transform 0.5s ease';
+                currentIndex = totalPages; // Reset to the second-to-last page (real last page)
+                carousel.style.transform = `translateX(${-currentIndex * pageWidth}px)`;
+            }, 0);
+        } else {
+            carousel.style.transform = `translateX(${-currentIndex * pageWidth}px)`;
+        }
+        // updateTitle(currentIndex); // Update the title
+    },
+
+    // Scroll to the next page
+    handleScrollRight: function (currentIndex) {
+        const carousel = document.querySelector('.carousel');
+        const pageWidth = window.innerWidth;
+        const totalPages = 4; // Number of real pages
+
+        currentIndex++;
+        if (currentIndex > totalPages + 1) {
+            // Instantly reset to the real first page without animation
+            carousel.style.transition = 'none';
+            carousel.style.transform = `translateX(${-1 * pageWidth}px)`;
+            setTimeout(() => {
+                carousel.style.transition = 'transform 0.5s ease';
+                currentIndex = 2; // Reset to the second page (real first page)
+                carousel.style.transform = `translateX(${-currentIndex * pageWidth}px)`;
+            }, 0);
+        } else {
+            carousel.style.transform = `translateX(${-currentIndex * pageWidth}px)`;
+        }
+        // updateTitle(currentIndex); // Update the title
+    }
+
+};
+
+LB.gallery = {
     buildGallery: function(platform, gamesDir, emulator, emulatorArgs, userDataPath) {
-        ipcRenderer.send('change-window-title', "EmumE - Select a Game");
+        // ipcRenderer.send('change-window-title', "EmumE - Select a Game");
         return buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath);
     },
     buildGalleries: function(platforms, userDataPath) {
         return new Promise((resolve, reject) => {
             try {
-                const galleriesContainer = document.getElementById('galleries');
+
+
+                //   <!-- Page 4 -->
+                //   <div class="page" id="page4">
+                //     <div class="page-header">
+                //       <a onclick="handleScrollLeft()">Previous</a>
+                //       <div class="title">Page 4</div>
+                //       <a onclick="handleScrollRight()">Next</a>
+                //     </div>
+                //     <div class="page-content">
+                //       <div>Page 4</div>
+                //     </div>
+                //   </div>
+
+                //   <!-- Page 1 (Clone) -->
+                //   <div class="page" id="page1">
+                //     <div class="page-header">
+                //       <a onclick="handleScrollLeft()">Previous</a>
+                //       <div class="title">Page 1</div>
+                //       <a onclick="handleScrollRight()">Next</a>
+                //     </div>
+                //     <div class="page-content">
+                //       <div>Page 1</div>
+                //     </div>
+                //   </div>
+                // </div>
+
+                function buildPage(platformName, pageIndex) {
+
+                    const page = document.createElement('div');
+                    page.id = `page${pageIndex}`;
+                    page.classList.add('page');
+
+                    const header = document.createElement('div');
+                    header.classList.add('header');
+
+                    const prevLink = document.createElement('a');
+                    prevLink.textContent = 'Previous';
+                    prevLink.href = '#';
+                    prevLink.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        LB.control.handleScrollLeft();
+                    });
+
+                    const title = document.createElement('div');
+                    title.classList.add('title');
+                    title.textContent = platformName;
+
+                    const nextLink = document.createElement('a');
+                    nextLink.textContent = 'Next';
+                    nextLink.href = '#';
+                    nextLink.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        LB.control.handleScrollLeft();
+                    });
+
+                    const content = document.createElement('page-content');
+                    const testDiv = document.createElement('div');
+                    testDiv.textContent = platformName + "blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah ";
+
+                    header.appendChild(prevLink);
+                    header.appendChild(title);
+                    header.appendChild(nextLink);
+                    content.appendChild(testDiv);
+                    page.appendChild(header);
+                    page.appendChild(content);
+
+                    return page;
+
+                }
+
+                const pages = document.getElementById('pages');
+
+                let pageIndex = 1;
 
                 platforms.forEach((platform) => {
+
                     const prefString = localStorage.getItem(platform.name);
                     let prefs;
-
-                    document.getElementById('loading-platform').textContent = platform.name;
 
                     if (prefString) {
                         prefs = JSON.parse(prefString);
@@ -20,19 +142,26 @@ window.gallery = {
                         let emulator = prefs.emulator;
                         let emulatorArgs = prefs.emulatorArgs;
 
-                        const thisGallery = buildGallery(platform.name, gamesDir, emulator, emulatorArgs, userDataPath.userDataPath);
-                        thisGallery.style.display = "none";
+                        console.log("platform.name: ", platform.name, gamesDir);
+
+                        pages.appendChild(buildPage(platform.name, pageIndex));
+
+                        pageIndex++;
+                        // const thisGallery = buildGallery(platform.name, gamesDir, emulator, emulatorArgs, userDataPath.userDataPath);
+                        // thisGallery.style.display = "none";
 
                         // Append the gallery to the container
-                        galleriesContainer.appendChild(thisGallery);
+                        // galleriesContainer.appendChild(thisGallery);
                     } else {
                         console.log("No prefs for ", platform.name);
                     }
                 });
 
+                console.log("resolve platforms: ", platforms);
                 // Resolve the promise with platforms
                 resolve(platforms);
             } catch (error) {
+                console.log("error: ", error);
                 // Reject the promise if something goes wrong
                 reject(error);
             }
@@ -232,7 +361,7 @@ function buildSettingsForm(platform, formTemplate) {
     saveButton.setAttribute('data-platform', platformName);
 
     const toggleCheckbox = form.querySelector('#platform-toggle');
-    toggleCheckbox.checked = window.control.isEnabled(platformName);
+    toggleCheckbox.checked = LB.control.isEnabled(platformName);
 
     saveButton.addEventListener('click', () => {
         const gamesDir = gamesDirInput.value;
@@ -240,7 +369,7 @@ function buildSettingsForm(platform, formTemplate) {
         const emulatorArgs = emulatorArgsInput.value;
 
         if (!gamesDir || !emulator) {
-            window.control.updateControlsMenu({
+            LB.control.updateControlsMenu({
                 message: "Please provide both a <strong>Games Directory</strong> and an <strong>Emulator</strong>."
             });
             return;
@@ -251,7 +380,7 @@ function buildSettingsForm(platform, formTemplate) {
         const preferences = { gamesDir, emulator, emulatorArgs };
         localStorage.setItem(platformName, JSON.stringify(preferences));
 
-        window.control.updateControlsMenu({
+        LB.control.updateControlsMenu({
             message: capitalizeWord(platformName) + "Preferences saved!"
         });
 
@@ -388,13 +517,13 @@ function buildGallery(platform, gamesDir, emulator, emulatorArgs, userDataPath) 
 
             const isBatch = false;
 
-            await window.coverDownloader.searchGame(gameName, platform)
+            await LB.coverDownloader.searchGame(gameName, platform)
                 .then((details) => {
 
                     if (!isBatch) {
-                        return window.control.showCoversDialog(details.imgSrcArray, gameName, platform, img);
+                        return LB.control.showCoversDialog(details.imgSrcArray, gameName, platform, img);
                     } else {
-                        return window.coverDownloader.downloadAndReload(details.imgSrcArray[0], gameName, platform, img);
+                        return LB.coverDownloader.downloadAndReload(details.imgSrcArray[0], gameName, platform, img);
                     }
                 })
                 .catch((error) => {

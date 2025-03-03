@@ -1,863 +1,97 @@
-@font-face {
-    font-family: 'Orbitron';
-    src: url('../font/Orbitron-VariableFont_wght.ttf') format('truetype');
-    font-weight: 100 900; /* Variable font weight range */
-    font-style: normal;
-}
-
-body {
-  background-color: #000814;
-  color: #93FFD8;
-  font-family: 'Orbitron', sans-serif;
-  letter-spacing: 1px;
+* {
   margin: 0;
   padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh; /* Use min-height to allow content to grow */
-  overflow: hidden;
-  perspective: 600px; /* Add perspective for 3D effect */
+  box-sizing: border-box;
 }
 
-a {
-  cursor: pointer;
-  text-decoration: underline;
-  font-weight: bold; /* Bold text */
-}
-
-#slideshow {
-  position: relative;
+body, html {
   width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Carousel */
+.carousel {
+  display: flex;
+  width: 600vw; /* 6 pages * 100vw (4 real + 2 clones) */
+  height: 100vh;
+  transition: transform 0.5s ease;
+}
+
+/* Page */
+.page {
+  width: 100vw;
   height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  transform-style: preserve-3d; /* Enable 3D transformations */
-}
-
-#top-menu:focus,
-#slideshow:focus,
-.gallery:focus {
-  outline: none;
-}
-
-:root {
-  --glow-color: 225, 117, 100; /* Define RGB values */
-  --highlight-color: #a5be00; /* Define RGB values */
-
-}
-
-.slide {
-  position: absolute;
-  width: 400px;
-  height: 400px;
-  background-size: cover;
-  background-position: center;
-  border-radius: 24px;
-  /* border: 2px solid rgba(0, 123, 255, 0.3); */
-  opacity: 0.8;
-  transition: transform 0.5s ease, opacity 0.5s ease, box-shadow 0.5s ease;
-  cursor: pointer;
-  /* box-shadow: 0 4px 12px rgba(var(--glow-color), 0.1); */
-  transform-style: preserve-3d;
-}
-
-.slide.active {
-  opacity: 1;
-  transform: translateZ(0) scale(1);
-  z-index: 2;
-  /* box-shadow: 0 8px 24px rgba(0, 123, 255, 0.4); */
-  filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8)); /* Cool blue glow */
-  animation: pulse-glow 2s infinite ease-in-out; /* Slow pulsing animation */
-}
-
-.slide-content {
-  position: relative;
-  height: 100%; /* Ensure it takes the full height of the slide */
-  display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* Align content to the bottom */
-  align-items: center; /* Center horizontally */
 }
 
-@keyframes pulse-glow {
-  0% {
-    filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8)); /* Initial glow */
-  }
-  50% {
-    filter: drop-shadow(0 0 4px rgba(var(--glow-color), 1)); /* Stronger glow */
-  }
-  100% {
-    filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8)); /* Back to initial glow */
-  }
-}
-
-.slide.adjacent {
-  opacity: 0.2;
-  transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px));
-  z-index: 1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-/* CAROUSEL FORM */
-.slide-form-container {
-  width: 100%; /* Take up full width */
-  border-radius: 0 0 16px 16px;
-}
-
-.platform-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.form-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.form-icon,
-.form-label,
-.form-checkbox,
-.form-input,
-.form-button,
-.form-submit,
-.form-spacer {
-    flex: 1;
-}
-
-.form-label {
-    max-width: 100px;
-}
-
-.form-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.settings-form-container {
-  background-color: #3d5a80;
-  border-radius: 8px;
-  width: 100%;
-}
-
-input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    background: #003566;
-    color: greenyellow;
-    font-size: 18px;
-    /* transition: border-color 0.3s ease, background 0.3s ease; */
-}
-
-input:focus {
-    color: #000;
-    border-color: #ffc300;
-    outline: none;
-}
-
-button {
-    padding: 10px 20px;
-    font-size: 14px;
-    background: #001d3d;
-    color: greenyellow;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    /* transition: background 0.3s ease, transform 0.3s ease; */
-}
-
-button:focus,
-button:hover {
-    background: #003566;
-    outline: none;
-}
-
-/* button:active { */
-/*     transform: translateY(2px); */
-/* } */
-
-.form-spacer {
-    visibility: hidden; /* Hide spacer for alignment */
-}
-
-#galleries {
-  overflow: hidden; /* Hide overflowing content */
-  width: 100%; /* Full width */
-}
-
-/* GALLERY */
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(6, auto); /* 6 columns */
-    gap: 16px;
-    padding: 76px 10px 70px 10px;
-    width: 100%;
-    max-width: 98%;
-    margin: 0 auto;
-    transition: transform 0.5s ease-in-out; /* Smooth slide transition */
-}
-
-
-/* @media (max-width: 1200px) { */
-/*   .gallery { */
-/*     grid-template-columns: repeat(4, 1fr); */
-/*   } */
-/* } */
-/* @media (max-width: 800px) { */
-/*   .gallery { */
-/*     grid-template-columns: repeat(2, 1fr); */
-/*   } */
-/* } */
-
-.game-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 5 / 6;
-  min-width: 150px;
-  max-width: 300px;
-  border-radius: 2px;
-  overflow: hidden;
-  border: 2px solid transparent;
-  transition: border-color 0.2s ease, transform 0.2s ease;
-  cursor: pointer;
-  /* background-color: black; */
-}
-
-.game-container.selected {
-  border-color: var(--highlight-color) !important;
-  transform: scale(1.15);
-}
-
-.image-container.selected {
-  outline: 2px var(--highlight-color);
-}
-
-.image-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.image-container {
-  margin: 5px;
-  background: #ccc;
-  padding: 5px;
-  /* border: 1px solid #555; */
-  /* border-radius: 4px; */
-  overflow: hidden;
-  cursor: pointer;
-}
-
-.game-name {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 10%;
-  background-color: rgba(0, 0, 0, 0.5);
-  /* color: #caf5ca; */
-  font-size: 1vw;
-  text-align: center;
-  padding: 8px;
-  display: flex;
-  /* align-items: center; */
-  /* justify-content: center; */
-  /* white-space: nowrap; */
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.fetch-cover-button {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: auto;
-  min-width: 160px; /* Increased width */
-  height: 40px;
-  padding: 5px 25px; /* More padding for extra width */
-  border-radius: 10px;
-  background-color: #007bff;
+/* Page Header */
+.page-header {
+  height: 100px;
+  background-color: rgba(0, 0, 0, 0.5); /* Black with 50% transparency */
   color: white;
-  border: none;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.3s ease;
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 4px;
-}
-
-.fetch-icon {
-  font-size: 18px;
-}
-
-.fetch-label {
-  font-size: 16px;
+  justify-content: space-between;
+  padding: 0 10px;
+  font-size: 24px;
   font-weight: bold;
-}
-
-div.game-container.image-missing.selected .fetch-cover-button {
-  opacity: 1;
-}
-
-@keyframes rotate {
-  from {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-  to {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
-
-
-.rotate {
-  animation: rotate 1s linear infinite;
-}
-
-/* Modal overlay covers entire viewport */
-.dialog {
-  position: fixed;
+  position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5); /* Semi-transparent dark backdrop */
-  display: flex;
-  justify-content: center;
-  align-items: center;
   z-index: 1000;
 }
 
-#emume-big-logo {
-  width: -webkit-fill-available;
-  max-width: 150px;
-  margin-bottom: 10px;
-}
-
-#emume-big-logo-text {
-  max-width: 90px;
-  margin: 40px;
-}
-
-/* Hidden state */
-.hidden {
-  display: none;
-}
-
-/* The modal content box */
-.dialog-content {
-  text-align: center;
-  background: #2d2d2d;
-  padding: 20px;
-  border: 1px solid #444;
-  border-radius: 8px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-  width: 90%;
-  max-width: 600px;
-  color: #e0e0e0;
-  font-family: Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center items horizontally */
-  justify-content: center; /* Center items vertically */
-}
-
-/* Title styling */
-.dialog-content h2 {
-  margin-top: 0;
-  font-size: 24px;
-  text-align: center;
-}
-
-/* Image grid layout */
-.image-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 10px;
-  margin: 20px 0;
-}
-
-.fade-out {
-  animation: fadeAway 3s forwards; /* Apply the animation */
-}
-
-@keyframes fadeAway {
-  0% {
-    opacity: 1; /* Start with full opacity */
-  }
-  100% {
-    opacity: 0; /* End with zero opacity */
-  }
-}
-
-.icon {
-  width: 30px;
-  height: 30px;
-}
-
-.menu {
-  font-size: 24px;
-  display: flex;
-  align-items: center;
-  position: fixed;
-  left: 0;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  padding: 10px 0 10px 5px;
-  z-index: 9999;
-  width: 100%;
-}
-
-#top-menu {
-
-  top: 0;
-  justify-content: center;
-  visibility: hidden;
-}
-
-.left-arrow {
-  margin-right: auto;
-}
-
-.right-arrow {
-  margin-left: auto;
-}
-
-.fadeIn {
-  animation: fadeIn 0.5s linear 1 forwards;
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 0.8;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-#top-menu-slider {
-  width: 98%;
-  /* overflow: hidden; */
-}
-
-
-#top-menu-items {
-  position: relative;
-}
-
-.top-menu-slide {
-  display: flex; /* Optional: for centering content */
-  align-items: center;
-  justify-content: center;
-}
-
-.top-menu-slide-element {
-  flex: 1;
-}
-
-.arrows {
-  display: none;
-}
-
-/* .arrows:hover { */
-/*   display: block; */
-/* } */
-
-header:hover .arrows {
-  display: block;
-}
-
-.top-menu-slide-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 0 10px;
-}
-
-#controls-menu {
-    letter-spacing: 1px;
-    font-size: 24px;
-    display: flex;
-    align-items: center;
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 10px 0 10px 5px;
-    z-index: 9999;
-    width: 100%;
-    justify-content: left;
-    gap: 10px;
-}
-
-.status-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 5px;
-}
-
-.menu-icon {
-  width: 50px;
-}
-
-#loading {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: black; /* Black background */
-    display: flex; /* Use flexbox for centering */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    z-index: 9999; /* Ensure it's on top of everything */
-}
-
-/* Style the message */
-#loading-message {
-    font-size: 18px; /* Adjust font size as needed */
-    text-align: center; /* Center the text */
-}
-
-
-#loading-platform,
-#loading-game {
-  color: #42a110;
-}
-
-.dialog-buttons {
-  display: flex;
-  flex-direction: row;
-  gap: 10px; /* Space between buttons */
-  width: 100%;
-}
-
-.dialog-buttons button {
-  width: 100%;
-  padding: 15px; /* Bigger padding */
-  font-size: 18px; /* Bigger text */
-}
-
-exit-dialog-exit-button:focus {
-  background: #42a110
-}
-
-exit-dialog-donate-button:focus {
-  background: #42a110
-}
-
-exit-dialog-cancel-button:focus {
-  background: #42a110
-}
-
-#message {
-  display: flex;
-  justify-content: flex-end; /* Align content to the right */
-  margin-left: auto; /* Push the container to the right */
-  opacity: 0;
-  width: 100%;
-  /* max-width: 600px; */
-  white-space: nowrap;
-  overflow: hidden;
-  margin-right: 1em;
-  transition: opacity 0.5s ease; /* Faster fade-out transition */
-}
-
-#message-span {
-  /* text-overflow: ellipsis; */
-  white-space: nowrap;
-  /* overflow: hidden; */
-  text-align: right; /* Align text to the right */
-  animation: scroll-text 10s linear forwards; /* Use 'forwards' to keep the final state */
-}
-
-@keyframes scroll-text {
-    from {
-        transform: translateX(100%); /* Start from the right */
-    }
-    to {
-        transform: translateX(-100%); /* Move to the left */
-    }
-}
-
-#gallery-settings {
-    display: flex; /* Change from grid to flex */
-    flex-direction: column; /* Stack children vertically */
-    gap: 20px; /* Add spacing between forms */
-    align-items: center; /* Center the forms horizontally */
-}
-
-/* FORM */
-.platform-form {
-  padding: 6px;
-  margin: 0 auto;
-}
-
-.platform-form button {
-  width: 100%;
-}
-
-.platform-form table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-/* .platform-form td { */
-/*     padding: 2px; */
-/*     vertical-align: middle; */
-/* } */
-
-.form-icon img {
-    max-width: 100%;
-    max-height: 100%;
-}
-
-input[type="text"] {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-}
-
-/* .button { */
-/*     padding: 8px 12px; */
-/*     cursor: pointer; */
-/*     width: 100%; */
-/* } */
-
-.form-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.form-checkbox input {
-    margin: 0;
-}
-
-table {
-  width: 100%;
-  /* table-layout: fixed; */
-  height: 100%;
-  border-collapse: collapse; /* Remove spacing between cells */
-}
-
-/* Make the rowspan cell and button 100% height */
-/* td[rowspan="3"] { */
-/*   height: 100%; */
-/* } */
-
-/* Make the rowspan cell and button 100% height */
-td[colspan="1"] {
-  width: 100%;
-}
-
-td.wide {
-  width: 60%;
-}
-
-td.first-col {
-  width: 10%;
-  white-space: nowrap;
-}
-
-.save-button {
-  height: 100%;
-  width: 100%; /* Optional: Make the button fill the cell width */
-  box-sizing: border-box; /* Ensure padding and border are included in height/width */
-}
-
-/* SWITCH */
-/* Container for the switch */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
-
-/* Hide the default checkbox */
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-/* The slider (the visible part of the switch) */
-.slider {
-  position: absolute;
+.page-header a {
+  color: white;
+  text-decoration: none;
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #001d3d;;
-  transition: 0.4s;
-  border-radius: 34px;
 }
 
-/* Slider circle */
-.slider:before {
+.page-header a:hover {
+  text-decoration: underline;
+}
+
+.page-header .title {
   position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-/* When the checkbox is checked, move the slider */
-input:checked + .slider {
-  background-color: #003566;
+/* Page Content */
+.page-content {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-rows: minmax(150px, auto); /* Taller rectangles for portrait style */
+  gap: 10px;
+  padding: 10px;
+  overflow-y: auto; /* Allow vertical scrolling */
 }
 
-input:checked + .slider:before {
-  transform: translateX(26px);
-}
-
-.highlighted {
-  outline: 2px solid var(--highlight-color);
-}
-
-/* Form details */
-/* Container for the details button and div */
-.details-container {
-    position: relative;
-    display: inline-block;
-}
-
-/* Details button styling */
-#details-button {
+.page-content div {
+  background-color: #ccc;
+  border: 1px solid #999;
   display: flex;
-    align-content: space-between;
-    align-items: center;
-    gap: 5px;
-    cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: bold;
 }
 
-#details-button span {
-  flex-grow: 4; /* default 0 */
-}
-
-/* Arrow styling */
-.arrow {
-    display: inline-block;
-    transition: transform 0.3s ease;
-}
-
-/* Hidden details div */
-.details-hidden {
-    position: absolute;
-    top: 100%; /* Position below the button */
-    left: 0;
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 10px;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease, opacity 0.3s ease;
-    opacity: 0;
-    z-index: 10;
-}
-
-/* Visible details div */
-.details-visible {
-    max-height: 200px; /* Adjust based on content height */
-    opacity: 1;
-}
-
-/* Rotate the arrow when details are visible */
-.arrow.rotate {
-    transform: rotate(180deg);
-}
-
-/* plop */
-/* Info badge styling */
-.info-badge {
-    display: inline-block;
-    background-color: #007bff; /* Blue color */
-    color: white;
-    border-radius: 8px; /* Rounded rectangle */
-    padding: 10px; /* Padding for text */
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    text-align: center;
-    /* line-height: 1.5; */
-    margin: 10px;
-}
-
-/* Hover effect */
-.info-badge:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-}
-
-/* Tooltip styling */
-.info-badge[title]:hover::after {
-    content: attr(title);
-    position: absolute;
-    background-color: #333;
-    color: white;
-    padding: 5px;
-    border-radius: 6px;
-    font-size: 12px;
-    white-space: nowrap;
-    z-index: 1000;
-    margin: 10px;
-}
-
-#details-dialog {
-    display: none; /* Hide the dialog by default */
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: darkblue;
-    border-radius: 8px;
-    /* border: 1px solid #ccc; */
-    padding: 20px;
-    z-index: 1000;
-}
-
-/* Dialog content */
-.dialog-content {
-    text-align: center;
-}
-
-/* OK button */
-#dialog-ok-button {
-    margin-top: 10px;
-}
-
-#details-text-div {
-  display: none;
-}
-
-/* Override hover styles when .disable-hover is active. */
-.disable-hover *:hover {
-  /* This example disables pointer events on hover – adjust as needed */
-  pointer-events: none !important;
-  background-color: initial !important;
-  color: initial !important;
-  outline: initial !important;
-  border: initial !important;
-
+/* Sticky Footer */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background-color: rgba(0, 0, 0, 0.5); /* Black with 50% transparency */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  z-index: 1000;
 }

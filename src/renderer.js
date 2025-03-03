@@ -52,8 +52,7 @@ function buildTopMenuItem(platform, index) {
     const arrowLeftImg = document.createElement("img");
     const arrowRightImg = document.createElement("img");
 
-    arrowLeftImg.setAttribute('data-index', index);
-    arrowRightImg.setAttribute('data-index', index);
+    menuSlide.setAttribute('data-index', index);
 
     const galleries = document.querySelectorAll('.gallery');
     const totalGalleries = galleries.length;
@@ -67,9 +66,23 @@ function buildTopMenuItem(platform, index) {
     //     console.log("currentIndex left: ", currentIndex);
     // });
 
-    menuSlide.addEventListener('mousemove', () => {
-        console.log("mousemove: ");
+    menuSlide.addEventListener('mouseenter', () => {
+        console.log("mouseenter");
         window.control.initTopMenuNav();
+    });
+
+    menuSlide.addEventListener('mouseleave', () => {
+
+        const galleries = document.querySelectorAll('.gallery');
+        const visibleGallery = Array.from(galleries).find(el => window.getComputedStyle(el).display !== 'none');
+
+        console.log("mouseleave");
+
+        if (visibleGallery) {
+            console.log("Initializing gallery navigation for:", visibleGallery);
+            window.control.initGalleryNav(visibleGallery);
+            visibleGallery.focus();
+        }
     });
 
     // arrowRightImg.addEventListener('click', (event) => {

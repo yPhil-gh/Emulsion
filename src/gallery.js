@@ -69,9 +69,6 @@ LB.gallery = {
 // Recursively scan a directory for files with specific extensions.
 // If recursive is false, only the top-level directory is scanned.
 // If gamesDir is invalid, it returns an empty array.
-const fsp = require('fs').promises; // Use the promise-based fs module
-
-// Recursively scan a directory for files with specific extensions (async)
 async function scanDirectory(gamesDir, extensions, recursive = true) {
     let files = [];
 

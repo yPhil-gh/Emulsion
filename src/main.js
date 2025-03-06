@@ -95,41 +95,55 @@ ipcMain.on('run-command', (event, command) => {
 
 
 const defaultPreferences = {
-  "settings": {
-    "gamesDir": "/media/px/ptidisk/retropie-mount/roms/amiga",
-    "emulator": "amiberry",
-    "emulatorArgs": ""
-  },
-  "amiga": {
-    "gamesDir": "",
-    "emulator": "amiberry",
-    "emulatorArgs": ""
-  },
-  "snes": {
-    "gamesDir": "/media/px/ptidisk/retropie-mount/roms/snes",
-    "emulator": "Mesen",
-    "emulatorArgs": "--fullscreen"
-  },
-  "pcengine": {
-    "gamesDir": "/media/px/ptidisk/retropie-mount/roms/pcengine",
-    "emulator": "mednafen",
-    "emulatorArgs": ""
-  },
-  "dreamcast": {
-    "gamesDir": "/media/px/ptidisk/retropie-mount/roms/dreamcast",
-    "emulator": "flycast-x86_64.AppImage",
-    "emulatorArgs": ""
-  },
-  "gamecube": {
-    "gamesDir": "",
-    "emulator": "darker",
-    "emulatorArgs": ""
-  },
-  "n64": {
-    "gamesDir": "",
-    "emulator": "",
-    "emulatorArgs": ""
-  }
+    "settings": {
+        "enabled": true,
+        "gamesDir": "/media/px/ptidisk/retropie-mount/roms/amiga",
+        "emulator": "amiberry",
+        "emulatorArgs": "",
+        "extensions": [""]
+    },
+    "amiga": {
+        "enabled": false,
+        "gamesDir": "",
+        "emulator": "amiberry",
+        "emulatorArgs": "",
+        "extensions": [".lha", ".adf"]
+    },
+    "snes": {
+        "enabled": false,
+        "gamesDir": "/media/px/ptidisk/retropie-mount/roms/snes",
+        "emulator": "Mesen",
+        "emulatorArgs": "--fullscreen",
+        "extensions": [".smc"]
+    },
+    "pcengine": {
+        "enabled": false,
+        "gamesDir": "/media/px/ptidisk/retropie-mount/roms/pcengine",
+        "emulator": "mednafen",
+        "emulatorArgs": "",
+        "extensions": [".srm"]
+    },
+    "dreamcast": {
+        "enabled": false,
+        "gamesDir": "/media/px/ptidisk/retropie-mount/roms/dreamcast",
+        "emulator": "flycast-x86_64.AppImage",
+        "emulatorArgs": "",
+        "extensions": [".gdi", ".cdi"]
+    },
+    "gamecube": {
+        "enabled": false,
+        "gamesDir": "",
+        "emulator": "darker",
+        "emulatorArgs": "",
+        "extensions": [".iso", ".ciso"]
+    },
+    "n64": {
+        "enabled": false,
+        "gamesDir": "",
+        "emulator": "",
+        "emulatorArgs": "",
+        "extensions": [".z64"]
+    }
 };
 
 ipcMain.handle('load-preferences', () => {

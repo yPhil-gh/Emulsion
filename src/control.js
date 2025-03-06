@@ -104,7 +104,7 @@ function initSlideShow(platformToDisplay) {
                 }
             });
 
-            LB.control.initGallery(activeGalleryIndex, numberOfPlatforms, activePlatformName);
+            LB.control.initGallery(activeGalleryIndex);
 
         }
     }
@@ -134,12 +134,11 @@ function capitalizeWord(word) {
 }
 
 // Helper function to create an input row
-function createInputRow(labelText, inputId, inputDescription, buttonText) {
+function createInputRow(labelText, inputId, inputDescription, buttonText, platformName) {
 
     const isInputIdSave = inputId === 'save';
 
-    async function _browse(event) {
-
+    async function _formButtonClick(event) {
         event.stopPropagation();
 
         if (inputId === 'input-games-dir') {
@@ -156,10 +155,20 @@ function createInputRow(labelText, inputId, inputDescription, buttonText) {
             }
         }
 
-        if (inputId === 'input-save') {
-            console.log("input-save: ");
-        }
+        if (inputId === 'input-emulator-args') { // Save has no browse button, this is a trick :/
 
+            const gamesDir = document.getElementById('input-games-dir').value;
+            const emulator = document.getElementById('input-emulator').value;
+            const emulatorArgs = document.getElementById('input-emulator-args').value;
+
+            try {
+                await LB.prefs.save(platformName, 'gamesDir', gamesDir);
+                await LB.prefs.save(platformName, 'emulator', emulator);
+                await LB.prefs.save(platformName, 'emulatorArgs', emulatorArgs);
+            } catch (error) {
+                console.error('Failed to save preferences:', error);
+            }
+        }
     }
 
     const row = document.createElement('tr');
@@ -180,6 +189,38 @@ function createInputRow(labelText, inputId, inputDescription, buttonText) {
     input.id = inputId;
     input.title = inputDescription;
     input.placeholder = inputDescription;
+
+    if (inputId === 'input-games-dir') {
+        LB.prefs.getValue(platformName, 'gamesDir')
+            .then((value) => {
+                console.log("value: ", value);
+                input.value = value;
+            })
+            .catch((error) => {
+                console.error('Failed to get platform preference:', error);
+            });
+    }
+
+    if (inputId === 'input-emulator') {
+        LB.prefs.getValue(platformName, 'emulator')
+            .then((value) => {
+                input.value = value;
+            })
+            .catch((error) => {
+                console.error('Failed to get platform preference:', error);
+            });
+    }
+
+    if (inputId === 'input-emulator-args') {
+        LB.prefs.getValue(platformName, 'emulatorArgs')
+            .then((value) => {
+                input.value = value;
+            })
+            .catch((error) => {
+                console.error('Failed to get platform preference:', error);
+            });
+    }
+
     secondCol.appendChild(input);
     secondCol.classList.add('col2');
 
@@ -192,7 +233,7 @@ function createInputRow(labelText, inputId, inputDescription, buttonText) {
     button.textContent = buttonText;
     thirdCol.appendChild(button);
     thirdCol.classList.add('col3');
-    button.addEventListener('click', _browse);
+    button.addEventListener('click', _formButtonClick);
 
     row.appendChild(firstCol);
     row.appendChild(secondCol);
@@ -261,15 +302,15 @@ function buildPlatformForm(platformName) {
     const inputsTable = document.createElement('table');
 
     // Row 3: Games Directory
-    const gamesDirRow = createInputRow('Games', 'input-games-dir', `Select your ${capitalizeWord(platformName)} games directory path`, 'Browse');
+    const gamesDirRow = createInputRow('Games', 'input-games-dir', `Select your ${capitalizeWord(platformName)} games directory path`, 'Browse', platformName);
     inputsTable.appendChild(gamesDirRow);
 
     // Row 4: Emulator
-    const emulatorRow = createInputRow('Emulator', 'input-emulator', `Select your ${capitalizeWord(platformName)} emulator (file path or name)`, 'Browse');
+    const emulatorRow = createInputRow('Emulator', 'input-emulator', `Select your ${capitalizeWord(platformName)} emulator (file path or name)`, 'Browse', platformName);
     inputsTable.appendChild(emulatorRow);
 
     // Row 5: Emulator Args
-    const emulatorArgsRow = createInputRow('Args', 'input-save', `The arguments to your ${capitalizeWord(platformName)} emulator`, 'Save');
+    const emulatorArgsRow = createInputRow('Args', 'input-emulator-args', `The arguments to your ${capitalizeWord(platformName)} emulator`, 'Save', platformName);
     inputsTable.appendChild(emulatorArgsRow);
 
     form.appendChild(inputsTable);
@@ -278,7 +319,7 @@ function buildPlatformForm(platformName) {
     return form;
 }
 
-function initGallery(currentIndex, numberOfPlatforms, activePlatformName) {
+function initGallery(currentIndex) {
     const galleries = document.getElementById('galleries');
     const pages = Array.from(galleries.querySelectorAll('.page'));
     const totalPages = pages.length;

@@ -1,0 +1,188 @@
+body {
+  background-color: #000814;
+  width: -webkit-fill-available;
+  color: #93FFD8;
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 1px;
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  display: none;
+  /* display: flex; */
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  min-width: 100vw;
+  overflow: hidden;
+  perspective: 600px; /* Add perspective for 3D effect */
+  margin: 0;
+  /* padding: 100px 0 100px 0; */
+}
+
+/* Ensure no parent elements have transforms */
+body, html {
+  margin: 0;
+  padding: 0;
+  transform: none; /* Ensure no transformations are applied */
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/* Track (background of the scrollbar) */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+/* Handle (the draggable part of the scrollbar) */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+#galleries {
+  position: relative;
+  width: 100%;
+  /* height: 100vh; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* transform-style: preserve-3d; /\* Enable 3D transformations *\/ */
+}
+
+.page {
+  position: absolute;
+  width: 100vw; /* Adjust as needed */
+  height: 80%; /* Adjust as needed */
+  background-color: rgba(0, 0, 0);
+  /* border-radius: 24px; */
+  opacity: 0.8;
+  /* transition: transform 0.3s linear; /\* Simplified transition *\/ */
+
+  transition: transform 0.2s linear, opacity 0.4s ease-in;
+
+  transform: translate(-30%, -30%); /* Offset to truly center the element */
+  transform-style: preserve-3d;
+
+  /* transform-origin: center center; /\* Ensure rotation happens around the center *\/ */
+  left: 50%; /* Center horizontally */
+  top: 50%; /* Center vertically */
+  /* overflow-x: hidden; /\* Hide horizontal scrollbar *\/ */
+  /* overflow-y: auto; /\* Show vertical scrollbar when needed *\/ */
+  margin: 100px 0 0 0;
+}
+
+.page.active {
+  opacity: 1;
+  transform: translate(-50%, -50%) translateZ(0) scale(1); /* Adjusted for centering */
+
+  z-index: 2;
+}
+
+.page.adjacent {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px)); /* Adjusted for centering */
+
+  /* transform: translateX(100%); /\* Push effect *\/ */
+  /* transition: transform 0.6s linear, opacity 0.4s linear; */
+
+  z-index: 1;
+}
+
+.page-content {
+  flex: 1 0 1;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  /* grid-auto-rows: minmax(100px, auto); /\* Taller rectangles for portrait style *\/ */
+  gap: 10px;
+  padding: 10px;
+  /* overflow-y: auto; /\* Allow vertical scrolling *\/ */
+  /* width: 100%; */
+  height: 100vh; /* Set height to full viewport height (adjust as needed) */
+}
+
+.prefs-platform-img {
+  max-width: 150px;
+}
+
+.page-content div.game-container {
+  height: 26vh;
+  background-color: #111;
+  border: 1px solid #999;
+  display: flex;
+
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  cursor: pointer;
+
+  justify-content: space-between;
+  font-size: 20px;
+  font-weight: bold;
+  /* overflow: hidden; */
+  /* white-space: nowrap; */
+  position: relative; /* Needed for absolute positioning of the label */
+
+  /* width: calc(100vw / 6); /\* Ensure stable width *\/ */
+  /* height: calc((100vw / 6) / 1.33); /\* Placeholder height using an aspect ratio *\/ */
+
+}
+
+.game-image {
+    width: 100%; /* Ensure images fill the container */
+    height: auto; /* Maintain aspect ratio */
+    height: 100%;
+    /* object-fit: cover; /\* Ensure images fill the space without distortion *\/ */
+    object-fit: contain; /* Show full image without cropping */
+    display: block; /* Remove extra space under inline elements */
+    /* aspect-ratio: 4 / 3; /\* Prevent layout shifts *\/ */
+    background-color: black; /* Fill empty space */
+
+    flex-basis: content;
+}
+
+.missing-image {
+    object-fit: cover; /* Ensure images fill the space without distortion */
+}
+
+.game-label {
+  background-color: rgba(0, 0, 0, 0.5); /* Black with 50% transparency */
+  margin-top: 5px;
+  font-size: 12px;
+
+  width: 100%;
+  height: 30px;
+  /* display: flex; */
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  /* color: #333; */
+}
+
+.selected {
+  outline: 2px solid yellow;
+}
+
+.page-content div img {
+  width: 100%;
+  /* max-width: 150px; */
+}
+

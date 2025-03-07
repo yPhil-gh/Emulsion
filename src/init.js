@@ -6,6 +6,10 @@ const fsp = require('fs').promises; // Use the promise-based fs module
 
 const LB = {};
 
+const resolvedPath = path.resolve('.');
+
+LB.baseDir = resolvedPath;
+
 LB.galleryNumOfCols = 6;
 
 LB.prefs = {
@@ -43,6 +47,7 @@ async function getPrefs() {
 }
 
 async function updatePreference(platformName, key, value) {
+    console.log("platformName, key, value: ", platformName, key, value);
     try {
 
         const preferences = await getPrefs();
@@ -72,7 +77,7 @@ async function getPlatformPreference(platformName, key) {
         // Step 1: Load the current preferences
         const preferences = await getPrefs();
 
-        console.log("preferences[platformName]: ", preferences[platformName]);
+        // console.log("preferences[platformName]: ", preferences[platformName]);
 
         // Step 2: Check if the platform exists
         if (!preferences[platformName]) {
@@ -91,3 +96,4 @@ async function getPlatformPreference(platformName, key) {
         throw error; // Re-throw the error to handle it elsewhere
     }
 }
+

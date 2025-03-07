@@ -1,13 +1,22 @@
+:root {
+  --glow-color: 225, 117, 100;
+  --highlight-color: #a5be00;
+  --succes-color: green;
+  --info-color: #007bff;
+  --slide-rotation-angle: 90deg
+  --slide-rotation-radius: 100px
+  --page-rotation-angle: 0
+  --page-rotation-radius: 0
+}
+
 /* Form container */
 #platform-form {
   width: 100%;
-  /* max-width: 500px; /\* Adjust as needed *\/ */
-  /* margin: 0 auto; */
   padding: 20px;
-  /* background-color: #f9f9f9; */
-  /* border: 1px solid #ddd; */
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
 }
 
 /* Rows (flex containers) */
@@ -128,11 +137,11 @@ input, button {
   width: 100%;
 }
 
-button.success {
-  background-color: green;
+.success {
+  background-color: var(--succes-color);
 }
 
-button.info {
-  background-color: #007bff;
+.info {
+  background-color: var(--info-color);
 }
 

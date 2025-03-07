@@ -40,12 +40,6 @@ a {
   outline: none;
 }
 
-:root {
-  --glow-color: 225, 117, 100; /* Define RGB values */
-  --highlight-color: #a5be00; /* Define RGB values */
-
-}
-
 .slide {
   position: absolute;
   width: 400px;
@@ -58,16 +52,24 @@ a {
   transition: transform 0.5s ease, opacity 0.5s ease, box-shadow 0.5s ease;
   cursor: pointer;
   /* box-shadow: 0 4px 12px rgba(var(--glow-color), 0.1); */
-  transform-style: preserve-3d;
+  /* transform-style: preserve-3d; */
 }
 
 .slide.active {
   opacity: 1;
-  transform: translateZ(0) scale(1);
+  transform: translateZ(0) rotateY(0) scale(1);
   z-index: 2;
   /* box-shadow: 0 8px 24px rgba(0, 123, 255, 0.4); */
   filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8)); /* Cool blue glow */
   animation: pulse-glow 2s infinite ease-in-out; /* Slow pulsing animation */
+}
+
+.slide.adjacent {
+  opacity: 0.2;
+  /* angle and radius are defined in control.js */
+  transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px));
+  z-index: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .slide-content {
@@ -89,13 +91,6 @@ a {
   100% {
     filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8)); /* Back to initial glow */
   }
-}
-
-.slide.adjacent {
-  opacity: 0.2;
-  transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px));
-  z-index: 1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .icon {

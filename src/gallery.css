@@ -69,9 +69,9 @@ body, html {
   opacity: 0.8;
   /* transition: transform 0.3s linear; /\* Simplified transition *\/ */
 
-  transition: transform 0.2s linear, opacity 0.4s ease-in;
+  transition: transform 0.2s linear, opacity 0.4s;
 
-  transform: translate(-30%, -30%); /* Offset to truly center the element */
+  /* transform: translate(-30%, -30%); /\* Offset to truly center the element *\/ */
   transform-style: preserve-3d;
 
   /* transform-origin: center center; /\* Ensure rotation happens around the center *\/ */
@@ -80,21 +80,29 @@ body, html {
   /* overflow-x: hidden; /\* Hide horizontal scrollbar *\/ */
   /* overflow-y: auto; /\* Show vertical scrollbar when needed *\/ */
   margin: 100px 0 0 0;
+
+/* slideshow does that: */
+  /* transition: transform 0.5s ease, opacity 0.5s ease, box-shadow 0.5s ease; */
+  /* transform-style: preserve-3d; */
+
 }
 
 .page.active {
   opacity: 1;
-  transform: translate(-50%, -50%) translateZ(0) scale(1); /* Adjusted for centering */
-
+  transform: translate(-50%, -50%) translateX(0) scale(1); /* Adjusted for centering */
+  transition: transform 1s linear, opacity 1s linear;
   z-index: 2;
+
+  /* Slide: */
+  /* transform: translateZ(0) scale(1); */
 }
 
 .page.adjacent {
   opacity: 0;
-  transform: translate(-50%, -50%) rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px)); /* Adjusted for centering */
+  /* transform: translate(-50%, -50%) rotateY(calc(var(--page-rotation-angle) * 1deg)) translateZ(calc(var(--page-rotation-radius) * 1px)); /\* Adjusted for centering *\/ */
 
-  /* transform: translateX(100%); /\* Push effect *\/ */
-  /* transition: transform 0.6s linear, opacity 0.4s linear; */
+  transform: translateX(-100%); /* Push effect */
+  transition: transform 1s linear, opacity 0.1s linear;
 
   z-index: 1;
 }

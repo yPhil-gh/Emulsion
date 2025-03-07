@@ -9,7 +9,6 @@ let mainWindow;
 const preferencesFilePath = path.join(app.getPath('userData'), "preferences.json");
 
 function loadPreferences() {
-    console.log("preferencesFilePath: ", preferencesFilePath);
     try {
         if (fs.existsSync(preferencesFilePath)) {
             const data = fs.readFileSync(preferencesFilePath, 'utf8');
@@ -93,52 +92,51 @@ ipcMain.on('run-command', (event, command) => {
     });
 });
 
-
 const defaultPreferences = {
     "settings": {
-        "enabled": true,
+        "isEnabled": true,
         "gamesDir": "/media/px/ptidisk/retropie-mount/roms/amiga",
         "emulator": "amiberry",
         "emulatorArgs": "",
         "extensions": [""]
     },
     "amiga": {
-        "enabled": false,
+        "isEnabled": false,
         "gamesDir": "",
         "emulator": "amiberry",
         "emulatorArgs": "",
         "extensions": [".lha", ".adf"]
     },
     "snes": {
-        "enabled": false,
+        "isEnabled": false,
         "gamesDir": "/media/px/ptidisk/retropie-mount/roms/snes",
         "emulator": "Mesen",
         "emulatorArgs": "--fullscreen",
         "extensions": [".smc"]
     },
     "pcengine": {
-        "enabled": false,
+        "isEnabled": false,
         "gamesDir": "/media/px/ptidisk/retropie-mount/roms/pcengine",
         "emulator": "mednafen",
         "emulatorArgs": "",
         "extensions": [".srm"]
     },
     "dreamcast": {
-        "enabled": false,
+        "isEnabled": false,
         "gamesDir": "/media/px/ptidisk/retropie-mount/roms/dreamcast",
         "emulator": "flycast-x86_64.AppImage",
         "emulatorArgs": "",
         "extensions": [".gdi", ".cdi"]
     },
     "gamecube": {
-        "enabled": false,
+        "isEnabled": false,
         "gamesDir": "",
         "emulator": "darker",
         "emulatorArgs": "",
         "extensions": [".iso", ".ciso"]
     },
     "n64": {
-        "enabled": false,
+        "isEnabled": false,
         "gamesDir": "",
         "emulator": "",
         "emulatorArgs": "",

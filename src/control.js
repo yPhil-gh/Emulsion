@@ -12,7 +12,6 @@ function initSlideShow(platformToDisplay) {
         const angleIncrement = 360 / totalSlides;
 
         slides.forEach((slide, index) => {
-            // console.log("slide, index: ", slide, index);
 
             const angle = angleIncrement * (index - currentIndex);
             slide.style.setProperty('--angle', angle);
@@ -28,24 +27,14 @@ function initSlideShow(platformToDisplay) {
         });
     }
 
-    // function showForm(slide) {
-    //     const isReady = slide.classList.contains('ready');
-    //     const form = slides[currentIndex].querySelector('.slide-form-container');
-    //     if (!isReady) {
-    //         form.style.display = 'block';
-    //     }
-    // }
-
     function nextSlide() {
         currentIndex = (currentIndex + 1) % totalSlides;
         updateCarousel();
-        // showForm(slides[currentIndex]);
     }
 
     function prevSlide() {
         currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
         updateCarousel();
-        // showForm(slides[currentIndex]);
     }
 
     slideshow.addEventListener('wheel', (event) => {
@@ -179,7 +168,6 @@ function createFormTableRow(labelText, inputId, inputDescription, buttonText, pl
     if (inputId === 'input-games-dir') {
         LB.prefs.getValue(platformName, 'gamesDir')
             .then((value) => {
-                console.log("value: ", value);
                 input.value = value;
             })
             .catch((error) => {
@@ -241,16 +229,8 @@ function buildPlatformForm(platformName) {
     form.id = 'platform-form';
     form.className = 'platform-form';
 
-    // // Flex container for the form
-    // form.style.display = 'flex';
-    // form.style.flexDirection = 'column';
-    // form.style.gap = '10px'; // Space between rows
-
     // Row 1: Toggle switch and Platform label
     const row1 = document.createElement('div');
-    // row1.style.display = 'flex';
-    // row1.style.alignItems = 'center';
-    // row1.style.gap = '10px';
 
     // Toggle switch
     const toggleContainer = document.createElement('label');
@@ -258,7 +238,7 @@ function buildPlatformForm(platformName) {
 
     const toggleInput = document.createElement('input');
     toggleInput.type = 'checkbox';
-    toggleInput.id = 'platform-toggle';
+    toggleInput.id = 'input-platform-toggle';
 
     const sliderSpan = document.createElement('span');
     sliderSpan.className = 'slider';
@@ -267,20 +247,10 @@ function buildPlatformForm(platformName) {
     toggleContainer.appendChild(sliderSpan);
     row1.appendChild(toggleContainer);
 
-    // Platform label
-    const platformLabel = document.createElement('span');
-    platformLabel.id = 'form-label';
-    platformLabel.textContent = 'Enabled';
-    row1.appendChild(platformLabel);
+    const toggleLabel = document.createElement('span');
+    toggleLabel.id = 'form-status-label';
 
-    // Details button
-    const detailsButton = document.createElement('button');
-    detailsButton.type = 'button';
-    detailsButton.id = 'details-button';
-    detailsButton.className = 'button';
-    detailsButton.innerHTML = '<span id="platform-icon" class="form-icon"></span> <span>Infos</span>';
-    row1.appendChild(detailsButton);
-
+    row1.appendChild(toggleLabel);
     form.appendChild(row1);
 
     // Row 2: Details text
@@ -301,7 +271,7 @@ function buildPlatformForm(platformName) {
     inputsTable.appendChild(emulatorRow);
 
     // Row 5: Emulator Args
-    const emulatorArgsRow = createFormTableRow('Args', 'input-emulator-args', `The arguments to your ${capitalizeWord(platformName)} emulator`, 'Save', platformName);
+    const emulatorArgsRow = createFormTableRow('Args', 'input-emulator-args', `The arguments to your ${capitalizeWord(platformName)} emulator`, null, platformName);
     inputsTable.appendChild(emulatorArgsRow);
 
     const buttons = document.createElement('div');
@@ -337,11 +307,17 @@ function buildPlatformForm(platformName) {
 
     async function _formSaveButtonClick(event) {
 
+        const sw = document.getElementById('input-platform-toggle');
+
+        console.log("sw: ", sw);
+
+        const isEnabled = document.getElementById('input-platform-toggle').checked;
         const gamesDir = document.getElementById('input-games-dir').value;
         const emulator = document.getElementById('input-emulator').value;
         const emulatorArgs = document.getElementById('input-emulator-args').value;
 
         try {
+            await LB.prefs.save(platformName, 'isEnabled', isEnabled);
             await LB.prefs.save(platformName, 'gamesDir', gamesDir);
             await LB.prefs.save(platformName, 'emulator', emulator);
             await LB.prefs.save(platformName, 'emulatorArgs', emulatorArgs);
@@ -356,6 +332,22 @@ function buildPlatformForm(platformName) {
     form.appendChild(inputsTable);
     form.appendChild(buttons);
 
+    LB.prefs.getValue(platformName, 'isEnabled')
+        .then((value) => {
+            console.log("value: ", value);
+            toggleInput.checked = value;
+            toggleLabel.textContent = value ? 'Enabled' : 'Disabled';
+        })
+        .catch((error) => {
+            console.error('Failed to get platform preference:', error);
+        });
+
+
+    // toggleInput.addEventListener('change', (event) => {
+    //     console.log("event.target.checked: ", event.target.checked);
+    //     document.getElementById('form-status-label').textContent = event.target.checked ? "Disabled" : "Enabled";
+    // });
+
     return form;
 }
 
@@ -366,6 +358,8 @@ function initGallery(currentIndex) {
     const angleIncrement = 360 / totalPages;
 
     const radius = (window.innerWidth / 2) / Math.tan((angleIncrement / 2) * (Math.PI / 180));
+    console.log("radius: ", radius);
+
     let selectedPage;
     let gameContainers;
 
@@ -437,6 +431,7 @@ function initGallery(currentIndex) {
         const footerMenu = document.getElementById('footer-menu');
         const footerMenuImg = document.getElementById('footer-menu-image');
 
+
         function onKeyDown (event) {
             event.stopPropagation();
             event.stopImmediatePropagation(); // Stops other listeners on the same element
@@ -465,6 +460,13 @@ function initGallery(currentIndex) {
             }
         }
 
+        function onToggle (event) {
+            // event.stopPropagation();
+            // event.stopImmediatePropagation(); // Stops other listeners on the same element
+            console.log("event: ", event);
+            // document.getElementById('input-platform-toggle')
+        }
+
         function _openMenu() {
             footer.style.height = '50vh';
             controls.style.display = 'none';
@@ -477,7 +479,7 @@ function initGallery(currentIndex) {
 
                     if (container.classList.contains('settings')) {
                         const platformForm = buildPlatformForm(container.dataset.platform);
-                        footerMenuImg.src = `../img/platforms/${container.dataset.platform}.png`;
+                        footerMenuImg.src = path.join(LB.baseDir, 'img', 'platforms', `${container.dataset.platform}.png`);
                         footerMenuImg.classList.remove('hidden');
                         footerMenu.appendChild(platformForm);
                     }
@@ -485,6 +487,7 @@ function initGallery(currentIndex) {
                 }
             });
 
+            document.getElementById('input-platform-toggle').addEventListener('click', onToggle);
             window.addEventListener('keydown', onKeyDown);
         }
 

@@ -2,32 +2,58 @@ const slideshow = document.getElementById("slideshow");
 window.topMenu = document.getElementById("top-menu");
 window.topMenuSlider = document.getElementById("top-menu-slider");
 
+
 // window.control.initGamepad();
 
-function isPlatformValid(platform, preferences) {
+function isPlatformValid(platformName, preferences) {
+    if (typeof preferences !== 'object' || preferences === null) {
+        console.error("Preferences is not an object");
+        return false;
+    }
+
+    const platformPrefs = preferences[platformName];
+    if (
+        typeof platformPrefs !== 'object' ||
+            platformPrefs === null ||
+            typeof platformPrefs.isEnabled !== 'boolean' ||
+            typeof platformPrefs.gamesDir !== 'string' ||
+            typeof platformPrefs.emulator !== 'string' ||
+            typeof platformPrefs.emulatorArgs !== 'string'
+    ) {
+        console.error(`Invalid preferences for platform: ${platformName}`);
+        return false;
+    }
+
+    return true;
+}
+
+function isPlatformEnablable(platform, preferences) {
     if (!preferences[platform]) return false; // Platform doesn't exist in config
     const { gamesDir, emulator } = preferences[platform];
     return Boolean(gamesDir && emulator); // Both must be non-empty
 }
 
-function buildSlide(platform, preferences) {
+function buildSlide(platformName, preferences) {
 
-    if (!isPlatformValid(platform, preferences)) {
+    // console.log("isPlatformValid(platform, preferences): ", isPlatformValid(platform, preferences));
+
+    if (!isPlatformValid(platformName, preferences)) {
         return null;
     }
 
     const slide = document.createElement("div");
     slide.className = "slide";
-    slide.id = platform;
-    // slide.style.backgroundImage = `url('../img/platforms/${platform}.png')`;
-    const imagePath = path.join(__dirname, 'img', 'platforms', `${platform}.png`);
-    slide.style.backgroundImage = `url('${imagePath}')`;
-    slide.style.backgroundImage = platform === "settings" ? `url('../img/emume.png')` : `url('../img/platforms/${platform}.png')`;
+    slide.id = platformName;
+    const platformImgPath = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
+    const emumeImgPath = path.join(LB.baseDir, 'img', 'emume.png');
+    slide.style.backgroundImage = platformName === "settings"
+        ? `url('${emumeImgPath}')`
+        : `url('${platformImgPath}')`;
 
     const slideContent = document.createElement("div");
     slideContent.className = "slide-content";
 
-    slide.setAttribute('data-platform', platform);
+    slide.setAttribute('data-platform', platformName);
 
     slide.appendChild(slideContent);
 
@@ -57,7 +83,6 @@ LB.prefs.load()
 
         let i = 0;
         platforms.forEach((platform) => {
-            console.log("preferences: ", preferences);
             const homeSlide = buildSlide(platform, preferences, LB.userDataPath);
             if (homeSlide) {
                 slideshow.appendChild(homeSlide);

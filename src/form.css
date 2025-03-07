@@ -48,50 +48,57 @@
   background-color: #0056b3;
 }
 
-/* Toggle switch */
+
+/* SWITCH */
+/* Container for the switch */
 .switch {
   position: relative;
   display: inline-block;
-  width: 40px;
-  height: 20px;
+  width: 46px;
+  height: 34px;
 }
 
+/* Hide the default checkbox */
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
+/* The slider (the visible part of the switch) */
 .slider {
   position: absolute;
+  width: 82px;
   cursor: pointer;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: #001d3d;;
   transition: 0.4s;
-  border-radius: 20px;
+  border-radius: 34px;
 }
 
+/* Slider circle */
 .slider:before {
   position: absolute;
   content: "";
-  height: 16px;
-  width: 16px;
-  left: 2px;
-  bottom: 2px;
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
   background-color: white;
   transition: 0.4s;
   border-radius: 50%;
 }
 
+/* When the checkbox is checked, move the slider */
 input:checked + .slider {
-  background-color: #007bff;
+  background-color: #003566;
 }
 
 input:checked + .slider:before {
-  transform: translateX(20px);
+  transform: translateX(46px);
 }
 
 /* Details text div */

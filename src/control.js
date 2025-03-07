@@ -134,11 +134,11 @@ function capitalizeWord(word) {
 }
 
 // Helper function to create an input row
-function createInputRow(labelText, inputId, inputDescription, buttonText, platformName) {
+function createFormTableRow(labelText, inputId, inputDescription, buttonText, platformName) {
 
     const isInputIdSave = inputId === 'save';
 
-    async function _formButtonClick(event) {
+    async function _formBrowseButtonClick(event) {
         event.stopPropagation();
 
         if (inputId === 'input-games-dir') {
@@ -155,20 +155,6 @@ function createInputRow(labelText, inputId, inputDescription, buttonText, platfo
             }
         }
 
-        if (inputId === 'input-emulator-args') { // Save has no browse button, this is a trick :/
-
-            const gamesDir = document.getElementById('input-games-dir').value;
-            const emulator = document.getElementById('input-emulator').value;
-            const emulatorArgs = document.getElementById('input-emulator-args').value;
-
-            try {
-                await LB.prefs.save(platformName, 'gamesDir', gamesDir);
-                await LB.prefs.save(platformName, 'emulator', emulator);
-                await LB.prefs.save(platformName, 'emulatorArgs', emulatorArgs);
-            } catch (error) {
-                console.error('Failed to save preferences:', error);
-            }
-        }
     }
 
     const row = document.createElement('tr');
@@ -224,16 +210,21 @@ function createInputRow(labelText, inputId, inputDescription, buttonText, platfo
     secondCol.appendChild(input);
     secondCol.classList.add('col2');
 
-    // Button
+    // Button (or nothing if 3rd col)
     const thirdCol = document.createElement('td');
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'button';
-    button.classList.add(isInputIdSave ? 'success' : 'info');
-    button.textContent = buttonText;
-    thirdCol.appendChild(button);
-    thirdCol.classList.add('col3');
-    button.addEventListener('click', _formButtonClick);
+
+    if (inputId === 'input-games-dir' || inputId === 'input-emulator') {
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'button';
+        button.classList.add(isInputIdSave ? 'success' : 'info');
+        button.textContent = buttonText;
+        thirdCol.appendChild(button);
+        thirdCol.classList.add('col3');
+        button.addEventListener('click', _formBrowseButtonClick);
+
+    }
 
     row.appendChild(firstCol);
     row.appendChild(secondCol);
@@ -250,20 +241,20 @@ function buildPlatformForm(platformName) {
     form.id = 'platform-form';
     form.className = 'platform-form';
 
-    // Flex container for the form
-    form.style.display = 'flex';
-    form.style.flexDirection = 'column';
-    form.style.gap = '10px'; // Space between rows
+    // // Flex container for the form
+    // form.style.display = 'flex';
+    // form.style.flexDirection = 'column';
+    // form.style.gap = '10px'; // Space between rows
 
     // Row 1: Toggle switch and Platform label
     const row1 = document.createElement('div');
-    row1.style.display = 'flex';
-    row1.style.alignItems = 'center';
-    row1.style.gap = '10px';
+    // row1.style.display = 'flex';
+    // row1.style.alignItems = 'center';
+    // row1.style.gap = '10px';
 
     // Toggle switch
-    const toggleLabel = document.createElement('label');
-    toggleLabel.className = 'switch';
+    const toggleContainer = document.createElement('label');
+    toggleContainer.className = 'switch';
 
     const toggleInput = document.createElement('input');
     toggleInput.type = 'checkbox';
@@ -272,14 +263,14 @@ function buildPlatformForm(platformName) {
     const sliderSpan = document.createElement('span');
     sliderSpan.className = 'slider';
 
-    toggleLabel.appendChild(toggleInput);
-    toggleLabel.appendChild(sliderSpan);
-    row1.appendChild(toggleLabel);
+    toggleContainer.appendChild(toggleInput);
+    toggleContainer.appendChild(sliderSpan);
+    row1.appendChild(toggleContainer);
 
     // Platform label
     const platformLabel = document.createElement('span');
     platformLabel.id = 'form-label';
-    platformLabel.textContent = 'Platform';
+    platformLabel.textContent = 'Enabled';
     row1.appendChild(platformLabel);
 
     // Details button
@@ -302,15 +293,15 @@ function buildPlatformForm(platformName) {
     const inputsTable = document.createElement('table');
 
     // Row 3: Games Directory
-    const gamesDirRow = createInputRow('Games', 'input-games-dir', `Select your ${capitalizeWord(platformName)} games directory path`, 'Browse', platformName);
+    const gamesDirRow = createFormTableRow('Games', 'input-games-dir', `Select your ${capitalizeWord(platformName)} games directory path`, 'Browse', platformName);
     inputsTable.appendChild(gamesDirRow);
 
     // Row 4: Emulator
-    const emulatorRow = createInputRow('Emulator', 'input-emulator', `Select your ${capitalizeWord(platformName)} emulator (file path or name)`, 'Browse', platformName);
+    const emulatorRow = createFormTableRow('Emulator', 'input-emulator', `Select your ${capitalizeWord(platformName)} emulator (file path or name)`, 'Browse', platformName);
     inputsTable.appendChild(emulatorRow);
 
     // Row 5: Emulator Args
-    const emulatorArgsRow = createInputRow('Args', 'input-emulator-args', `The arguments to your ${capitalizeWord(platformName)} emulator`, 'Save', platformName);
+    const emulatorArgsRow = createFormTableRow('Args', 'input-emulator-args', `The arguments to your ${capitalizeWord(platformName)} emulator`, 'Save', platformName);
     inputsTable.appendChild(emulatorArgsRow);
 
     const buttons = document.createElement('div');
@@ -341,7 +332,6 @@ function buildPlatformForm(platformName) {
             bubbles: true
         });
 
-        // Dispatch the event on a specific element or the document
         document.dispatchEvent(escapeKeyEvent);
     }
 
@@ -366,7 +356,6 @@ function buildPlatformForm(platformName) {
     form.appendChild(inputsTable);
     form.appendChild(buttons);
 
-    // Append the form to the body (or any other container)
     return form;
 }
 

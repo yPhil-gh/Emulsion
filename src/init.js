@@ -15,6 +15,8 @@ LB.prefs = {
     // savePreferences: savePreferences
 };
 
+LB.isMenuOpen = false;
+
 async function _loadUserData() {
     try {
         const preferences = await ipcRenderer.invoke('load-preferences');

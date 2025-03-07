@@ -313,7 +313,43 @@ function buildPlatformForm(platformName) {
     const emulatorArgsRow = createInputRow('Args', 'input-emulator-args', `The arguments to your ${capitalizeWord(platformName)} emulator`, 'Save', platformName);
     inputsTable.appendChild(emulatorArgsRow);
 
+    const buttons = document.createElement('div');
+    buttons.className = 'buttons';
+
+    const saveButton = document.createElement('button');
+    saveButton.type = 'button';
+    saveButton.className = 'button';
+    saveButton.classList.add('success');
+    saveButton.textContent = 'Save';
+
+    const cancelButton = document.createElement('button');
+    cancelButton.type = 'button';
+    cancelButton.className = 'button';
+    cancelButton.classList.add('info');
+    cancelButton.textContent = 'Cancel';
+
+    buttons.appendChild(cancelButton);
+    buttons.appendChild(saveButton);
+
+    async function _formSaveButtonClick(event) {
+
+        const gamesDir = document.getElementById('input-games-dir').value;
+        const emulator = document.getElementById('input-emulator').value;
+        const emulatorArgs = document.getElementById('input-emulator-args').value;
+
+        try {
+            await LB.prefs.save(platformName, 'gamesDir', gamesDir);
+            await LB.prefs.save(platformName, 'emulator', emulator);
+            await LB.prefs.save(platformName, 'emulatorArgs', emulatorArgs);
+        } catch (error) {
+            console.error('Failed to save preferences:', error);
+        }
+    }
+
+    saveButton.addEventListener('click', _formSaveButtonClick);
+
     form.appendChild(inputsTable);
+    form.appendChild(buttons);
 
     // Append the form to the body (or any other container)
     return form;

@@ -20,7 +20,7 @@
   transition: transform 0.2s linear, opacity 0.4s;
 
   /* transform: translate(-30%, -30%); /\* Offset to truly center the element *\/ */
-  transform-style: preserve-3d;
+  /* transform-style: preserve-3d; */
 
   /* transform-origin: center center; /\* Ensure rotation happens around the center *\/ */
   left: 50%; /* Center horizontally */
@@ -56,7 +56,6 @@
 }
 
 .page-content {
-  flex: 1 0 1;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   /* grid-auto-rows: minmax(100px, auto); /\* Taller rectangles for portrait style *\/ */

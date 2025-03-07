@@ -3,15 +3,16 @@
   --highlight-color: #a5be00;
   --succes-color: green;
   --info-color: #007bff;
-  --slide-rotation-angle: 90deg
-  --slide-rotation-radius: 100px
-  --page-rotation-angle: 0
-  --page-rotation-radius: 0
+  --footer-bg-color: rgba(0, 0, 0, 0.9);
+  --slide-rotation-angle: 90deg;
+  --slide-rotation-radius: 100px;
+  --page-rotation-angle: 0;
+  --page-rotation-radius: 0;
 }
 
 * {
-    box-sizing: border-box; /* Include padding and border in element dimensions */
-    max-width: 100%; /* Prevent elements from exceeding the viewport width */
+  box-sizing: border-box; /* Include padding and border in element dimensions */
+  max-width: 100%; /* Prevent elements from exceeding the viewport width */
 }
 
 body {
@@ -46,6 +47,25 @@ main {
   perspective: 600px; /* Add perspective for 3D effect */
   margin: 0;
   /* padding: 100px 0 100px 0; */
+}
+
+header, footer  {
+  padding: 0.5em;
+  display: none;
+  width: 100%;
+  position: fixed;
+  left: 0;
+  height: 100px;
+  background-color: rgba(0, 0, 0);
+  color: white;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 24px;
+  font-weight: bold;
+  z-index: 3; /* Ensure it's above other content */
+  /* pointer-events: none; /\* Prevent the footer from blocking clicks *\/ */
+  opacity: 0; /* Start fully transparent */
+  animation: fadeIn 1s ease-in-out forwards; /* Apply the fadeIn animation */
 }
 
 ::-webkit-scrollbar {
@@ -97,25 +117,4 @@ main {
   width: 400px;
   background-color: black;
   z-index: 500;
-}
-
-/* header, footer */
-header, footer  {
-  padding: 0.5em;
-  display: none;
-  width: 100%;
-  position: fixed;
-  left: 0;
-  height: 100px;
-  background-color: rgba(0, 0, 0);
-  color: white;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 24px;
-  font-weight: bold;
-  z-index: 3; /* Ensure it's above other content */
-  /* pointer-events: none; /\* Prevent the footer from blocking clicks *\/ */
-
-  opacity: 0; /* Start fully transparent */
-  animation: fadeIn 1s ease-in-out forwards; /* Apply the fadeIn animation */
 }

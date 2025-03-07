@@ -2,12 +2,15 @@ footer {
   /* text-align: center; */
   padding: inherit;
   justify-content:center;
-  align-items: center;
+  text-align: center;
+
   flex-direction: column;
+  align-items: center;
+
   bottom: 0;
   transition: height 0.3s ease;
-  border-top: 5px solid black;
-  background-color: rgba(0, 0, 0, 0.9); /* Black with 50% transparency */
+  /* border-top: 15px solid var(--footer-bg-color); */
+  background-color: var(--footer-bg-color);
 }
 
 #footer-content {
@@ -37,6 +40,7 @@ footer #controls {
 
 footer #footer-menu {
   flex-grow: 2;
+  text-align: center;
 }
 
 .center {
@@ -63,10 +67,30 @@ footer .center {
   gap: 10px;
 }
 
-/* #footer-title { */
-/*   display: none; */
+#footer-title {
+}
+
+.game-menu-container {
+  display: flex;
+  flex-direction: row;
+
+  margin: 1em;
+  padding: 0.5em 1em 1em 1em;
+  background-color: black;
+  border: 1px solid white;
+  border-radius: 5px;
+}
+
+/* .game-menu-container div { */
 /* } */
 
-#footer-title {
-  padding: 0.5em;
+div.game-menu-controls {
+  padding-left: 0.5em;
+}
+
+.game-menu-image-div {
+}
+
+.game-menu-image-div img {
+  max-height: 35vh;
 }

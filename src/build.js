@@ -1,10 +1,10 @@
-function buildGameMenu(gameName) {
+function buildGameMenu(gameName, gameImage) {
 
     const gameMenuContainer = document.createElement('div');
     gameMenuContainer.classList.add('game-menu-container');
 
     const gameMenuImgDiv = document.createElement('div');
-    gameMenuImgDiv.classList.add('game-menu-image');
+    gameMenuImgDiv.classList.add('game-menu-image-div');
 
     const missingImagePath = path.join(LB.baseDir, 'img', 'missing.png');
 
@@ -13,9 +13,10 @@ function buildGameMenu(gameName) {
 
     gameMenuImgDiv.appendChild(gameMenuImg);
 
-    gameMenuImg.src = missingImagePath;
+    gameMenuImg.src = gameImage.src;
     const gameMenuFetchButton = document.createElement('button');
     gameMenuFetchButton.classList.add('game-menu-fetch-button');
+    gameMenuFetchButton.classList.add('info');
     gameMenuFetchButton.textContent = "Fetch cover image";
 
     const gameMenuControls = document.createElement('div');
@@ -23,14 +24,11 @@ function buildGameMenu(gameName) {
 
     gameMenuControls.appendChild(gameMenuFetchButton);
 
-    gameMenuContainer.textContent = gameName;
-
     gameMenuContainer.appendChild(gameMenuImgDiv);
     gameMenuContainer.appendChild(gameMenuControls);
 
     return gameMenuContainer;
 }
-
 
 LB.build = {
     gameMenu: buildGameMenu

@@ -222,7 +222,7 @@ async function buildGallery(params) {
             gameContainer.setAttribute('data-command', `${emulator} ${emulatorArgs || ""} "${gameFile}"`);
 
             // Set the container size based on the column width
-            gameContainer.style.width = `${columnWidth}px`;
+            // gameContainer.style.width = `${columnWidth}px`;
             // gameContainer.style.height = `${columnWidth}px`; // Placeholder height (square)
 
             gameContainer.addEventListener('click', (event) => {

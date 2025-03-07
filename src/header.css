@@ -1,0 +1,15 @@
+header {
+  top: 0;
+}
+
+header .platform-image img {
+  width: 50px;
+}
+
+.left {
+  text-align: left;
+}
+
+.right {
+  text-align: right;
+}

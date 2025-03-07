@@ -101,10 +101,14 @@ async function scanDirectory(gamesDir, extensions, recursive = true) {
 const imageFormats = ['jpg', 'png', 'webp'];
 
 function findImageFile(basePath, fileNameWithoutExt) {
+    console.log("basePath, fileNameWithoutExt: ", basePath, fileNameWithoutExt);
     for (const format of imageFormats) {
         const imagePath = path.join(basePath, `${fileNameWithoutExt}.${format}`);
         if (fs.existsSync(imagePath)) {
+            console.log("imagePath: ", imagePath);
             return imagePath;
+        } else {
+            console.log("NO ", imagePath);
         }
     }
     return null;
@@ -128,7 +132,7 @@ function buildSettingsPageContent(platforms) {
         platformNameElement.classList.add('platform-name');
 
         const platformImage = document.createElement('img');
-        platformImage.src = `../img/platforms/${platformName}.png`;
+        platformImage.src = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
         platformImage.classList.add('platform-image');
         platformImage.classList.add('game-image');
 
@@ -206,7 +210,8 @@ async function buildGallery(params) {
             const fileName = path.basename(gameFile);
             const fileNameWithoutExt = path.parse(fileName).name;
             const coverImagePath = findImageFile(path.join(userDataPath, "covers", platform), fileNameWithoutExt);
-            const missingImagePath = path.join(__dirname, "../img", 'missing.png');
+            const missingImagePath = path.join(LB.baseDir, 'img', 'missing.png');
+
             const isImgExists = fs.existsSync(coverImagePath);
 
             const gameContainer = document.createElement('div');

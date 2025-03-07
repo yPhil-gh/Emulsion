@@ -1,14 +1,3 @@
-:root {
-  --glow-color: 225, 117, 100;
-  --highlight-color: #a5be00;
-  --succes-color: green;
-  --info-color: #007bff;
-  --slide-rotation-angle: 90deg
-  --slide-rotation-radius: 100px
-  --page-rotation-angle: 0
-  --page-rotation-radius: 0
-}
-
 /* Form container */
 #platform-form {
   width: 100%;
@@ -43,7 +32,7 @@
 }
 
 /* Buttons */
-#platform-form .button {
+button {
   padding: 8px 12px;
   color: white;
   border: none;
@@ -137,11 +126,6 @@ input, button {
   width: 100%;
 }
 
-.success {
-  background-color: var(--succes-color);
+#footer-title {
+  padding: 0.5em;
 }
-
-.info {
-  background-color: var(--info-color);
-}
-

@@ -331,6 +331,20 @@ function buildPlatformForm(platformName) {
     buttons.appendChild(cancelButton);
     buttons.appendChild(saveButton);
 
+    function _formCancelButtonClick(event) {
+
+        const escapeKeyEvent = new KeyboardEvent('keydown', {
+            key: 'Escape',
+            keyCode: 27,
+            code: 'Escape', // The physical key on the keyboard
+            which: 27,     // Same as keyCode
+            bubbles: true
+        });
+
+        // Dispatch the event on a specific element or the document
+        document.dispatchEvent(escapeKeyEvent);
+    }
+
     async function _formSaveButtonClick(event) {
 
         const gamesDir = document.getElementById('input-games-dir').value;
@@ -346,6 +360,7 @@ function buildPlatformForm(platformName) {
         }
     }
 
+    cancelButton.addEventListener('click', _formCancelButtonClick);
     saveButton.addEventListener('click', _formSaveButtonClick);
 
     form.appendChild(inputsTable);

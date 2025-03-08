@@ -21,6 +21,26 @@ LB.prefs = {
 
 LB.isMenuOpen = false;
 
+LB.utils = {
+    capitalizeWord: capitalizeWord
+};
+
+function capitalizeWord(word) {
+    switch (word) {
+    case 'snes':
+        return "SNES";
+        break;
+    case 'pcengine':
+        return "PCEngine";
+        break;
+    default:
+        break;
+    }
+
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+}
+
+
 async function _loadUserData() {
     try {
         const preferences = await ipcRenderer.invoke('load-preferences');

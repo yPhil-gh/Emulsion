@@ -1,5 +1,6 @@
 {
     "name": "emume",
+    "type": "module",
     "version": "1.0.9",
     "context": "prod",
     "description": "A frontend to launch games",
@@ -49,7 +50,9 @@
         "axios": "^1.7.9",
         "cheerio": "^1.0.0",
         "fs": "^0.0.1-security",
-        "path": "^0.12.7"
+        "node-fetch": "^3.3.2",
+        "path": "^0.12.7",
+        "steamgriddb": "^2.2.0"
     },
     "platforms": [
         "amiga",

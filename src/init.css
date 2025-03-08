@@ -1,8 +1,9 @@
 :root {
   --glow-color: 225, 117, 100;
   --highlight-color: #a5be00;
-  --succes-color: green;
-  --info-color: #007bff;
+  --color-succes: green;
+  --color-info: #007bff;
+  --color-disabled: #333;
   --footer-bg-color: rgba(0, 0, 0, 0.9);
   --slide-rotation-angle: 90deg;
   --slide-rotation-radius: 100px;
@@ -91,11 +92,11 @@ header, footer  {
 }
 
 .success {
-  background-color: var(--succes-color);
+  background-color: var(--color-succes);
 }
 
 .info {
-  background-color: var(--info-color);
+  background-color: var(--color-info);
 }
 
 .icon {

@@ -49,7 +49,7 @@ button {
 
 /* SWITCH */
 /* Container for the switch */
-.switch {
+.input-platform-toggle-switch {
   position: relative;
   display: inline-block;
   width: 46px;
@@ -57,14 +57,14 @@ button {
 }
 
 /* Hide the default checkbox */
-.switch input {
+.input-platform-toggle-switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
 /* The slider (the visible part of the switch) */
-.slider {
+.input-platform-toggle-slider {
   position: absolute;
   width: 82px;
   cursor: pointer;
@@ -72,13 +72,13 @@ button {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #001d3d;;
+  background-color: var(--color-disabled);
   transition: 0.4s;
   border-radius: 34px;
 }
 
 /* Slider circle */
-.slider:before {
+.input-platform-toggle-slider:before {
   position: absolute;
   content: "";
   height: 26px;
@@ -91,11 +91,11 @@ button {
 }
 
 /* When the checkbox is checked, move the slider */
-input:checked + .slider {
-  background-color: #003566;
+input:checked + .input-platform-toggle-slider {
+  background-color: var(--color-info);
 }
 
-input:checked + .slider:before {
+input:checked + .input-platform-toggle-slider:before {
   transform: translateX(46px);
 }
 

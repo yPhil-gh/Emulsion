@@ -107,250 +107,6 @@ function initSlideShow(platformToDisplay) {
     updateCarousel();
 }
 
-function capitalizeWord(word) {
-    switch (word) {
-    case 'snes':
-        return "SNES";
-        break;
-    case 'pcengine':
-        return "PCEngine";
-        break;
-    default:
-        break;
-    }
-
-    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-}
-
-// Helper function to create an input row
-function createFormTableRow(labelText, inputId, inputDescription, buttonText, platformName) {
-
-    const isInputIdSave = inputId === 'save';
-
-    async function _formBrowseButtonClick(event) {
-        // event.stopPropagation();
-
-        if (inputId === 'input-games-dir') {
-            const selectedPath = await ipcRenderer.invoke('select-file-or-directory', 'openDirectory');
-            if (selectedPath) {
-                document.getElementById(inputId).value = selectedPath;
-            }
-        }
-
-        if (inputId === 'input-emulator') {
-            const selectedPath = await ipcRenderer.invoke('select-file-or-directory', 'openFile');
-            if (selectedPath) {
-                document.getElementById(inputId).value = selectedPath;
-            }
-        }
-
-    }
-
-    const row = document.createElement('tr');
-
-    // Label
-    const firstCol = document.createElement('td');
-    const label = document.createElement('label');
-    label.setAttribute('for', inputId);
-    label.textContent = labelText;
-    firstCol.appendChild(label);
-    firstCol.classList.add('col1');
-
-    // Input
-    const secondCol = document.createElement('td');
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.classList.add('input-text');
-    input.id = inputId;
-    input.title = inputDescription;
-    input.placeholder = inputDescription;
-
-    if (inputId === 'input-games-dir') {
-        LB.prefs.getValue(platformName, 'gamesDir')
-            .then((value) => {
-                input.value = value;
-            })
-            .catch((error) => {
-                console.error('Failed to get platform preference:', error);
-            });
-    }
-
-    if (inputId === 'input-emulator') {
-        LB.prefs.getValue(platformName, 'emulator')
-            .then((value) => {
-                input.value = value;
-            })
-            .catch((error) => {
-                console.error('Failed to get platform preference:', error);
-            });
-    }
-
-    if (inputId === 'input-emulator-args') {
-        LB.prefs.getValue(platformName, 'emulatorArgs')
-            .then((value) => {
-                input.value = value;
-            })
-            .catch((error) => {
-                console.error('Failed to get platform preference:', error);
-            });
-    }
-
-    secondCol.appendChild(input);
-    secondCol.classList.add('col2');
-
-    // Button (or nothing if 3rd col)
-    const thirdCol = document.createElement('td');
-
-    if (inputId === 'input-games-dir' || inputId === 'input-emulator') {
-
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'button';
-        button.classList.add(isInputIdSave ? 'success' : 'info');
-        button.textContent = buttonText;
-        thirdCol.appendChild(button);
-        thirdCol.classList.add('col3');
-        button.addEventListener('click', _formBrowseButtonClick);
-
-    }
-
-    row.appendChild(firstCol);
-    row.appendChild(secondCol);
-    row.appendChild(thirdCol);
-
-    return row;
-}
-
-function buildPlatformForm(platformName) {
-
-    console.log("platformName: ", platformName);
-    // Create the form element
-    const form = document.createElement('form');
-    form.id = 'platform-form';
-    form.className = 'platform-form';
-
-    // Row 1: Toggle switch and Platform label
-    const row1 = document.createElement('div');
-
-    // Toggle switch
-    const toggleContainer = document.createElement('label');
-    toggleContainer.className = 'switch';
-
-    const toggleInput = document.createElement('input');
-    toggleInput.type = 'checkbox';
-    toggleInput.id = 'input-platform-toggle-checkbox';
-
-    const sliderSpan = document.createElement('span');
-    sliderSpan.className = 'slider';
-
-    toggleContainer.appendChild(toggleInput);
-    toggleContainer.appendChild(sliderSpan);
-    row1.appendChild(toggleContainer);
-
-    const toggleLabel = document.createElement('span');
-    toggleLabel.id = 'form-status-label';
-    toggleLabel.setAttribute('for', 'input-platform-toggle-checkbox');
-
-    row1.appendChild(toggleLabel);
-    form.appendChild(row1);
-
-    // Row 2: Details text
-    const detailsText = document.createElement('div');
-    detailsText.id = 'details-text-div';
-    detailsText.className = 'details-text-div';
-    detailsText.textContent = 'plop';
-    form.appendChild(detailsText);
-
-    const inputsTable = document.createElement('table');
-
-    // Row 3: Games Directory
-    const gamesDirRow = createFormTableRow('Games', 'input-games-dir', `Select your ${capitalizeWord(platformName)} games directory path`, 'Browse', platformName);
-    inputsTable.appendChild(gamesDirRow);
-
-    // Row 4: Emulator
-    const emulatorRow = createFormTableRow('Emulator', 'input-emulator', `Select your ${capitalizeWord(platformName)} emulator (file path or name)`, 'Browse', platformName);
-    inputsTable.appendChild(emulatorRow);
-
-    // Row 5: Emulator Args
-    const emulatorArgsRow = createFormTableRow('Args', 'input-emulator-args', `The arguments to your ${capitalizeWord(platformName)} emulator`, null, platformName);
-    inputsTable.appendChild(emulatorArgsRow);
-
-    const buttons = document.createElement('div');
-    buttons.className = 'buttons';
-
-    const saveButton = document.createElement('button');
-    saveButton.type = 'button';
-    saveButton.className = 'button';
-    saveButton.classList.add('success');
-    saveButton.textContent = 'Save';
-
-    const cancelButton = document.createElement('button');
-    cancelButton.type = 'button';
-    cancelButton.className = 'button';
-    cancelButton.classList.add('info');
-    cancelButton.textContent = 'Cancel';
-
-    buttons.appendChild(cancelButton);
-    buttons.appendChild(saveButton);
-
-    function _formCancelButtonClick(event) {
-
-        const escapeKeyEvent = new KeyboardEvent('keydown', {
-            key: 'Escape',
-            keyCode: 27,
-            code: 'Escape', // The physical key on the keyboard
-            which: 27,     // Same as keyCode
-            bubbles: true
-        });
-
-        document.dispatchEvent(escapeKeyEvent);
-    }
-
-    async function _formSaveButtonClick(event) {
-
-        const isEnabled = document.getElementById('input-platform-toggle-checkbox').checked;
-        const gamesDir = document.getElementById('input-games-dir').value;
-        const emulator = document.getElementById('input-emulator').value;
-        const emulatorArgs = document.getElementById('input-emulator-args').value;
-
-        try {
-            await LB.prefs.save(platformName, 'isEnabled', isEnabled);
-            await LB.prefs.save(platformName, 'gamesDir', gamesDir);
-            await LB.prefs.save(platformName, 'emulator', emulator);
-            await LB.prefs.save(platformName, 'emulatorArgs', emulatorArgs);
-        } catch (error) {
-            console.error('Failed to save preferences:', error);
-        }
-    }
-
-    cancelButton.addEventListener('click', _formCancelButtonClick);
-    saveButton.addEventListener('click', _formSaveButtonClick);
-
-    form.appendChild(inputsTable);
-    form.appendChild(buttons);
-
-    LB.prefs.getValue(platformName, 'isEnabled')
-        .then((value) => {
-            console.log("value!", value);
-            toggleInput.checked = value;
-            toggleInput.dispatchEvent(new Event('change'));
-            toggleLabel.textContent = value ? 'Enabled' : 'Disabled';
-        })
-        .catch((error) => {
-            console.error('Failed to get platform preference:', error);
-        });
-
-
-    // toggleInput.addEventListener('change', (event) => {
-    //     console.log("event.target.checked: ", event.target.checked);
-    //     const label = document.getElementById('form-status-label');
-    //     console.log("label: ", label);
-    //     document.getElementById('form-status-label').textContent = event.target.checked ? "Disabled" : "Enabled";
-    // });
-
-    return form;
-}
-
 function initGallery(currentIndex) {
     const galleries = document.getElementById('galleries');
     const pages = Array.from(galleries.querySelectorAll('.page'));
@@ -375,7 +131,7 @@ function initGallery(currentIndex) {
                 gameContainers = Array.from(page.querySelectorAll('.game-container') || []);
                 gameContainers[0].classList.add('selected');
 
-                document.querySelector('header .platform-name').textContent = capitalizeWord(page.dataset.platform);
+                document.querySelector('header .platform-name').textContent = LB.utils.capitalizeWord(page.dataset.platform);
                 document.querySelector('header .platform-image img').src = `../img/platforms/${page.dataset.platform}.png`;
 
                 page.classList.add('active');
@@ -475,16 +231,16 @@ function initGallery(currentIndex) {
 
             gameContainers.forEach((container, index) => {
                 if (index === selectedIndex) {
-                    footerTitle.textContent = capitalizeWord(container.title);
+                    footerTitle.textContent = LB.utils.capitalizeWord(container.title);
 
                     if (container.classList.contains('settings')) {
-                        const platformForm = buildPlatformForm(container.dataset.platform);
+                        const platformForm = LB.build.platformForm(container.dataset.platform);
                         footerMenuImg.src = path.join(LB.baseDir, 'img', 'platforms', `${container.dataset.platform}.png`);
                         footerMenuImg.classList.remove('hidden');
                         footerMenu.appendChild(platformForm);
                     } else {
                         const gameImage = container.querySelector('img');
-                        const gameMenu = LB.build.gameMenu(container.title, gameImage);
+                        const gameMenu = LB.build.gameMenu(container.title);
                         footerMenu.appendChild(gameMenu);
                     }
 
@@ -493,9 +249,11 @@ function initGallery(currentIndex) {
 
             const platformToggle = document.getElementById('input-platform-toggle-checkbox');
 
-            platformToggle.addEventListener('change', (event) => {
-                document.getElementById('form-status-label').textContent = event.target.checked ? "Enabled" : "Disabled";
-            });
+            if (platformToggle) {
+                platformToggle.addEventListener('change', (event) => {
+                    document.getElementById('form-status-label').textContent = event.target.checked ? "Enabled" : "Disabled";
+                });
+            }
 
             window.addEventListener('keydown', onKeyDown);
         }
@@ -533,6 +291,22 @@ function initGallery(currentIndex) {
             break;
         case 'ArrowDown':
             selectedIndex = Math.min(selectedIndex + LB.galleryNumOfCols, gameContainers.length);
+            break;
+        case 'PageUp':
+            selectedIndex = Math.max(selectedIndex - LB.galleryNumOfCols * 10, 0);
+            break;
+        case 'PageDown':
+            // selectedIndex = Math.min(selectedIndex + (LB.galleryNumOfCols + 10), gameContainers.length);
+            // Assume LB.galleryNumOfCols is the number of columns
+            const col = selectedIndex % LB.galleryNumOfCols;              // current column index
+            const currentRow = Math.floor(selectedIndex / LB.galleryNumOfCols); // current row
+            const newRow = currentRow + 10;                                // move 10 rows down
+
+            // Compute the new index in the same column
+            let newIndex = newRow * LB.galleryNumOfCols + col;
+
+            // Clamp the new index to ensure it doesn't exceed the number of containers
+            selectedIndex = Math.min(newIndex, gameContainers.length - 1);
             break;
         case 'i':
             _toggleFooterMenu(selectedIndex, _handleKeyDown, isMenuOpen);

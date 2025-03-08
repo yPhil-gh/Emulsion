@@ -128,7 +128,7 @@ function createFormTableRow(labelText, inputId, inputDescription, buttonText, pl
     const isInputIdSave = inputId === 'save';
 
     async function _formBrowseButtonClick(event) {
-        event.stopPropagation();
+        // event.stopPropagation();
 
         if (inputId === 'input-games-dir') {
             const selectedPath = await ipcRenderer.invoke('select-file-or-directory', 'openDirectory');
@@ -238,7 +238,7 @@ function buildPlatformForm(platformName) {
 
     const toggleInput = document.createElement('input');
     toggleInput.type = 'checkbox';
-    toggleInput.id = 'input-platform-toggle';
+    toggleInput.id = 'input-platform-toggle-checkbox';
 
     const sliderSpan = document.createElement('span');
     sliderSpan.className = 'slider';
@@ -249,6 +249,7 @@ function buildPlatformForm(platformName) {
 
     const toggleLabel = document.createElement('span');
     toggleLabel.id = 'form-status-label';
+    toggleLabel.setAttribute('for', 'input-platform-toggle-checkbox');
 
     row1.appendChild(toggleLabel);
     form.appendChild(row1);
@@ -307,11 +308,7 @@ function buildPlatformForm(platformName) {
 
     async function _formSaveButtonClick(event) {
 
-        const sw = document.getElementById('input-platform-toggle');
-
-        console.log("sw: ", sw);
-
-        const isEnabled = document.getElementById('input-platform-toggle').checked;
+        const isEnabled = document.getElementById('input-platform-toggle-checkbox').checked;
         const gamesDir = document.getElementById('input-games-dir').value;
         const emulator = document.getElementById('input-emulator').value;
         const emulatorArgs = document.getElementById('input-emulator-args').value;
@@ -334,8 +331,9 @@ function buildPlatformForm(platformName) {
 
     LB.prefs.getValue(platformName, 'isEnabled')
         .then((value) => {
-            console.log("value: ", value);
+            console.log("value!", value);
             toggleInput.checked = value;
+            toggleInput.dispatchEvent(new Event('change'));
             toggleLabel.textContent = value ? 'Enabled' : 'Disabled';
         })
         .catch((error) => {
@@ -345,6 +343,8 @@ function buildPlatformForm(platformName) {
 
     // toggleInput.addEventListener('change', (event) => {
     //     console.log("event.target.checked: ", event.target.checked);
+    //     const label = document.getElementById('form-status-label');
+    //     console.log("label: ", label);
     //     document.getElementById('form-status-label').textContent = event.target.checked ? "Disabled" : "Enabled";
     // });
 
@@ -464,7 +464,7 @@ function initGallery(currentIndex) {
             // event.stopPropagation();
             // event.stopImmediatePropagation(); // Stops other listeners on the same element
             console.log("event: ", event);
-            // document.getElementById('input-platform-toggle')
+            // document.getElementById('input-platform-toggle-checkbox')
         }
 
         function _openMenu() {
@@ -491,11 +491,12 @@ function initGallery(currentIndex) {
                 }
             });
 
-            const platformToggle = document.getElementById('input-platform-toggle');
+            const platformToggle = document.getElementById('input-platform-toggle-checkbox');
 
-            if (platformToggle) {
-                document.getElementById('input-platform-toggle').addEventListener('click', onToggle);
-            }
+            platformToggle.addEventListener('change', (event) => {
+                document.getElementById('form-status-label').textContent = event.target.checked ? "Enabled" : "Disabled";
+            });
+
             window.addEventListener('keydown', onKeyDown);
         }
 

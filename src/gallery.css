@@ -38,7 +38,7 @@
 .page.active {
   opacity: 1;
   transform: translate(-50%, -50%) translateX(0) scale(1); /* Adjusted for centering */
-  transition: transform 1s linear, opacity 1s linear;
+  transition: transform 0.1s linear, opacity 0.1s linear;
   z-index: 2;
 
   /* Slide: */
@@ -50,7 +50,7 @@
   /* transform: translate(-50%, -50%) rotateY(calc(var(--page-rotation-angle) * 1deg)) translateZ(calc(var(--page-rotation-radius) * 1px)); /\* Adjusted for centering *\/ */
 
   transform: translateX(-100%); /* Push effect */
-  transition: transform 1s linear, opacity 0.1s linear;
+  transition: transform 0.1s linear, opacity 0.1s linear;
 
   z-index: 1;
 }
@@ -63,7 +63,6 @@
   padding: 10px;
   /* overflow-y: auto; /\* Allow vertical scrolling *\/ */
   /* width: 100%; */
-  height: 100vh; /* Set height to full viewport height (adjust as needed) */
 }
 
 .prefs-platform-img {

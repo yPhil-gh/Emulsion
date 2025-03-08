@@ -101,14 +101,10 @@ async function scanDirectory(gamesDir, extensions, recursive = true) {
 const imageFormats = ['jpg', 'png', 'webp'];
 
 function findImageFile(basePath, fileNameWithoutExt) {
-    console.log("basePath, fileNameWithoutExt: ", basePath, fileNameWithoutExt);
     for (const format of imageFormats) {
         const imagePath = path.join(basePath, `${fileNameWithoutExt}.${format}`);
         if (fs.existsSync(imagePath)) {
-            console.log("imagePath: ", imagePath);
             return imagePath;
-        } else {
-            console.log("NO ", imagePath);
         }
     }
     return null;

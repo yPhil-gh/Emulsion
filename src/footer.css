@@ -16,7 +16,6 @@ footer {
 #footer-content {
   display: flex;
   width: -webkit-fill-available;
-  align-items: center;
 }
 
 .hidden {

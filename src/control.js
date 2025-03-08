@@ -240,7 +240,7 @@ function initGallery(currentIndex) {
                         footerMenu.appendChild(platformForm);
                     } else {
                         const gameImage = container.querySelector('img');
-                        const gameMenu = LB.build.gameMenu(container.title);
+                        const gameMenu = LB.build.gameMenu(container.title, gameImage);
                         footerMenu.appendChild(gameMenu);
                     }
 

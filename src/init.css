@@ -69,27 +69,25 @@ header, footer  {
   animation: fadeIn 1s ease-in-out forwards; /* Apply the fadeIn animation */
 }
 
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
+/* ::-webkit-scrollbar { */
+/*   width: 8px; */
+/*   height: 8px; */
+/* } */
 
-/* Track (background of the scrollbar) */
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
+/* /\* Track (background of the scrollbar) *\/ */
+/* ::-webkit-scrollbar-track { */
+/*   background: #f1f1f1; */
+/* } */
 
-/* Handle (the draggable part of the scrollbar) */
-::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
-}
+/* /\* Handle (the draggable part of the scrollbar) *\/ */
+/* ::-webkit-scrollbar-thumb { */
+/*   background: #888; */
+/* } */
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
+/* /\* Handle on hover *\/ */
+/* ::-webkit-scrollbar-thumb:hover { */
+/*   background: #555; */
+/* } */
 
 .success {
   background-color: var(--color-succes);

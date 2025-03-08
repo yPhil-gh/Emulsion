@@ -1,0 +1,61 @@
+// /src/steamgrid.js
+import SGDB from 'steamgriddb';
+
+// Initialize the SteamGridDB client
+const client = new SGDB({
+    key: 'c7771ceeecd4d5e1e9c62b1e01e14de2', // Replace with your actual API key
+});
+
+/**
+ * Fetches an array of cover image URLs for all games matching the given name.
+ */
+export const getAllCoverImageUrls = async (gameName) => {
+    try {
+        // Search for the game by name
+        const games = await client.searchGame(gameName);
+        if (!games.length) {
+            console.log('No games found for:', gameName);
+            return [];
+        }
+
+        console.log(`Found ${games.length} matching games for: ${gameName}`);
+
+        // Array to store all image URLs
+        const allImageUrls = [];
+
+        // Iterate through all matching games
+        for (const game of games) {
+            console.log(`Processing game: ${game.name} (ID: ${game.id})`);
+
+            // Determine the correct ID to use
+            const gameId = game.steam_app_id || game.id; // Use steam_app_id if available, otherwise fallback to id
+
+            // Fetch all cover images for the game
+            console.log(`Fetching grids for ID: ${gameId}`);
+            const images = await client.getGrids({ type: 'game', id: gameId });
+
+            if (!images.length) {
+                console.log(`No cover images found for ${game.name}.`);
+                continue; // Skip to the next game
+            }
+
+            // Extract the URLs from the images
+            const imageUrls = images.map((image) => image.url);
+            console.log(`Found ${imageUrls.length} image URLs for ${game.name}:`);
+            console.log(imageUrls);
+
+            // Add the URLs to the main array
+            allImageUrls.push(...imageUrls);
+        }
+
+        console.log(`Total images found: ${allImageUrls.length}`);
+        return allImageUrls; // Return the array of all image URLs
+    } catch (error) {
+        console.error('Error fetching grids:', error.message);
+        if (error.response) {
+            console.error('Response status:', error.response.status);
+            console.error('Response data:', error.response.data);
+        }
+        return []; // Return an empty array in case of error
+    }
+};

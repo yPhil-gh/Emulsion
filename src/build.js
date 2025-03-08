@@ -6,19 +6,31 @@ function buildGameMenu(gameName) {
     gameMenuContainer.classList.add('game-menu-container');
     gameMenuContainer.textContent = platformName;
 
-    console.log("LB: ", LB);
+    ipcRenderer.send('fetch-images', gameName);
 
-    LB.coverDownloader.searchGame(gameName, platformName)
-        .then((details) => {
-            console.log("details.imgSrcArray: ", details.imgSrcArray);
-            // return window.control.showCoversDialog(details.imgSrcArray, gameName, platformName, img);
-        })
-        .catch((error) => {
-            console.info('Error (probably image not found):', error.message);
-        })
-        .finally(() => {
-            console.log("finally: ");
+    const imageList = document.createElement('div');
+    imageList.id = 'image-list';
+
+    ipcRenderer.on('image-urls', (event, urls) => {
+
+        if (urls.length === 0) {
+            gameMenuContainer.innerHTML = '<p>No images found.</p>';
+            return gameMenuContainer;
+        }
+
+        // Display each image
+        urls.forEach((url) => {
+            const imageContainer = document.createElement('div');
+            imageContainer.classList.add('image-container');
+            const image = document.createElement('img');
+            image.src = url;
+            image.style.width = '200px'; // Adjust as needed
+            imageContainer.appendChild(image);
+            imageList.appendChild(imageContainer);
         });
+    });
+
+    gameMenuContainer.appendChild(imageList);
 
     return gameMenuContainer;
 }

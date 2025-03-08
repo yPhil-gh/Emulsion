@@ -92,3 +92,15 @@ div.game-menu-controls {
 .game-menu-image-div img {
   max-height: 35vh;
 }
+
+#image-list {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  gap: 10px;
+  padding: 10px;
+}
+
+.image-container {
+  min-width: 200px;
+}

@@ -2,69 +2,7 @@ import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import { exec } from 'child_process';
-import fetch from 'node-fetch';
-
-
-import SGDB from 'steamgriddb';
-
-// Initialize the SteamGridDB client
-const client = new SGDB({
-    key: 'c7771ceeecd4d5e1e9c62b1e01e14de2', // Replace with your actual API key
-});
-
-/**
- * Fetches an array of cover image URLs for a given game name.
- */
-const getCoverImageUrls = async (gameName) => {
-    try {
-        // Search for the game by name
-        const games = await client.searchGame(gameName);
-        if (!games.length) {
-            console.log('No games found for:', gameName);
-            return [];
-        }
-
-        // Pick the first result
-        const game = games[0];
-        console.log('Game object:', game); // Log the full game object for debugging
-
-        // Determine the correct ID to use
-        const gameId = game.steam_app_id || game.id; // Use steam_app_id if available, otherwise fallback to id
-        console.log(`Found: ${game.name} (ID: ${gameId})`);
-
-        // Fetch all cover images for the game
-        console.log('Fetching grids for ID:', gameId);
-        const images = await client.getGrids({ type: 'game', id: gameId });
-
-        if (!images.length) {
-            console.log('No cover images found.');
-            return [];
-        }
-
-        // Extract the URLs from the images
-        const imageUrls = images.map((image) => image.url);
-        console.log(`Found ${imageUrls.length} image URLs:`);
-        console.log(imageUrls);
-
-        return imageUrls; // Return the array of URLs
-    } catch (error) {
-        console.error('Error fetching grids:', error.message);
-        if (error.response) {
-            console.error('Response status:', error.response.status);
-            console.error('Response data:', error.response.data);
-        }
-        return []; // Return an empty array in case of error
-    }
-};
-
-// Example usage
-getCoverImageUrls('Alien Breed')
-    .then((urls) => {
-        console.log('Image URLs:', urls);
-    })
-    .catch((err) => {
-        console.error('Failed to fetch image URLs:', err);
-    });
+import { getAllCoverImageUrls } from './steamgrid.js';
 
 let mainWindow;
 
@@ -138,6 +76,17 @@ ipcMain.handle('go-to-url', async (event, link) => {
     console.log("url: ", link.url);
     // shell.openExternal(link.url);
     return true;
+});
+
+ipcMain.on('fetch-images', (event, gameName) => {
+    getAllCoverImageUrls(gameName)
+        .then((urls) => {
+            event.reply('image-urls', urls); // Send the URLs back to the renderer process
+        })
+        .catch((err) => {
+            console.error('Failed to fetch image URLs:', err);
+            event.reply('image-urls', []); // Send an empty array in case of error
+        });
 });
 
 ipcMain.on('run-command', (event, command) => {

@@ -58,9 +58,9 @@ function initSlideShow(platformToDisplay) {
         });
     });
 
-    window.addEventListener('keydown', onHomeMenuKeyDown);
+    window.addEventListener('keydown', onKeyDown);
 
-    function onHomeMenuKeyDown (event) {
+    function onKeyDown (event) {
         event.stopPropagation();
         event.stopImmediatePropagation(); // Stops other listeners on the same element
         if (event.key === 'ArrowRight') {
@@ -78,7 +78,7 @@ function initSlideShow(platformToDisplay) {
 
             document.getElementById('slideshow').style.display = 'none';
             document.getElementById('galleries').style.display = "flex";
-            window.removeEventListener('keydown', onHomeMenuKeyDown);
+            window.removeEventListener('keydown', onKeyDown);
 
             let activeGalleryIndex;
             let numberOfPlatforms = 0;
@@ -181,22 +181,29 @@ function initGallery(currentIndex) {
 
     function _toggleFooterMenu(selectedIndex, listener, isMenuOpen) {
 
-        // window.removeEventListener('keydown', listener);
-
         const footer = document.getElementById('footer');
         const footerMenuContainer = document.getElementById('footer-menu-container');
         const controls = document.getElementById('controls');
 
-        function footerMenuOnKeyDown(extraArg, event) {
-            console.log("extraArg: ", extraArg);
+        let menuSelectedIndex = 1;
+
+        function footerMenuOnKeyDown(event) {
+
+            console.log("menuSelectedIndex: ", menuSelectedIndex);
+
+            console.log("isMenuOpen: ", isMenuOpen);
+
             event.stopPropagation();
             event.stopImmediatePropagation(); // Stops other listeners on the same element
+            const menuGameContainers = Array.from(footer.querySelectorAll('.menu-game-container'));
+            console.log("menuGameContainers len: ", menuGameContainers.length);
             switch (event.key) {
+
             case 'ArrowRight':
                 if (event.shiftKey) {
                     // nextPage();
                 } else {
-                    console.log("plop: ");
+                    menuSelectedIndex = (menuSelectedIndex + 1) % menuGameContainers.length;
                     // selectedIndex = (selectedIndex + 1) % gameContainers.length;
                 }
                 break;
@@ -204,8 +211,18 @@ function initGallery(currentIndex) {
                 if (event.shiftKey) {
                     // prevPage();
                 } else {
-                    selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
+                    if (menuSelectedIndex !== 1) {
+                        menuSelectedIndex = (menuSelectedIndex - 1 + menuGameContainers.length) % menuGameContainers.length;
+                    }
                 }
+                break;
+            case 'ArrowUp':
+                if (menuSelectedIndex !== LB.galleryNumOfCols) {
+                    menuSelectedIndex = Math.max(menuSelectedIndex - LB.galleryNumOfCols, 0);
+                }
+                break;
+            case 'ArrowDown':
+                menuSelectedIndex = Math.min(menuSelectedIndex + LB.galleryNumOfCols, menuGameContainers.length);
                 break;
             case 'i':
                 _closeMenu();
@@ -214,16 +231,35 @@ function initGallery(currentIndex) {
                 _closeMenu();
                 break;
             }
+
+            menuGameContainers.forEach((container, index) => {
+                container.classList.toggle('selected', index === menuSelectedIndex);
+            });
+
+            if (!event.shiftKey) {
+                if (menuSelectedIndex < menuGameContainers.length && menuSelectedIndex > 0) {
+                    menuGameContainers[menuSelectedIndex].scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                    });
+                }
+            }
         }
 
         function _closeMenu() {
+            console.log("closeMenu: ");
+            document.getElementById('footer-menu-container').innerHTML = '';
             footer.style.height = '100px'; // original height
             controls.style.display = 'flex';
             window.removeEventListener('keydown', footerMenuOnKeyDown);
             window.addEventListener('keydown', listener);
+            isMenuOpen = false;
         }
 
         function _openMenu() {
+
+            window.removeEventListener('keydown', listener);
+            window.addEventListener('keydown', footerMenuOnKeyDown);
 
             footer.style.height = '91vh';
             controls.style.display = 'none';
@@ -256,12 +292,9 @@ function initGallery(currentIndex) {
                                 setTimeout(() => spinner.classList.add('gone'), 500);
 
                                 // Continue with logic that depends on the fully populated gameMenu
-                                gameContainers = Array.from(gameMenu.querySelectorAll('.menu-game-container'));
+                                const menuGameContainers = Array.from(gameMenu.querySelectorAll('.menu-game-container'));
+                                console.log("menuGameContainers len: ", menuGameContainers.length);
 
-                                gameContainers[1].classList.add('selected');
-                                gameContainers[1].focus();
-
-                                // window.addEventListener('keydown', footerMenuOnKeyDown.bind(null, menuGameContainers));
                             });
 
                     }
@@ -286,7 +319,6 @@ function initGallery(currentIndex) {
         event.preventDefault(); // Prevent default scrolling behavior
         switch (event.key) {
         case 'ArrowRight':
-            console.log("yo: ");
             if (event.shiftKey) {
                 nextPage();
             } else {
@@ -323,6 +355,7 @@ function initGallery(currentIndex) {
             selectedIndex = Math.min(newIndex, gameContainers.length - 1);
             break;
         case 'i':
+            console.log("i: isMenuOpen: ", isMenuOpen);
             _toggleFooterMenu(selectedIndex, _handleKeyDown, isMenuOpen);
             // window.removeEventListener('keydown', _handleKeyDown);
             break;

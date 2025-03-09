@@ -177,21 +177,36 @@ function initGallery(currentIndex) {
 
     let selectedIndex = 0;
 
+    let ImageMenuSelectedIndex = 0;
+
     function _toggleFooterMenu(selectedIndex, listener, isMenuOpen) {
 
         window.removeEventListener('keydown', listener);
 
         const footer = document.getElementById('footer');
+        const footerMenuContainer = document.getElementById('footer-menu-container');
         const controls = document.getElementById('controls');
-        const footerTitle = document.getElementById('footer-title');
-        const footerMenu = document.getElementById('footer-menu');
-        const footerMenuImg = document.getElementById('footer-menu-image');
 
-
-        function onKeyDown (event) {
+        function footerMenuOnKeyDown(extraArg, event) {
+            console.log("extraArg: ", extraArg);
             event.stopPropagation();
             event.stopImmediatePropagation(); // Stops other listeners on the same element
             switch (event.key) {
+            case 'ArrowRight':
+                if (event.shiftKey) {
+                    // nextPage();
+                } else {
+                    console.log("plop: ");
+                    // selectedIndex = (selectedIndex + 1) % gameContainers.length;
+                }
+                break;
+            case 'ArrowLeft':
+                if (event.shiftKey) {
+                    // prevPage();
+                } else {
+                    selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
+                }
+                break;
             case 'i':
                 _closeMenu();
                 break;
@@ -204,58 +219,74 @@ function initGallery(currentIndex) {
         function _closeMenu() {
             footer.style.height = '100px'; // original height
             controls.style.display = 'flex';
-            footerTitle.style.display = 'none';
-            footerMenu.style.display = 'none';
-            footerMenuImg.classList.add('hidden');
-            footerMenuImg.src ='';
-            window.removeEventListener('keydown', onKeyDown);
+            window.removeEventListener('keydown', footerMenuOnKeyDown);
             window.addEventListener('keydown', listener);
-
-            while (footerMenu.firstChild) {
-                footerMenu.removeChild(footerMenu.firstChild);
-            }
-        }
-
-        function onToggle (event) {
-            // event.stopPropagation();
-            // event.stopImmediatePropagation(); // Stops other listeners on the same element
-            console.log("event: ", event);
-            // document.getElementById('input-platform-toggle-checkbox')
         }
 
         function _openMenu() {
-            footer.style.height = '50vh';
-            controls.style.display = 'none';
-            footerTitle.style.display = 'block';
-            footerMenu.style.display = 'block';
 
-            gameContainers.forEach((container, index) => {
+            footer.style.height = '91vh';
+            controls.style.display = 'none';
+
+            gameContainers.forEach(async (container, index) => {
                 if (index === selectedIndex) {
-                    footerTitle.textContent = LB.utils.capitalizeWord(container.title);
 
                     if (container.classList.contains('settings')) {
                         const platformForm = LB.build.platformForm(container.dataset.platform);
-                        footerMenuImg.src = path.join(LB.baseDir, 'img', 'platforms', `${container.dataset.platform}.png`);
-                        footerMenuImg.classList.remove('hidden');
-                        footerMenu.appendChild(platformForm);
+                        // footerMenuImg.src = path.join(LB.baseDir, 'img', 'platforms', `${container.dataset.platform}.png`);
+                        // footerMenuImg.classList.remove('hidden');
+                        footer.appendChild(platformForm);
+
+                        const platformToggle = document.getElementById('input-platform-toggle-checkbox');
+
+                        if (platformToggle) {
+                            platformToggle.addEventListener('change', (event) => {
+                                document.getElementById('form-status-label').textContent = event.target.checked ? "Enabled" : "Disabled";
+                            });
+                        }
+
                     } else {
                         const gameImage = container.querySelector('img');
-                        const gameMenu = LB.build.gameMenu(container.title, gameImage);
-                        footerMenu.appendChild(gameMenu);
+                        await LB.build.gameMenu(container.title, gameImage)
+                            .then((gameMenu) => {
+
+                                // Create the observer
+                                const observer = new MutationObserver((mutations, obs) => {
+                                    // Check if your condition is met.
+                                    // For example, if you're expecting more than 1 '.menu-game-container'
+                                    const containers = gameMenu.querySelectorAll('.menu-game-container');
+                                    if (containers.length > 1) { // adjust this condition as needed
+                                        console.log("All expected elements have been added:", containers);
+                                        // Once done, disconnect the observer
+                                        obs.disconnect();
+                                        // Optionally, trigger further logic here
+                                    }
+                                });
+
+                                footerMenuContainer.innerHTML = '';
+                                footerMenuContainer.appendChild(gameMenu);
+                                const spinner = footer.querySelector('.spinner');
+                                console.log("spinner: ", spinner);
+                                setTimeout(() => {
+                                    spinner.classList.add('gone');
+                                }, 500); // 1000 milliseconds = 1 second
+                                const menuGameContainers = Array.from(gameMenu.getElementsByClassName('menu-game-container') || []);
+
+                                console.log("menuGameContainers: ", menuGameContainers);
+
+                                console.log("menuGameContainers len: ", menuGameContainers.length);
+                                window.addEventListener('keydown', footerMenuOnKeyDown.bind(null, 'plop'));
+                                // window.addEventListener('keydown', footerMenuOnKeyDown);
+
+                                // Start observing the gameMenu element for changes to its child list or any subtree nodes
+                                observer.observe(gameMenu, { childList: true, subtree: true });
+
+                            });
                     }
 
                 }
             });
 
-            const platformToggle = document.getElementById('input-platform-toggle-checkbox');
-
-            if (platformToggle) {
-                platformToggle.addEventListener('change', (event) => {
-                    document.getElementById('form-status-label').textContent = event.target.checked ? "Enabled" : "Disabled";
-                });
-            }
-
-            window.addEventListener('keydown', onKeyDown);
         }
 
 

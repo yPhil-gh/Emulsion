@@ -69,7 +69,8 @@
   max-width: 150px;
 }
 
-.page-content div.game-container {
+div.game-container,
+div.menu-game-container{
   height: 26vh;
   background-color: #111;
   border: 1px solid #999;

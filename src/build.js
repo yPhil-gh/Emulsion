@@ -1,53 +1,50 @@
-function buildGameMenu(gameName, image) {
+async function buildGameMenu(gameName, image) {
 
     const platformName = document.querySelector('.active').dataset.platform;
 
-    // Create the main container
     const gameMenuContainer = document.createElement('div');
-    gameMenuContainer.classList.add('game-menu-container');
+    gameMenuContainer.classList.add('page-content');
 
-    // Create the first column: .image-container
-    const imageContainer = document.createElement('div');
-    imageContainer.classList.add('image-container');
-
-    // Add a placeholder image (you can replace this with your logic to fetch the first image)
-    const mainImage = document.createElement('img');
-    mainImage.src = image.src;
-    mainImage.alt = 'Main Image';
-    imageContainer.appendChild(mainImage);
-
-    // Create the second column: #image-list
-    const imageList = document.createElement('div');
-    imageList.id = 'image-list';
+    const currentImageContainer = document.createElement('div');
+    currentImageContainer.classList.add('menu-game-container');
+    currentImageContainer.classList.add('current-image');
+    const currentImage = document.createElement('img');
+    currentImage.src = image.src;
+    currentImage.alt = 'Main Image';
+    currentImageContainer.appendChild(currentImage);
 
     const spinner = document.createElement('div');
+    spinner.classList.add(`maze-${Math.floor(Math.random() * 10) + 1}`);
     spinner.classList.add('spinner');
-    imageList.appendChild(spinner); // Show the spinner initially
 
-    // Fetch images for the game
+    // currentImageContainer.appendChild(spinner);
+    currentImageContainer.appendChild(spinner);
+
+    gameMenuContainer.appendChild(currentImageContainer);
+
     ipcRenderer.send('fetch-images', gameName);
 
-    // Handle the response from the main process
     ipcRenderer.on('image-urls', (event, urls) => {
-        imageList.innerHTML = ''; // Clear previous images & the spinner
+        // imageList.innerHTML = '';
 
-        if (urls.length === 0) {
-            imageList.innerHTML = '<p>No images found.</p>';
-            return;
-        }
+        // if (urls.length === 0) {
+        //     imageList.innerHTML = '<p>No images found.</p>';
+        //     return;
+        // }
 
-        // Display each image in the #image-list
         urls.forEach((url) => {
+
+            const gameContainer = document.createElement('div');
+            gameContainer.classList.add('menu-game-container');
+
             const img = document.createElement('img');
             img.src = url;
             img.alt = 'Game Image';
-            imageList.appendChild(img);
+            img.classList.add('game-image');
+            gameContainer.appendChild(img);
+            gameMenuContainer.appendChild(gameContainer);
         });
     });
-
-    // Append both columns to the main container
-    gameMenuContainer.appendChild(imageContainer);
-    gameMenuContainer.appendChild(imageList);
 
     return gameMenuContainer;
 }

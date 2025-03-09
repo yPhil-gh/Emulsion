@@ -58,9 +58,9 @@ function initSlideShow(platformToDisplay) {
         });
     });
 
-    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keydown', onHomeMenuKeyDown);
 
-    function onKeyDown (event) {
+    function onHomeMenuKeyDown (event) {
         event.stopPropagation();
         event.stopImmediatePropagation(); // Stops other listeners on the same element
         if (event.key === 'ArrowRight') {
@@ -78,7 +78,7 @@ function initSlideShow(platformToDisplay) {
 
             document.getElementById('slideshow').style.display = 'none';
             document.getElementById('galleries').style.display = "flex";
-            window.removeEventListener('keydown', onKeyDown);
+            window.removeEventListener('keydown', onHomeMenuKeyDown);
 
             let activeGalleryIndex;
             let numberOfPlatforms = 0;
@@ -181,7 +181,7 @@ function initGallery(currentIndex) {
 
     function _toggleFooterMenu(selectedIndex, listener, isMenuOpen) {
 
-        window.removeEventListener('keydown', listener);
+        // window.removeEventListener('keydown', listener);
 
         const footer = document.getElementById('footer');
         const footerMenuContainer = document.getElementById('footer-menu-container');
@@ -249,39 +249,21 @@ function initGallery(currentIndex) {
                         const gameImage = container.querySelector('img');
                         await LB.build.gameMenu(container.title, gameImage)
                             .then((gameMenu) => {
-
-                                // Create the observer
-                                const observer = new MutationObserver((mutations, obs) => {
-                                    // Check if your condition is met.
-                                    // For example, if you're expecting more than 1 '.menu-game-container'
-                                    const containers = gameMenu.querySelectorAll('.menu-game-container');
-                                    if (containers.length > 1) { // adjust this condition as needed
-                                        console.log("All expected elements have been added:", containers);
-                                        // Once done, disconnect the observer
-                                        obs.disconnect();
-                                        // Optionally, trigger further logic here
-                                    }
-                                });
-
                                 footerMenuContainer.innerHTML = '';
                                 footerMenuContainer.appendChild(gameMenu);
+
                                 const spinner = footer.querySelector('.spinner');
-                                console.log("spinner: ", spinner);
-                                setTimeout(() => {
-                                    spinner.classList.add('gone');
-                                }, 500); // 1000 milliseconds = 1 second
-                                const menuGameContainers = Array.from(gameMenu.getElementsByClassName('menu-game-container') || []);
+                                setTimeout(() => spinner.classList.add('gone'), 500);
 
-                                console.log("menuGameContainers: ", menuGameContainers);
+                                // Continue with logic that depends on the fully populated gameMenu
+                                gameContainers = Array.from(gameMenu.querySelectorAll('.menu-game-container'));
 
-                                console.log("menuGameContainers len: ", menuGameContainers.length);
-                                window.addEventListener('keydown', footerMenuOnKeyDown.bind(null, 'plop'));
-                                // window.addEventListener('keydown', footerMenuOnKeyDown);
+                                gameContainers[1].classList.add('selected');
+                                gameContainers[1].focus();
 
-                                // Start observing the gameMenu element for changes to its child list or any subtree nodes
-                                observer.observe(gameMenu, { childList: true, subtree: true });
-
+                                // window.addEventListener('keydown', footerMenuOnKeyDown.bind(null, menuGameContainers));
                             });
+
                     }
 
                 }
@@ -304,6 +286,7 @@ function initGallery(currentIndex) {
         event.preventDefault(); // Prevent default scrolling behavior
         switch (event.key) {
         case 'ArrowRight':
+            console.log("yo: ");
             if (event.shiftKey) {
                 nextPage();
             } else {

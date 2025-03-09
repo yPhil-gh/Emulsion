@@ -1,53 +1,43 @@
 async function buildGameMenu(gameName, image) {
-
-    const platformName = document.querySelector('.active').dataset.platform;
-
+  return new Promise((resolve, reject) => {
     const gameMenuContainer = document.createElement('div');
     gameMenuContainer.classList.add('page-content');
 
     const currentImageContainer = document.createElement('div');
-    currentImageContainer.classList.add('menu-game-container');
-    currentImageContainer.classList.add('current-image');
+    currentImageContainer.classList.add('menu-game-container', 'current-image');
     const currentImage = document.createElement('img');
     currentImage.src = image.src;
-    currentImage.alt = 'Main Image';
+    currentImage.alt = 'Current game image';
     currentImageContainer.appendChild(currentImage);
 
     const spinner = document.createElement('div');
-    spinner.classList.add(`maze-${Math.floor(Math.random() * 10) + 1}`);
-    spinner.classList.add('spinner');
-
-    // currentImageContainer.appendChild(spinner);
+    spinner.classList.add(`maze-${Math.floor(Math.random() * 10) + 1}`, 'spinner');
     currentImageContainer.appendChild(spinner);
 
     gameMenuContainer.appendChild(currentImageContainer);
 
+    // Send a request to fetch images
     ipcRenderer.send('fetch-images', gameName);
 
-    ipcRenderer.on('image-urls', (event, urls) => {
-        // imageList.innerHTML = '';
+    // Use 'once' to ensure the event handler runs only one time
+    ipcRenderer.once('image-urls', (event, urls) => {
+      urls.forEach((url) => {
+        const gameContainer = document.createElement('div');
+        gameContainer.classList.add('menu-game-container');
 
-        // if (urls.length === 0) {
-        //     imageList.innerHTML = '<p>No images found.</p>';
-        //     return;
-        // }
-
-        urls.forEach((url) => {
-
-            const gameContainer = document.createElement('div');
-            gameContainer.classList.add('menu-game-container');
-
-            const img = document.createElement('img');
-            img.src = url;
-            img.alt = 'Game Image';
-            img.classList.add('game-image');
-            gameContainer.appendChild(img);
-            gameMenuContainer.appendChild(gameContainer);
-        });
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = 'Game image from SteamGrid';
+        img.classList.add('game-image');
+        gameContainer.appendChild(img);
+        gameMenuContainer.appendChild(gameContainer);
+      });
+      // At this point, all images have been added.
+      resolve(gameMenuContainer);
     });
-
-    return gameMenuContainer;
+  });
 }
+
 
 // function buildGameMenu(gameName, image) {
 

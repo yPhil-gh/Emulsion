@@ -289,7 +289,7 @@ function initGallery(currentIndex) {
                                 footerMenuContainer.appendChild(gameMenu);
 
                                 const spinner = document.body.querySelector('.spinner');
-                                setTimeout(() => spinner.classList.add('gone'), 500);
+                                setTimeout(() => spinner.remove(), 500);
 
                                 // Continue with logic that depends on the fully populated gameMenu
                                 const menuGameContainers = Array.from(gameMenu.querySelectorAll('.menu-game-container'));

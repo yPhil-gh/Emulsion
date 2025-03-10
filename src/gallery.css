@@ -104,6 +104,9 @@ div.menu-game-container{
     /* aspect-ratio: 4 / 3; /\* Prevent layout shifts *\/ */
     background-color: black; /* Fill empty space */
 
+    transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+    /* transform-origin: center; */
+
     flex-basis: content;
 }
 

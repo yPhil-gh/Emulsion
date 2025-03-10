@@ -163,6 +163,16 @@ div.game-menu-controls {
   opacity: 0;
 }
 
+.image-spinner {
+    width: 50px; /* Adjust the size of the spinner */
+    height: 50px;
+    position: absolute; /* Position the spinner relative to the selected game container */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10; /* Ensure it stays on top of the image */
+}
+
 /* https://codepen.io/t_afif/pen/eYGrZPX */
 .maze-1 {
   width:40px;

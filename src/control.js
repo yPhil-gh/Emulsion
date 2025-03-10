@@ -179,13 +179,27 @@ function initGallery(currentIndex) {
 
     let ImageMenuSelectedIndex = 0;
 
-    function _toggleFooterMenu(selectedIndex, listener, isMenuOpen) {
+    function _toggleFooterMenu(gameContainers, selectedIndex, listener, isMenuOpen) {
 
         const footer = document.getElementById('footer');
         const footerMenuContainer = document.getElementById('footer-menu-container');
         const controls = document.getElementById('controls');
 
         let menuSelectedIndex = 1;
+
+        function getSelectedGame(gameContainers, selectedIndex) {
+            let selectedContainer;
+            gameContainers.forEach(async (container, index) => {
+                if (index === selectedIndex) {
+                    selectedContainer = container;
+                }
+
+            });
+            return selectedContainer || null;
+        }
+
+        const selectedGame = getSelectedGame(gameContainers, selectedIndex);
+        const selectedGameImg = selectedGame.querySelector('.game-image');
 
         function footerMenuOnKeyDown(event) {
 
@@ -227,6 +241,11 @@ function initGallery(currentIndex) {
             case 'i':
                 _closeMenu();
                 break;
+            case 'Enter':
+                const menuSelectedGame = getSelectedGame(menuGameContainers, menuSelectedIndex);
+                const menuSelectedGameImg = menuSelectedGame.querySelector('.game-image');
+                _closeMenu(menuSelectedGameImg.src);
+                break;
             case 'Escape':
                 _closeMenu();
                 break;
@@ -246,13 +265,42 @@ function initGallery(currentIndex) {
             }
         }
 
-        function _closeMenu() {
+        function _closeMenu(imgSrc) {
+            LB.imageSrc = imgSrc;
             console.log("closeMenu: ");
             document.getElementById('footer-menu-container').innerHTML = '';
             footer.style.height = '100px'; // original height
             controls.style.display = 'flex';
             window.removeEventListener('keydown', footerMenuOnKeyDown);
             window.addEventListener('keydown', listener);
+            console.log("selectedGame: ", selectedGame);
+
+            if (imgSrc) {
+                const selectedGameImg = selectedGame.querySelector('.game-image');
+                if (!selectedGameImg) return;
+
+                // Create a burst effect by rapidly scaling and fading out
+                selectedGameImg.style.transform = "scale(1.3)";
+                selectedGameImg.style.opacity = "0";
+
+                setTimeout(() => {
+                    selectedGameImg.src = imgSrc + '?t=' + new Date().getTime();
+
+                    const spinner = document.createElement('div');
+                    spinner.classList.add(`maze-${Math.floor(Math.random() * 10) + 1}`, 'spinner');
+                    spinner.classList.add('image-spinner');
+
+                    selectedGame.appendChild(spinner);
+
+                    selectedGameImg.onload = () => {
+                        // Zoom in with a punchy effect
+                        selectedGameImg.style.transform = "scale(1)";
+                        selectedGameImg.style.opacity = "1";
+                        spinner.remove();
+                    };
+                }, 200);
+            }
+
             isMenuOpen = false;
         }
 
@@ -291,7 +339,6 @@ function initGallery(currentIndex) {
                                 const spinner = document.body.querySelector('.spinner');
                                 setTimeout(() => spinner.remove(), 500);
 
-                                // Continue with logic that depends on the fully populated gameMenu
                                 const menuGameContainers = Array.from(gameMenu.querySelectorAll('.menu-game-container'));
                                 console.log("menuGameContainers len: ", menuGameContainers.length);
 
@@ -356,7 +403,7 @@ function initGallery(currentIndex) {
             break;
         case 'i':
             console.log("i: isMenuOpen: ", isMenuOpen);
-            _toggleFooterMenu(selectedIndex, _handleKeyDown, isMenuOpen);
+            _toggleFooterMenu(gameContainers, selectedIndex, _handleKeyDown, isMenuOpen);
             // window.removeEventListener('keydown', _handleKeyDown);
             break;
         case 'F5':

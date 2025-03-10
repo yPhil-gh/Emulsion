@@ -217,7 +217,7 @@ function initGallery(currentIndex) {
                 }
                 break;
             case 'ArrowUp':
-                if (menuSelectedIndex !== LB.galleryNumOfCols) {
+                if (menuSelectedIndex > LB.galleryNumOfCols) {
                     menuSelectedIndex = Math.max(menuSelectedIndex - LB.galleryNumOfCols, 0);
                 }
                 break;
@@ -288,7 +288,7 @@ function initGallery(currentIndex) {
                                 footerMenuContainer.innerHTML = '';
                                 footerMenuContainer.appendChild(gameMenu);
 
-                                const spinner = footer.querySelector('.spinner');
+                                const spinner = document.body.querySelector('.spinner');
                                 setTimeout(() => spinner.classList.add('gone'), 500);
 
                                 // Continue with logic that depends on the fully populated gameMenu

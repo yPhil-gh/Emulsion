@@ -1,41 +1,42 @@
 async function buildGameMenu(gameName, image) {
-  return new Promise((resolve, reject) => {
-    const gameMenuContainer = document.createElement('div');
-    gameMenuContainer.classList.add('page-content');
+    return new Promise((resolve, reject) => {
+        const gameMenuContainer = document.createElement('div');
+        gameMenuContainer.classList.add('page-content');
 
-    const currentImageContainer = document.createElement('div');
-    currentImageContainer.classList.add('menu-game-container', 'current-image');
-    const currentImage = document.createElement('img');
-    currentImage.src = image.src;
-    currentImage.alt = 'Current game image';
-    currentImageContainer.appendChild(currentImage);
+        const currentImageContainer = document.createElement('div');
+        currentImageContainer.classList.add('menu-game-container', 'current-image');
+        const currentImage = document.createElement('img');
+        currentImage.src = image.src;
+        currentImage.alt = 'Current game image';
+        currentImageContainer.appendChild(currentImage);
 
-    const spinner = document.createElement('div');
-    spinner.classList.add(`maze-${Math.floor(Math.random() * 10) + 1}`, 'spinner');
-    currentImageContainer.appendChild(spinner);
+        const spinner = document.createElement('div');
+        spinner.classList.add(`maze-${Math.floor(Math.random() * 10) + 1}`, 'spinner');
 
-    gameMenuContainer.appendChild(currentImageContainer);
+        document.body.appendChild(spinner);
 
-    // Send a request to fetch images
-    ipcRenderer.send('fetch-images', gameName);
+        gameMenuContainer.appendChild(currentImageContainer);
 
-    // Use 'once' to ensure the event handler runs only one time
-    ipcRenderer.once('image-urls', (event, urls) => {
-      urls.forEach((url) => {
-        const gameContainer = document.createElement('div');
-        gameContainer.classList.add('menu-game-container');
+        // Send a request to fetch images
+        ipcRenderer.send('fetch-images', gameName);
 
-        const img = document.createElement('img');
-        img.src = url;
-        img.alt = 'Game image from SteamGrid';
-        img.classList.add('game-image');
-        gameContainer.appendChild(img);
-        gameMenuContainer.appendChild(gameContainer);
-      });
-      // At this point, all images have been added.
-      resolve(gameMenuContainer);
+        // Use 'once' to ensure the event handler runs only one time
+        ipcRenderer.once('image-urls', (event, urls) => {
+            urls.forEach((url) => {
+                const gameContainer = document.createElement('div');
+                gameContainer.classList.add('menu-game-container');
+
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = 'Game image from SteamGrid';
+                img.classList.add('game-image');
+                gameContainer.appendChild(img);
+                gameMenuContainer.appendChild(gameContainer);
+            });
+            // At this point, all images have been added.
+            resolve(gameMenuContainer);
+        });
     });
-  });
 }
 
 

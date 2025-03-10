@@ -151,7 +151,7 @@ div.game-menu-controls {
 }
 
 .spinner {
-  position: absolute;
+  position: fixed; /* Fixed positioning makes it relative to the viewport */
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -161,12 +161,6 @@ div.game-menu-controls {
 
 .spinner.gone {
   opacity: 0;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
 }
 
 /* https://codepen.io/t_afif/pen/eYGrZPX */

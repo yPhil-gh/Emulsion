@@ -18,20 +18,15 @@ export const getAllCoverImageUrls = async (gameName) => {
             return [];
         }
 
-        console.log(`Found ${games.length} matching games for: ${gameName}`);
-
         // Array to store all image URLs
         const allImageUrls = [];
 
         // Iterate through all matching games
         for (const game of games) {
-            console.log(`Processing game: ${game.name} (ID: ${game.id})`);
 
             // Determine the correct ID to use
             const gameId = game.steam_app_id || game.id; // Use steam_app_id if available, otherwise fallback to id
 
-            // Fetch all cover images for the game
-            console.log(`Fetching grids for ID: ${gameId}`);
             const images = await client.getGrids({ type: 'game', id: gameId });
 
             if (!images.length) {
@@ -41,14 +36,11 @@ export const getAllCoverImageUrls = async (gameName) => {
 
             // Extract the URLs from the images
             const imageUrls = images.map((image) => image.url);
-            console.log(`Found ${imageUrls.length} image URLs for ${game.name}:`);
-            console.log(imageUrls);
 
             // Add the URLs to the main array
             allImageUrls.push(...imageUrls);
         }
 
-        console.log(`Total images found: ${allImageUrls.length}`);
         return allImageUrls; // Return the array of all image URLs
     } catch (error) {
         console.error('Error fetching grids:', error.message);

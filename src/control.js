@@ -265,7 +265,21 @@ function initGallery(currentIndex) {
             }
         }
 
-        function _closeMenu(imgSrc) {
+        const downloadImage = async (imgSrc, platform, gameName) => {
+            try {
+                const result = await ipcRenderer.invoke('download-image', imgSrc, platform, gameName);
+                if (result.success) {
+                    console.log(`Image saved at ${result.path}`);
+                } else {
+                    console.error(`Error saving image: ${result.error}`);
+                }
+            } catch (error) {
+                console.error('Error communicating with main process:', error);
+                alert('Failed to save image');
+            }
+        };
+
+        async function _closeMenu(imgSrc) {
             LB.imageSrc = imgSrc;
             console.log("closeMenu: ");
             document.getElementById('footer-menu-container').innerHTML = '';
@@ -283,23 +297,27 @@ function initGallery(currentIndex) {
                 selectedGameImg.style.transform = "scale(1.3)";
                 selectedGameImg.style.opacity = "0";
 
-                setTimeout(() => {
-                    selectedGameImg.src = imgSrc + '?t=' + new Date().getTime();
+                selectedGameImg.src = imgSrc + '?t=' + new Date().getTime();
 
-                    const spinner = document.createElement('div');
-                    spinner.classList.add(`maze-${Math.floor(Math.random() * 10) + 1}`, 'spinner');
-                    spinner.classList.add('image-spinner');
+                const spinner = document.createElement('div');
+                spinner.classList.add(`maze-${Math.floor(Math.random() * 10) + 1}`, 'spinner');
+                spinner.classList.add('image-spinner');
 
-                    selectedGame.appendChild(spinner);
+                selectedGame.appendChild(spinner);
 
-                    selectedGameImg.onload = () => {
-                        // Zoom in with a punchy effect
-                        selectedGameImg.style.transform = "scale(1)";
-                        selectedGameImg.style.opacity = "1";
-                        spinner.remove();
-                    };
-                }, 200);
+                console.log("selectedGame.dataset.gameName: ", selectedGame.dataset.gameName);
+
+                selectedGameImg.onload = () => {
+                    // Zoom in with a punchy effect
+                    selectedGameImg.style.transform = "scale(1)";
+                    selectedGameImg.style.opacity = "1";
+                    spinner.remove();
+                };
+
+                downloadImage(imgSrc, selectedGame.dataset.platform, selectedGame.dataset.gameName);
+
             }
+
 
             isMenuOpen = false;
         }

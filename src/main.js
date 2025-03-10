@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { exec } from 'child_process';
 import { getAllCoverImageUrls } from './steamgrid.js';
+import axios from 'axios';  // Import axios using ESM
 
 let mainWindow;
 
@@ -43,6 +44,40 @@ function savePreferences(preferences) {
     }
 }
 
+// Utility function to ensure the directory exists
+const createDirectoryIfNeeded = (dirPath) => {
+    if (!fs.existsSync(dirPath)) {
+        fs.mkdirSync(dirPath, { recursive: true });
+    }
+};
+
+// The function to download and save the image
+const downloadAndSaveImage = async (imgSrc, platform, gameName) => {
+    const saveDir = path.join(app.getPath('userData'), 'covers', platform);  // Store images in userData/covers/platform
+    const savePath = path.join(saveDir, `${gameName}.jpg`);
+    createDirectoryIfNeeded(saveDir);  // Ensure the directory exists
+
+    try {
+        const response = await axios({
+            url: imgSrc,
+            method: 'GET',
+            responseType: 'stream',  // Handle the image as a stream
+        });
+
+        const writer = fs.createWriteStream(savePath);  // Create a writable stream
+
+        response.data.pipe(writer);  // Pipe the image data into the file
+
+        return new Promise((resolve, reject) => {
+            writer.on('finish', () => resolve(savePath));  // Resolve when writing is complete
+            writer.on('error', (error) => reject(error));  // Reject if there's an error
+        });
+    } catch (error) {
+        console.error("Error downloading image: ", error);
+        throw error;  // Propagate error to be handled
+    }
+};
+
 function createWindows() {
   // Main window (Page 1)
   mainWindow = new BrowserWindow({
@@ -55,6 +90,15 @@ function createWindows() {
   });
   mainWindow.loadFile('src/index.html');
 }
+
+ipcMain.handle('download-image', async (event, imgSrc, platform, gameName) => {
+    try {
+        const savedImagePath = await downloadAndSaveImage(imgSrc, platform, gameName);
+        return { success: true, path: savedImagePath };  // Send the saved path back to the renderer
+    } catch (error) {
+        return { success: false, error: error.message };  // Send error message if download fails
+    }
+});
 
 ipcMain.handle('get-user-data', () => {
     return {

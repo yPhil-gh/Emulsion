@@ -94,7 +94,7 @@ LB.prefs.load()
         LB.control.initSlideShow();
         document.getElementById("loading-screen").style.display = 'none';
 
-        document.getElementById("header").style.display = 'flex';
+        // document.getElementById("header").style.display = 'flex';
         document.getElementById("main").style.display = 'flex';
         document.getElementById("footer").style.display = 'flex';
     })

@@ -17,14 +17,58 @@ LB.prefs = {
     load: getPrefs,
     save: updatePreference,
     getValue: getPlatformPreference
-    // savePreferences: savePreferences
 };
 
 LB.isMenuOpen = false;
 
 LB.utils = {
-    capitalizeWord: capitalizeWord
+    capitalizeWord: capitalizeWord,
+    cleanFileName: cleanFileName
 };
+
+function cleanFileName(fileName) {
+  // Step 1: Remove everything after the first underscore.
+  let baseName = removeAfterUnderscore(fileName);
+
+  // Step 2: Handle special digit+letter case (e.g., "3DWorld" should become "3D World")
+  let withSpecialSplit = splitSpecial(baseName);
+
+  // Step 3: Split camelCase (insert space between a lowercase and an uppercase letter)
+  let withCamelSplit = splitCamelCase(withSpecialSplit);
+
+  // Step 4: Further split acronyms from following capitalized words (e.g., "XMLHttp" -> "XML Http")
+  let withAcronymSplit = splitAcronym(withCamelSplit);
+
+  // Final cleanup: remove extra spaces and trim.
+  return normalizeSpaces(withAcronymSplit);
+}
+
+function removeAfterUnderscore(fileName) {
+  return fileName.split('_')[0];
+}
+
+// This function inserts a space after a pattern that looks like digits followed by an uppercase letter
+// only when that token is immediately followed by an uppercase letter and then a lowercase letter.
+// For example, "3DWorld" becomes "3D World" rather than "3DW orld".
+function splitSpecial(s) {
+  return s.replace(/(\d+[A-Z])(?=[A-Z][a-z])/g, '$1 ');
+}
+
+// Insert a space between a lowercase letter and an uppercase letter.
+function splitCamelCase(s) {
+  return s.replace(/([a-z])([A-Z])/g, '$1 $2');
+}
+
+// Insert a space between an acronym (two or more uppercase letters) and a following capitalized word.
+// For example, "XMLHttp" becomes "XML Http".
+function splitAcronym(s) {
+  return s.replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2');
+}
+
+// Clean up multiple spaces and trim the result.
+function normalizeSpaces(s) {
+  return s.trim().replace(/\s+/g, ' ');
+}
 
 function capitalizeWord(word) {
     switch (word) {

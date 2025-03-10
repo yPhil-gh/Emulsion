@@ -1,9 +1,11 @@
 :root {
-  --glow-color: 225, 117, 100;
+  --glow-color: 167, 230, 255;
   --highlight-color: #a5be00;
   --color-succes: green;
   --color-info: #007bff;
   --color-disabled: #333;
+  --color-bg1: #0B192C;
+  --color-bg2: #1E3E62;
   --footer-bg-color: rgba(0, 0, 0, 0.9);
   --slide-rotation-angle: 90deg;
   --slide-rotation-radius: 100px;
@@ -57,7 +59,7 @@ header, footer  {
   position: fixed;
   left: 0;
   height: 100px;
-  background-color: rgba(0, 0, 0);
+  background-color: var(--color-bg2);
   color: white;
   align-items: center;
   justify-content: space-between;
@@ -66,28 +68,8 @@ header, footer  {
   z-index: 3; /* Ensure it's above other content */
   /* pointer-events: none; /\* Prevent the footer from blocking clicks *\/ */
   opacity: 0; /* Start fully transparent */
-  animation: fadeIn 1s ease-in-out forwards; /* Apply the fadeIn animation */
+  animation: fadeIn 0.3s ease-in-out forwards; /* Apply the fadeIn animation */
 }
-
-/* ::-webkit-scrollbar { */
-/*   width: 8px; */
-/*   height: 8px; */
-/* } */
-
-/* /\* Track (background of the scrollbar) *\/ */
-/* ::-webkit-scrollbar-track { */
-/*   background: #f1f1f1; */
-/* } */
-
-/* /\* Handle (the draggable part of the scrollbar) *\/ */
-/* ::-webkit-scrollbar-thumb { */
-/*   background: #888; */
-/* } */
-
-/* /\* Handle on hover *\/ */
-/* ::-webkit-scrollbar-thumb:hover { */
-/*   background: #555; */
-/* } */
 
 .success {
   background-color: var(--color-succes);
@@ -117,3 +99,23 @@ header, footer  {
   background-color: black;
   z-index: 500;
 }
+
+/* ::-webkit-scrollbar { */
+/*   width: 8px; */
+/*   height: 8px; */
+/* } */
+
+/* /\* Track (background of the scrollbar) *\/ */
+/* ::-webkit-scrollbar-track { */
+/*   background: #f1f1f1; */
+/* } */
+
+/* /\* Handle (the draggable part of the scrollbar) *\/ */
+/* ::-webkit-scrollbar-thumb { */
+/*   background: #888; */
+/* } */
+
+/* /\* Handle on hover *\/ */
+/* ::-webkit-scrollbar-thumb:hover { */
+/*   background: #555; */
+/* } */

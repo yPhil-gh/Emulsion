@@ -133,8 +133,8 @@ div.menu-game-container{
   bottom: 0;
   left: 0;
   z-index: 1;
-  overflow: hidden;
-  white-space: nowrap;
+  /* overflow: hidden; */
+  /* white-space: nowrap; */
   text-overflow: ellipsis;
 
   /* color: #333; */

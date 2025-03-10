@@ -2,6 +2,8 @@ function initSlideShow(platformToDisplay) {
 
     const slideshow = document.getElementById("slideshow");
 
+    document.getElementById('header').style.display = 'none';
+
     document.body.style.display = "block";
     const slides = Array.from(slideshow.querySelectorAll('.slide'));
     const totalSlides = slides.length;
@@ -12,17 +14,21 @@ function initSlideShow(platformToDisplay) {
         const angleIncrement = 360 / totalSlides;
 
         slides.forEach((slide, index) => {
-
             const angle = angleIncrement * (index - currentIndex);
             slide.style.setProperty('--angle', angle);
             slide.style.setProperty('--radius', radius);
 
+            // Remove all state classes before reassigning
+            slide.classList.remove('active', 'prev-slide', 'next-slide', 'adjacent');
+
             if (index === currentIndex) {
                 slide.classList.add('active');
-                slide.classList.remove('adjacent');
+            } else if (index === (currentIndex - 1 + totalSlides) % totalSlides) {
+                slide.classList.add('prev-slide');
+            } else if (index === (currentIndex + 1) % totalSlides) {
+                slide.classList.add('next-slide');
             } else {
                 slide.classList.add('adjacent');
-                slide.classList.remove('active');
             }
         });
     }
@@ -108,6 +114,11 @@ function initSlideShow(platformToDisplay) {
 }
 
 function initGallery(currentIndex) {
+
+    const header = document.getElementById('header');
+
+    document.getElementById('header').style.display = 'flex';
+
     const galleries = document.getElementById('galleries');
     const pages = Array.from(galleries.querySelectorAll('.page'));
     const totalPages = pages.length;

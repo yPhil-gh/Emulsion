@@ -1,5 +1,6 @@
 header {
   top: 0;
+  display: none;
 }
 
 header .platform-image img {

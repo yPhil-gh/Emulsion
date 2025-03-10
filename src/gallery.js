@@ -240,7 +240,7 @@ async function buildGallery(params) {
 
             const gameLabel = document.createElement('div');
             gameLabel.classList.add('game-label');
-            gameLabel.textContent = fileNameWithoutExt;
+            gameLabel.textContent = LB.utils.cleanFileName(fileNameWithoutExt);
 
             // Set the label width to match the column width
             gameLabel.style.width = `${columnWidth}px`;

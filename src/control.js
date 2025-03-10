@@ -118,15 +118,10 @@ function initGallery(currentIndex) {
 
     let selectedPage;
     let gameContainers;
-
-    function updateCarousel() {
-
+    function updateCarousel(direction) {
         pages.forEach((page, index) => {
-            const angle = angleIncrement * (index - currentIndex);
-            page.style.setProperty('--angle', angle);
-            page.style.setProperty('--radius', radius);
-
             if (index === currentIndex) {
+
                 selectedPage = page;
                 gameContainers = Array.from(page.querySelectorAll('.game-container') || []);
                 gameContainers[0].classList.add('selected');
@@ -134,23 +129,29 @@ function initGallery(currentIndex) {
                 document.querySelector('header .platform-name').textContent = LB.utils.capitalizeWord(page.dataset.platform);
                 document.querySelector('header .platform-image img').src = `../img/platforms/${page.dataset.platform}.png`;
 
+                // Active page
                 page.classList.add('active');
-                page.classList.remove('adjacent');
-            } else {
-                page.classList.add('adjacent');
-                page.classList.remove('active');
+                page.classList.remove('next', 'prev');
+            } else if (index < currentIndex) {
+                // Previous page
+                page.classList.remove('active', 'next');
+                page.classList.add('prev');
+            } else if (index > currentIndex) {
+                // Next page
+                page.classList.remove('active', 'prev');
+                page.classList.add('next');
             }
         });
     }
 
     function nextPage() {
         currentIndex = (currentIndex + 1) % totalPages;
-        updateCarousel();
+        updateCarousel('next');
     }
 
     function prevPage() {
         currentIndex = (currentIndex - 1 + totalPages) % totalPages;
-        updateCarousel();
+        updateCarousel('prev');
     }
 
     // Handle wheel events for scrolling

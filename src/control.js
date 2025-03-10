@@ -127,15 +127,28 @@ function initGallery(currentIndex) {
     const radius = (window.innerWidth / 2) / Math.tan((angleIncrement / 2) * (Math.PI / 180));
     console.log("radius: ", radius);
 
-    let selectedPage;
     let gameContainers;
     function updateCarousel(direction) {
         pages.forEach((page, index) => {
             if (index === currentIndex) {
 
-                selectedPage = page;
                 gameContainers = Array.from(page.querySelectorAll('.game-container') || []);
-                gameContainers[0].classList.add('selected');
+
+                console.log("gameContainers.length: ", gameContainers.length);
+
+                gameContainers.forEach((container, index) => {
+                    container.classList.remove('selected');
+                });
+
+                const firstGameContainer = page.querySelector('.game-container');
+
+                firstGameContainer.classList.add('selected');
+                firstGameContainer.focus();
+                firstGameContainer.scrollIntoView({
+                        behavior: "instant",
+                        block: "center"
+                    });
+                console.log("firstGameContainer: ", firstGameContainer);
 
                 document.querySelector('header .platform-name').textContent = LB.utils.capitalizeWord(page.dataset.platform);
                 document.querySelector('header .platform-image img').src = `../img/platforms/${page.dataset.platform}.png`;
@@ -165,15 +178,14 @@ function initGallery(currentIndex) {
         updateCarousel('prev');
     }
 
-    // Handle wheel events for scrolling
-    galleries.addEventListener('wheel', (event) => {
-        event.preventDefault(); // Prevent default scrolling behavior
-        if (event.deltaY > 0) {
-            nextPage();
-        } else if (event.deltaY < 0) {
-            prevPage();
-        }
-    });
+    // galleries.addEventListener('wheel', (event) => {
+    //     event.preventDefault(); // Prevent default scrolling behavior
+    //     if (event.deltaY > 0) {
+    //         nextPage();
+    //     } else if (event.deltaY < 0) {
+    //         prevPage();
+    //     }
+    // });
 
     // Handle click events on adjacent pages
     pages.forEach((page, index) => {
@@ -470,12 +482,28 @@ function initGallery(currentIndex) {
 
     }
 
+    galleries.addEventListener('wheel', (event) => {
+        event.preventDefault(); // Prevent default scrolling
+        if (event.shiftKey) {
+            // With Shift pressed, directly trigger page navigation
+            if (event.deltaY > 0) {
+                nextPage();
+            } else if (event.deltaY < 0) {
+                prevPage();
+            }
+        } else {
+            // Without Shift, simulate arrow key events
+            if (event.deltaY > 0) {
+                LB.utils.simulateKeyDown('ArrowDown');
+            } else if (event.deltaY < 0) {
+                LB.utils.simulateKeyDown('ArrowUp');
+            }
+        }
+    });
 
     window.addEventListener('keydown', _handleKeyDown);
-
     // Initialize the carousel
-    updateCarousel();
-
+    updateCarousel(gameContainers);
 
 }
 

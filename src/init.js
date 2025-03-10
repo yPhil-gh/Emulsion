@@ -5,7 +5,7 @@ const { ipcRenderer } = require('electron');
 const fsp = require('fs').promises; // Use the promise-based fs module
 const axios = require('axios');
 
-const LB = {};
+const LB = {}; // Launch Break :)
 
 const resolvedPath = path.resolve('.');
 
@@ -23,55 +23,68 @@ LB.isMenuOpen = false;
 
 LB.utils = {
     capitalizeWord: capitalizeWord,
-    cleanFileName: cleanFileName
+    cleanFileName: cleanFileName,
+    simulateKeyDown: simulateKeyDown
 };
+
+function simulateKeyDown(key) {
+  const keyCode = key === 'ArrowDown' ? 40 : 38;
+  const keyboardEvent = new KeyboardEvent('keydown', {
+    key,
+    code: key,
+    keyCode,
+    which: keyCode,
+    bubbles: true
+  });
+  document.dispatchEvent(keyboardEvent);
+}
 
 function cleanFileName(fileName) {
   // Step 1: Remove everything after the first underscore.
-  let baseName = removeAfterUnderscore(fileName);
+  let baseName = _removeAfterUnderscore(fileName);
 
   // Step 2: Handle special digit+letter cases (e.g., "3DWorld" → "3D World")
-  let withSpecialSplit = splitSpecial(baseName);
+  let withSpecialSplit = _splitSpecial(baseName);
 
   // Step 3: Split camelCase (insert space between a lowercase and an uppercase letter)
-  let withCamelSplit = splitCamelCase(withSpecialSplit);
+  let withCamelSplit = _splitCamelCase(withSpecialSplit);
 
   // Step 4: Split acronyms from following capitalized words (e.g., "XMLHttp" → "XML Http")
-  let withAcronymSplit = splitAcronym(withCamelSplit);
+  let withAcronymSplit = _splitAcronym(withCamelSplit);
 
   // Step 5: Remove extra spaces and trim.
-  let normalized = normalizeSpaces(withAcronymSplit);
+  let normalized = _normalizeSpaces(withAcronymSplit);
 
   // Final pass: If the string ends with ", The", move it to the front.
-  return moveTrailingArticleToFront(normalized);
+  return _moveTrailingArticleToFront(normalized);
 }
 
-function removeAfterUnderscore(fileName) {
+function _removeAfterUnderscore(fileName) {
   return fileName.split('_')[0];
 }
 
 // Inserts a space after a sequence like "3D" when it is immediately followed by an uppercase letter and a lowercase letter.
-function splitSpecial(s) {
+function _splitSpecial(s) {
   return s.replace(/(\d+[A-Z])(?=[A-Z][a-z])/g, '$1 ');
 }
 
 // Splits camelCase by inserting a space between a lowercase letter and an uppercase letter.
-function splitCamelCase(s) {
+function _splitCamelCase(s) {
   return s.replace(/([a-z])([A-Z])/g, '$1 $2');
 }
 
 // Splits an acronym from a following capitalized word (e.g., "XMLHttp" becomes "XML Http").
-function splitAcronym(s) {
+function _splitAcronym(s) {
   return s.replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2');
 }
 
 // Normalizes spacing by trimming and replacing multiple spaces with a single space.
-function normalizeSpaces(s) {
+function _normalizeSpaces(s) {
   return s.trim().replace(/\s+/g, ' ');
 }
 
 // Final function: If the string ends with ", The", move "The" to the beginning.
-function moveTrailingArticleToFront(s) {
+function _moveTrailingArticleToFront(s) {
   // Match pattern: any text, followed by a comma, optional whitespace, then "The" (case-insensitive)
   const pattern = /^(.*),\s*(The)$/i;
   const match = s.match(pattern);

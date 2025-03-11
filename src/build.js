@@ -183,7 +183,7 @@ function buildPlatformForm(platformName) {
     statusLabel.setAttribute('for', 'input-platform-toggle-checkbox');
 
     row1td1.appendChild(statusCheckBox);
-    row1td1.appendChild(statusLabel);
+    row1td2.appendChild(statusLabel);
 
     row1.appendChild(row1td1);
     row1.appendChild(row1td2);
@@ -199,8 +199,6 @@ function buildPlatformForm(platformName) {
     detailsText.className = 'details-text-div';
     detailsText.textContent = 'plop';
 
-
-    row2.appendChild(row1td2);
     formTable.appendChild(row0);
     formTable.appendChild(row1);
     formTable.appendChild(row2);
@@ -275,7 +273,7 @@ function buildPlatformForm(platformName) {
         .then((value) => {
             console.log("value!", value);
             statusCheckBox.checked = value;
-            statusCheckBox.dispatchEvent(new Event('change'));
+            // statusCheckBox.dispatchEvent(new Event('change'));
             statusLabel.textContent = value ? 'Enabled' : 'Disabled';
         })
         .catch((error) => {

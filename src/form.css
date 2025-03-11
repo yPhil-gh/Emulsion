@@ -58,7 +58,7 @@ button {
 }
 
 td.col1 {
-  /* width: 400px !important; */
+  /* width: 400px; */
   padding-right: 2em;
 }
 
@@ -76,6 +76,7 @@ input, button {
 
 input[type="checkbox"] {
   height: 50px;
+  width: 50px;
 }
 
 .form-checkbox-container {
@@ -85,24 +86,23 @@ input[type="checkbox"] {
 }
 
 .form-status-label {
-  margin-left: 0.5em;
+  /* margin-left: 0.5em; */
 }
 
-input:focus,
-textarea:focus,
-select:focus,
-button:focus {
-  outline: 2px solid var(--color-focus); /* Use your custom color variable */
-  outline-offset: 2px; /* Optional: Add space between the outline and the element */
-}
+/* input:focus, */
+/* textarea:focus, */
+/* select:focus, */
+/* button:focus { */
+/*   outline: 2px solid var(--color-focus); /\* Use your custom color variable *\/ */
+/*   outline-offset: 2px; /\* Optional: Add space between the outline and the element *\/ */
+/* } */
 
 /* Optional: Remove the default focus ring for specific elements */
-input[type="checkbox"]:focus,
-input[type="radio"]:focus {
-  outline: none; /* Remove default outline */
-  box-shadow: 0 0 0 2px var(--color-focus); /* Add a custom focus ring */
-}
-
+/* input[type="checkbox"]:focus, */
+/* input[type="radio"]:focus { */
+/*   outline: none; /\* Remove default outline *\/ */
+/*   box-shadow: 0 0 0 2px var(--color-focus); /\* Add a custom focus ring *\/ */
+/* } */
 
 /* @media (hover: hover) { */
 /*   input[type="checkbox"]:not(:disabled):hover { */

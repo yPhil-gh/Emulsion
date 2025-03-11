@@ -15,6 +15,7 @@ LB.gallery = {
                         let emulator = prefs.emulator;
                         let emulatorArgs = prefs.emulatorArgs;
                         let extensions = prefs.extensions;
+                        let isEnabled = prefs.isEnabled;
 
                         const params = {
                             platform: platformName,
@@ -27,10 +28,11 @@ LB.gallery = {
                             extensions
                         };
 
-                        const container = await buildGallery(params); // Await the async buildGallery
-
-                        if (container) {
-                            galleriesContainer.appendChild(container);
+                        if (isEnabled) {
+                            const container = await buildGallery(params); // Await the async buildGallery
+                            if (container) {
+                                galleriesContainer.appendChild(container);
+                            }
                         }
 
                         index++;

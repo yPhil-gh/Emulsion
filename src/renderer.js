@@ -35,9 +35,11 @@ function isPlatformEnablable(platform, preferences) {
 
 function buildSlide(platformName, preferences) {
 
-    // console.log("isPlatformValid(platform, preferences): ", isPlatformValid(platform, preferences));
+    console.log("platformName: ", platformName);
+    console.log("isPlatformValid(platform, preferences): ", isPlatformValid(platformName, preferences));
+    console.log("isPlatformEnablable(platformName, preferences): ", isPlatformEnablable(platformName, preferences));
 
-    if (!isPlatformValid(platformName, preferences) || !isPlatformEnablable(platformName, preferences)) {
+    if (!isPlatformValid(platformName, preferences)) {
         return null;
     }
 

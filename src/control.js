@@ -82,6 +82,8 @@ function initSlideShow(platformToDisplay) {
 
         } else if (event.key === 'Enter') {
 
+            console.log("currentIndex: ", currentIndex);
+
             document.getElementById('slideshow').style.display = 'none';
             document.getElementById('galleries').style.display = "flex";
             window.removeEventListener('keydown', onKeyDown);
@@ -98,6 +100,15 @@ function initSlideShow(platformToDisplay) {
                     activeGalleryIndex = index;
                 }
             });
+
+            LB.prefs.getValue(activePlatformName, 'isEnabled')
+                .then((value) => {
+                    console.log("value: ", value);
+                })
+                .catch((error) => {
+                    console.error('Failed to get platform preference:', error);
+                });
+
 
             LB.control.initGallery(activeGalleryIndex);
 
@@ -133,6 +144,11 @@ function initGallery(currentIndex) {
     function updateCarousel(direction) {
         pages.forEach((page, index) => {
             if (index === currentIndex) {
+
+                page.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
 
                 currentPageIndex = currentIndex;
                 gameContainers = Array.from(page.querySelectorAll('.game-container') || []);
@@ -431,7 +447,7 @@ function initGallery(currentIndex) {
 
 
     function _handleKeyDown(event) {
-        event.preventDefault(); // Prevent default scrolling behavior
+        // event.preventDefault(); // Prevent default scrolling behavior
         switch (event.key) {
         case 'ArrowRight':
             if (event.shiftKey) {

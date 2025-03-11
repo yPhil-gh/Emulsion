@@ -336,6 +336,9 @@ function initGallery(currentIndex, disabledPlatform) {
 
         async function _closeMenu(imgSrc) {
 
+            document.querySelector('header .prev-link').style.opacity = 1;
+            document.querySelector('header .next-link').style.opacity = 1;
+
             console.log("selectedIndex after: ", selectedIndex);
 
             LB.imageSrc = imgSrc;
@@ -385,6 +388,9 @@ function initGallery(currentIndex, disabledPlatform) {
         }
 
         function _openMenu(platformToOpen) {
+
+            document.querySelector('#header .prev-link').style.opacity = 0;
+            document.querySelector('#header .next-link').style.opacity = 0;
 
             console.log("platformToOpen: ", platformToOpen);
 

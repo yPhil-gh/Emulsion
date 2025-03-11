@@ -75,8 +75,8 @@ input, button {
 }
 
 input[type="checkbox"] {
-  height: 50px;
-  width: 50px;
+  height: 30px;
+  width: 30px;
 }
 
 .form-checkbox-container {

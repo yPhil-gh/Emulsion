@@ -1,10 +1,15 @@
 header {
   top: 0;
   display: none;
+  justify-content: space-around;
 }
 
 header .platform-image img {
   width: 50px;
+}
+
+.pages-nav-links {
+    transition: opacity 0.2s ease;
 }
 
 .left {

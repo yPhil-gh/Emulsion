@@ -121,7 +121,7 @@ function buildSettingsPageContent(platforms) {
         // if (platformName === "settings") return;
 
         const platformContainer = document.createElement('div');
-        platformContainer.classList.add('game-container');
+        platformContainer.classList.add('game-container', 'platform-container');
         platformContainer.title = platformName;
         platformContainer.classList.add('settings');
         platformContainer.setAttribute('data-platform', platformName);

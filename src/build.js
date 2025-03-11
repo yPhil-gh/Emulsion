@@ -155,7 +155,7 @@ function buildPlatformForm(platformName) {
     menuImageContainer.className = 'menu-image-container';
     const menuImage = document.createElement('img');
     menuImage.src = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
-    menuImage.width = '350';
+    menuImage.width = '250';
     menuImageContainer.appendChild(menuImage);
 
     const row0 = document.createElement('tr');
@@ -274,7 +274,7 @@ function buildPlatformForm(platformName) {
             console.log("value!", value);
             statusCheckBox.checked = value;
             // statusCheckBox.dispatchEvent(new Event('change'));
-            statusLabel.textContent = value ? 'Enabled' : 'Disabled';
+            statusLabel.textContent = `${platformName} is ${value ? 'Enabled' : 'Disabled'}`;
         })
         .catch((error) => {
             console.error('Failed to get platform preference:', error);

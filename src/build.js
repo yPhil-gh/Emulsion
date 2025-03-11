@@ -139,7 +139,6 @@ function createFormTableRow(labelText, inputId, inputDescription, buttonText, pl
 
 function buildPlatformForm(platformName) {
 
-
     const formContainer = document.createElement('div');
     formContainer.id = 'form-container';
 
@@ -182,6 +181,7 @@ function buildPlatformForm(platformName) {
     statusLabel.id = 'form-status-label';
     statusLabel.setAttribute('for', 'input-platform-toggle-checkbox');
 
+    row1td2.colSpan = 2;
     row1td1.appendChild(statusCheckBox);
     row1td2.appendChild(statusLabel);
 
@@ -192,12 +192,13 @@ function buildPlatformForm(platformName) {
 
     // Row 2: Details text
     const row2 = document.createElement('tr');
-    const detailsText = document.createElement('div');
+    const platformText = document.createElement('div');
     const row2td1 = document.createElement('td');
     row2td1.colSpan = 3;
-    detailsText.id = 'details-text-div';
-    detailsText.className = 'details-text-div';
-    detailsText.textContent = 'plop';
+    platformText.id = 'platform-text-div';
+    platformText.textContent = 'plop';
+    row2td1.appendChild(platformText);
+    row2.appendChild(row2td1);
 
     formTable.appendChild(row0);
     formTable.appendChild(row1);

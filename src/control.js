@@ -399,7 +399,7 @@ function initGallery(currentIndex, disabledPlatform) {
             window.removeEventListener('keydown', listener);
             window.addEventListener('keydown', menuOnKeyDown);
 
-            menu.style.height = '80vh';
+            menu.style.height = '81vh';
 
             gameContainers.forEach(async (container, index) => {
                 if (index === selectedIndex) {
@@ -413,10 +413,36 @@ function initGallery(currentIndex, disabledPlatform) {
 
                         const platformToggle = document.getElementById('input-platform-toggle-checkbox');
 
+                        const isEnabled = document.getElementById('input-platform-toggle-checkbox');
+                        const gamesDirInput = document.getElementById('input-games-dir');
+                        const emulatorInput = document.getElementById('input-emulator');
+                        const emulatorArgs = document.getElementById('input-emulator-args');
+
+                        const platformText = document.getElementById('platform-text-div');
+
                         if (platformToggle) {
-                            platformToggle.addEventListener('change', (event) => {
+                            platformToggle.addEventListener('click', (event) => {
                                 console.log("event: ", event);
-                                document.getElementById('form-status-label').textContent = event.target.checked ? "Enabled" : "Disabled";
+
+                                const gamesDir = gamesDirInput.value;
+                                const emulator = emulatorInput.value;
+
+                                // Your condition to prevent checking
+                                const shouldPreventCheck = !gamesDir || !emulator;
+
+                                console.log("shouldPreventCheck: ", shouldPreventCheck);
+
+                                if (shouldPreventCheck) {
+                                    event.preventDefault(); // Prevent the checkbox from changing state
+                                    console.log("Checkbox state change prevented.");
+                                    platformText.textContent = 'Please provide both a games directory and an emulator and an emulator and an emulator.';
+                                } else {
+                                    // Allow the checkbox to change state
+                                    // Update the label text after the state changes
+                                    platformToggle.addEventListener('change', () => {
+                                        document.getElementById('form-status-label').textContent = platformToggle.checked ? "Enabled" : "Disabled";
+                                    });
+                                }
                             });
                         }
 

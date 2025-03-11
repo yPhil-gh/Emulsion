@@ -7,6 +7,9 @@
   flex-direction: column;
   gap: 1em;
   justify-content: flex-start;
+
+  width: 50vw;
+  max-width: 800px;
 }
 
 /* Rows (flex containers) */
@@ -59,12 +62,12 @@ button {
 
 td.col1 {
   /* width: 400px; */
-  padding-right: 2em;
+  /* padding-right: 2em; */
 }
 
-/* td.col2 { */
-/*   width: 100%; */
-/* } */
+td.col2 {
+  width: 100%;
+}
 
 /* td.col3 { */
 /*   width: 300px; */
@@ -122,3 +125,14 @@ input[type="checkbox"] {
 /*     transition: none; */
 /*   } */
 /* } */
+
+#platform-text-div {
+  background-color: white;
+  color: black;
+  border-radius: 5px;
+  padding: 0.2em;
+  font-size: 12pt;
+
+  text-wrap: wrap;
+  height: 50px;
+}

@@ -377,7 +377,7 @@ function initGallery(currentIndex) {
             window.removeEventListener('keydown', listener);
             window.addEventListener('keydown', menuOnKeyDown);
 
-            menu.style.height = '81vh';
+            menu.style.height = '80vh';
 
             gameContainers.forEach(async (container, index) => {
                 if (index === selectedIndex) {
@@ -386,6 +386,16 @@ function initGallery(currentIndex) {
 
                         const platformForm = LB.build.platformForm(container.dataset.platform);
                         menuContainer.appendChild(platformForm);
+
+                        const platformToggle = document.getElementById('input-platform-toggle-checkbox');
+
+                        if (platformToggle) {
+                            platformToggle.addEventListener('change', (event) => {
+                                console.log("event: ", event);
+                                document.getElementById('form-status-label').textContent = event.target.checked ? "Enabled" : "Disabled";
+                            });
+                        }
+
 
                     } else {
                         const gameImage = container.querySelector('img');

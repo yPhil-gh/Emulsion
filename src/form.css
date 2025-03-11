@@ -74,6 +74,10 @@ input, button {
   width: 100%;
 }
 
+input[type="checkbox"] {
+  height: 50px;
+}
+
 .form-checkbox-container {
   display: flex;
   flex-direction: row;

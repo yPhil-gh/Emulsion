@@ -14,3 +14,8 @@ header .platform-image img {
 .right {
   text-align: right;
 }
+
+.left,
+.right {
+  cursor: pointer;
+}

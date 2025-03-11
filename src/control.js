@@ -59,7 +59,7 @@ function initSlideShow(platformToDisplay) {
                 currentIndex = index; // Set the clicked slide as the current slide
                 updateCarousel();
             } else if (slide.classList.contains('active')) {
-                // simulateKeyPress('Enter');
+                LB.utils.simulateKeyDown('Enter');
             }
         });
     });
@@ -153,6 +153,14 @@ function initGallery(currentIndex) {
                 document.querySelector('header .platform-name').textContent = LB.utils.capitalizeWord(page.dataset.platform);
                 document.querySelector('header .platform-image img').src = `../img/platforms/${page.dataset.platform}.png`;
 
+                document.querySelector('header .prev-link').onclick = function() {
+                    prevPage();
+                };
+
+                document.querySelector('header .next-link').onclick = function() {
+                    nextPage();
+                };
+
                 // Active page
                 page.classList.add('active');
                 page.classList.remove('next', 'prev');
@@ -222,7 +230,7 @@ function initGallery(currentIndex) {
             return selectedContainer || null;
         }
 
-        const selectedGame = getSelectedGame(gameContainers, selectedIndex);
+        const selectedGame = LB.utils.getSelectedGame(gameContainers, selectedIndex);
         const selectedGameImg = selectedGame.querySelector('.game-image');
 
         function footerMenuOnKeyDown(event) {
@@ -266,7 +274,7 @@ function initGallery(currentIndex) {
                 _closeMenu();
                 break;
             case 'Enter':
-                const menuSelectedGame = getSelectedGame(menuGameContainers, menuSelectedIndex);
+                const menuSelectedGame = LB.utils.getSelectedGame(menuGameContainers, menuSelectedIndex);
                 const menuSelectedGameImg = menuSelectedGame.querySelector('.game-image');
                 _closeMenu(menuSelectedGameImg.src);
                 break;
@@ -316,6 +324,8 @@ function initGallery(currentIndex) {
             if (imgSrc) {
                 const selectedGameImg = selectedGame.querySelector('.game-image');
                 if (!selectedGameImg) return;
+
+                // LB.utils.updateControls('circle', 'same', 'Back');
 
                 // Create a burst effect by rapidly scaling and fading out
                 selectedGameImg.style.transform = "scale(1.3)";
@@ -450,6 +460,15 @@ function initGallery(currentIndex) {
             break;
         case 'F5':
             window.location.reload();
+            break;
+        case 'Enter':
+            const selectedGame = LB.utils.getSelectedGame(gameContainers, selectedIndex);
+
+            // const encodedFilePath = filePath
+            //       .replace(/([\s()])/g, '\\$1'); // Escape spaces and special characters
+            // console.log(encodedFilePath);
+
+            ipcRenderer.send('run-command', selectedGame.dataset.command);
             break;
         case 'Escape':
             document.getElementById('slideshow').style.display = 'flex';

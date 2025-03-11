@@ -11,7 +11,7 @@ async function buildGameMenu(gameName, image) {
         currentImageContainer.appendChild(currentImage);
 
         const spinner = document.createElement('div');
-        spinner.classList.add(`maze-${Math.floor(Math.random() * 10) + 1}`, 'spinner');
+        spinner.classList.add(`spinner-${Math.floor(Math.random() * 20) + 1}`, 'spinner');
 
         document.body.appendChild(spinner);
 
@@ -38,56 +38,6 @@ async function buildGameMenu(gameName, image) {
         });
     });
 }
-
-
-// function buildGameMenu(gameName, image) {
-
-//     const platformName = document.querySelector('.active').dataset.platform;
-
-//     const gameMenuContainer = document.createElement('div');
-//     gameMenuContainer.classList.add('game-menu-container');
-
-//     const gameImageContainer = document.createElement('div');
-//     gameImageContainer.classList.add('game-menu-game-image-container');
-
-//     const imageListContainer = document.createElement('div');
-//     imageListContainer.classList.add('image-list-container');
-//     const gameImage = document.createElement('img');
-//     gameImage.src = image.src;
-//     imageListContainer.appendChild(gameImage);
-
-//     gameMenuContainer.appendChild(gameImageContainer);
-//     gameMenuContainer.appendChild(imageListContainer);
-
-//     ipcRenderer.send('fetch-images', gameName);
-
-//     const imageList = document.createElement('div');
-//     imageList.id = 'image-list';
-
-//     ipcRenderer.on('image-urls', (event, urls) => {
-
-//         if (urls.length === 0) {
-//             gameMenuContainer.innerHTML = '<p>No images found.</p>';
-//             return gameMenuContainer;
-//         }
-
-//         // Display each image
-//         urls.forEach((url) => {
-//             const imageContainer = document.createElement('div');
-//             imageContainer.classList.add('image-container');
-//             const image = document.createElement('img');
-//             image.src = url;
-//             image.style.width = '200px'; // Adjust as needed
-//             imageContainer.appendChild(image);
-//             imageList.appendChild(imageContainer);
-//         });
-//     });
-
-//     imageListContainer.appendChild(imageList);
-//     gameMenuContainer.appendChild(imageListContainer);
-
-//     return gameMenuContainer;
-// }
 
 function createFormTableRow(labelText, inputId, inputDescription, buttonText, platformName) {
 

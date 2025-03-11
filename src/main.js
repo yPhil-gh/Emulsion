@@ -4,6 +4,9 @@ import path from 'path';
 import { exec } from 'child_process';
 import { getAllCoverImageUrls } from './steamgrid.js';
 import axios from 'axios';  // Import axios using ESM
+import { fileURLToPath } from "url";
+
+let childProcesses = [];
 
 let mainWindow;
 
@@ -79,11 +82,10 @@ const downloadAndSaveImage = async (imgSrc, platform, gameName) => {
 };
 
 function createWindows() {
-  // Main window (Page 1)
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    webPreferences: {
+      webPreferences: {
         nodeIntegration: true,
         contextIsolation: false,
     },
@@ -134,6 +136,7 @@ ipcMain.on('fetch-images', (event, gameName) => {
 });
 
 ipcMain.on('run-command', (event, command) => {
+
     const child = exec(command, (err, stdout, stderr) => {
         if (err) {
             console.error('Error executing command:', err);
@@ -174,7 +177,7 @@ const defaultPreferences = {
         "gamesDir": "/media/px/ptidisk/retropie-mount/roms/pcengine",
         "emulator": "mednafen",
         "emulatorArgs": "",
-        "extensions": [".srm"]
+        "extensions": [".pce"]
     },
     "dreamcast": {
         "isEnabled": false,

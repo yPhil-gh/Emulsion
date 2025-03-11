@@ -24,8 +24,42 @@ LB.isMenuOpen = false;
 LB.utils = {
     capitalizeWord: capitalizeWord,
     cleanFileName: cleanFileName,
-    simulateKeyDown: simulateKeyDown
+    simulateKeyDown: simulateKeyDown,
+    getSelectedGame: getSelectedGame,
+    updateControls: updateControls
 };
+
+function updateControls(section, newIcon, newText) {
+    const sectionDiv = document.getElementById(section);
+    if (!sectionDiv) {
+        console.warn(`Section '${section}' not found!`);
+        return;
+    }
+
+    const icon = sectionDiv.querySelector("img.icon");
+    const textSpan = sectionDiv.querySelector("span");
+
+    if (icon && newIcon !== 'same') {
+        icon.src = `../img/controls/${newIcon}`;
+    }
+
+    if (textSpan && newText !== 'same') {
+        textSpan.textContent = newText;
+    }
+}
+
+
+function getSelectedGame(gameContainers, selectedIndex) {
+    let selectedContainer;
+    gameContainers.forEach(async (container, index) => {
+        if (index === selectedIndex) {
+            selectedContainer = container;
+        }
+
+    });
+    return selectedContainer || null;
+}
+
 
 function simulateKeyDown(key) {
   const keyCode = key === 'ArrowDown' ? 40 : 38;

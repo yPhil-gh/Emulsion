@@ -222,8 +222,7 @@ async function buildGallery(params) {
             // gameContainer.style.height = `${columnWidth}px`; // Placeholder height (square)
 
             gameContainer.addEventListener('click', (event) => {
-                event.stopPropagation();
-                ipcRenderer.send('run-command', event.target.dataset.command);
+                ipcRenderer.send('run-command', event.currentTarget.dataset.command);
             });
 
             const gameImage = document.createElement('img');

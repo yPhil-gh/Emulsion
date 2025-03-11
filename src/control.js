@@ -127,11 +127,14 @@ function initGallery(currentIndex) {
     const radius = (window.innerWidth / 2) / Math.tan((angleIncrement / 2) * (Math.PI / 180));
     console.log("radius: ", radius);
 
+    let currentPageIndex;
+
     let gameContainers;
     function updateCarousel(direction) {
         pages.forEach((page, index) => {
             if (index === currentIndex) {
 
+                currentPageIndex = currentIndex;
                 gameContainers = Array.from(page.querySelectorAll('.game-container') || []);
 
                 console.log("gameContainers.length: ", gameContainers.length);
@@ -374,7 +377,7 @@ function initGallery(currentIndex) {
             window.removeEventListener('keydown', listener);
             window.addEventListener('keydown', menuOnKeyDown);
 
-            menu.style.height = '80vh';
+            menu.style.height = '81vh';
 
             gameContainers.forEach(async (container, index) => {
                 if (index === selectedIndex) {
@@ -383,14 +386,6 @@ function initGallery(currentIndex) {
 
                         const platformForm = LB.build.platformForm(container.dataset.platform);
                         menuContainer.appendChild(platformForm);
-
-                        // const platformToggle = document.getElementById('input-platform-toggle-checkbox');
-
-                        // if (platformToggle) {
-                        //     platformToggle.addEventListener('change', (event) => {
-                        //         document.getElementById('form-status-label').textContent = event.target.checked ? "Enabled" : "Disabled";
-                        //     });
-                        // }
 
                     } else {
                         const gameImage = container.querySelector('img');
@@ -475,11 +470,14 @@ function initGallery(currentIndex) {
         case 'Enter':
             const selectedGame = LB.utils.getSelectedGame(gameContainers, selectedIndex);
 
-            // const encodedFilePath = filePath
-            //       .replace(/([\s()])/g, '\\$1'); // Escape spaces and special characters
-            // console.log(encodedFilePath);
+            console.log("currentPageIndex: ", currentPageIndex);
 
-            ipcRenderer.send('run-command', selectedGame.dataset.command);
+            if (currentPageIndex === 0) {
+                _toggleMenu(gameContainers, selectedIndex, _handleKeyDown, isMenuOpen);
+            } else {
+                ipcRenderer.send('run-command', selectedGame.dataset.command);
+            }
+
             break;
         case 'Escape':
             document.getElementById('slideshow').style.display = 'flex';

@@ -1,10 +1,12 @@
 /* Form container */
 #platform-form {
   /* padding: 20px; */
+  margin-top: 1em;
 
   display: flex;
   flex-direction: column;
   gap: 1em;
+  justify-content: flex-start;
 }
 
 /* Rows (flex containers) */
@@ -33,7 +35,7 @@
 /* Buttons */
 button {
   padding: 8px 12px;
-  color: white;
+  color: black;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -43,116 +45,6 @@ button {
 
 #platform-form .button:hover {
   background-color: #0056b3;
-}
-
-
-/* /\* SWITCH *\/ */
-/* /\* Container for the switch *\/ */
-/* .input-platform-toggle-switch { */
-/*   position: relative; */
-/*   display: inline-block; */
-/*   width: 46px; */
-/*   height: 34px; */
-/* } */
-
-/* /\* Hide the default checkbox *\/ */
-/* .input-platform-toggle-switch input { */
-/*   opacity: 0; */
-/*   width: 0; */
-/*   height: 0; */
-/* } */
-
-/* /\* The slider (the visible part of the switch) *\/ */
-/* .input-platform-toggle-slider { */
-/*   position: absolute; */
-/*   width: 82px; */
-/*   cursor: pointer; */
-/*   top: 0; */
-/*   left: 0; */
-/*   right: 0; */
-/*   bottom: 0; */
-/*   background-color: var(--color-disabled); */
-/*   transition: 0.4s; */
-/*   border-radius: 34px; */
-/* } */
-
-/* /\* Slider circle *\/ */
-/* .input-platform-toggle-slider:before { */
-/*   position: absolute; */
-/*   content: ""; */
-/*   height: 26px; */
-/*   width: 26px; */
-/*   left: 4px; */
-/*   bottom: 4px; */
-/*   background-color: white; */
-/*   transition: 0.4s; */
-/*   border-radius: 50%; */
-/* } */
-
-/* /\* When the checkbox is checked, move the slider *\/ */
-/* input:checked + .input-platform-toggle-slider { */
-/*   background-color: var(--color-info); */
-/* } */
-
-/* input:checked + .input-platform-toggle-slider:before { */
-/*   transform: translateX(46px); */
-/* } */
-
-:root {
-  --checkbox-border-color: #8b8c89;
-  --checkbox-checked-color: #274c77;
-  --checkbox-hover-color: #a3cef1;
-  --checkbox-disabled-bg-color: #d9d9d9;
-}
-
-input[type="checkbox"] {
-  box-sizing: border-box;
-  width: 50px;
-  height: 50px;
-  margin: 6px;
-  padding: 0;
-  border: 2px solid var(--checkbox-border-color);
-  appearance: none;
-  background-color: transparent;
-  outline: none;
-  transition: outline 0.1s;
-}
-
-input[type="checkbox"]:checked {
-  background-size: cover;
-  padding: 2px;
-}
-
-input[type="checkbox"]:not(:disabled):checked {
-  border-color: var(--checkbox-checked-color);
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" viewBox="0 0 32 32" xml:space="preserve"><path style="fill: %23274c77" d="M11.941,28.877l-11.941-11.942l5.695-5.696l6.246,6.246l14.364-14.364L32,8.818"/></svg>');
-}
-
-input[type="checkbox"]:disabled {
-  background-color: var(--checkbox-disabled-bg-color);
-}
-
-input[type="checkbox"]:disabled:checked {
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" viewBox="0 0 32 32" xml:space="preserve"><path style="fill: %238b8c89" d="M11.941,28.877l-11.941-11.942l5.695-5.696l6.246,6.246l14.364-14.364L32,8.818"/></svg>');
-}
-
-@media (hover: hover) {
-  input[type="checkbox"]:not(:disabled):hover {
-    background-color: var(--checkbox-hover-color);
-    outline: 6px solid var(--checkbox-hover-color);
-    transform: scale(1.05);
-  }
-}
-
-input[type="checkbox"]:focus-visible {
-  outline: 6px solid var(--checkbox-hover-color);
-  transform: scale(1.05);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  input[type="checkbox"] {
-    transition: none;
-  }
 }
 
 /* Details text div */
@@ -181,3 +73,48 @@ td.col1 {
 input, button {
   width: 100%;
 }
+
+.form-checkbox-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.form-status-label {
+  margin-left: 0.5em;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+button:focus {
+  outline: 2px solid var(--color-focus); /* Use your custom color variable */
+  outline-offset: 2px; /* Optional: Add space between the outline and the element */
+}
+
+/* Optional: Remove the default focus ring for specific elements */
+input[type="checkbox"]:focus,
+input[type="radio"]:focus {
+  outline: none; /* Remove default outline */
+  box-shadow: 0 0 0 2px var(--color-focus); /* Add a custom focus ring */
+}
+
+
+/* @media (hover: hover) { */
+/*   input[type="checkbox"]:not(:disabled):hover { */
+/*     background-color: var(--checkbox-hover-color); */
+/*     outline: 6px solid var(--checkbox-hover-color); */
+/*     transform: scale(1.05); */
+/*   } */
+/* } */
+
+/* input[type="checkbox"]:focus-visible { */
+/*   outline: 6px solid var(--checkbox-hover-color); */
+/*   transform: scale(1.05); */
+/* } */
+
+/* @media (prefers-reduced-motion: reduce) { */
+/*   input[type="checkbox"] { */
+/*     transition: none; */
+/*   } */
+/* } */

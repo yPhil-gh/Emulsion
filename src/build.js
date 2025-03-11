@@ -145,6 +145,12 @@ function buildPlatformForm(platformName) {
 
     const formTable = document.createElement('table');
 
+    const form = document.createElement('form');
+    form.id = 'platform-form';
+    form.className = 'platform-form';
+
+    formContainer.appendChild(form);
+
     const menuImageContainer = document.createElement('div');
     menuImageContainer.className = 'menu-image-container';
     const menuImage = document.createElement('img');
@@ -152,36 +158,52 @@ function buildPlatformForm(platformName) {
     menuImage.width = '350';
     menuImageContainer.appendChild(menuImage);
 
-    const form = document.createElement('form');
-    form.id = 'platform-form';
-    form.className = 'platform-form';
+    const row0 = document.createElement('tr');
+    const row0td1 = document.createElement('td');
+    row0td1.colSpan = 3;
+    row0td1.style.textAlign = 'center';
 
-    formContainer.appendChild(form);
-    formContainer.appendChild(menuImageContainer);
+    row0td1.appendChild(menuImage);
+    row0.appendChild(row0td1);
 
     // Row 1: Toggle switch and Platform label
-    const row1 = document.createElement('div');
+    const row1 = document.createElement('tr');
+    const row1td1 = document.createElement('td');
+    row1td1.className = 'form-checkbox-container';
+
+    const row1td2 = document.createElement('td');
+    const row1td3 = document.createElement('td');
 
     const statusCheckBox = document.createElement('input');
     statusCheckBox.type = 'checkbox';
     statusCheckBox.id = 'input-platform-toggle-checkbox';
 
-    row1.appendChild(statusCheckBox);
-
     const statusLabel = document.createElement('span');
     statusLabel.id = 'form-status-label';
     statusLabel.setAttribute('for', 'input-platform-toggle-checkbox');
 
-    row1.appendChild(statusLabel);
+    row1td1.appendChild(statusCheckBox);
+    row1td1.appendChild(statusLabel);
+
+    row1.appendChild(row1td1);
+    row1.appendChild(row1td2);
+    row1.appendChild(row1td3);
     form.appendChild(row1);
 
     // Row 2: Details text
+    const row2 = document.createElement('tr');
     const detailsText = document.createElement('div');
+    const row2td1 = document.createElement('td');
+    row2td1.colSpan = 3;
     detailsText.id = 'details-text-div';
     detailsText.className = 'details-text-div';
     detailsText.textContent = 'plop';
-    form.appendChild(detailsText);
 
+
+    row2.appendChild(row1td2);
+    formTable.appendChild(row0);
+    formTable.appendChild(row1);
+    formTable.appendChild(row2);
 
     // Row 3: Games Directory
     const gamesDirRow = createFormTableRow('Games', 'input-games-dir', `Select your ${LB.utils.capitalizeWord(platformName)} games directory path`, 'Browse', platformName);

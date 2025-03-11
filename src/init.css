@@ -1,11 +1,13 @@
 :root {
   --glow-color: 167, 230, 255;
-  --highlight-color: #a5be00;
-  --color-succes: green;
+  --color-focus: #a5be00;
+  --color-succes: #00ff18;
   --color-info: #007bff;
   --color-disabled: #333;
   --color-bg1: #0B192C;
   --color-bg2: #1E3E62;
+  --color-fg1: #00FFF5;
+  --color-fg2: #A3F7BF;
   --footer-bg-color: rgba(0, 0, 0, 0.9);
   --slide-rotation-angle: 90deg;
   --slide-rotation-radius: 100px;
@@ -69,6 +71,15 @@ header, footer  {
   /* pointer-events: none; /\* Prevent the footer from blocking clicks *\/ */
   opacity: 0; /* Start fully transparent */
   animation: fadeIn 0.3s ease-in-out forwards; /* Apply the fadeIn animation */
+}
+
+header  {
+  border-bottom: 1px solid var(--color-bg1);
+  height: 101px;
+}
+
+footer  {
+  border-top: 1px solid var(--color-bg1);
 }
 
 .success {

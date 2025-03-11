@@ -29,6 +29,7 @@ LB.gallery = {
                         };
 
                         if (isEnabled) {
+                            LB.enabledPlatforms.push(platformName);
                             const container = await buildGallery(params); // Await the async buildGallery
                             if (container) {
                                 galleriesContainer.appendChild(container);
@@ -48,7 +49,7 @@ LB.gallery = {
                             extensions: 'none'
                         };
 
-                        const container = await buildGallery(params); // Await the async buildGallery
+                        const container = await buildGallery(params);
 
                         if (container) {
                             galleriesContainer.appendChild(container);

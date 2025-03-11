@@ -19,6 +19,8 @@ LB.prefs = {
     getValue: getPlatformPreference
 };
 
+LB.enabledPlatforms = [];
+
 LB.isMenuOpen = false;
 
 LB.utils = {

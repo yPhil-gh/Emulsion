@@ -101,16 +101,11 @@ function initSlideShow(platformToDisplay) {
                 }
             });
 
-            LB.prefs.getValue(activePlatformName, 'isEnabled')
-                .then((value) => {
-                    console.log("value: ", value);
-                })
-                .catch((error) => {
-                    console.error('Failed to get platform preference:', error);
-                });
-
-
-            LB.control.initGallery(activeGalleryIndex);
+            if (LB.enabledPlatforms.includes(activePlatformName)) {
+                initGallery(activeGalleryIndex);
+            } else {
+                initGallery(0, activePlatformName);
+            }
 
         }
     }
@@ -124,7 +119,9 @@ function initSlideShow(platformToDisplay) {
     updateCarousel();
 }
 
-function initGallery(currentIndex) {
+function initGallery(currentIndex, disabledPlatform) {
+
+    console.log("disabledPlatform: ", disabledPlatform);
 
     const header = document.getElementById('header');
 
@@ -136,7 +133,6 @@ function initGallery(currentIndex) {
     const angleIncrement = 360 / totalPages;
 
     const radius = (window.innerWidth / 2) / Math.tan((angleIncrement / 2) * (Math.PI / 180));
-    console.log("radius: ", radius);
 
     let currentPageIndex;
 
@@ -230,7 +226,22 @@ function initGallery(currentIndex) {
 
     let ImageMenuSelectedIndex = 0;
 
-    function _toggleMenu(gameContainers, selectedIndex, listener, isMenuOpen) {
+    if (disabledPlatform) {
+        _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), selectedIndex, _handleKeyDown, isMenuOpen, disabledPlatform);
+    }
+
+    console.log("gameContainers, selectedIndex, _handleKeyDown, isMenuOpen, disabledPlatform: ", gameContainers, selectedIndex, _handleKeyDown, isMenuOpen, disabledPlatform);
+
+    function _toggleMenu(gameContainers, selectedIndex, listener, isMenuOpen, platformToOpen) {
+
+        console.log("gameContainers, selectedIndex, _handleKeyDown, isMenuOpen, disabledPlatform: ", gameContainers, selectedIndex, _handleKeyDown, isMenuOpen, disabledPlatform);
+
+        console.log("toggle platformToOpen: ", platformToOpen);
+
+        // if (platformToOpen) {
+        //     _openMenu(disabledPlatform);
+        // }
+
 
         const menu = document.getElementById('menu');
         const menuContainer = document.getElementById('menu-container');
@@ -241,17 +252,6 @@ function initGallery(currentIndex) {
         const controls = document.getElementById('controls');
 
         let menuSelectedIndex = 1;
-
-        function getSelectedGame(gameContainers, selectedIndex) {
-            let selectedContainer;
-            gameContainers.forEach(async (container, index) => {
-                if (index === selectedIndex) {
-                    selectedContainer = container;
-                }
-
-            });
-            return selectedContainer || null;
-        }
 
         const selectedGame = LB.utils.getSelectedGame(gameContainers, selectedIndex);
         const selectedGameImg = selectedGame.querySelector('.game-image');
@@ -384,9 +384,9 @@ function initGallery(currentIndex) {
             isMenuOpen = false;
         }
 
-        function _openMenu() {
+        function _openMenu(platformToOpen) {
 
-            console.log("selectedIndex before: ", selectedIndex);
+            console.log("platformToOpen: ", platformToOpen);
 
             menuContainer.innerHTML = '';
 
@@ -398,9 +398,11 @@ function initGallery(currentIndex) {
             gameContainers.forEach(async (container, index) => {
                 if (index === selectedIndex) {
 
+                    console.log("container: ", container);
+
                     if (container.classList.contains('settings')) {
 
-                        const platformForm = LB.build.platformForm(container.dataset.platform);
+                        const platformForm = LB.build.platformForm(platformToOpen || container.dataset.platform);
                         menuContainer.appendChild(platformForm);
 
                         const platformToggle = document.getElementById('input-platform-toggle-checkbox');
@@ -437,14 +439,14 @@ function initGallery(currentIndex) {
 
 
         if (!isMenuOpen) {
-            _openMenu();
+            console.log("disabledPlatformZ: ", disabledPlatform);
+            _openMenu(disabledPlatform);
             isMenuOpen = true;
         } else {
             _closeMenu();
             isMenuOpen = false;
         }
     }
-
 
     function _handleKeyDown(event) {
         // event.preventDefault(); // Prevent default scrolling behavior

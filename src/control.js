@@ -213,8 +213,15 @@ function initGallery(currentIndex) {
 
     function _toggleFooterMenu(gameContainers, selectedIndex, listener, isMenuOpen) {
 
-        const footer = document.getElementById('footer');
-        const footerMenuContainer = document.getElementById('footer-menu-container');
+        const menu = document.getElementById('menu');
+        const menuContainer = document.getElementById('menu-container');
+
+        const footer = document.getElementById('menu');
+        const footerMenuContainer = document.getElementById('menu-container');
+
+        // const footer = document.getElementById('footer');
+        // const footerMenuContainer = document.getElementById('footer-menu-container');
+
         const controls = document.getElementById('controls');
 
         let menuSelectedIndex = 1;
@@ -314,12 +321,14 @@ function initGallery(currentIndex) {
         async function _closeMenu(imgSrc) {
             LB.imageSrc = imgSrc;
             console.log("closeMenu: ");
-            document.getElementById('footer-menu-container').innerHTML = '';
-            footer.style.height = '100px'; // original height
-            controls.style.display = 'flex';
+            document.getElementById('menu-container').innerHTML = '';
+            // footer.style.height = '100px'; // original height
+
+            menu.style.height = '0';
+
+            // controls.style.display = 'flex';
             window.removeEventListener('keydown', footerMenuOnKeyDown);
             window.addEventListener('keydown', listener);
-            console.log("selectedGame: ", selectedGame);
 
             if (imgSrc) {
                 const selectedGameImg = selectedGame.querySelector('.game-image');
@@ -361,8 +370,11 @@ function initGallery(currentIndex) {
             window.removeEventListener('keydown', listener);
             window.addEventListener('keydown', footerMenuOnKeyDown);
 
-            footer.style.height = '91vh';
-            controls.style.display = 'none';
+            // footer.style.height = '91vh';
+
+            menu.style.height = '81vh';
+
+            // controls.style.display = 'none';
 
             gameContainers.forEach(async (container, index) => {
                 if (index === selectedIndex) {

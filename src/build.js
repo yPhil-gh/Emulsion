@@ -139,10 +139,11 @@ function createFormTableRow(labelText, inputId, inputDescription, buttonText, pl
 
 function buildPlatformForm(platformName) {
 
-    console.log("platformName: ", platformName);
 
     const formContainer = document.createElement('div');
     formContainer.id = 'form-container';
+
+    const formTable = document.createElement('table');
 
     const menuImageContainer = document.createElement('div');
     menuImageContainer.className = 'menu-image-container';
@@ -161,26 +162,17 @@ function buildPlatformForm(platformName) {
     // Row 1: Toggle switch and Platform label
     const row1 = document.createElement('div');
 
-    // Toggle switch
-    const toggleContainer = document.createElement('label');
-    toggleContainer.className = 'input-platform-toggle-switch';
+    const statusCheckBox = document.createElement('input');
+    statusCheckBox.type = 'checkbox';
+    statusCheckBox.id = 'input-platform-toggle-checkbox';
 
-    const toggleInput = document.createElement('input');
-    toggleInput.type = 'checkbox';
-    toggleInput.id = 'input-platform-toggle-checkbox';
+    row1.appendChild(statusCheckBox);
 
-    const sliderSpan = document.createElement('span');
-    sliderSpan.className = 'input-platform-toggle-slider';
+    const statusLabel = document.createElement('span');
+    statusLabel.id = 'form-status-label';
+    statusLabel.setAttribute('for', 'input-platform-toggle-checkbox');
 
-    toggleContainer.appendChild(toggleInput);
-    toggleContainer.appendChild(sliderSpan);
-    row1.appendChild(toggleContainer);
-
-    const toggleLabel = document.createElement('span');
-    toggleLabel.id = 'form-status-label';
-    toggleLabel.setAttribute('for', 'input-platform-toggle-checkbox');
-
-    row1.appendChild(toggleLabel);
+    row1.appendChild(statusLabel);
     form.appendChild(row1);
 
     // Row 2: Details text
@@ -190,19 +182,18 @@ function buildPlatformForm(platformName) {
     detailsText.textContent = 'plop';
     form.appendChild(detailsText);
 
-    const inputsTable = document.createElement('table');
 
     // Row 3: Games Directory
     const gamesDirRow = createFormTableRow('Games', 'input-games-dir', `Select your ${LB.utils.capitalizeWord(platformName)} games directory path`, 'Browse', platformName);
-    inputsTable.appendChild(gamesDirRow);
+    formTable.appendChild(gamesDirRow);
 
     // Row 4: Emulator
     const emulatorRow = createFormTableRow('Emulator', 'input-emulator', `Select your ${LB.utils.capitalizeWord(platformName)} emulator (file path or name)`, 'Browse', platformName);
-    inputsTable.appendChild(emulatorRow);
+    formTable.appendChild(emulatorRow);
 
     // Row 5: Emulator Args
     const emulatorArgsRow = createFormTableRow('Args', 'input-emulator-args', `The arguments to your ${LB.utils.capitalizeWord(platformName)} emulator`, null, platformName);
-    inputsTable.appendChild(emulatorArgsRow);
+    formTable.appendChild(emulatorArgsRow);
 
     const buttons = document.createElement('div');
     buttons.className = 'buttons';
@@ -255,15 +246,15 @@ function buildPlatformForm(platformName) {
     cancelButton.addEventListener('click', _formCancelButtonClick);
     saveButton.addEventListener('click', _formSaveButtonClick);
 
-    form.appendChild(inputsTable);
+    form.appendChild(formTable);
     form.appendChild(buttons);
 
     LB.prefs.getValue(platformName, 'isEnabled')
         .then((value) => {
             console.log("value!", value);
-            toggleInput.checked = value;
-            toggleInput.dispatchEvent(new Event('change'));
-            toggleLabel.textContent = value ? 'Enabled' : 'Disabled';
+            statusCheckBox.checked = value;
+            statusCheckBox.dispatchEvent(new Event('change'));
+            statusLabel.textContent = value ? 'Enabled' : 'Disabled';
         })
         .catch((error) => {
             console.error('Failed to get platform preference:', error);

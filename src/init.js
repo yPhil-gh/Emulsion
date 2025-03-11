@@ -31,7 +31,7 @@ LB.utils = {
     updateControls: updateControls
 };
 
-function updateControls(section, newIcon, newText) {
+function updateControls(section, newIcon, newText, display) {
     const sectionDiv = document.getElementById(section);
     if (!sectionDiv) {
         console.warn(`Section '${section}' not found!`);
@@ -41,8 +41,16 @@ function updateControls(section, newIcon, newText) {
     const icon = sectionDiv.querySelector("img.icon");
     const textSpan = sectionDiv.querySelector("span");
 
+    if (display === 'off') {
+        sectionDiv.style.display = 'none';
+    }
+
+    if (display === 'on') {
+        sectionDiv.style.display = 'flex';
+    }
+
     if (icon && newIcon !== 'same') {
-        icon.src = `../img/controls/${newIcon}`;
+        icon.src = `../img/controls/${newIcon}.png`;
     }
 
     if (textSpan && newText !== 'same') {

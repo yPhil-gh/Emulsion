@@ -1,5 +1,9 @@
 function initSlideShow(platformToDisplay) {
 
+    LB.utils.updateControls('dpad', 'button-dpad-ew', 'same');
+    LB.utils.updateControls('square', 'same', 'same', 'off');
+    LB.utils.updateControls('circle', 'same', 'Exit');
+
     const slideshow = document.getElementById("slideshow");
 
     document.getElementById('header').style.display = 'none';
@@ -121,6 +125,10 @@ function initSlideShow(platformToDisplay) {
 
 function initGallery(currentIndex, disabledPlatform) {
 
+    LB.utils.updateControls('dpad', 'button-dpad-nesw', 'same');
+    LB.utils.updateControls('square', 'same', 'Fetch cover', 'on');
+    LB.utils.updateControls('circle', 'same', 'Back');
+
     console.log("disabledPlatform: ", disabledPlatform);
 
     const header = document.getElementById('header');
@@ -234,14 +242,9 @@ function initGallery(currentIndex, disabledPlatform) {
 
     function _toggleMenu(gameContainers, selectedIndex, listener, isMenuOpen, platformToOpen) {
 
-        console.log("gameContainers, selectedIndex, _handleKeyDown, isMenuOpen, disabledPlatform: ", gameContainers, selectedIndex, _handleKeyDown, isMenuOpen, disabledPlatform);
-
-        console.log("toggle platformToOpen: ", platformToOpen);
-
         // if (platformToOpen) {
         //     _openMenu(disabledPlatform);
         // }
-
 
         const menu = document.getElementById('menu');
         const menuContainer = document.getElementById('menu-container');
@@ -359,18 +362,16 @@ function initGallery(currentIndex, disabledPlatform) {
                 // LB.utils.updateControls('circle', 'same', 'Back');
 
                 // Create a burst effect by rapidly scaling and fading out
-                selectedGameImg.style.transform = "scale(1.3)";
-                selectedGameImg.style.opacity = "0";
+                // selectedGameImg.style.transform = "scale(1.3)";
+                // selectedGameImg.style.opacity = "0";
 
                 selectedGameImg.src = imgSrc + '?t=' + new Date().getTime();
 
                 const spinner = document.createElement('div');
-                spinner.classList.add(`maze-${Math.floor(Math.random() * 10) + 1}`, 'spinner');
+                spinner.classList.add(`spinner-${Math.floor(Math.random() * 20) + 1}`, 'spinner');
                 spinner.classList.add('image-spinner');
 
                 selectedGame.appendChild(spinner);
-
-                console.log("selectedGame.dataset.gameName: ", selectedGame.dataset.gameName);
 
                 selectedGameImg.onload = () => {
                     // Zoom in with a punchy effect

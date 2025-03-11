@@ -39,7 +39,7 @@ async function buildGameMenu(gameName, image) {
     });
 }
 
-function createFormTableRow(labelText, inputId, inputDescription, buttonText, platformName) {
+function createFormTableRow(labelText, inputId, inputDescription, buttonText, platformName, colSpan) {
 
     const isInputIdSave = inputId === 'save';
 
@@ -113,6 +113,10 @@ function createFormTableRow(labelText, inputId, inputDescription, buttonText, pl
 
     secondCol.appendChild(input);
     secondCol.classList.add('col2');
+
+    if (colSpan) {
+        secondCol.colSpan = colSpan;
+    }
 
     // Button (or nothing if 3rd col)
     const thirdCol = document.createElement('td');
@@ -213,7 +217,7 @@ function buildPlatformForm(platformName) {
     formTable.appendChild(emulatorRow);
 
     // Row 5: Emulator Args
-    const emulatorArgsRow = createFormTableRow('Args', 'input-emulator-args', `The arguments to your ${LB.utils.capitalizeWord(platformName)} emulator`, null, platformName);
+    const emulatorArgsRow = createFormTableRow('Args', 'input-emulator-args', `The arguments to your ${LB.utils.capitalizeWord(platformName)} emulator`, null, platformName, 2);
     formTable.appendChild(emulatorArgsRow);
 
     const buttons = document.createElement('div');

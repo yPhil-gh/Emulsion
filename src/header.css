@@ -13,17 +13,5 @@ header .platform-image img {
 
 .pages-nav-links {
     transition: opacity 0.2s ease;
-}
-
-.left {
-  text-align: left;
-}
-
-.right {
-  text-align: right;
-}
-
-.left,
-.right {
-  cursor: pointer;
+    cursor: pointer;
 }

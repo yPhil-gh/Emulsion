@@ -1,0 +1,89 @@
+#slideshow {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform-style: preserve-3d; /* Enable 3D transformations */
+}
+
+#top-menu:focus,
+#slideshow:focus,
+.gallery:focus {
+  outline: none;
+}
+
+.slide {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 24px;
+  opacity: 0.8;
+  transition: transform 0.5s ease, opacity 0.5s ease, box-shadow 0.5s ease;
+  cursor: pointer;
+}
+
+.slide.active {
+  opacity: 1;
+  transform: translateZ(0) rotateY(0deg) scale(1);
+  z-index: 2;
+  filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8));
+  animation: pulse-glow 5s infinite ease-in-out;
+}
+
+.slide.prev-slide {
+  /* Adjust as needed for left side appearance */
+  opacity: 0.2;
+  transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px)) translateX(-20px);
+  z-index: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.slide.next-slide {
+  /* Adjust as needed for right side appearance */
+  opacity: 0.2;
+  transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px)) translateX(20px);
+  z-index: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Fallback for all other slides if needed */
+.slide.adjacent {
+  opacity: 0.2;
+  transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px));
+  z-index: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8));
+  }
+  50% {
+    filter: drop-shadow(0 0 8px rgba(var(--glow-color), 0.8));
+  }
+}
+
+.slide-content {
+  position: relative;
+  height: 100%; /* Ensure it takes the full height of the slide */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* Align content to the bottom */
+  align-items: center; /* Center horizontally */
+}
+
+/* @keyframes pulse-glow { */
+/*   0% { */
+/*     filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8)); /\* Initial glow *\/ */
+/*   } */
+/*   50% { */
+/*     filter: drop-shadow(0 0 4px rgba(var(--glow-color), 1)); /\* Stronger glow *\/ */
+/*   } */
+/*   100% { */
+/*     filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8)); /\* Back to initial glow *\/ */
+/*   } */
+/* } */

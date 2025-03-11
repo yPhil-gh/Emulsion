@@ -1,7 +1,7 @@
 /* Form container */
 #platform-form {
-  width: 100%;
-  padding: 20px;
+  width: 60%;
+  /* padding: 20px; */
 
   display: flex;
   flex-direction: column;
@@ -22,106 +22,106 @@
   min-width: 100px; /* Ensure labels align nicely */
 }
 
-/* Input fields */
-#platform-form input[type="text"] {
-  flex: 1;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-}
+/* /\* Input fields *\/ */
+/* #platform-form input[type="text"] { */
+/*   flex: 1; */
+/*   padding: 8px; */
+/*   border: 1px solid #ccc; */
+/*   border-radius: 4px; */
+/*   font-size: 14px; */
+/* } */
 
-/* Buttons */
-button {
-  padding: 8px 12px;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
-}
+/* /\* Buttons *\/ */
+/* button { */
+/*   padding: 8px 12px; */
+/*   color: white; */
+/*   border: none; */
+/*   border-radius: 4px; */
+/*   cursor: pointer; */
+/*   font-size: 14px; */
+/*   transition: background-color 0.3s ease; */
+/* } */
 
-#platform-form .button:hover {
-  background-color: #0056b3;
-}
+/* #platform-form .button:hover { */
+/*   background-color: #0056b3; */
+/* } */
 
 
-/* SWITCH */
-/* Container for the switch */
-.input-platform-toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 46px;
-  height: 34px;
-}
+/* /\* SWITCH *\/ */
+/* /\* Container for the switch *\/ */
+/* .input-platform-toggle-switch { */
+/*   position: relative; */
+/*   display: inline-block; */
+/*   width: 46px; */
+/*   height: 34px; */
+/* } */
 
-/* Hide the default checkbox */
-.input-platform-toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
+/* /\* Hide the default checkbox *\/ */
+/* .input-platform-toggle-switch input { */
+/*   opacity: 0; */
+/*   width: 0; */
+/*   height: 0; */
+/* } */
 
-/* The slider (the visible part of the switch) */
-.input-platform-toggle-slider {
-  position: absolute;
-  width: 82px;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--color-disabled);
-  transition: 0.4s;
-  border-radius: 34px;
-}
+/* /\* The slider (the visible part of the switch) *\/ */
+/* .input-platform-toggle-slider { */
+/*   position: absolute; */
+/*   width: 82px; */
+/*   cursor: pointer; */
+/*   top: 0; */
+/*   left: 0; */
+/*   right: 0; */
+/*   bottom: 0; */
+/*   background-color: var(--color-disabled); */
+/*   transition: 0.4s; */
+/*   border-radius: 34px; */
+/* } */
 
-/* Slider circle */
-.input-platform-toggle-slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
-}
+/* /\* Slider circle *\/ */
+/* .input-platform-toggle-slider:before { */
+/*   position: absolute; */
+/*   content: ""; */
+/*   height: 26px; */
+/*   width: 26px; */
+/*   left: 4px; */
+/*   bottom: 4px; */
+/*   background-color: white; */
+/*   transition: 0.4s; */
+/*   border-radius: 50%; */
+/* } */
 
-/* When the checkbox is checked, move the slider */
-input:checked + .input-platform-toggle-slider {
-  background-color: var(--color-info);
-}
+/* /\* When the checkbox is checked, move the slider *\/ */
+/* input:checked + .input-platform-toggle-slider { */
+/*   background-color: var(--color-info); */
+/* } */
 
-input:checked + .input-platform-toggle-slider:before {
-  transform: translateX(46px);
-}
+/* input:checked + .input-platform-toggle-slider:before { */
+/*   transform: translateX(46px); */
+/* } */
 
-/* Details text div */
-#details-text-div {
-  padding: 10px;
-  background-color: #e9ecef;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  color: #333;
-}
+/* /\* Details text div *\/ */
+/* #details-text-div { */
+/*   padding: 10px; */
+/*   background-color: #e9ecef; */
+/*   border: 1px solid #ddd; */
+/*   border-radius: 4px; */
+/*   font-size: 14px; */
+/*   color: #333; */
+/* } */
 
-td.col1 {
-  /* width: 400px !important; */
-  padding-right: 2em;
-}
+/* td.col1 { */
+/*   /\* width: 400px !important; *\/ */
+/*   padding-right: 2em; */
+/* } */
 
-td.col2 {
-  width: 100%;
-}
+/* td.col2 { */
+/*   width: 100%; */
+/* } */
 
-td.col3 {
-  width: 300px;
-}
+/* td.col3 { */
+/*   width: 300px; */
+/* } */
 
-input, button {
-  width: 100%;
-}
+/* input, button { */
+/*   width: 100%; */
+/* } */

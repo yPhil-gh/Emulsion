@@ -140,10 +140,23 @@ function createFormTableRow(labelText, inputId, inputDescription, buttonText, pl
 function buildPlatformForm(platformName) {
 
     console.log("platformName: ", platformName);
-    // Create the form element
+
+    const formContainer = document.createElement('div');
+    formContainer.id = 'form-container';
+
+    const menuImageContainer = document.createElement('div');
+    menuImageContainer.className = 'menu-image-container';
+    const menuImage = document.createElement('img');
+    menuImage.src = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
+    menuImage.width = '350';
+    menuImageContainer.appendChild(menuImage);
+
     const form = document.createElement('form');
     form.id = 'platform-form';
     form.className = 'platform-form';
+
+    formContainer.appendChild(form);
+    formContainer.appendChild(menuImageContainer);
 
     // Row 1: Toggle switch and Platform label
     const row1 = document.createElement('div');

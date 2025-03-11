@@ -211,13 +211,10 @@ function initGallery(currentIndex) {
 
     let ImageMenuSelectedIndex = 0;
 
-    function _toggleFooterMenu(gameContainers, selectedIndex, listener, isMenuOpen) {
+    function _toggleMenu(gameContainers, selectedIndex, listener, isMenuOpen) {
 
         const menu = document.getElementById('menu');
         const menuContainer = document.getElementById('menu-container');
-
-        const footer = document.getElementById('menu');
-        const footerMenuContainer = document.getElementById('menu-container');
 
         // const footer = document.getElementById('footer');
         // const footerMenuContainer = document.getElementById('footer-menu-container');
@@ -240,7 +237,7 @@ function initGallery(currentIndex) {
         const selectedGame = LB.utils.getSelectedGame(gameContainers, selectedIndex);
         const selectedGameImg = selectedGame.querySelector('.game-image');
 
-        function footerMenuOnKeyDown(event) {
+        function menuOnKeyDown(event) {
 
             console.log("menuSelectedIndex: ", menuSelectedIndex);
 
@@ -248,7 +245,7 @@ function initGallery(currentIndex) {
 
             event.stopPropagation();
             event.stopImmediatePropagation(); // Stops other listeners on the same element
-            const menuGameContainers = Array.from(footer.querySelectorAll('.menu-game-container'));
+            const menuGameContainers = Array.from(menu.querySelectorAll('.menu-game-container'));
             console.log("menuGameContainers len: ", menuGameContainers.length);
             switch (event.key) {
 
@@ -319,6 +316,9 @@ function initGallery(currentIndex) {
         };
 
         async function _closeMenu(imgSrc) {
+
+            console.log("selectedIndex after: ", selectedIndex);
+
             LB.imageSrc = imgSrc;
             console.log("closeMenu: ");
             document.getElementById('menu-container').innerHTML = '';
@@ -327,7 +327,7 @@ function initGallery(currentIndex) {
             menu.style.height = '0';
 
             // controls.style.display = 'flex';
-            window.removeEventListener('keydown', footerMenuOnKeyDown);
+            window.removeEventListener('keydown', menuOnKeyDown);
             window.addEventListener('keydown', listener);
 
             if (imgSrc) {
@@ -367,38 +367,37 @@ function initGallery(currentIndex) {
 
         function _openMenu() {
 
+            console.log("selectedIndex before: ", selectedIndex);
+
+            menuContainer.innerHTML = '';
+
             window.removeEventListener('keydown', listener);
-            window.addEventListener('keydown', footerMenuOnKeyDown);
+            window.addEventListener('keydown', menuOnKeyDown);
 
-            // footer.style.height = '91vh';
-
-            menu.style.height = '81vh';
-
-            // controls.style.display = 'none';
+            menu.style.height = '80vh';
 
             gameContainers.forEach(async (container, index) => {
                 if (index === selectedIndex) {
 
                     if (container.classList.contains('settings')) {
+
                         const platformForm = LB.build.platformForm(container.dataset.platform);
-                        // footerMenuImg.src = path.join(LB.baseDir, 'img', 'platforms', `${container.dataset.platform}.png`);
-                        // footerMenuImg.classList.remove('hidden');
-                        footer.appendChild(platformForm);
+                        menuContainer.appendChild(platformForm);
 
-                        const platformToggle = document.getElementById('input-platform-toggle-checkbox');
+                        // const platformToggle = document.getElementById('input-platform-toggle-checkbox');
 
-                        if (platformToggle) {
-                            platformToggle.addEventListener('change', (event) => {
-                                document.getElementById('form-status-label').textContent = event.target.checked ? "Enabled" : "Disabled";
-                            });
-                        }
+                        // if (platformToggle) {
+                        //     platformToggle.addEventListener('change', (event) => {
+                        //         document.getElementById('form-status-label').textContent = event.target.checked ? "Enabled" : "Disabled";
+                        //     });
+                        // }
 
                     } else {
                         const gameImage = container.querySelector('img');
                         await LB.build.gameMenu(container.title, gameImage)
                             .then((gameMenu) => {
-                                footerMenuContainer.innerHTML = '';
-                                footerMenuContainer.appendChild(gameMenu);
+
+                                menuContainer.appendChild(gameMenu);
 
                                 const spinner = document.body.querySelector('.spinner');
                                 setTimeout(() => spinner.remove(), 500);
@@ -467,7 +466,7 @@ function initGallery(currentIndex) {
             break;
         case 'i':
             console.log("i: isMenuOpen: ", isMenuOpen);
-            _toggleFooterMenu(gameContainers, selectedIndex, _handleKeyDown, isMenuOpen);
+            _toggleMenu(gameContainers, selectedIndex, _handleKeyDown, isMenuOpen);
             // window.removeEventListener('keydown', _handleKeyDown);
             break;
         case 'F5':

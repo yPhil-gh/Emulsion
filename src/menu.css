@@ -29,26 +29,3 @@
   flex-direction: row;
   align-items: center;
 }
-
-#menu-container {
-  margin: auto auto;
-}
-
-.exit-menu-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 80vw;
-}
-
-.exit-menu-container .buttons {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  margin-top: 1em;
-}
-
-.button {
-  margin: 1em;
-  height: 55px;
-}

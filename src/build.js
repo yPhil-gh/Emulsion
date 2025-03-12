@@ -154,19 +154,19 @@ function buildPlatformForm(platformName) {
 
     formContainer.appendChild(form);
 
-    // const menuImageContainer = document.createElement('div');
-    // menuImageContainer.className = 'menu-image-container';
-    // const menuImage = document.createElement('img');
-    // menuImage.src = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
-    // menuImage.width = '250';
-    // menuImageContainer.appendChild(menuImage);
+    const menuImageContainer = document.createElement('div');
+    menuImageContainer.className = 'menu-image-container';
+    const menuImage = document.createElement('img');
+    menuImage.src = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
+    menuImage.width = '250';
+    menuImageContainer.appendChild(menuImage);
 
     const row0 = document.createElement('tr');
     const row0td1 = document.createElement('td');
     row0td1.colSpan = 3;
     row0td1.style.textAlign = 'center';
 
-    row0td1.appendChild(buildMenuImage(platformName));
+    row0td1.appendChild(menuImage);
     row0.appendChild(row0td1);
 
     // Row 1: Toggle switch and Platform label
@@ -296,56 +296,7 @@ function buildPlatformForm(platformName) {
     return form;
 }
 
-function buildMenuImage(platformName) {
-    const menuImage = document.createElement('img');
-    menuImage.src = path.join(LB.baseDir, 'img', platformName === 'emume' ? '' : 'platforms', `${platformName}.png`);
-    menuImage.width = '250';
-    return menuImage;
-}
-
-function buildExitMenu() {
-
-    const exitMenuContainer = document.createElement('div');
-    exitMenuContainer.classList.add('exit-menu-container');
-    const menuImage = buildMenuImage('emume');
-
-    const buttons = document.createElement('div');
-    buttons.classList.add('buttons');
-
-    const cancelButton = document.createElement('button');
-    cancelButton.type = 'button';
-    cancelButton.id = 'exit-cancel-button';
-    cancelButton.className = 'button';
-    cancelButton.classList.add('info');
-    cancelButton.textContent = 'Cancel';
-
-    const donateButton = document.createElement('button');
-    donateButton.type = 'button';
-    donateButton.id = 'exit-donate-button';
-    donateButton.className = 'button';
-    donateButton.classList.add('success');
-    donateButton.textContent = 'Donate';
-
-    const exitButton = document.createElement('button');
-    exitButton.type = 'button';
-    exitButton.id = 'exit-quit-button';
-    exitButton.className = 'button';
-    exitButton.classList.add('success');
-    exitButton.textContent = 'Quit';
-
-    buttons.appendChild(cancelButton);
-    buttons.appendChild(donateButton);
-    buttons.appendChild(exitButton);
-
-    exitMenuContainer.appendChild(menuImage);
-    exitMenuContainer.appendChild(buttons);
-    return exitMenuContainer;
-
-}
-
-
 LB.build = {
     gameMenu: buildGameMenu,
-    platformForm: buildPlatformForm,
-    exitMenu: buildExitMenu,
+    platformForm: buildPlatformForm
 };

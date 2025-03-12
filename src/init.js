@@ -72,31 +72,15 @@ function getSelectedGame(gameContainers, selectedIndex) {
 
 
 function simulateKeyDown(key) {
-
-    let keyCode;
-    switch (key) {
-    case 'ArrowDown':
-        keyCode = 40;
-        break;
-    case 'Escape':
-        keyCode = 27;
-        break;
-    case 'ArrowLeft':
-        break;
-    default:
-        keyCode = 38;
-        break;
-    }
-
-    const keyboardEvent = new KeyboardEvent('keydown', {
-        key: key,
-        keyCode: keyCode,
-        code: key,
-        which: keyCode,
-        bubbles: true
-    });
-
-    document.dispatchEvent(keyboardEvent);
+  const keyCode = key === 'ArrowDown' ? 40 : 38;
+  const keyboardEvent = new KeyboardEvent('keydown', {
+    key,
+    code: key,
+    keyCode,
+    which: keyCode,
+    bubbles: true
+  });
+  document.dispatchEvent(keyboardEvent);
 }
 
 function cleanFileName(fileName) {

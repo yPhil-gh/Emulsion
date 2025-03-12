@@ -63,7 +63,7 @@ function initSlideShow(platformToDisplay) {
                 currentIndex = index; // Set the clicked slide as the current slide
                 updateCarousel();
             } else if (slide.classList.contains('active')) {
-                LB.utils.simulateKeyDown('Enter');
+                simulateKeyDown('Enter');
             }
         });
     });
@@ -73,20 +73,15 @@ function initSlideShow(platformToDisplay) {
     function onKeyDown (event) {
         event.stopPropagation();
         event.stopImmediatePropagation(); // Stops other listeners on the same element
-        if (event.key === 'ArrowRight') {
-            // document.getElementById('dpad-icon').src = '../img/controls/key-arrows-horiz-right.png';
 
+        switch (event.key) {
+        case 'ArrowRight':
             nextSlide();
-        } else if (event.key === 'ArrowLeft') {
-            // document.getElementById('dpad-icon').src = '../img/controls/key-arrows-horiz-left.png';
+            break;
+        case 'ArrowLeft':
             prevSlide();
-        } else if (event.key === 'Escape') {
-
-            window.control.showExitDialog();
-
-        } else if (event.key === 'Enter') {
-
-            console.log("currentIndex: ", currentIndex);
+            break;
+        case 'Enter':
 
             document.getElementById('slideshow').style.display = 'none';
             document.getElementById('galleries').style.display = "flex";
@@ -110,7 +105,9 @@ function initSlideShow(platformToDisplay) {
             } else {
                 initGallery(0, activePlatformName);
             }
-
+            break;
+        case 'Escape':
+            break;
         }
     }
 
@@ -128,8 +125,6 @@ function initGallery(currentIndex, disabledPlatform) {
     LB.utils.updateControls('dpad', 'button-dpad-nesw', 'same');
     LB.utils.updateControls('square', 'same', 'Fetch cover', 'on');
     LB.utils.updateControls('circle', 'same', 'Back');
-
-    console.log("disabledPlatform: ", disabledPlatform);
 
     const header = document.getElementById('header');
 
@@ -269,8 +264,8 @@ function initGallery(currentIndex, disabledPlatform) {
             event.stopImmediatePropagation(); // Stops other listeners on the same element
             const menuGameContainers = Array.from(menu.querySelectorAll('.menu-game-container'));
             console.log("menuGameContainers len: ", menuGameContainers.length);
-            switch (event.key) {
 
+            switch (event.key) {
             case 'ArrowRight':
                 if (event.shiftKey) {
                     // nextPage();
@@ -583,9 +578,9 @@ function initGallery(currentIndex, disabledPlatform) {
         } else {
             // Without Shift, simulate arrow key events
             if (event.deltaY > 0) {
-                LB.utils.simulateKeyDown('ArrowDown');
+                simulateKeyDown('ArrowDown');
             } else if (event.deltaY < 0) {
-                LB.utils.simulateKeyDown('ArrowUp');
+                simulateKeyDown('ArrowUp');
             }
         }
     });
@@ -596,7 +591,136 @@ function initGallery(currentIndex, disabledPlatform) {
 
 }
 
+function simulateKeyDown(key) {
+  const keyCode = key === 'ArrowDown' ? 40 : 38;
+  const keyboardEvent = new KeyboardEvent('keydown', {
+    key,
+    code: key,
+    keyCode,
+    which: keyCode,
+    bubbles: true
+  });
+  document.dispatchEvent(keyboardEvent);
+}
+
+function initGamepad () {
+    const gamepads = navigator.getGamepads();
+    const connected = Array.from(gamepads).some(gamepad => gamepad !== null);
+
+    if (connected) {
+        console.log('Gamepad connected at startup:', gamepads[0].id);
+    } else {
+        console.log('No gamepad connected at startup.');
+    }
+
+    const buttonStates = {
+        0: false, // Cross button (X)
+        1: false, // Circle button (O)
+        2: false, // Square button
+        3: false, // Triangle button
+        4: false, // L1 button
+        5: false, // R1 button
+        6: false, // L2 button
+        7: false, // R2 button
+        8: false, // Share button
+        9: false, // Options button
+        10: false, // L3 button (Left stick click)
+        11: false, // R3 button (Right stick click)
+        12: false, // D-pad up
+        13: false, // D-pad down
+        14: false, // D-pad left
+        15: false, // D-pad right
+        16: false, // PS button (Home button)
+    };
+
+    // Listen for gamepad connection events
+    window.addEventListener('gamepadconnected', (event) => {
+        console.log('Gamepad connected:', event.gamepad.id);
+        requestAnimationFrame(pollGamepad);
+    });
+
+    window.addEventListener('gamepaddisconnected', (event) => {
+        console.log('Gamepad disconnected:', event.gamepad.id);
+        cancelAnimationFrame(pollGamepad);
+    });
+
+    function pollGamepad() {
+        let animationFrameId = null;
+        // If the document doesn't have focus, simply skip processing
+        if (!document.hasFocus()) {
+            // Optionally, we can cancel polling here
+            // or simply schedule the next check
+            animationFrameId = requestAnimationFrame(pollGamepad);
+            return;
+        }
+
+        const gamepads = navigator.getGamepads();
+        const gamepad = gamepads[0]; // Use the first connected gamepad
+
+        if (gamepad) {
+            // Check all relevant buttons
+            [0, 1, 2, 3, 12, 13, 14, 15].forEach((buttonIndex) => {
+                const button = gamepad.buttons[buttonIndex];
+                const wasPressed = buttonStates[buttonIndex];
+
+                if (button.pressed && !wasPressed) {
+                    // Button is pressed for the first time
+                    buttonStates[buttonIndex] = true;
+                } else if (!button.pressed && wasPressed) {
+                    // Button is released
+                    buttonStates[buttonIndex] = false;
+                    console.log("Button released:", buttonIndex);
+
+                    // Trigger the action only on button release
+                    handleButtonPress(buttonIndex);
+                }
+            });
+        }
+
+        // Continue polling
+        animationFrameId = requestAnimationFrame(pollGamepad);
+    }
+
+    function handleButtonPress(buttonIndex) {
+
+        switch (buttonIndex) {
+        case 0:
+            simulateKeyDown('Enter');
+            break;
+        case 1:
+            simulateKeyDown('Escape');
+            break;
+        case 2:
+            simulateKeyDown('i');
+            break;
+        case 3:
+            console.log("3 (triangle)");
+            break;
+        case 12:
+            simulateKeyDown('ArrowUp');
+            break;
+        case 13:
+            simulateKeyDown('ArrowDown');
+            break;
+        case 14:
+            simulateKeyDown('ArrowLeft');
+            break;
+        case 15:
+            simulateKeyDown('ArrowRight');
+            break;
+        case 15:
+            simulateKeyDown('ArrowRight');
+            break;
+        case 15:
+            simulateKeyDown('ArrowRight');
+            break;
+        }
+    }
+
+}
+
 LB.control = {
     initGallery: initGallery,
-    initSlideShow: initSlideShow
+    initSlideShow: initSlideShow,
+    initGamepad: initGamepad
 };

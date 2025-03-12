@@ -2,8 +2,7 @@ const slideshow = document.getElementById("slideshow");
 window.topMenu = document.getElementById("top-menu");
 window.topMenuSlider = document.getElementById("top-menu-slider");
 
-
-// window.control.initGamepad();
+LB.control.initGamepad();
 
 function isPlatformValid(platformName, preferences) {
     if (typeof preferences !== 'object' || preferences === null) {

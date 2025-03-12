@@ -154,6 +154,7 @@ function capitalizeWord(word) {
     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
 }
 
+LB.platformNames = [];
 
 async function _loadUserData() {
     try {
@@ -162,6 +163,16 @@ async function _loadUserData() {
         LB.userDataPath = preferences.userDataPath;
         delete preferences.userDataPath;
         LB.preferences = preferences;
+
+        console.log("preferences: ", preferences);
+
+        LB.platformNames = Object.keys(preferences);
+
+        console.log("platformNames: ", LB.platformNames);
+
+        // preferences.forEach((platformName) => {
+        //     console.log("platformName: ", platformName);
+        // });
 
         return preferences;
     } catch (error) {

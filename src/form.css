@@ -75,6 +75,12 @@ td.col2 {
 
 input, button {
   width: 100%;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: bold;
+}
+
+button {
+  font-size: 16pt;
 }
 
 input[type="checkbox"] {
@@ -130,7 +136,7 @@ input[type="checkbox"] {
   background-color: white;
   color: black;
   border-radius: 5px;
-  padding: 0.2em;
+  padding: 0.2em 0.5em;
   font-size: 12pt;
 
   text-wrap: wrap;

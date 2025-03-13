@@ -143,9 +143,21 @@ function initGallery(currentIndex, disabledPlatform) {
     let currentPageIndex;
 
     let gameContainers;
+
+    function onGameContainerClick(event) {
+        ipcRenderer.send('run-command', event.currentTarget.dataset.command);
+    }
+
+
     function updateCarousel(direction) {
 
         pages.forEach((page, index) => {
+
+            gameContainers = Array.from(page.querySelectorAll('.game-container') || []);
+
+            gameContainers.forEach((container, index) => {
+                container.removeEventListener('click', onGameContainerClick);
+            });
 
             if (index === currentIndex) {
 
@@ -169,9 +181,7 @@ function initGallery(currentIndex, disabledPlatform) {
 
                 gameContainers.forEach((container, index) => {
 
-                    container.addEventListener('click', (event) => {
-                        ipcRenderer.send('run-command', event.currentTarget.dataset.command);
-                    });
+                    container.addEventListener('click', onGameContainerClick);
 
                     container.classList.remove('selected');
 

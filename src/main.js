@@ -241,12 +241,4 @@ ipcMain.handle('save-preferences', async (event, prefs) => {
     savePreferences(prefs);
 });
 
-ipcMain.handle('quit', async (event, prefs) => {
-    app.quit();
-});
-
-ipcMain.on('quit', () => {
-    app.quit();
-});
-
 app.whenReady().then(createWindows);

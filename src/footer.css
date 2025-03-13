@@ -45,6 +45,14 @@ footer #footer-menu {
   display: flex;
 }
 
+.center {
+  width: 450px;
+  align-items: center;
+  justify-content: space-evenly;
+  display: flex;
+  flex-direction: row;
+}
+
 footer .center {
   display: flex;
 }

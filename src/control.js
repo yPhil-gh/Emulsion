@@ -84,6 +84,7 @@ function initSlideShow(platformToDisplay) {
         case 'Enter':
 
             document.getElementById('slideshow').style.display = 'none';
+            document.getElementById('galleries').style.display = "flex";
             window.removeEventListener('keydown', onKeyDown);
 
             let activeGalleryIndex;
@@ -104,12 +105,8 @@ function initSlideShow(platformToDisplay) {
             } else {
                 initGallery(0, activePlatformName);
             }
-
-            document.getElementById('galleries').style.display = "flex";
-
             break;
         case 'Escape':
-            ipcRenderer.invoke('quit');
             break;
         }
     }
@@ -172,8 +169,7 @@ function initGallery(currentIndex, disabledPlatform) {
                 console.log("firstGameContainer: ", firstGameContainer);
 
                 document.querySelector('header .platform-name').textContent = LB.utils.capitalizeWord(page.dataset.platform);
-                // document.querySelector('header .platform-image img').src = `../img/platforms/${page.dataset.platform}.png`;
-                document.querySelector('header .platform-image').style.backgroundImage = `url('../img/platforms/${page.dataset.platform}.png')`;
+                document.querySelector('header .platform-image img').src = `../img/platforms/${page.dataset.platform}.png`;
 
                 document.querySelector('header .prev-link').onclick = function() {
                     prevPage();
@@ -241,11 +237,9 @@ function initGallery(currentIndex, disabledPlatform) {
 
     function _toggleMenu(gameContainers, selectedIndex, listener, isMenuOpen, platformToOpen) {
 
-        let headerTitle;
-
-        if (!isMenuOpen) {
-            headerTitle = document.querySelector('#header .platform-name').textContent;
-        }
+        // if (platformToOpen) {
+        //     _openMenu(disabledPlatform);
+        // }
 
         const menu = document.getElementById('menu');
         const menuContainer = document.getElementById('menu-container');
@@ -298,7 +292,7 @@ function initGallery(currentIndex, disabledPlatform) {
                 menuSelectedIndex = Math.min(menuSelectedIndex + LB.galleryNumOfCols, menuGameContainers.length);
                 break;
             case 'i':
-                _closeMenu(null, headerTitle);
+                _closeMenu();
                 break;
             case 'Enter':
                 const menuSelectedGame = LB.utils.getSelectedGame(menuGameContainers, menuSelectedIndex);
@@ -306,7 +300,7 @@ function initGallery(currentIndex, disabledPlatform) {
                 _closeMenu(menuSelectedGameImg.src);
                 break;
             case 'Escape':
-                _closeMenu(null, headerTitle);
+                _closeMenu();
                 break;
             }
 
@@ -338,73 +332,114 @@ function initGallery(currentIndex, disabledPlatform) {
             }
         };
 
-        function _openMenu(disabledPlatformName) {
+        async function _closeMenu(imgSrc) {
 
-            const headerTitle = document.querySelector('#header .platform-name').textContent;
+            document.querySelector('header .prev-link').style.opacity = 1;
+            document.querySelector('header .next-link').style.opacity = 1;
+
+            console.log("selectedIndex after: ", selectedIndex);
+
+            LB.imageSrc = imgSrc;
+            console.log("closeMenu: ");
+            document.getElementById('menu-container').innerHTML = '';
+            // footer.style.height = '100px'; // original height
+
+            menu.style.height = '0';
+
+            // controls.style.display = 'flex';
+            window.removeEventListener('keydown', menuOnKeyDown);
+            window.addEventListener('keydown', listener);
+
+            if (imgSrc) {
+                const selectedGameImg = selectedGame.querySelector('.game-image');
+                if (!selectedGameImg) return;
+
+                // LB.utils.updateControls('circle', 'same', 'Back');
+
+                // Create a burst effect by rapidly scaling and fading out
+                // selectedGameImg.style.transform = "scale(1.3)";
+                // selectedGameImg.style.opacity = "0";
+
+                selectedGameImg.src = imgSrc + '?t=' + new Date().getTime();
+
+                const spinner = document.createElement('div');
+                spinner.classList.add(`spinner-${Math.floor(Math.random() * 20) + 1}`, 'spinner');
+                spinner.classList.add('image-spinner');
+
+                selectedGame.appendChild(spinner);
+
+                selectedGameImg.onload = () => {
+                    // Zoom in with a punchy effect
+                    selectedGameImg.style.transform = "scale(1)";
+                    selectedGameImg.style.opacity = "1";
+                    spinner.remove();
+                };
+
+                downloadImage(imgSrc, selectedGame.dataset.platform, selectedGame.dataset.gameName);
+
+            }
+
+
+            isMenuOpen = false;
+        }
+
+        function _openMenu(platformToOpen) {
 
             document.querySelector('#header .prev-link').style.opacity = 0;
-            // document.querySelector('#header .platform-name').textContent = LB.utils.capitalizeWord(LB.platformNames[selectedIndex]);
-
             document.querySelector('#header .next-link').style.opacity = 0;
 
-            console.log("platformToOpen: ", LB.platformNames[selectedIndex]);
+            console.log("platformToOpen: ", platformToOpen);
 
             menuContainer.innerHTML = '';
 
             window.removeEventListener('keydown', listener);
             window.addEventListener('keydown', menuOnKeyDown);
 
+            menu.style.height = '81vh';
+
             gameContainers.forEach(async (container, index) => {
                 if (index === selectedIndex) {
 
+                    console.log("container: ", container);
+
                     if (container.classList.contains('settings')) {
 
-                        if (container.dataset.platform === 'settings') {
-                            console.log("bingo!");
-                            const settingsForm = LB.build.settingsForm();
-                            menuContainer.appendChild(settingsForm);
+                        const platformForm = LB.build.platformForm(platformToOpen || container.dataset.platform);
+                        menuContainer.appendChild(platformForm);
 
-                        } else {
+                        const platformToggle = document.getElementById('input-platform-toggle-checkbox');
 
-                            const platformForm = LB.build.platformForm(disabledPlatformName || container.dataset.platform);
-                            menuContainer.appendChild(platformForm);
+                        const isEnabled = document.getElementById('input-platform-toggle-checkbox');
+                        const gamesDirInput = document.getElementById('input-games-dir');
+                        const emulatorInput = document.getElementById('input-emulator');
+                        const emulatorArgs = document.getElementById('input-emulator-args');
 
-                            document.querySelector('header .platform-image').style.backgroundImage = `url('../img/platforms/${disabledPlatformName || container.dataset.platform}.png')`;
+                        const platformText = document.getElementById('platform-text-div');
 
-                            const platformToggle = document.getElementById('input-platform-toggle-checkbox');
+                        if (platformToggle) {
+                            platformToggle.addEventListener('click', (event) => {
+                                console.log("event: ", event);
 
-                            const isEnabled = document.getElementById('input-platform-toggle-checkbox');
-                            const gamesDirInput = document.getElementById('input-games-dir');
-                            const emulatorInput = document.getElementById('input-emulator');
-                            const emulatorArgs = document.getElementById('input-emulator-args');
+                                const gamesDir = gamesDirInput.value;
+                                const emulator = emulatorInput.value;
 
-                            const platformText = document.getElementById('platform-text-div');
+                                // Your condition to prevent checking
+                                const shouldPreventCheck = !gamesDir || !emulator;
 
-                            if (platformToggle) {
-                                platformToggle.addEventListener('click', (event) => {
-                                    console.log("event: ", event);
+                                console.log("shouldPreventCheck: ", shouldPreventCheck);
 
-                                    const gamesDir = gamesDirInput.value;
-                                    const emulator = emulatorInput.value;
-
-                                    // Your condition to prevent checking
-                                    const shouldPreventCheck = !gamesDir || !emulator;
-
-                                    console.log("shouldPreventCheck: ", shouldPreventCheck);
-
-                                    if (shouldPreventCheck) {
-                                        event.preventDefault(); // Prevent the checkbox from changing state
-                                        console.log("Checkbox state change prevented.");
-                                        platformText.textContent = 'Please provide both a games directory and an emulator and an emulator and an emulator.';
-                                    } else {
-                                        // Allow the checkbox to change state
-                                        // Update the label text after the state changes
-                                        platformToggle.addEventListener('change', () => {
-                                            document.getElementById('form-status-label').textContent = platformToggle.checked ? "Enabled" : "Disabled";
-                                        });
-                                    }
-                                });
-                            }
+                                if (shouldPreventCheck) {
+                                    event.preventDefault(); // Prevent the checkbox from changing state
+                                    console.log("Checkbox state change prevented.");
+                                    platformText.textContent = 'Please provide both a games directory and an emulator and an emulator and an emulator.';
+                                } else {
+                                    // Allow the checkbox to change state
+                                    // Update the label text after the state changes
+                                    platformToggle.addEventListener('change', () => {
+                                        document.getElementById('form-status-label').textContent = platformToggle.checked ? "Enabled" : "Disabled";
+                                    });
+                                }
+                            });
                         }
 
 
@@ -428,66 +463,15 @@ function initGallery(currentIndex, disabledPlatform) {
                 }
             });
 
-            menu.style.height = '83vh';
-
         }
 
-        async function _closeMenu(imgSrc, headerTitle) {
-
-            document.querySelector('header .prev-link').style.opacity = 1;
-            document.querySelector('#header .platform-name').textContent = headerTitle;
-            document.querySelector('header .next-link').style.opacity = 1;
-
-            console.log("selectedIndex after: ", selectedIndex);
-
-            console.log("closeMenu: ");
-            document.getElementById('menu-container').innerHTML = '';
-            // footer.style.height = '100px'; // original height
-
-            menu.style.height = '0';
-
-            // controls.style.display = 'flex';
-            window.removeEventListener('keydown', menuOnKeyDown);
-            window.addEventListener('keydown', listener);
-
-            if (imgSrc) {
-                const selectedGameImg = selectedGame.querySelector('.game-image');
-                if (!selectedGameImg) return;
-
-                LB.utils.updateControls('circle', 'same', 'Back');
-
-                // Create a burst effect by rapidly scaling and fading out
-                selectedGameImg.style.transform = "scale(1.3)";
-                selectedGameImg.style.opacity = "0";
-
-                selectedGameImg.src = imgSrc + '?t=' + new Date().getTime();
-
-                const spinner = document.createElement('div');
-                spinner.classList.add(`spinner-${Math.floor(Math.random() * 20) + 1}`, 'spinner');
-                spinner.classList.add('image-spinner');
-
-                selectedGame.appendChild(spinner);
-
-                selectedGameImg.onload = () => {
-                    // Zoom in with a punchy effect
-                    selectedGameImg.style.transform = "scale(1)";
-                    selectedGameImg.style.opacity = "1";
-                    spinner.remove();
-                };
-
-                downloadImage(imgSrc, selectedGame.dataset.platform, selectedGame.dataset.gameName);
-
-            }
-
-            isMenuOpen = false;
-        }
 
         if (!isMenuOpen) {
             console.log("disabledPlatformZ: ", disabledPlatform);
             _openMenu(disabledPlatform);
             isMenuOpen = true;
         } else {
-            _closeMenu(null, headerTitle);
+            _closeMenu();
             isMenuOpen = false;
         }
     }

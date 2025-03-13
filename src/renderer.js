@@ -60,6 +60,8 @@ function buildSlide(platformName, preferences) {
 LB.prefs.load()
     .then((preferences) => {
 
+        console.log("preferences: ", preferences);
+
         if (!preferences) {
             console.log("No preferences found, using default preferences");
         }

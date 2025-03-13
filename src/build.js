@@ -15,9 +15,7 @@ async function buildGameMenu(gameName, image) {
 
         document.body.appendChild(spinner);
 
-        // gameMenuContainer.appendChild(currentImageContainer);
-
-        console.log("currentImageContainer: ", currentImageContainer);
+        gameMenuContainer.appendChild(currentImageContainer);
 
         // Send a request to fetch images
         ipcRenderer.send('fetch-images', gameName);
@@ -143,130 +141,18 @@ function createFormTableRow(labelText, inputId, inputDescription, buttonText, pl
     return row;
 }
 
-function buildSettingsForm() {
-
-    const formTable = document.createElement('table');
-
-    const form = document.createElement('form');
-    form.id = 'platform-form';
-    form.className = 'platform-form';
-
-    const menuImageContainer = document.createElement('div');
-    menuImageContainer.className = 'menu-image-container';
-    const menuImage = document.createElement('img');
-    menuImage.src = path.join(LB.baseDir, 'img', 'emume.png');
-    menuImage.width = '250';
-    menuImageContainer.appendChild(menuImage);
-
-    const row0 = document.createElement('tr');
-    const row0td1 = document.createElement('td');
-    row0td1.colSpan = 3;
-    row0td1.style.textAlign = 'center';
-
-    row0td1.appendChild(menuImage);
-    row0.appendChild(row0td1);
-
-    // Row 1: Toggle switch and Platform label
-    const row1 = document.createElement('tr');
-    const row1td1 = document.createElement('td');
-    row1td1.className = 'form-checkbox-container';
-
-    const row1td2 = document.createElement('td');
-    const row1td3 = document.createElement('td');
-
-    row1td2.colSpan = 2;
-
-    row1.appendChild(row1td1);
-    row1.appendChild(row1td2);
-    row1.appendChild(row1td3);
-    form.appendChild(row1);
-
-    // Row 2: Details text
-    const row2 = document.createElement('tr');
-    const platformText = document.createElement('div');
-    const row2td1 = document.createElement('td');
-    row2td1.colSpan = 3;
-    platformText.id = 'platform-text-div';
-    platformText.textContent = 'plop';
-    row2td1.appendChild(platformText);
-    row2.appendChild(row2td1);
-
-    formTable.appendChild(row0);
-    formTable.appendChild(row1);
-    formTable.appendChild(row2);
-
-    const buttons = document.createElement('div');
-    buttons.className = 'buttons';
-
-    const cancelButton = document.createElement('button');
-    cancelButton.type = 'button';
-    cancelButton.className = 'button';
-    cancelButton.classList.add('info');
-    cancelButton.textContent = 'Cancel';
-
-    const donateButton = document.createElement('button');
-    donateButton.type = 'button';
-    donateButton.className = 'button';
-    donateButton.classList.add('success');
-    donateButton.textContent = 'Donate';
-
-    const saveButton = document.createElement('button');
-    saveButton.type = 'button';
-    saveButton.className = 'button';
-    saveButton.classList.add('success');
-    saveButton.textContent = 'Save';
-
-    buttons.appendChild(cancelButton);
-    buttons.appendChild(donateButton);
-    buttons.appendChild(saveButton);
-
-    function _formCancelButtonClick(event) {
-
-        const escapeKeyEvent = new KeyboardEvent('keydown', {
-            key: 'Escape',
-            keyCode: 27,
-            code: 'Escape', // The physical key on the keyboard
-            which: 27,     // Same as keyCode
-            bubbles: true
-        });
-
-        document.dispatchEvent(escapeKeyEvent);
-    }
-
-    async function _formSaveButtonClick(event) {
-
-        const isEnabled = document.getElementById('input-platform-toggle-checkbox').checked;
-        const gamesDir = document.getElementById('input-games-dir').value;
-        const emulator = document.getElementById('input-emulator').value;
-        const emulatorArgs = document.getElementById('input-emulator-args').value;
-
-        try {
-            await LB.prefs.save(platformName, 'isEnabled', isEnabled);
-            await LB.prefs.save(platformName, 'gamesDir', gamesDir);
-            await LB.prefs.save(platformName, 'emulator', emulator);
-            await LB.prefs.save(platformName, 'emulatorArgs', emulatorArgs);
-        } catch (error) {
-            console.error('Failed to save preferences:', error);
-        }
-    }
-
-    cancelButton.addEventListener('click', _formCancelButtonClick);
-    saveButton.addEventListener('click', _formSaveButtonClick);
-
-    form.appendChild(formTable);
-    form.appendChild(buttons);
-
-    return form;
-
-}
-
 function buildPlatformForm(platformName) {
 
+    const formContainer = document.createElement('div');
+    formContainer.id = 'form-container';
+
     const formTable = document.createElement('table');
 
     const form = document.createElement('form');
     form.id = 'platform-form';
     form.className = 'platform-form';
+
+    formContainer.appendChild(form);
 
     const menuImageContainer = document.createElement('div');
     menuImageContainer.className = 'menu-image-container';
@@ -412,6 +298,5 @@ function buildPlatformForm(platformName) {
 
 LB.build = {
     gameMenu: buildGameMenu,
-    platformForm: buildPlatformForm,
-    settingsForm: buildSettingsForm
+    platformForm: buildPlatformForm
 };

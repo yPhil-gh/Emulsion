@@ -57,3 +57,14 @@ header .platform-image img {
   transition: opacity 0.2s ease;
   cursor: pointer;
 }
+
+.left-links {
+  display: flex;
+}
+
+.left-links .back-link {
+  display: none;
+  /* position: relative; */
+  /* left: 0; */
+  /* top: 0; */
+}

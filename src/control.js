@@ -358,15 +358,7 @@ function initGallery(currentIndex, disabledPlatform) {
 
             menu.style.height = '83vh';
 
-            const prevLink = document.querySelector('#header .prev-link');
-
-            prevLink.textContent = 'Back';
-
-            prevLink.addEventListener('click', (event) => {
-
-                simulateKeyDown('Escape');
-            });
-
+            document.querySelector('#header .prev-link').style.opacity = 0;
             document.querySelector('#header .next-link').style.opacity = 0;
 
             console.log("platformToOpen: ", platformToOpen);
@@ -414,7 +406,7 @@ function initGallery(currentIndex, disabledPlatform) {
                                 if (shouldPreventCheck) {
                                     event.preventDefault(); // Prevent the checkbox from changing state
                                     console.log("Checkbox state change prevented.");
-                                    platformText.textContent = 'Please provide both a games directory and an emulator.';
+                                    platformText.textContent = 'Please provide both a games directory and an emulator and an emulator and an emulator.';
                                 } else {
                                     // Allow the checkbox to change state
                                     // Update the label text after the state changes
@@ -514,6 +506,7 @@ function initGallery(currentIndex, disabledPlatform) {
 
     function galleryKeyDown(event) {
         // event.preventDefault(); // Prevent default scrolling behavior
+        console.log("event.keyCode: ", event.keyCode);
         switch (event.key) {
         case 'ArrowRight':
             if (event.shiftKey) {
@@ -628,17 +621,40 @@ function initGallery(currentIndex, disabledPlatform) {
 }
 
 function simulateKeyDown(key) {
-    const keyCode = key === 'ArrowDown' ? 40 : 38;
-    // Escape 27
+
+    let keyCode;
+    switch (key) {
+    case 'ArrowLeft':
+        keyCode = 37;
+        break;
+    case 'ArrowRight':
+        keyCode = 39;
+        break;
+    case 'ArrowUp':
+        keyCode = 38;
+        break;
+    case 'ArrowDown':
+        keyCode = 40;
+        break;
+    case 'Shift':
+        keyCode = 16;
+        break;
+    case 'Enter':
+        keyCode = 13;
+        break;
+    case 'Escape':
+        keyCode = 27;
+        break;
+    }
 
     const keyboardEvent = new KeyboardEvent('keydown', {
-    key,
-    code: key,
-    keyCode,
-    which: keyCode,
-    bubbles: true
-  });
-  document.dispatchEvent(keyboardEvent);
+        key:key,
+        code: key,
+        keyCode:keyCode,
+        which: keyCode,
+        bubbles: true
+    });
+    document.dispatchEvent(keyboardEvent);
 }
 
 function initGamepad () {

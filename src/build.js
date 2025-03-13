@@ -143,16 +143,11 @@ function createFormTableRow(labelText, inputId, inputDescription, buttonText, pl
 
 function buildPlatformForm(platformName) {
 
-    const formContainer = document.createElement('div');
-    formContainer.id = 'form-container';
-
     const formTable = document.createElement('table');
 
     const form = document.createElement('form');
     form.id = 'platform-form';
     form.className = 'platform-form';
-
-    formContainer.appendChild(form);
 
     const menuImageContainer = document.createElement('div');
     menuImageContainer.className = 'menu-image-container';

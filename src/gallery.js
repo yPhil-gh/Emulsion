@@ -117,6 +117,7 @@ function buildSettingsPageContent(platforms) {
     const pageContent = document.createElement('div');
     pageContent.classList.add('page-content');
 
+    let i = 0;
     platforms.forEach((platformName) => {
         // if (platformName === "settings") return;
 
@@ -125,6 +126,7 @@ function buildSettingsPageContent(platforms) {
         platformContainer.title = platformName;
         platformContainer.classList.add('settings');
         platformContainer.setAttribute('data-platform', platformName);
+        platformContainer.setAttribute('data-index', i);
 
         const platformNameElement = document.createElement('div');
         platformNameElement.textContent = platformName;
@@ -139,6 +141,7 @@ function buildSettingsPageContent(platforms) {
         platformContainer.appendChild(platformImage);
 
         pageContent.appendChild(platformContainer);
+        i++;
     });
 
     return pageContent;
@@ -168,7 +171,6 @@ async function buildGallery(params) {
     page.classList.add('page');
     page.id = `page${index}`;
     page.setAttribute('data-platform', platform);
-    page.setAttribute('data-index', index);
 
     const pagePrevLink = document.createElement('a');
     pagePrevLink.classList.add('page-link');
@@ -219,6 +221,7 @@ async function buildGallery(params) {
             gameContainer.setAttribute('data-game-name', fileNameWithoutExt);
             gameContainer.setAttribute('data-platform', platform);
             gameContainer.setAttribute('data-command', `${emulator} ${emulatorArgs || ""} "${gameFile}"`);
+            gameContainer.setAttribute('data-index', i);
 
             // Set the container size based on the column width
             // gameContainer.style.width = `${columnWidth}px`;

@@ -143,6 +143,11 @@ function initGallery(currentIndex, disabledPlatform) {
     let currentPageIndex;
 
     let gameContainers;
+
+    function gameContainerClick(event) {
+        ipcRenderer.send('run-command', event.currentTarget.dataset.command);
+    }
+
     function updateCarousel(direction) {
         pages.forEach((page, index) => {
             if (index === currentIndex) {
@@ -160,7 +165,17 @@ function initGallery(currentIndex, disabledPlatform) {
                 gameContainers.forEach((container, index) => {
 
                     container.addEventListener('click', (event) => {
-                        ipcRenderer.send('run-command', event.currentTarget.dataset.command);
+
+                        console.log("event.currentTarget: ", event.currentTarget);
+                        if (event.currentTarget.classList.contains('settings')) {
+                            console.log("event.currentTarget.dataset.index: ", event.currentTarget.dataset.index / 1); // cast
+                            console.log("currentIndex: ", currentIndex);
+
+                            _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), event.currentTarget.dataset.index / 1, galleryKeyDown, false, disabledPlatform);
+
+                        } else {
+                            ipcRenderer.send('run-command', event.currentTarget.dataset.command);
+                        }
                     });
 
                     container.classList.remove('selected');
@@ -168,13 +183,13 @@ function initGallery(currentIndex, disabledPlatform) {
 
                 const firstGameContainer = page.querySelector('.game-container');
 
-                // firstGameContainer.classList.add('selected');
-                // firstGameContainer.focus();
-                // firstGameContainer.scrollIntoView({
-                //         behavior: "instant",
-                //         block: "center"
-                //     });
-                // console.log("firstGameContainer: ", firstGameContainer);
+                firstGameContainer.classList.add('selected');
+                firstGameContainer.focus();
+                firstGameContainer.scrollIntoView({
+                        behavior: "instant",
+                        block: "center"
+                    });
+                console.log("firstGameContainer: ", firstGameContainer);
 
                 document.querySelector('header .platform-name').textContent = LB.utils.capitalizeWord(page.dataset.platform);
                 // document.querySelector('header .platform-image img').src = `../img/platforms/${page.dataset.platform}.png`;

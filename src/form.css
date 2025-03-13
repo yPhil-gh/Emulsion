@@ -38,6 +38,11 @@
 /* Buttons */
 button {
   padding: 8px 12px;
+  font-family: var(--font-main);
+
+  font-weight: bold;
+  font-size: 16pt;
+
   color: black;
   border: none;
   border-radius: 4px;

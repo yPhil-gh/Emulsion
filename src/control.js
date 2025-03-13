@@ -84,7 +84,6 @@ function initSlideShow(platformToDisplay) {
         case 'Enter':
 
             document.getElementById('slideshow').style.display = 'none';
-            document.getElementById('galleries').style.display = "flex";
             window.removeEventListener('keydown', onKeyDown);
 
             let activeGalleryIndex;
@@ -105,8 +104,12 @@ function initSlideShow(platformToDisplay) {
             } else {
                 initGallery(0, activePlatformName);
             }
+
+            document.getElementById('galleries').style.display = "flex";
+
             break;
         case 'Escape':
+            ipcRenderer.invoke('quit');
             break;
         }
     }
@@ -169,8 +172,8 @@ function initGallery(currentIndex, disabledPlatform) {
                 console.log("firstGameContainer: ", firstGameContainer);
 
                 document.querySelector('header .platform-name').textContent = LB.utils.capitalizeWord(page.dataset.platform);
-                document.querySelector('header .platform-image img').src = `../img/platforms/${page.dataset.platform}.png`;
-
+                // document.querySelector('header .platform-image img').src = `../img/platforms/${page.dataset.platform}.png`;
+                document.querySelector('header .platform-image').style.backgroundImage = `url('../img/platforms/${page.dataset.platform}.png')`;
                 document.querySelector('header .prev-link').onclick = function() {
                     prevPage();
                 };
@@ -385,6 +388,8 @@ function initGallery(currentIndex, disabledPlatform) {
 
         function _openMenu(platformToOpen) {
 
+            menu.style.height = '83vh';
+
             document.querySelector('#header .prev-link').style.opacity = 0;
             document.querySelector('#header .next-link').style.opacity = 0;
 
@@ -395,7 +400,6 @@ function initGallery(currentIndex, disabledPlatform) {
             window.removeEventListener('keydown', listener);
             window.addEventListener('keydown', menuOnKeyDown);
 
-            menu.style.height = '81vh';
 
             gameContainers.forEach(async (container, index) => {
                 if (index === selectedIndex) {

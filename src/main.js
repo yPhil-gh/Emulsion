@@ -119,8 +119,8 @@ ipcMain.handle('select-file-or-directory', async (event, property) => {
 });
 
 ipcMain.handle('go-to-url', async (event, link) => {
-    console.log("url: ", link.url);
-    // shell.openExternal(link.url);
+    console.log("url: ", link);
+    shell.openExternal(link);
     return true;
 });
 
@@ -239,6 +239,10 @@ ipcMain.handle('load-preferences', () => {
 ipcMain.handle('save-preferences', async (event, prefs) => {
     console.log("prefs: ", prefs);
     savePreferences(prefs);
+});
+
+ipcMain.handle('quit', () => {
+    app.quit();
 });
 
 app.whenReady().then(createWindows);

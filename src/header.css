@@ -7,6 +7,29 @@ header {
   z-index: 12;
 }
 
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    text-align: center;
+    font-size: 28pt;
+    font-weight: bold;
+    color: white;
+    position: relative;
+}
+
+header .platform-image {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.3; /* Adjust for visibility */
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
 header .platform-image img {
   width: 50px;
 }

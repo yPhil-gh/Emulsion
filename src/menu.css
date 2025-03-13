@@ -18,7 +18,7 @@
 
   /* flex-direction: column; */
   align-items: stretch;
-
+  overflow: hidden;
   bottom: 100px;
   /* transition: height 0.3s ease; */
   /* border-top: 15px solid var(--footer-bg-color); */

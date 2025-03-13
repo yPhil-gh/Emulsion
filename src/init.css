@@ -1,4 +1,5 @@
 :root {
+  --font-main: 'Orbitron', sans-serif;
   --glow-color: 167, 230, 255;
   --color-focus: ##F034FD;
   --color-border: #999;
@@ -24,7 +25,7 @@
 body {
   background-color: #000814;
   color: #93FFD8;
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-main);
   letter-spacing: 1px;
   margin: 0;
   padding: 0;

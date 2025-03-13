@@ -1,3 +1,84 @@
+function openMenu(platformToOpen, selectedIndex, gameContainers) {
+
+    document.getElementById('menu').style.height = '83vh';
+
+    document.querySelector('#header .prev-link').style.opacity = 0;
+    document.querySelector('#header .next-link').style.opacity = 0;
+
+    console.log("platformToOpen: ", platformToOpen);
+
+    const menuContainer = document.getElementById('menu-container');
+
+    menuContainer.innerHTML = '';
+
+    gameContainers.forEach(async (container, index) => {
+        if (index === selectedIndex) {
+
+            console.log("container: ", container);
+
+            if (container.classList.contains('settings')) {
+
+                const platformForm = LB.build.platformForm(platformToOpen || container.dataset.platform);
+                menuContainer.appendChild(platformForm);
+
+                const platformToggle = document.getElementById('input-platform-toggle-checkbox');
+
+                const isEnabled = document.getElementById('input-platform-toggle-checkbox');
+                const gamesDirInput = document.getElementById('input-games-dir');
+                const emulatorInput = document.getElementById('input-emulator');
+                const emulatorArgs = document.getElementById('input-emulator-args');
+
+                const platformText = document.getElementById('platform-text-div');
+
+                if (platformToggle) {
+                    platformToggle.addEventListener('click', (event) => {
+                        console.log("event: ", event);
+
+                        const gamesDir = gamesDirInput.value;
+                        const emulator = emulatorInput.value;
+
+                        // Your condition to prevent checking
+                        const shouldPreventCheck = !gamesDir || !emulator;
+
+                        console.log("shouldPreventCheck: ", shouldPreventCheck);
+
+                        if (shouldPreventCheck) {
+                            event.preventDefault(); // Prevent the checkbox from changing state
+                            console.log("Checkbox state change prevented.");
+                            platformText.textContent = 'Please provide both a games directory and an emulator and an emulator and an emulator.';
+                        } else {
+                            // Allow the checkbox to change state
+                            // Update the label text after the state changes
+                            platformToggle.addEventListener('change', () => {
+                                document.getElementById('form-status-label').textContent = platformToggle.checked ? "Enabled" : "Disabled";
+                            });
+                        }
+                    });
+                }
+
+
+            } else {
+                const gameImage = container.querySelector('img');
+                await LB.build.gameMenu(container.title, gameImage)
+                    .then((gameMenu) => {
+
+                        menuContainer.appendChild(gameMenu);
+
+                        const spinner = document.body.querySelector('.spinner');
+                        setTimeout(() => spinner.remove(), 500);
+
+                        const menuGameContainers = Array.from(gameMenu.querySelectorAll('.menu-game-container'));
+                        console.log("menuGameContainers len: ", menuGameContainers.length);
+
+                    });
+
+            }
+
+        }
+    });
+
+}
+
 function initSlideShow(platformToDisplay) {
 
     LB.utils.updateControls('dpad', 'button-dpad-ew', 'same');
@@ -342,18 +423,14 @@ function initGallery(currentIndex, disabledPlatform) {
 
         function _openMenu(platformToOpen) {
 
-            menu.style.height = '83vh';
+            document.getElementById('menu').style.height = '83vh';
 
             document.querySelector('#header .prev-link').style.opacity = 0;
             document.querySelector('#header .next-link').style.opacity = 0;
 
             console.log("platformToOpen: ", platformToOpen);
 
-            menuContainer.innerHTML = '';
-
-            window.removeEventListener('keydown', listener);
-            window.addEventListener('keydown', menuKeyDown);
-
+            document.getElementById('menu-container').innerHTML = '';
 
             gameContainers.forEach(async (container, index) => {
                 if (index === selectedIndex) {
@@ -425,6 +502,14 @@ function initGallery(currentIndex, disabledPlatform) {
 
         async function _closeMenu(imgSrc) {
 
+            window.removeEventListener('keydown', menuKeyDown);
+            window.addEventListener('keydown', listener);
+
+            const spinner = document.body.querySelector('.spinner');
+            if (spinner) {
+                spinner.remove();
+            }
+
             document.querySelector('header .prev-link').style.opacity = 1;
             document.querySelector('header .next-link').style.opacity = 1;
 
@@ -436,10 +521,6 @@ function initGallery(currentIndex, disabledPlatform) {
             // footer.style.height = '100px'; // original height
 
             menu.style.height = '0';
-
-            // controls.style.display = 'flex';
-            window.removeEventListener('keydown', menuKeyDown);
-            window.addEventListener('keydown', listener);
 
             if (imgSrc) {
                 const selectedGameImg = selectedGame.querySelector('.game-image');
@@ -477,9 +558,16 @@ function initGallery(currentIndex, disabledPlatform) {
 
         if (!isMenuOpen) {
             console.log("disabledPlatformZ: ", disabledPlatform);
-            _openMenu(disabledPlatform);
+
+            window.removeEventListener('keydown', listener);
+            window.addEventListener('keydown', menuKeyDown);
+
+            openMenu(disabledPlatform, selectedIndex, gameContainers);
             isMenuOpen = true;
         } else {
+
+            // controls.style.display = 'flex';
+
             _closeMenu();
             isMenuOpen = false;
         }

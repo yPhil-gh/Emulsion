@@ -113,6 +113,37 @@ function findImageFile(basePath, fileNameWithoutExt) {
     return null;
 }
 
+function buildSettingsPageContent(platforms) {
+    const pageContent = document.createElement('div');
+    pageContent.classList.add('page-content');
+
+    platforms.forEach((platformName) => {
+        // if (platformName === "settings") return;
+
+        const platformContainer = document.createElement('div');
+        platformContainer.classList.add('game-container', 'platform-container');
+        platformContainer.title = platformName;
+        platformContainer.classList.add('settings');
+        platformContainer.setAttribute('data-platform', platformName);
+
+        const platformNameElement = document.createElement('div');
+        platformNameElement.textContent = platformName;
+        platformNameElement.classList.add('platform-name');
+
+        const platformImage = document.createElement('img');
+        platformImage.src = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
+        platformImage.classList.add('platform-image');
+        platformImage.classList.add('game-image');
+
+        // platformContainer.appendChild(platformNameElement);
+        platformContainer.appendChild(platformImage);
+
+        pageContent.appendChild(platformContainer);
+    });
+
+    return pageContent;
+}
+
 // Build the gallery for a specific platform
 async function buildGallery(params) {
     const platform = params.platform;
@@ -154,7 +185,7 @@ async function buildGallery(params) {
     let pageContent;
 
     if (platform === "settings") {
-        pageContent = LB.build.platformSettingsPage(platforms);
+        pageContent = buildSettingsPageContent(platforms);
     } else {
         pageContent = document.createElement('div');
         pageContent.classList.add('page-content');
@@ -193,9 +224,9 @@ async function buildGallery(params) {
             // gameContainer.style.width = `${columnWidth}px`;
             // gameContainer.style.height = `${columnWidth}px`; // Placeholder height (square)
 
-            // gameContainer.addEventListener('click', (event) => {
-            //     ipcRenderer.send('run-command', event.currentTarget.dataset.command);
-            // });
+            gameContainer.addEventListener('click', (event) => {
+                ipcRenderer.send('run-command', event.currentTarget.dataset.command);
+            });
 
             const gameImage = document.createElement('img');
             gameImage.src = isImgExists ? coverImagePath : missingImagePath;

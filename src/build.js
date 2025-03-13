@@ -141,41 +141,6 @@ function createFormTableRow(labelText, inputId, inputDescription, buttonText, pl
     return row;
 }
 
-function buildPlatformSettingsPage(platforms) {
-    const pageContent = document.createElement('div');
-    pageContent.classList.add('page-content');
-
-    platforms.forEach((platformName) => {
-        // if (platformName === "settings") return;
-
-        const platformContainer = document.createElement('div');
-        platformContainer.classList.add('game-container', 'platform-container');
-        platformContainer.title = platformName;
-        platformContainer.classList.add('settings');
-        platformContainer.setAttribute('data-platform', platformName);
-
-        // platformContainer.addEventListener('click', (event) => {
-        //     console.log("event.currentTarget: ", event.currentTarget);
-        // });
-
-        const platformNameElement = document.createElement('div');
-        platformNameElement.textContent = platformName;
-        platformNameElement.classList.add('platform-name');
-
-        const platformImage = document.createElement('img');
-        platformImage.src = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
-        platformImage.classList.add('platform-image');
-        platformImage.classList.add('game-image');
-
-        // platformContainer.appendChild(platformNameElement);
-        platformContainer.appendChild(platformImage);
-
-        pageContent.appendChild(platformContainer);
-    });
-
-    return pageContent;
-}
-
 function buildPlatformForm(platformName) {
 
     const formContainer = document.createElement('div');
@@ -333,6 +298,5 @@ function buildPlatformForm(platformName) {
 
 LB.build = {
     gameMenu: buildGameMenu,
-    platformForm: buildPlatformForm,
-    platformSettingsPage: buildPlatformSettingsPage
+    platformForm: buildPlatformForm
 };

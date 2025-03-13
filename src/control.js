@@ -68,9 +68,9 @@ function initSlideShow(platformToDisplay) {
         });
     });
 
-    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keydown', homeKeyDown);
 
-    function onKeyDown (event) {
+    function homeKeyDown (event) {
         event.stopPropagation();
         event.stopImmediatePropagation(); // Stops other listeners on the same element
 
@@ -84,7 +84,7 @@ function initSlideShow(platformToDisplay) {
         case 'Enter':
 
             document.getElementById('slideshow').style.display = 'none';
-            window.removeEventListener('keydown', onKeyDown);
+            window.removeEventListener('keydown', homeKeyDown);
 
             let activeGalleryIndex;
             let numberOfPlatforms = 0;
@@ -168,13 +168,13 @@ function initGallery(currentIndex, disabledPlatform) {
 
                 const firstGameContainer = page.querySelector('.game-container');
 
-                firstGameContainer.classList.add('selected');
-                firstGameContainer.focus();
-                firstGameContainer.scrollIntoView({
-                        behavior: "instant",
-                        block: "center"
-                    });
-                console.log("firstGameContainer: ", firstGameContainer);
+                // firstGameContainer.classList.add('selected');
+                // firstGameContainer.focus();
+                // firstGameContainer.scrollIntoView({
+                //         behavior: "instant",
+                //         block: "center"
+                //     });
+                // console.log("firstGameContainer: ", firstGameContainer);
 
                 document.querySelector('header .platform-name').textContent = LB.utils.capitalizeWord(page.dataset.platform);
                 // document.querySelector('header .platform-image img').src = `../img/platforms/${page.dataset.platform}.png`;
@@ -238,10 +238,10 @@ function initGallery(currentIndex, disabledPlatform) {
     let ImageMenuSelectedIndex = 0;
 
     if (disabledPlatform) {
-        _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), selectedIndex, _handleKeyDown, isMenuOpen, disabledPlatform);
+        _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), selectedIndex, galleryKeyDown, isMenuOpen, disabledPlatform);
     }
 
-    console.log("gameContainers, selectedIndex, _handleKeyDown, isMenuOpen, disabledPlatform: ", gameContainers, selectedIndex, _handleKeyDown, isMenuOpen, disabledPlatform);
+    console.log("gameContainers, selectedIndex, _handleKeyDown, isMenuOpen, disabledPlatform: ", gameContainers, selectedIndex, galleryKeyDown, isMenuOpen, disabledPlatform);
 
     function _toggleMenu(gameContainers, selectedIndex, listener, isMenuOpen, platformToOpen) {
 
@@ -262,7 +262,7 @@ function initGallery(currentIndex, disabledPlatform) {
         const selectedGame = LB.utils.getSelectedGame(gameContainers, selectedIndex);
         const selectedGameImg = selectedGame.querySelector('.game-image');
 
-        function menuOnKeyDown(event) {
+        function menuKeyDown(event) {
 
             console.log("menuSelectedIndex: ", menuSelectedIndex);
 
@@ -340,57 +340,6 @@ function initGallery(currentIndex, disabledPlatform) {
             }
         };
 
-        async function _closeMenu(imgSrc) {
-
-            document.querySelector('header .prev-link').style.opacity = 1;
-            document.querySelector('header .next-link').style.opacity = 1;
-
-            console.log("selectedIndex after: ", selectedIndex);
-
-            LB.imageSrc = imgSrc;
-            console.log("closeMenu: ");
-            document.getElementById('menu-container').innerHTML = '';
-            // footer.style.height = '100px'; // original height
-
-            menu.style.height = '0';
-
-            // controls.style.display = 'flex';
-            window.removeEventListener('keydown', menuOnKeyDown);
-            window.addEventListener('keydown', listener);
-
-            if (imgSrc) {
-                const selectedGameImg = selectedGame.querySelector('.game-image');
-                if (!selectedGameImg) return;
-
-                // LB.utils.updateControls('circle', 'same', 'Back');
-
-                // Create a burst effect by rapidly scaling and fading out
-                // selectedGameImg.style.transform = "scale(1.3)";
-                // selectedGameImg.style.opacity = "0";
-
-                selectedGameImg.src = imgSrc + '?t=' + new Date().getTime();
-
-                const spinner = document.createElement('div');
-                spinner.classList.add(`spinner-${Math.floor(Math.random() * 20) + 1}`, 'spinner');
-                spinner.classList.add('image-spinner');
-
-                selectedGame.appendChild(spinner);
-
-                selectedGameImg.onload = () => {
-                    // Zoom in with a punchy effect
-                    selectedGameImg.style.transform = "scale(1)";
-                    selectedGameImg.style.opacity = "1";
-                    spinner.remove();
-                };
-
-                downloadImage(imgSrc, selectedGame.dataset.platform, selectedGame.dataset.gameName);
-
-            }
-
-
-            isMenuOpen = false;
-        }
-
         function _openMenu(platformToOpen) {
 
             menu.style.height = '83vh';
@@ -403,7 +352,7 @@ function initGallery(currentIndex, disabledPlatform) {
             menuContainer.innerHTML = '';
 
             window.removeEventListener('keydown', listener);
-            window.addEventListener('keydown', menuOnKeyDown);
+            window.addEventListener('keydown', menuKeyDown);
 
 
             gameContainers.forEach(async (container, index) => {
@@ -474,6 +423,57 @@ function initGallery(currentIndex, disabledPlatform) {
 
         }
 
+        async function _closeMenu(imgSrc) {
+
+            document.querySelector('header .prev-link').style.opacity = 1;
+            document.querySelector('header .next-link').style.opacity = 1;
+
+            console.log("selectedIndex after: ", selectedIndex);
+
+            LB.imageSrc = imgSrc;
+            console.log("closeMenu: ");
+            document.getElementById('menu-container').innerHTML = '';
+            // footer.style.height = '100px'; // original height
+
+            menu.style.height = '0';
+
+            // controls.style.display = 'flex';
+            window.removeEventListener('keydown', menuKeyDown);
+            window.addEventListener('keydown', listener);
+
+            if (imgSrc) {
+                const selectedGameImg = selectedGame.querySelector('.game-image');
+                if (!selectedGameImg) return;
+
+                // LB.utils.updateControls('circle', 'same', 'Back');
+
+                // Create a burst effect by rapidly scaling and fading out
+                // selectedGameImg.style.transform = "scale(1.3)";
+                // selectedGameImg.style.opacity = "0";
+
+                selectedGameImg.src = imgSrc + '?t=' + new Date().getTime();
+
+                const spinner = document.createElement('div');
+                spinner.classList.add(`spinner-${Math.floor(Math.random() * 20) + 1}`, 'spinner');
+                spinner.classList.add('image-spinner');
+
+                selectedGame.appendChild(spinner);
+
+                selectedGameImg.onload = () => {
+                    // Zoom in with a punchy effect
+                    selectedGameImg.style.transform = "scale(1)";
+                    selectedGameImg.style.opacity = "1";
+                    spinner.remove();
+                };
+
+                downloadImage(imgSrc, selectedGame.dataset.platform, selectedGame.dataset.gameName);
+
+            }
+
+
+            isMenuOpen = false;
+        }
+
 
         if (!isMenuOpen) {
             console.log("disabledPlatformZ: ", disabledPlatform);
@@ -485,7 +485,7 @@ function initGallery(currentIndex, disabledPlatform) {
         }
     }
 
-    function _handleKeyDown(event) {
+    function galleryKeyDown(event) {
         // event.preventDefault(); // Prevent default scrolling behavior
         switch (event.key) {
         case 'ArrowRight':
@@ -526,7 +526,7 @@ function initGallery(currentIndex, disabledPlatform) {
             break;
         case 'i':
             console.log("i: isMenuOpen: ", isMenuOpen);
-            _toggleMenu(gameContainers, selectedIndex, _handleKeyDown, isMenuOpen);
+            _toggleMenu(gameContainers, selectedIndex, galleryKeyDown, isMenuOpen);
             // window.removeEventListener('keydown', _handleKeyDown);
             break;
         case 'F5':
@@ -538,7 +538,7 @@ function initGallery(currentIndex, disabledPlatform) {
             console.log("currentPageIndex: ", currentPageIndex);
 
             if (currentPageIndex === 0) {
-                _toggleMenu(gameContainers, selectedIndex, _handleKeyDown, isMenuOpen);
+                _toggleMenu(gameContainers, selectedIndex, galleryKeyDown, isMenuOpen);
             } else {
                 ipcRenderer.send('run-command', selectedGame.dataset.command);
             }
@@ -547,7 +547,7 @@ function initGallery(currentIndex, disabledPlatform) {
         case 'Escape':
             document.getElementById('slideshow').style.display = 'flex';
             document.getElementById('galleries').style.display = 'none';
-            window.removeEventListener('keydown', _handleKeyDown);
+            window.removeEventListener('keydown', galleryKeyDown);
             LB.control.initSlideShow(currentIndex);
             break;
         default:
@@ -594,7 +594,7 @@ function initGallery(currentIndex, disabledPlatform) {
         }
     });
 
-    window.addEventListener('keydown', _handleKeyDown);
+    window.addEventListener('keydown', galleryKeyDown);
     // Initialize the carousel
     updateCarousel(gameContainers);
 

@@ -12,8 +12,8 @@
 .page {
   position: absolute;
   width: 100vw;
-  /* height: 80%; */
-  background-color: rgba(0, 0, 0, 0.8);
+  height: 100vh;
+  background-color: var(--color-bg1);
   opacity: 1;
   transition: transform 0.5s ease;
 
@@ -110,7 +110,7 @@ div.menu-game-container {
 
 div.platform-container {
   justify-content: center;
-  height: 12vh;
+  padding: 0.5em;
 }
 
 .game-image {
@@ -118,7 +118,7 @@ div.platform-container {
     height: auto; /* Maintain aspect ratio */
     height: 100%;
     /* object-fit: cover; /\* Ensure images fill the space without distortion *\/ */
-    object-fit: contain; /* Show full image without cropping */
+    /* object-fit: contain; /\* Show full image without cropping *\/ */
     display: block; /* Remove extra space under inline elements */
     /* aspect-ratio: 4 / 3; /\* Prevent layout shifts *\/ */
     transition: transform 0.2s ease-out, opacity 0.2s ease-out;
@@ -131,12 +131,12 @@ div.platform-container {
 }
 
 .game-label {
-  background-color: rgba(0, 0, 0, 0.5); /* Black with 50% transparency */
+  background-color: rgba(0, 0, 0, 0.6); /* Black with 50% transparency */
   margin-top: 5px;
   font-size: 12px;
 
   width: 100%;
-  height: 30px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;

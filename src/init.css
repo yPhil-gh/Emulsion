@@ -23,7 +23,7 @@
 }
 
 body {
-  background-color: #000814;
+  background-color: var(--color-bg1);
   color: #93FFD8;
   font-family: var(--font-main);
   letter-spacing: 1px;
@@ -90,22 +90,6 @@ footer  {
 .icon {
   width: 70px;
   height: 70px;
-}
-
-#loading-screen {
-  position: absolute;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  top: 0;
-  left: 0;
-  /* min-width: 100%; */
-  /* min-height: 100%; */
-  width: 400px;
-  background-color: black;
-  z-index: 500;
 }
 
 /* ::-webkit-scrollbar { */

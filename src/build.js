@@ -181,9 +181,19 @@ function buildPlatformForm(platformName) {
     statusCheckBox.type = 'checkbox';
     statusCheckBox.id = 'input-platform-toggle-checkbox';
 
-    const statusLabel = document.createElement('span');
+    const statusLabel = document.createElement('div');
     statusLabel.id = 'form-status-label';
     statusLabel.setAttribute('for', 'input-platform-toggle-checkbox');
+
+    const statusLabelPlatormName = document.createElement('span');
+    statusLabelPlatormName.id = 'form-status-label-platform-name';
+    statusLabelPlatormName.textContent = `${platformName} is `;
+
+    const statusLabelPlatormStatus = document.createElement('span');
+    statusLabelPlatormStatus.id = 'form-status-label-platform-status';
+
+    statusLabel.appendChild(statusLabelPlatormName);
+    statusLabel.appendChild(statusLabelPlatormStatus);
 
     row1td2.colSpan = 2;
     row1td1.appendChild(statusCheckBox);
@@ -278,8 +288,7 @@ function buildPlatformForm(platformName) {
         .then((value) => {
             console.log("value!", value);
             statusCheckBox.checked = value;
-            // statusCheckBox.dispatchEvent(new Event('change'));
-            statusLabel.textContent = `${platformName} is ${value ? 'Enabled' : 'Disabled'}`;
+            statusLabelPlatormStatus.textContent = value ? 'On' : 'Off';
         })
         .catch((error) => {
             console.error('Failed to get platform preference:', error);

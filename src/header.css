@@ -1,33 +1,52 @@
 header {
   top: 0;
   display: none;
-  justify-content: space-around;
+  justify-content: space-between;
   border-bottom: 1px solid var(--color-bg1);
   height: 101px;
   z-index: 12;
 }
 
 .center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100px;
-    text-align: center;
-    font-size: 28pt;
-    font-weight: bold;
-    color: white;
-    position: relative;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  height: 100px;
+  text-align: center;
+  font-size: 28pt;
+  font-weight: bold;
+  color: white;
 }
 
 header .platform-image {
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    opacity: 0.3; /* Adjust for visibility */
-    position: absolute;
-    top: 0;
-    left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.5;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+header .platform-name {
+  opacity: 1;
+  z-index: 2;
+}
+
+header .platform-stats {
+  display: flex;
+  flex-direction: row;
+  font-size: 12pt;
+  z-index: 2;
+}
+
+header .spacer {
+  width: 0.5em;
 }
 
 header .platform-image img {
@@ -35,6 +54,6 @@ header .platform-image img {
 }
 
 .pages-nav-links {
-    transition: opacity 0.2s ease;
-    cursor: pointer;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
 }

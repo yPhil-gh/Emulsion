@@ -89,7 +89,6 @@ LB.prefs.load()
         const galleriesContainer = document.getElementById('galleries');
         galleriesContainer.style.display = 'none';
         LB.control.initSlideShow();
-        document.getElementById("loading-screen").style.display = 'none';
 
         // document.getElementById("header").style.display = 'flex';
         document.getElementById("main").style.display = 'flex';

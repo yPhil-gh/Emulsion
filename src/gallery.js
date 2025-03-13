@@ -223,14 +223,6 @@ async function buildGallery(params) {
             gameContainer.setAttribute('data-command', `${emulator} ${emulatorArgs || ""} "${gameFile}"`);
             gameContainer.setAttribute('data-index', i);
 
-            // Set the container size based on the column width
-            // gameContainer.style.width = `${columnWidth}px`;
-            // gameContainer.style.height = `${columnWidth}px`; // Placeholder height (square)
-
-            // gameContainer.addEventListener('click', (event) => {
-            //     ipcRenderer.send('run-command', event.currentTarget.dataset.command);
-            // });
-
             const gameImage = document.createElement('img');
             gameImage.src = isImgExists ? coverImagePath : missingImagePath;
             gameImage.classList.add('game-image');

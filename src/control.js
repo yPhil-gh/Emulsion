@@ -144,7 +144,9 @@ function initGallery(currentIndex, disabledPlatform) {
 
     let gameContainers;
     function updateCarousel(direction) {
+
         pages.forEach((page, index) => {
+
             if (index === currentIndex) {
 
                 page.scrollIntoView({
@@ -155,7 +157,15 @@ function initGallery(currentIndex, disabledPlatform) {
                 currentPageIndex = currentIndex;
                 gameContainers = Array.from(page.querySelectorAll('.game-container') || []);
 
-                console.log("gameContainers.length: ", gameContainers.length);
+                const firstGameContainer = page.querySelector('.game-container');
+
+                firstGameContainer.classList.add('selected');
+                firstGameContainer.focus();
+                firstGameContainer.scrollIntoView({
+                    behavior: "instant",
+                    block: "center"
+                });
+                console.log("firstGameContainer: ", firstGameContainer);
 
                 gameContainers.forEach((container, index) => {
 
@@ -164,17 +174,20 @@ function initGallery(currentIndex, disabledPlatform) {
                     });
 
                     container.classList.remove('selected');
-                });
 
-                const firstGameContainer = page.querySelector('.game-container');
-
-                firstGameContainer.classList.add('selected');
-                firstGameContainer.focus();
-                firstGameContainer.scrollIntoView({
-                        behavior: "instant",
-                        block: "center"
+                    container.addEventListener('mouseenter', (event) => {
+                        gameContainers.forEach((container, index) => {
+                            container.classList.remove('selected');
+                        });
+                        container.classList.add('selected');
                     });
-                console.log("firstGameContainer: ", firstGameContainer);
+
+                    container.addEventListener('mouseleave', (event) => {
+                        container.classList.remove('selected');
+                    });
+
+                    // container.classList.remove('selected');
+                });
 
                 document.querySelector('header .platform-name').textContent = LB.utils.capitalizeWord(page.dataset.platform);
                 // document.querySelector('header .platform-image img').src = `../img/platforms/${page.dataset.platform}.png`;

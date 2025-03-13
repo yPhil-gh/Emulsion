@@ -143,22 +143,8 @@ function initGallery(currentIndex, disabledPlatform) {
     let currentPageIndex;
 
     let gameContainers;
-
-    function onGameContainerClick(event) {
-        ipcRenderer.send('run-command', event.currentTarget.dataset.command);
-    }
-
-
     function updateCarousel(direction) {
-
         pages.forEach((page, index) => {
-
-            gameContainers = Array.from(page.querySelectorAll('.game-container') || []);
-
-            gameContainers.forEach((container, index) => {
-                container.removeEventListener('click', onGameContainerClick);
-            });
-
             if (index === currentIndex) {
 
                 page.scrollIntoView({
@@ -169,35 +155,26 @@ function initGallery(currentIndex, disabledPlatform) {
                 currentPageIndex = currentIndex;
                 gameContainers = Array.from(page.querySelectorAll('.game-container') || []);
 
+                console.log("gameContainers.length: ", gameContainers.length);
+
+                gameContainers.forEach((container, index) => {
+
+                    container.addEventListener('click', (event) => {
+                        ipcRenderer.send('run-command', event.currentTarget.dataset.command);
+                    });
+
+                    container.classList.remove('selected');
+                });
+
                 const firstGameContainer = page.querySelector('.game-container');
 
                 firstGameContainer.classList.add('selected');
                 firstGameContainer.focus();
                 firstGameContainer.scrollIntoView({
-                    behavior: "instant",
-                    block: "center"
-                });
+                        behavior: "instant",
+                        block: "center"
+                    });
                 console.log("firstGameContainer: ", firstGameContainer);
-
-                gameContainers.forEach((container, index) => {
-
-                    container.addEventListener('click', onGameContainerClick);
-
-                    container.classList.remove('selected');
-
-                    container.addEventListener('mouseenter', (event) => {
-                        gameContainers.forEach((container, index) => {
-                            container.classList.remove('selected');
-                        });
-                        container.classList.add('selected');
-                    });
-
-                    container.addEventListener('mouseleave', (event) => {
-                        container.classList.remove('selected');
-                    });
-
-                    // container.classList.remove('selected');
-                });
 
                 document.querySelector('header .platform-name').textContent = LB.utils.capitalizeWord(page.dataset.platform);
                 // document.querySelector('header .platform-image img').src = `../img/platforms/${page.dataset.platform}.png`;

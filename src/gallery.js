@@ -224,9 +224,9 @@ async function buildGallery(params) {
             // gameContainer.style.width = `${columnWidth}px`;
             // gameContainer.style.height = `${columnWidth}px`; // Placeholder height (square)
 
-            gameContainer.addEventListener('click', (event) => {
-                ipcRenderer.send('run-command', event.currentTarget.dataset.command);
-            });
+            // gameContainer.addEventListener('click', (event) => {
+            //     ipcRenderer.send('run-command', event.currentTarget.dataset.command);
+            // });
 
             const gameImage = document.createElement('img');
             gameImage.src = isImgExists ? coverImagePath : missingImagePath;

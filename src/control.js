@@ -158,6 +158,11 @@ function initGallery(currentIndex, disabledPlatform) {
                 console.log("gameContainers.length: ", gameContainers.length);
 
                 gameContainers.forEach((container, index) => {
+
+                    container.addEventListener('click', (event) => {
+                        ipcRenderer.send('run-command', event.currentTarget.dataset.command);
+                    });
+
                     container.classList.remove('selected');
                 });
 

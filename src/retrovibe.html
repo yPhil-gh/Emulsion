@@ -63,7 +63,7 @@
          const SUN_BASE_RADIUS = 120; // Doubled from original 60
          const GLOW_SCALE = 6; // Increased from 4
          let sunYOffset = 0; // Added for vertical movement
-         const SUN_SPEED = 0.9; // Pixels per frame
+         const SUN_SPEED = 0.4; // Pixels per frame
          const MAX_SUN_TRAVEL = height - horizon - 100; // Stop when logo reaches 100px from top
 
          // Logo configuration
@@ -391,18 +391,12 @@
          function updateLogoPosition() {
              const travelRatio = sunYOffset / MAX_SUN_TRAVEL;
              logoY = height + 200 - (height - LOGO_FINAL_Y + 200) * travelRatio;
-             if(sunYOffset >= MAX_SUN_TRAVEL) logoY = LOGO_FINAL_Y;
-         }
 
-         function update() {
-             gridOffset += gridSpeed;
-             if(gridOffset > numGridLines) gridOffset = 0;
-             updateStars();
-             updateShootingStars();
-             spawnShootingStar();
-
-             if(sunYOffset < MAX_SUN_TRAVEL) sunYOffset += SUN_SPEED;
-             updateLogoPosition();
+             sunYOffset += SUN_SPEED; // Ensure sunYOffset updates consistently
+             if (sunYOffset >= MAX_SUN_TRAVEL) {
+                 sunYOffset = MAX_SUN_TRAVEL;
+                 logoY = LOGO_FINAL_Y;
+             }
          }
 
          function update() {
@@ -424,14 +418,15 @@
              ctx.fillRect(0, 0, width, horizon);
              drawStars();
              drawShootingStars();
+             drawLogo();
              drawSun();
+
+             // Foreground elements
              ctx.fillStyle = "#000000";
              ctx.fillRect(0, horizon, width, height - horizon);
              drawGrid();
-
-             // Foreground logo
-             drawLogo();
          }
+
 
          // Mouse listeners
          canvas.addEventListener('mousemove', (e) => {

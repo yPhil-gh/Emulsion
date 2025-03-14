@@ -365,8 +365,8 @@
 
          // In drawLogo() function:
          function drawLogo() {
-             const scale = 1.5;
-             const baseX = width/2 - 120; // Center 500px wide logo
+             const scale = 1.0;
+             const baseX = width/2 - 248; // Center 500px wide logo
 
              ctx.save();
              ctx.translate(baseX, logoY);
@@ -403,23 +403,6 @@
 
              if(sunYOffset < MAX_SUN_TRAVEL) sunYOffset += SUN_SPEED;
              updateLogoPosition();
-         }
-
-         function draw() {
-             ctx.clearRect(0, 0, width, height);
-
-             // Background elements
-             ctx.fillStyle = "#000000";
-             ctx.fillRect(0, 0, width, horizon);
-             drawStars();
-             drawShootingStars();
-             drawSun();
-             ctx.fillStyle = "#000000";
-             ctx.fillRect(0, horizon, width, height - horizon);
-             drawGrid();
-
-             // Foreground logo
-             drawLogo();
          }
 
          function update() {

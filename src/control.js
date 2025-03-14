@@ -654,6 +654,7 @@ function simulateKeyDown(key) {
         which: keyCode,
         bubbles: true
     });
+
     document.dispatchEvent(keyboardEvent);
 }
 

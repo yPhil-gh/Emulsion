@@ -1,265 +1,254 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>80s Sunset Scene with Relief</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background: black;
-    }
-    canvas {
-      display: block;
-    }
-  </style>
-</head>
-<body>
-  <canvas id="canvas"></canvas>
-  <script>
-   const canvas = document.getElementById('canvas');
-   const ctx = canvas.getContext('2d');
-   let width = canvas.width = window.innerWidth;
-   let height = canvas.height = window.innerHeight;
-   const horizon = height * 2 / 3;
+    <head>
+        <meta charset="utf-8">
+        <title>80s Sunset Scene with Relief</title>
+        <style>
+         html, body {
+             margin: 0;
+             padding: 0;
+             overflow: hidden;
+             background: black;
+         }
+         canvas {
+             display: block;
+         }
+        </style>
+    </head>
+    <body>
+        <canvas id="canvas"></canvas>
+        <script>
+         const canvas = document.getElementById('canvas');
+         const ctx = canvas.getContext('2d');
+         let width = canvas.width = window.innerWidth;
+         let height = canvas.height = window.innerHeight;
+         const horizon = height * 2 / 3;
+
+         // ============================
+         // STARFIELD (top half)
+         // ============================
+         const starCount = 200;
+         let stars = [];
+         let shootingStars = [];
+         for (let i = 0; i < starCount; i++) {
+             stars.push({
+                 x: Math.random() * width,
+                 y: Math.random() * horizon,
+                 size: Math.random() * 1.5 + 0.5,
+                 speed: Math.random() * 0.2 + 0.05,
+                 opacity: Math.random() * 0.5 + 0.5
+             });
+         }
+
+         function spawnShootingStar() {
+             if (shootingStars.length < 1 && Math.random() < 0.005) {
+                 shootingStars.push({
+                     x: Math.random() * width,
+                     y: Math.random() * horizon * 0.5,
+                     len: Math.random() * 80 + 80,
+                     speed: Math.random() * 10 + 10,
+                     angle: Math.PI / 4,
+                     life: 0,
+                     maxLife: 30 + Math.random() * 30
+                 });
+             }
+         }
+
+         function updateStars() {
+             for (let star of stars) {
+                 star.x -= star.speed;
+                 if (star.x < 0) star.x = width;
+             }
+         }
+
+         function updateShootingStars() {
+             for (let i = shootingStars.length - 1; i >= 0; i--) {
+                 let s = shootingStars[i];
+                 s.x += s.speed * Math.cos(s.angle);
+                 s.y += s.speed * Math.sin(s.angle);
+                 s.life++;
+                 if (s.life > s.maxLife) {
+                     shootingStars.splice(i, 1);
+                 }
+             }
+         }
+
+         function drawStars() {
+             ctx.fillStyle = "white";
+             for (let star of stars) {
+                 ctx.globalAlpha = star.opacity;
+                 ctx.beginPath();
+                 ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                 ctx.fill();
+             }
+             ctx.globalAlpha = 1;
+         }
+
+         function drawShootingStars() {
+             ctx.strokeStyle = "white";
+             ctx.lineWidth = 2;
+             for (let s of shootingStars) {
+                 ctx.beginPath();
+                 ctx.moveTo(s.x, s.y);
+                 ctx.lineTo(s.x - s.len * Math.cos(s.angle), s.y - s.len * Math.sin(s.angle));
+                 ctx.stroke();
+             }
+         }
+
+         // ============================
+         // SETTING SUN (at the horizon)
+         // ============================
+         function drawSun() {
+             const sunRadius = 60;
+             const sunX = width / 2;
+             const sunY = horizon;
+             ctx.beginPath();
+             ctx.arc(sunX, sunY, sunRadius, Math.PI, 2 * Math.PI);
+             let gradient = ctx.createLinearGradient(0, sunY - sunRadius, 0, sunY);
+             gradient.addColorStop(0, "#FF4500");
+             gradient.addColorStop(1, "#FFD700");
+             ctx.fillStyle = gradient;
+             ctx.fill();
+             const numLines = 6;
+             for (let i = 0; i < numLines; i++) {
+                 let lineY = sunY - sunRadius + (i + 1) * (sunRadius / (numLines + 1));
+                 ctx.beginPath();
+                 let dx = Math.sqrt(sunRadius * sunRadius - Math.pow(sunY - lineY, 2));
+                 ctx.moveTo(sunX - dx, lineY);
+                 ctx.lineTo(sunX + dx, lineY);
+                 ctx.lineWidth = 1 + (i / numLines) * 3;
+                 ctx.strokeStyle = "rgba(0,0,0,0.3)";
+                 ctx.stroke();
+             }
+         }
+
 
    // ============================
-   // STARFIELD (top half)
+   // GRID SYSTEM WITH STABLE RELIEF
    // ============================
-   const starCount = 200;
-   let stars = [];
-   let shootingStars = [];
-   for (let i = 0; i < starCount; i++) {
-       stars.push({
-           x: Math.random() * width,
-           y: Math.random() * horizon,
-           size: Math.random() * 1.5 + 0.5,
-           speed: Math.random() * 0.2 + 0.05,
-           opacity: Math.random() * 0.5 + 0.5
-       });
-   }
-
-   function spawnShootingStar() {
-       if (shootingStars.length < 1 && Math.random() < 0.005) {
-           shootingStars.push({
-               x: Math.random() * width,
-               y: Math.random() * horizon * 0.5,
-               len: Math.random() * 80 + 80,
-               speed: Math.random() * 10 + 10,
-               angle: Math.PI / 4,
-               life: 0,
-               maxLife: 30 + Math.random() * 30
-           });
-       }
-   }
-
-   function updateStars() {
-       for (let star of stars) {
-           star.x -= star.speed;
-           if (star.x < 0) star.x = width;
-       }
-   }
-
-   function updateShootingStars() {
-       for (let i = shootingStars.length - 1; i >= 0; i--) {
-           let s = shootingStars[i];
-           s.x += s.speed * Math.cos(s.angle);
-           s.y += s.speed * Math.sin(s.angle);
-           s.life++;
-           if (s.life > s.maxLife) {
-               shootingStars.splice(i, 1);
-           }
-       }
-   }
-
-   function drawStars() {
-       ctx.fillStyle = "white";
-       for (let star of stars) {
-           ctx.globalAlpha = star.opacity;
-           ctx.beginPath();
-           ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-           ctx.fill();
-       }
-       ctx.globalAlpha = 1;
-   }
-
-   function drawShootingStars() {
-       ctx.strokeStyle = "white";
-       ctx.lineWidth = 2;
-       for (let s of shootingStars) {
-           ctx.beginPath();
-           ctx.moveTo(s.x, s.y);
-           ctx.lineTo(s.x - s.len * Math.cos(s.angle), s.y - s.len * Math.sin(s.angle));
-           ctx.stroke();
-       }
-   }
-
-   // ============================
-   // SETTING SUN (at the horizon)
-   // ============================
-   function drawSun() {
-       const sunRadius = 60;
-       const sunX = width / 2;
-       const sunY = horizon;
-       ctx.beginPath();
-       ctx.arc(sunX, sunY, sunRadius, Math.PI, 2 * Math.PI);
-       let gradient = ctx.createLinearGradient(0, sunY - sunRadius, 0, sunY);
-       gradient.addColorStop(0, "#FF4500");
-       gradient.addColorStop(1, "#FFD700");
-       ctx.fillStyle = gradient;
-       ctx.fill();
-       const numLines = 6;
-       for (let i = 0; i < numLines; i++) {
-           let lineY = sunY - sunRadius + (i + 1) * (sunRadius / (numLines + 1));
-           ctx.beginPath();
-           let dx = Math.sqrt(sunRadius * sunRadius - Math.pow(sunY - lineY, 2));
-           ctx.moveTo(sunX - dx, lineY);
-           ctx.lineTo(sunX + dx, lineY);
-           ctx.lineWidth = 1 + (i / numLines) * 3;
-           ctx.strokeStyle = "rgba(0,0,0,0.3)";
-           ctx.stroke();
-       }
-   }
-
-   // ============================
-   // PERSPECTIVE GRID WITH RELIEF
-   // ============================
+   const numGridLines = 40;
+   const numGridCols = 30;
+   const gridSpeed = 0.08;
    let gridOffset = 0;
-   const numGridLines = 30;
-   const numGridCols = 20;
-   const gridSpeed = 0.05;
-   const reliefMap = []; // Store lifted points
 
-   function createRelief() {
-       // Create a relief map with random lifted points
-       for (let i = 0; i <= numGridCols; i++) {
-           reliefMap[i] = [];
-           for (let j = 0; j < numGridLines; j++) {
-               // 15% chance to create a lifted point
-               reliefMap[i][j] = Math.random() < 0.15 ? Math.random() * 30 + 15 : 0;
-           }
-       }
-   }
+   // Relief pattern storage
+   const reliefMap = Array(numGridCols + 1).fill().map(() =>
+       Array(numGridLines).fill().map(() =>
+           Math.random() < 0.12 ? Math.random() * 35 + 15 : 0
+       )
+   );
 
    function drawGrid() {
        ctx.strokeStyle = "#00FFFF";
        ctx.lineWidth = 1;
        ctx.globalAlpha = 0.6;
 
-       // Create horizontal coordinates with relief
-       const horizontalYs = [];
-       for (let i = 0; i < numGridLines; i++) {
-           let t = (i + gridOffset) % numGridLines;
-           let perspective = t / numGridLines;
-           let y = horizon + (height - horizon) * Math.pow(perspective, 2);
-           horizontalYs.push(y);
-       }
+       // Calculate horizontal positions with seamless wrap
+       const horizontalPositions = Array(numGridLines).fill().map((_, i) => {
+           const t = (i + gridOffset) % numGridLines;
+           const perspective = t / numGridLines;
+           return {
+               yBase: horizon + (height - horizon) * Math.pow(perspective, 2),
+               t: perspective
+           };
+       });
 
-       // Draw vertical lines with relief
-       const roadHalfWidth = 150;
-       for (let i = 0; i <= numGridCols; i++) {
-           const xBottom = (i / numGridCols) * width;
-           const f = i / numGridCols;
-           const vanishX = (1 - f) * (width / 2 - roadHalfWidth) + f * (width / 2 + roadHalfWidth);
+       // Draw vertical lines with coordinated relief
+       const roadHalfWidth = 180;
+       for(let col = 0; col <= numGridCols; col++) {
+           const xNorm = col / numGridCols;
+           const vanishX = width/2 - roadHalfWidth + xNorm * 2 * roadHalfWidth;
 
            ctx.beginPath();
-           let lastY = height;
-           let lastX = xBottom;
+           let lastPoint = null;
 
-           for (let j = 0; j < horizontalYs.length; j++) {
-               const baseY = horizontalYs[j];
-               const lift = reliefMap[i][j];
-               const y = baseY - lift;
+           horizontalPositions.forEach((pos, row) => {
+               const lift = reliefMap[col][row];
+               const y = pos.yBase - lift;
+               const x = xNorm * width + (vanishX - xNorm * width) * (1 - pos.t);
 
-               // Calculate x position at this elevation
-               const t = (baseY - horizon) / (height - horizon);
-               const x = xBottom + (vanishX - xBottom) * (1 - t);
-
-               if (j === 0) {
+               if(row === 0) {
                    ctx.moveTo(x, y);
+                   lastPoint = {x, y};
                } else {
-                   // Add some curvature to the relief
+                   // Smooth connection to previous point
+                   const cpX = (lastPoint.x + x) / 2;
+                   const cpY = (lastPoint.y + y) / 2 - lift * 0.4;
+                   ctx.quadraticCurveTo(cpX, cpY, x, y);
+                   lastPoint = {x, y};
+               }
+           });
+           ctx.stroke();
+       }
+
+       // Draw horizontal lines with connected relief
+       horizontalPositions.forEach((pos, row) => {
+           ctx.beginPath();
+           let lastX = null, lastY = null;
+
+           for(let col = 0; col <= numGridCols; col++) {
+               const xNorm = col / numGridCols;
+               const vanishX = width/2 - roadHalfWidth + xNorm * 2 * roadHalfWidth;
+               const lift = reliefMap[col][row];
+               const y = pos.yBase - lift;
+               const x = xNorm * width + (vanishX - xNorm * width) * (1 - pos.t);
+
+               if(col === 0) {
+                   ctx.moveTo(x, y);
+                   lastX = x;
+                   lastY = y;
+               } else {
+                   // Mirror vertical line curvature
                    const cpX = (lastX + x) / 2;
-                   const cpY = (lastY + y) / 2 - lift * 0.5;
+                   const cpY = (lastY + y) / 2 - lift * 0.3;
                    ctx.quadraticCurveTo(cpX, cpY, x, y);
-               }
-
-               lastX = x;
-               lastY = y;
-           }
-           ctx.stroke();
-       }
-
-       // Draw horizontal lines with relief
-       for (let j = 0; j < horizontalYs.length; j++) {
-           const baseY = horizontalYs[j];
-           ctx.beginPath();
-           let firstX = 0;
-
-           for (let i = 0; i <= numGridCols; i++) {
-               const lift = reliefMap[i][j];
-               const y = baseY - lift;
-               const f = i / numGridCols;
-               const vanishX = (1 - f) * (width / 2 - roadHalfWidth) + f * (width / 2 + roadHalfWidth);
-               const t = (baseY - horizon) / (height - horizon);
-               const x = (i / numGridCols) * width + (vanishX - (i / numGridCols) * width) * (1 - t);
-
-               if (i === 0) {
-                   firstX = x;
-                   ctx.moveTo(x, y);
-               } else {
-                   // Add curvature mirroring vertical lines
-                   const prevX = (i - 1) / numGridCols * width + (vanishX - ((i - 1)/numGridCols * width)) * (1 - t);
-                   const cpX = (prevX + x) / 2;
-                   const cpY = (y + y) / 2 - lift * 0.3;
-                   ctx.quadraticCurveTo(cpX, cpY, x, y);
+                   lastX = x;
+                   lastY = y;
                }
            }
            ctx.stroke();
-       }
+       });
 
        ctx.globalAlpha = 1;
-   }
+         }
 
-   // ============================
-   // ANIMATION LOOP
-   // ============================
-   function update() {
-       gridOffset += gridSpeed;
-       if (gridOffset > numGridLines) gridOffset = 0;
-       updateStars();
-       updateShootingStars();
-       spawnShootingStar();
-   }
+         // ============================
+         // ANIMATION LOOP
+         // ============================
+         function update() {
+             gridOffset += gridSpeed;
+             if (gridOffset > numGridLines) gridOffset = 0;
+             updateStars();
+             updateShootingStars();
+             spawnShootingStar();
+         }
 
-   function draw() {
-       ctx.clearRect(0, 0, width, height);
-       ctx.fillStyle = "#000000";
-       ctx.fillRect(0, 0, width, horizon);
-       drawStars();
-       drawShootingStars();
-       drawSun();
-       ctx.fillStyle = "#000040";
-       ctx.fillRect(0, horizon, width, height - horizon);
-       drawGrid();
-   }
+         function draw() {
+             ctx.clearRect(0, 0, width, height);
+             ctx.fillStyle = "#000000";
+             ctx.fillRect(0, 0, width, horizon);
+             drawStars();
+             drawShootingStars();
+             drawSun();
+             ctx.fillStyle = "#000000";
+             ctx.fillRect(0, horizon, width, height - horizon);
+             drawGrid();
+         }
 
-   function loop() {
-       update();
-       draw();
-       requestAnimationFrame(loop);
-   }
+         function loop() {
+             update();
+             draw();
+             requestAnimationFrame(loop);
+         }
 
-   // Initialize relief map and start animation
-   createRelief();
-   loop();
+         /* createRelief(); */
+         loop();
 
-   window.addEventListener('resize', () => {
-       width = canvas.width = window.innerWidth;
-       height = canvas.height = window.innerHeight;
-       createRelief(); // Regenerate relief map on resize
-   });
-  </script>
-</body>
+         window.addEventListener('resize', () => {
+             width = canvas.width = window.innerWidth;
+             height = canvas.height = window.innerHeight;
+             createRelief();
+         });
+        </script>
+    </body>
 </html>

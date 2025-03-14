@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>80s Sunset Scene</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: black;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <script>
+   const canvas = document.getElementById('canvas');
+   const ctx = canvas.getContext('2d');
+   let width = canvas.width = window.innerWidth;
+   let height = canvas.height = window.innerHeight;
+   // Lower the horizon: 2/3 of the screen is sky, 1/3 is floor.
+   const horizon = height * 2 / 3;
+
+   // ============================
+   // STARFIELD (top half)
+   // ============================
+   const starCount = 200;
+   let stars = [];
+   let shootingStars = [];
+   for (let i = 0; i < starCount; i++) {
+       stars.push({
+           x: Math.random() * width,
+           y: Math.random() * horizon,
+           size: Math.random() * 1.5 + 0.5,
+           speed: Math.random() * 0.2 + 0.05,
+           opacity: Math.random() * 0.5 + 0.5
+       });
+   }
+
+   // Occasionally spawn a shooting star
+   function spawnShootingStar() {
+       if (shootingStars.length < 1 && Math.random() < 0.005) {
+           shootingStars.push({
+               x: Math.random() * width,
+               y: Math.random() * horizon * 0.5, // spawn in the upper half of the sky
+               len: Math.random() * 80 + 80,
+               speed: Math.random() * 10 + 10,
+               angle: Math.PI / 4, // 45° diagonal downward/right
+               life: 0,
+               maxLife: 30 + Math.random() * 30
+           });
+       }
+   }
+
+   function updateStars() {
+       for (let star of stars) {
+           star.x -= star.speed;
+           if (star.x < 0) star.x = width;
+       }
+   }
+
+   function updateShootingStars() {
+       for (let i = shootingStars.length - 1; i >= 0; i--) {
+           let s = shootingStars[i];
+           s.x += s.speed * Math.cos(s.angle);
+           s.y += s.speed * Math.sin(s.angle);
+           s.life++;
+           if (s.life > s.maxLife) {
+               shootingStars.splice(i, 1);
+           }
+       }
+   }
+
+   function drawStars() {
+       ctx.fillStyle = "white";
+       for (let star of stars) {
+           ctx.globalAlpha = star.opacity;
+           ctx.beginPath();
+           ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+           ctx.fill();
+       }
+       ctx.globalAlpha = 1;
+   }
+
+   function drawShootingStars() {
+       ctx.strokeStyle = "white";
+       ctx.lineWidth = 2;
+       for (let s of shootingStars) {
+           ctx.beginPath();
+           ctx.moveTo(s.x, s.y);
+           ctx.lineTo(s.x - s.len * Math.cos(s.angle), s.y - s.len * Math.sin(s.angle));
+           ctx.stroke();
+       }
+   }
+
+   // ============================
+   // SETTING SUN (at the horizon)
+   // ============================
+   function drawSun() {
+       const sunRadius = 60;
+       const sunX = width / 2;
+       const sunY = horizon; // align with the horizon
+       ctx.beginPath();
+       ctx.arc(sunX, sunY, sunRadius, Math.PI, 2 * Math.PI);
+       let gradient = ctx.createLinearGradient(0, sunY - sunRadius, 0, sunY);
+       gradient.addColorStop(0, "#FF4500");
+       gradient.addColorStop(1, "#FFD700");
+       ctx.fillStyle = gradient;
+       ctx.fill();
+       const numLines = 6;
+       for (let i = 0; i < numLines; i++) {
+           let lineY = sunY - sunRadius + (i + 1) * (sunRadius / (numLines + 1));
+           ctx.beginPath();
+           let dx = Math.sqrt(sunRadius * sunRadius - Math.pow(sunY - lineY, 2));
+           ctx.moveTo(sunX - dx, lineY);
+           ctx.lineTo(sunX + dx, lineY);
+           ctx.lineWidth = 1 + (i / numLines) * 3;
+           ctx.strokeStyle = "rgba(0,0,0,0.3)";
+           ctx.stroke();
+       }
+   }
+
+   // ============================
+   // PERSPECTIVE GRID (bottom half)
+   // ============================
+   let gridOffset = 0;
+   const numGridLines = 30;
+   const numGridCols = 20; // original vertical divisions
+   const gridSpeed = 0.05; // original grid movement speed
+
+   function drawGrid() {
+       ctx.strokeStyle = "#00FFFF"; // retro neon cyan
+       ctx.lineWidth = 1;
+       ctx.globalAlpha = 0.6;
+
+       // Draw horizontal grid lines with perspective spacing
+       for (let i = 0; i < numGridLines; i++) {
+           let t = (i + gridOffset) % numGridLines;
+           let perspective = t / numGridLines;
+           // Using a squared function for non-linear (perspective) spacing:
+           let y = horizon + (height - horizon) * Math.pow(perspective, 2);
+           ctx.beginPath();
+           ctx.moveTo(0, y);
+           ctx.lineTo(width, y);
+           ctx.stroke();
+       }
+
+       // Parameter to widen the road at the horizon:
+       const roadHalfWidth = 150; // increases the horizontal span at the horizon
+
+       // Draw vertical grid lines: Instead of converging to a single point,
+       // they now converge to points along a horizontal line segment.
+       for (let i = 0; i <= numGridCols; i++) {
+           let xBottom = (i / numGridCols) * width;
+           let f = i / numGridCols;
+           let vanishX = (1 - f) * (width / 2 - roadHalfWidth) + f * (width / 2 + roadHalfWidth);
+           ctx.beginPath();
+           ctx.moveTo(xBottom, height);
+           ctx.lineTo(vanishX, horizon);
+           ctx.stroke();
+       }
+       ctx.globalAlpha = 1;
+   }
+
+   // ============================
+   // ANIMATION LOOP
+   // ============================
+   function update() {
+       gridOffset += gridSpeed;
+       if (gridOffset > numGridLines) gridOffset = 0;
+       updateStars();
+       updateShootingStars();
+       spawnShootingStar();
+   }
+
+   function draw() {
+       ctx.clearRect(0, 0, width, height);
+
+       // Top half: night sky with stars and setting sun
+       ctx.fillStyle = "black";
+       ctx.fillRect(0, 0, width, horizon);
+       drawStars();
+       drawShootingStars();
+       drawSun();
+
+       // Bottom half: grid floor (no stars)
+       ctx.fillStyle = "black";
+       ctx.fillRect(0, horizon, width, height - horizon);
+       drawGrid();
+   }
+
+   function loop() {
+       update();
+       draw();
+       requestAnimationFrame(loop);
+   }
+
+   loop();
+
+   // Adjust canvas size on window resize
+   window.addEventListener('resize', () => {
+       width = canvas.width = window.innerWidth;
+       height = canvas.height = window.innerHeight;
+   });
+  </script>
+</body>
+</html>

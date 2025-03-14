@@ -80,18 +80,12 @@
          const SUN_BASE_RADIUS = 120; // Doubled from original 60
          const GLOW_SCALE = 6; // Increased from 4
          let sunYOffset = 0; // Added for vertical movement
-         const SUN_SPEED = 0.4; // Pixels per frame
-         const MAX_SUN_TRAVEL = height - horizon - 100; // Stop when logo reaches 100px from top
+         const SUN_SPEED = 0.1; // Pixels per frame
+         const MAX_SUN_TRAVEL = height - horizon - 05; // Stop when logo reaches 100px from top
 
          // Logo configuration
-         const LOGO_TEXT = "EmumÈ";
-         const LOGO_SCALE = 10;
-         let logoY = height + 100; // Start below screen
+         let logoY = height - 100; // Start below screen
          let logoChars = [];
-
-         const LOGO_GLOW_RADIUS = 400;
-         const LOGO_GLOW_INTENSITY = 0.5; // 0-1
-         const LOGO_HOVER_GLOW_INTENSITY = 0.8;
 
          // Logo configuration
          const LOGO_FINAL_Y = 300;
@@ -127,7 +121,7 @@
                      maxY: -Infinity
                  };
 
-                 for (let len = 0; len <= pathLength; len += 4) {
+                 for (let len = 0; len <= pathLength; len += 20) {
                      const point = svgPath.getPointAtLength(len);
                      const origX = baseX + point.x;
                      const origY = PARTICLES_BASE_Y + point.y;
@@ -493,7 +487,7 @@
                      popSound.play();
                      hoverStartTime = now;
                  } else {
-                     whooshSound.play();
+                     popSound.play();
                  }
                  prevHoverState = hoveredLetter;
              }
@@ -537,13 +531,18 @@
              // Background elements
              ctx.fillStyle = "#000000";
              ctx.fillRect(0, 0, width, horizon);
+             drawLogo();
              drawStars();
              drawShootingStars();
-             drawLogo();
              drawSun();
 
              // Foreground elements
-             ctx.fillStyle = "#000000";
+             const gradient = ctx.createLinearGradient(0, horizon, 0, height);
+             gradient.addColorStop(0, "#000000"); // Black at the horizon
+             gradient.addColorStop(0.5, "#111133"); // Dark blue midway
+             gradient.addColorStop(1, "#220022"); // Deep purple at the bottom
+
+             ctx.fillStyle = gradient;
              ctx.fillRect(0, horizon, width, height - horizon);
              drawGrid();
          }

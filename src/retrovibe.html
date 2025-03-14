@@ -2,13 +2,13 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Walking Through a Street with 3D Cubes</title>
+  <title>80s Sunset Scene with Relief</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      background: #000;
       overflow: hidden;
+      background: black;
     }
     canvas {
       display: block;
@@ -18,301 +18,240 @@
 <body>
   <canvas id="canvas"></canvas>
   <script>
-   // --- Canvas & World Setup ---
-   const canvas = document.getElementById("canvas");
-   const ctx = canvas.getContext("2d");
+   const canvas = document.getElementById('canvas');
+   const ctx = canvas.getContext('2d');
    let width = canvas.width = window.innerWidth;
    let height = canvas.height = window.innerHeight;
-   // Set the horizon at the bottom third of the window.
    const horizon = height * 2 / 3;
 
-   // --- Perspective Parameters ---
-   // World coordinates: x (lateral), y (vertical), z (depth).
-   // z=0 is near (bottom), z=maxZ is far (at the horizon).
-   const focal = 300;
-   const maxZ = 1000;
-   const sMin = focal / (maxZ + focal);
-   // 3D projection function: a world point (x, y, z) -> screen point.
-   function project3D(x, y, z) {
-       let s = focal / (z + focal);
-       // Ground (y=0) uses a quadratic spacing from horizon to bottom.
-       let baseY = horizon + (height - horizon) * ((s - sMin) / (1 - sMin));
-       return {
-           x: width / 2 + x * s,
-           y: baseY - y * s
-       };
+   // ============================
+   // STARFIELD (top half)
+   // ============================
+   const starCount = 200;
+   let stars = [];
+   let shootingStars = [];
+   for (let i = 0; i < starCount; i++) {
+       stars.push({
+           x: Math.random() * width,
+           y: Math.random() * horizon,
+           size: Math.random() * 1.5 + 0.5,
+           speed: Math.random() * 0.2 + 0.05,
+           opacity: Math.random() * 0.5 + 0.5
+       });
    }
 
-   // --- Road Parameters ---
-   // Make the road fill the near plane (full window width).
-   const roadWidthNear = width;
-
-   // --- Building Generation Parameters ---
-   const numBuildings = 8; // per side
-   const minBuildingWidth = 100;
-   const maxBuildingWidth = 300;
-   const minBuildingHeight = 200;
-   const maxBuildingHeight = 600;
-   const minBuildingDepth = 100;
-   const maxBuildingDepth = 300;
-   const minZStart = 600; // buildings start between minZStart and maxZ
-
-   // Forward movement speed (world units per second)
-   const forwardSpeed = 150;
-
-   // --- Arrays for Buildings ---
-   let leftBuildings = [];
-   let rightBuildings = [];
-
-   // For a building cube, we define:
-   // • For left side: its "front" face touches the road on the right.
-   //   Let x_right = -roadWidthNear/2 and x_left = x_right - building.width.
-   // • For right side: its "front" face touches the road on the left.
-   //   Let x_left = roadWidthNear/2 and x_right = x_left + building.width.
-   // In both cases, the vertical extent goes from y = 0 (ground) to y = building.height.
-   // Depth extends from z (front) to z+building.depth (back).
-   function createBuilding(side) {
-       let b = {};
-       b.z = Math.random() * (maxZ - minZStart) + minZStart;
-       b.width = Math.random() * (maxBuildingWidth - minBuildingWidth) + minBuildingWidth;
-       b.height = Math.random() * (maxBuildingHeight - minBuildingHeight) + minBuildingHeight;
-       b.depth = Math.random() * (maxBuildingDepth - minBuildingDepth) + minBuildingDepth;
-       if (side === "left") {
-           // The building's front (road-facing) side touches the road's left edge.
-           b.x_right = -roadWidthNear / 2;
-           b.x_left = b.x_right - b.width;
-       } else {
-           b.x_left = roadWidthNear / 2;
-           b.x_right = b.x_left + b.width;
-       }
-       // Choose random colors.
-       const facadeColors = ["#444", "#555", "#666", "#777", "#888"];
-       b.facadeColor = facadeColors[Math.floor(Math.random() * facadeColors.length)];
-       // Roof color chosen randomly from a palette.
-       const roofColors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#00FFFF", "#FF00FF"];
-       b.roofColor = roofColors[Math.floor(Math.random() * roofColors.length)];
-       b.side = side;
-       return b;
-   }
-
-   function initBuildings() {
-       leftBuildings = [];
-       rightBuildings = [];
-       for (let i = 0; i < numBuildings; i++) {
-           leftBuildings.push(createBuilding("left"));
-           rightBuildings.push(createBuilding("right"));
-       }
-   }
-   initBuildings();
-
-   // --- Drawing a Cube (Building) ---
-   // We construct the 8 vertices in world coordinates:
-   // For a building b:
-   // x: from b.x_left to b.x_right, y: from 0 (ground) to b.height, z: from b.z to b.z+b.depth.
-   // Then we draw three visible faces:
-   // For left building:
-   //   - Front face (road-facing): vertices with x = b.x_right.
-   //   - Top face: the top.
-   //   - Side face: the side facing the road (right side).
-   // For right building:
-   //   - Front face (road-facing): vertices with x = b.x_left.
-   //   - Top face.
-   //   - Side face: the side facing the road (left side).
-   function drawCube(b) {
-       // Define vertices:
-       // v1: top-left-front, v2: top-right-front, v3: bottom-right-front, v4: bottom-left-front.
-       // v5: top-left-back, v6: top-right-back, v7: bottom-right-back, v8: bottom-left-back.
-       let zFront = b.z;
-       let zBack = b.z + b.depth;
-       let yBottom = 0;
-       let yTop = b.height;
-
-       let v1 = { x: b.x_left,  y: yTop,    z: zFront };
-       let v2 = { x: b.x_right, y: yTop,    z: zFront };
-       let v3 = { x: b.x_right, y: yBottom, z: zFront };
-       let v4 = { x: b.x_left,  y: yBottom, z: zFront };
-
-       let v5 = { x: b.x_left,  y: yTop,    z: zBack };
-       let v6 = { x: b.x_right, y: yTop,    z: zBack };
-       let v7 = { x: b.x_right, y: yBottom, z: zBack };
-       let v8 = { x: b.x_left,  y: yBottom, z: zBack };
-
-       // Project vertices.
-       function proj(v) { return project3D(v.x, v.y, v.z); }
-       let p1 = proj(v1), p2 = proj(v2), p3 = proj(v3), p4 = proj(v4);
-       let p5 = proj(v5), p6 = proj(v6), p7 = proj(v7), p8 = proj(v8);
-
-       // Depending on side, choose the faces.
-       if (b.side === "left") {
-           // For a left building, the road-facing face is the one at x = b.x_right:
-           // Visible faces:
-           // (A) Front face: v1, v2, v3, v4 (if partially visible) or we may prefer the road-facing side.
-           // We'll draw:
-           // 1. Road-facing (right) face: v2, v6, v7, v3.
-           // 2. Top face: v1, v2, v6, v5.
-           // 3. Front face: v1, v2, v3, v4.
-           // Draw front face first (if visible), then side, then top.
-           ctx.fillStyle = b.facadeColor;
-           ctx.beginPath();
-           ctx.moveTo(p1.x, p1.y);
-           ctx.lineTo(p2.x, p2.y);
-           ctx.lineTo(p3.x, p3.y);
-           ctx.lineTo(p4.x, p4.y);
-           ctx.closePath();
-           ctx.fill();
-           ctx.strokeStyle = "#222";
-           ctx.lineWidth = 1;
-           ctx.stroke();
-
-           // Road-facing side (right face):
-           ctx.fillStyle = shadeColor(b.facadeColor, -20);
-           ctx.beginPath();
-           ctx.moveTo(p2.x, p2.y);
-           ctx.lineTo(p6.x, p6.y);
-           ctx.lineTo(p7.x, p7.y);
-           ctx.lineTo(p3.x, p3.y);
-           ctx.closePath();
-           ctx.fill();
-           ctx.stroke();
-
-           // Top face:
-           ctx.fillStyle = b.roofColor;
-           ctx.beginPath();
-           ctx.moveTo(p1.x, p1.y);
-           ctx.lineTo(p2.x, p2.y);
-           ctx.lineTo(p6.x, p6.y);
-           ctx.lineTo(p5.x, p5.y);
-           ctx.closePath();
-           ctx.fill();
-           ctx.stroke();
-       } else {
-           // For a right building, the road-facing face is the one at x = b.x_left.
-           // Visible faces:
-           // 1. Road-facing (left) face: v1, v5, v8, v4.
-           // 2. Top face: v1, v2, v6, v5.
-           // 3. Front face: v1, v2, v3, v4.
-           ctx.fillStyle = b.facadeColor;
-           ctx.beginPath();
-           ctx.moveTo(p1.x, p1.y);
-           ctx.lineTo(p2.x, p2.y);
-           ctx.lineTo(p3.x, p3.y);
-           ctx.lineTo(p4.x, p4.y);
-           ctx.closePath();
-           ctx.fill();
-           ctx.strokeStyle = "#222";
-           ctx.lineWidth = 1;
-           ctx.stroke();
-
-           // Road-facing side (left face):
-           ctx.fillStyle = shadeColor(b.facadeColor, -20);
-           ctx.beginPath();
-           ctx.moveTo(p1.x, p1.y);
-           ctx.lineTo(p5.x, p5.y);
-           ctx.lineTo(p8.x, p8.y);
-           ctx.lineTo(p4.x, p4.y);
-           ctx.closePath();
-           ctx.fill();
-           ctx.stroke();
-
-           // Top face:
-           ctx.fillStyle = b.roofColor;
-           ctx.beginPath();
-           ctx.moveTo(p1.x, p1.y);
-           ctx.lineTo(p2.x, p2.y);
-           ctx.lineTo(p6.x, p6.y);
-           ctx.lineTo(p5.x, p5.y);
-           ctx.closePath();
-           ctx.fill();
-           ctx.stroke();
+   function spawnShootingStar() {
+       if (shootingStars.length < 1 && Math.random() < 0.005) {
+           shootingStars.push({
+               x: Math.random() * width,
+               y: Math.random() * horizon * 0.5,
+               len: Math.random() * 80 + 80,
+               speed: Math.random() * 10 + 10,
+               angle: Math.PI / 4,
+               life: 0,
+               maxLife: 30 + Math.random() * 30
+           });
        }
    }
 
-   // Utility: darken or lighten a hex color by a given percent.
-   function shadeColor(color, percent) {
-       let num = parseInt(color.slice(1), 16),
-           amt = Math.round(2.55 * percent),
-           R = (num >> 16) + amt,
-           G = (num >> 8 & 0x00FF) + amt,
-           B = (num & 0x0000FF) + amt;
-       return "#" + (
-           0x1000000 +
-         (R < 255 ? (R < 0 ? 0 : R) : 255)*0x10000 +
-         (G < 255 ? (G < 0 ? 0 : G) : 255)*0x100 +
-         (B < 255 ? (B < 0 ? 0 : B) : 255)
-       ).toString(16).slice(1);
+   function updateStars() {
+       for (let star of stars) {
+           star.x -= star.speed;
+           if (star.x < 0) star.x = width;
+       }
    }
 
-   // --- Draw the Road ---
-   // The road is drawn as a trapezoid. At z=0 it spans the full window width,
-   // and at z=maxZ it converges to the vanish point.
-   function drawRoad() {
-       // At z = 0:
-       let leftNear = project3D(-roadWidthNear/2, 0, 0);
-       let rightNear = project3D(roadWidthNear/2, 0, 0);
-       // At z = maxZ, the road converges to (width/2, horizon).
-       let vanish = { x: width/2, y: horizon };
-       ctx.fillStyle = "darkblue";
-       ctx.beginPath();
-       ctx.moveTo(leftNear.x, leftNear.y);
-       ctx.lineTo(rightNear.x, rightNear.y);
-       ctx.lineTo(vanish.x, vanish.y);
-       ctx.closePath();
-       ctx.fill();
-   }
-
-   // --- Update Buildings ---
-   // Move buildings forward (decrease their z). When a building passes z < -50, reinitialize it.
-   function updateBuildings(dt) {
-       function updateArray(arr, side) {
-           for (let b of arr) {
-               b.z -= forwardSpeed * dt;
-               if (b.z < -50) {
-                   Object.assign(b, createBuilding(side));
-               }
+   function updateShootingStars() {
+       for (let i = shootingStars.length - 1; i >= 0; i--) {
+           let s = shootingStars[i];
+           s.x += s.speed * Math.cos(s.angle);
+           s.y += s.speed * Math.sin(s.angle);
+           s.life++;
+           if (s.life > s.maxLife) {
+               shootingStars.splice(i, 1);
            }
        }
-       updateArray(leftBuildings, "left");
-       updateArray(rightBuildings, "right");
    }
 
-   // --- Animation Loop ---
-   let lastTime = performance.now();
-   function loop(time) {
-       let dt = (time - lastTime) / 1000;
-       lastTime = time;
+   function drawStars() {
+       ctx.fillStyle = "white";
+       for (let star of stars) {
+           ctx.globalAlpha = star.opacity;
+           ctx.beginPath();
+           ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+           ctx.fill();
+       }
+       ctx.globalAlpha = 1;
+   }
 
+   function drawShootingStars() {
+       ctx.strokeStyle = "white";
+       ctx.lineWidth = 2;
+       for (let s of shootingStars) {
+           ctx.beginPath();
+           ctx.moveTo(s.x, s.y);
+           ctx.lineTo(s.x - s.len * Math.cos(s.angle), s.y - s.len * Math.sin(s.angle));
+           ctx.stroke();
+       }
+   }
+
+   // ============================
+   // SETTING SUN (at the horizon)
+   // ============================
+   function drawSun() {
+       const sunRadius = 60;
+       const sunX = width / 2;
+       const sunY = horizon;
+       ctx.beginPath();
+       ctx.arc(sunX, sunY, sunRadius, Math.PI, 2 * Math.PI);
+       let gradient = ctx.createLinearGradient(0, sunY - sunRadius, 0, sunY);
+       gradient.addColorStop(0, "#FF4500");
+       gradient.addColorStop(1, "#FFD700");
+       ctx.fillStyle = gradient;
+       ctx.fill();
+       const numLines = 6;
+       for (let i = 0; i < numLines; i++) {
+           let lineY = sunY - sunRadius + (i + 1) * (sunRadius / (numLines + 1));
+           ctx.beginPath();
+           let dx = Math.sqrt(sunRadius * sunRadius - Math.pow(sunY - lineY, 2));
+           ctx.moveTo(sunX - dx, lineY);
+           ctx.lineTo(sunX + dx, lineY);
+           ctx.lineWidth = 1 + (i / numLines) * 3;
+           ctx.strokeStyle = "rgba(0,0,0,0.3)";
+           ctx.stroke();
+       }
+   }
+
+// ============================
+   // STABLE PERSPECTIVE GRID
+   // ============================
+   let gridOffset = 0;
+   const numGridLines = 30;
+   const numGridCols = 20;
+   const gridSpeed = 0.05;
+   const reliefMap = [];
+   const visibleGridLines = 25; // Only draw top 25 of 30 lines to prevent bottom flicker
+
+   function createRelief() {
+       for (let i = 0; i <= numGridCols; i++) {
+           reliefMap[i] = [];
+           for (let j = 0; j < visibleGridLines; j++) { // Only populate visible lines
+               reliefMap[i][j] = Math.random() < 0.15 ? Math.random() * 30 + 15 : 0;
+           }
+       }
+   }
+
+   function drawGrid() {
+       ctx.strokeStyle = "#00FFFF";
+       ctx.lineWidth = 1;
+       ctx.globalAlpha = 0.6;
+
+       const horizontalYs = [];
+       for (let i = 0; i < visibleGridLines; i++) { // Only process visible lines
+           let t = (i + gridOffset) % numGridLines;
+           let perspective = t / numGridLines;
+           let y = horizon + (height - horizon) * Math.pow(perspective, 2);
+           horizontalYs.push(y);
+       }
+
+       const roadHalfWidth = 150;
+
+       // Draw vertical lines with truncated bottoms
+       for (let i = 0; i <= numGridCols; i++) {
+           const xBottom = (i / numGridCols) * width;
+           const f = i / numGridCols;
+           const vanishX = (1 - f) * (width / 2 - roadHalfWidth) + f * (width / 2 + roadHalfWidth);
+
+           ctx.beginPath();
+           let lastY = horizon + (height - horizon) * Math.pow((visibleGridLines-1)/numGridLines, 2);
+           let lastX = xBottom + (vanishX - xBottom) * (1 - ((visibleGridLines-1)/numGridLines));
+
+           for (let j = 0; j < horizontalYs.length; j++) {
+               const baseY = horizontalYs[j];
+               const lift = reliefMap[i][j];
+               const y = baseY - lift;
+               const t = (baseY - horizon) / (height - horizon);
+               const x = xBottom + (vanishX - xBottom) * (1 - t);
+
+               if (j === 0) {
+                   ctx.moveTo(x, y);
+               } else {
+                   const cpX = (lastX + x) / 2;
+                   const cpY = (lastY + y) / 2 - lift * 0.5;
+                   ctx.quadraticCurveTo(cpX, cpY, x, y);
+               }
+
+               lastX = x;
+               lastY = y;
+           }
+           ctx.stroke();
+       }
+
+       // Draw horizontal lines without the bottom 5 lines
+       for (let j = 0; j < horizontalYs.length - 5; j++) { // Skip last 5 lines
+           const baseY = horizontalYs[j];
+           ctx.beginPath();
+
+           for (let i = 0; i <= numGridCols; i++) {
+               const lift = reliefMap[i][j];
+               const y = baseY - lift;
+               const f = i / numGridCols;
+               const vanishX = (1 - f) * (width / 2 - roadHalfWidth) + f * (width / 2 + roadHalfWidth);
+               const t = (baseY - horizon) / (height - horizon);
+               const x = (i / numGridCols) * width + (vanishX - (i / numGridCols) * width) * (1 - t);
+
+               if (i === 0) {
+                   ctx.moveTo(x, y);
+               } else {
+                   const prevX = (i - 1)/numGridCols * width + (vanishX - ((i - 1)/numGridCols * width)) * (1 - t);
+                   const cpX = (prevX + x) / 2;
+                   const cpY = (y + y) / 2 - lift * 0.3;
+                   ctx.quadraticCurveTo(cpX, cpY, x, y);
+               }
+           }
+           ctx.stroke();
+       }
+
+       ctx.globalAlpha = 1;
+   }
+
+   // ============================
+   // ANIMATION LOOP
+   // ============================
+   function update() {
+       gridOffset += gridSpeed;
+       if (gridOffset > numGridLines) gridOffset = 0;
+       updateStars();
+       updateShootingStars();
+       spawnShootingStar();
+   }
+
+   function draw() {
        ctx.clearRect(0, 0, width, height);
-
-       // Draw the sky (above the horizon) unchanged.
-       ctx.fillStyle = "#111";
+       ctx.fillStyle = "#000000";
        ctx.fillRect(0, 0, width, horizon);
+       drawStars();
+       drawShootingStars();
+       drawSun();
+       ctx.fillStyle = "#000040";
+       ctx.fillRect(0, horizon, width, height - horizon);
+       drawGrid();
+   }
 
-       // Draw the road.
-       drawRoad();
-
-       // Update building positions.
-       updateBuildings(dt);
-
-       // Sort buildings by depth (farther ones first).
-       leftBuildings.sort((a, b) => b.z - a.z);
-       rightBuildings.sort((a, b) => b.z - a.z);
-
-       // Draw buildings.
-       for (let b of leftBuildings) {
-           drawCube(b);
-       }
-       for (let b of rightBuildings) {
-           drawCube(b);
-       }
-
+   function loop() {
+       update();
+       draw();
        requestAnimationFrame(loop);
    }
-   requestAnimationFrame(loop);
+
+   // Initialize relief map and start animation
+   createRelief();
+   loop();
 
    window.addEventListener('resize', () => {
        width = canvas.width = window.innerWidth;
        height = canvas.height = window.innerHeight;
-       // Update road width to full window.
+       createRelief(); // Regenerate relief map on resize
    });
   </script>
 </body>

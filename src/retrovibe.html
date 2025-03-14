@@ -24,6 +24,11 @@
          let height = canvas.height = window.innerHeight;
          const horizon = height * 2 / 3;
 
+         // 🔥 SUN CONFIGURATION
+         const SUN_BASE_RADIUS = 120; // Doubled from original 60
+         const GLOW_SCALE = 6; // Increased from 4
+         let sunYOffset = 0; // Added for vertical movement
+         const SUN_SPEED = 0.4; // Pixels per frame
 
          // ============================
          // STARFIELD (top half)
@@ -96,57 +101,53 @@
              }
          }
 
-         // ============================
-         // SETTING SUN (original code preserved)
-         // ============================
+
+         // =======================[UPDATED SUN SYSTEM]=======================
+         function updateSunPosition() {
+             sunYOffset += SUN_SPEED; // Gradually lower the sun
+         }
+
          function drawSun() {
-             const sunRadius = 60;
              const sunX = width / 2;
-             const sunY = horizon;
-             ctx.beginPath();
-             ctx.arc(sunX, sunY, sunRadius, Math.PI, 2 * Math.PI);
-             let gradient = ctx.createLinearGradient(0, sunY - sunRadius, 0, sunY);
-             gradient.addColorStop(0, "#FF4500");
-             gradient.addColorStop(1, "#FFD700");
+             const sunY = horizon + sunYOffset; // 🔥 Now moves downward
+
+             // 🔥 Enhanced glow with dynamic positioning
+             const gradient = ctx.createRadialGradient(
+                 sunX, sunY, SUN_BASE_RADIUS * 0.3,
+                 sunX, sunY, SUN_BASE_RADIUS * GLOW_SCALE
+             );
+             gradient.addColorStop(0, 'rgba(255, 69, 0, 0.5)');
+             gradient.addColorStop(0.5, 'rgba(255, 215, 0, 0.25)');
+             gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+             // Draw glow first
              ctx.fillStyle = gradient;
+             ctx.beginPath();
+             ctx.rect(0, 0, width, height); // 🔥 Full height glow
              ctx.fill();
-             const numLines = 6;
+
+             // Main sun body (now larger)
+             ctx.beginPath();
+             ctx.arc(sunX, sunY, SUN_BASE_RADIUS, Math.PI, 2 * Math.PI);
+             let sunGradient = ctx.createLinearGradient(0, sunY - SUN_BASE_RADIUS, 0, sunY);
+             sunGradient.addColorStop(0, "#FF4500");
+             sunGradient.addColorStop(1, "#FFD700");
+             ctx.fillStyle = sunGradient;
+             ctx.fill();
+
+             // Sun details (scaled appropriately)
+             const numLines = 8; // 🔥 Increased lines for bigger sun
              for (let i = 0; i < numLines; i++) {
-                 let lineY = sunY - sunRadius + (i + 1) * (sunRadius / (numLines + 1));
+                 let lineY = sunY - SUN_BASE_RADIUS + (i + 1) * (SUN_BASE_RADIUS / (numLines + 1));
                  ctx.beginPath();
-                 let dx = Math.sqrt(sunRadius * sunRadius - Math.pow(sunY - lineY, 2));
+                 let dx = Math.sqrt(SUN_BASE_RADIUS ** 2 - (sunY - lineY) ** 2);
                  ctx.moveTo(sunX - dx, lineY);
                  ctx.lineTo(sunX + dx, lineY);
-                 ctx.lineWidth = 1 + (i / numLines) * 3;
+                 ctx.lineWidth = 1 + (i / numLines) * 5; // 🔥 Thicker lines
                  ctx.strokeStyle = "rgba(0,0,0,0.3)";
                  ctx.stroke();
              }
          }
-
-         // ============================
-         // NEW: SUN GLOW GRADIENT
-         // ============================
-         function drawSunGlow() {
-             const sunX = width / 2;
-             const sunY = horizon;
-             const sunRadius = 60;
-
-             // Create radial gradient
-             const gradient = ctx.createRadialGradient(
-                 sunX, sunY, sunRadius * 0.3,
-                 sunX, sunY, sunRadius * 4
-             );
-             gradient.addColorStop(0, 'rgba(255, 69, 0, 0.4)');
-             gradient.addColorStop(0.7, 'rgba(255, 215, 0, 0.2)');
-             gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-
-             // Draw gradient
-             ctx.fillStyle = gradient;
-             ctx.beginPath();
-             ctx.rect(0, 0, width, horizon);
-             ctx.fill();
-         }
-
 
          // ============================
          // GRID SYSTEM WITH STABLE RELIEF
@@ -266,17 +267,57 @@
              ctx.globalAlpha = 1;
          }
 
-         // ============================
-         // ANIMATION LOOP
-         // ============================
+       // =======================[UPDATED ANIMATION LOOP]===================
          function update() {
              gridOffset += gridSpeed;
              if (gridOffset > numGridLines) gridOffset = 0;
              updateStars();
              updateShootingStars();
              spawnShootingStar();
+             updateSunPosition(); // 🔥 Added sun movement
          }
 
+         function draw() {
+             ctx.clearRect(0, 0, width, height);
+
+             // Draw starfield elements
+             ctx.fillStyle = "#000000";
+             ctx.fillRect(0, 0, width, horizon);
+             drawStars();
+             drawShootingStars();
+
+             // Draw sun system
+             drawSun(); // 🔥 Now includes glow and sun together
+
+             // Draw ground and grid
+             ctx.fillStyle = "#000000";
+             ctx.fillRect(0, horizon, width, height - horizon);
+             drawGrid();
+         }
+
+         // ============================
+         // NEW: SUN GLOW GRADIENT
+         // ============================
+         function drawSunGlow() {
+             const sunX = width / 2;
+             const sunY = horizon;
+             const sunRadius = 60;
+
+             // Create radial gradient
+             const gradient = ctx.createRadialGradient(
+                 sunX, sunY, sunRadius * 0.3,
+                 sunX, sunY, sunRadius * 4
+             );
+             gradient.addColorStop(0, 'rgba(255, 69, 0, 0.4)');
+             gradient.addColorStop(0.7, 'rgba(255, 215, 0, 0.2)');
+             gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+             // Draw gradient
+             ctx.fillStyle = gradient;
+             ctx.beginPath();
+             ctx.rect(0, 0, width, horizon);
+             ctx.fill();
+         }
 
          // ============================
          // MODIFIED DRAW FUNCTION

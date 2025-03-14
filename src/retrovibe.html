@@ -16,6 +16,40 @@
         </style>
     </head>
     <body>
+        <svg id="logo-source" style="display:none">
+            <!-- E -->
+            <path id="e1" d="M 20 20 L 60 20 M 20 50 L 60 50 M 20 80 L 60 80 M 20 20 L 20 80
+                      M 20 20 Q 20 20, 22 22 M 60 20 Q 60 20, 62 22
+                      M 20 50 Q 20 50, 22 52 M 60 50 Q 60 50, 62 52
+                      M 20 80 Q 20 80, 22 82 M 60 80 Q 60 80, 62 82"/>
+
+            <!-- m (normal) -->
+            <path id="m1" d="M 120 20 L 120 80 M 160 20 L 160 80
+                      M 120 50 Q 140 35, 160 50
+                      M 120 20 Q 120 20, 122 22 M 160 20 Q 160 20, 162 22
+                      M 120 50 Q 120 50, 122 52 M 160 50 Q 160 50, 162 52
+                      M 140 35 Q 140 35, 142 37"/>
+
+            <!-- u (orange) -->
+            <path id="u" d="M 220 20 L 220 80 M 260 20 L 260 80 M 220 80 L 260 80
+                      M 220 20 Q 220 20, 222 22 M 260 20 Q 260 20, 262 22
+                      M 220 80 Q 220 80, 222 82 M 260 80 Q 260 80, 262 82"/>
+
+            <!-- m (horizontal flip) -->
+            <path id="m2" d="M 320 20 L 320 80 M 360 20 L 360 80
+                      M 320 50 Q 340 65, 360 50
+                      M 320 20 Q 320 20, 322 22 M 360 20 Q 360 20, 362 22
+                      M 320 50 Q 320 50, 322 52 M 360 50 Q 360 50, 362 52
+                      M 340 65 Q 340 65, 342 67"/>
+
+            <!-- E (vertical flip) -->
+            <path id="e2" d="M 420 80 L 460 80 M 420 50 L 460 50 M 420 20 L 460 20
+                      M 460 80 L 460 20
+                      M 420 80 Q 420 80, 422 82 M 460 80 Q 460 80, 462 82
+                      M 420 50 Q 420 50, 422 52 M 460 50 Q 460 50, 462 52
+                      M 420 20 Q 420 20, 422 22 M 460 20 Q 460 20, 462 22"/>
+        </svg>
+
         <canvas id="canvas"></canvas>
         <script>
          const canvas = document.getElementById('canvas');
@@ -23,12 +57,33 @@
          let width = canvas.width = window.innerWidth;
          let height = canvas.height = window.innerHeight;
          const horizon = height * 2 / 3;
+         let mouseX = 0, mouseY = 0;
 
          // 🔥 SUN CONFIGURATION
          const SUN_BASE_RADIUS = 120; // Doubled from original 60
          const GLOW_SCALE = 6; // Increased from 4
          let sunYOffset = 0; // Added for vertical movement
-         const SUN_SPEED = 0.4; // Pixels per frame
+         const SUN_SPEED = 0.9; // Pixels per frame
+         const MAX_SUN_TRAVEL = height - horizon - 100; // Stop when logo reaches 100px from top
+
+         // Logo configuration
+         const LOGO_TEXT = "EmumÈ";
+         const LOGO_SCALE = 8;
+         let logoY = height + 100; // Start below screen
+         let logoRotation = 0;
+         let shimmerPhase = 0;
+         let logoChars = [];
+
+         // Logo configuration
+         const LOGO_FINAL_Y = 100;
+
+         // Pixel font data (7-segment style)
+         const pixelFont = {
+             'E': [[0,0],[4,0],[0,3],[4,3],[0,6],[4,6]],
+             'm': [[0,0],[0,6],[2,3],[4,0],[4,6]],
+             'u': [[0,6],[4,6],[4,0]],
+             'È': [[4,0],[0,0],[0,3],[4,3],[0,6],[4,6]] // Inverted E
+         };
 
          // ============================
          // STARFIELD (top half)
@@ -150,6 +205,31 @@
          }
 
          // ============================
+         // NEW: SUN GLOW GRADIENT
+         // ============================
+         function drawSunGlow() {
+             const sunX = width / 2;
+             const sunY = horizon;
+             const sunRadius = 60;
+
+             // Create radial gradient
+             const gradient = ctx.createRadialGradient(
+                 sunX, sunY, sunRadius * 0.3,
+                 sunX, sunY, sunRadius * 4
+             );
+             gradient.addColorStop(0, 'rgba(255, 69, 0, 0.4)');
+             gradient.addColorStop(0.7, 'rgba(255, 215, 0, 0.2)');
+             gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+             // Draw gradient
+             ctx.fillStyle = gradient;
+             ctx.beginPath();
+             ctx.rect(0, 0, width, horizon);
+             ctx.fill();
+         }
+
+
+         // ============================
          // GRID SYSTEM WITH STABLE RELIEF
          // ============================
          const numGridLines = 40;
@@ -267,83 +347,114 @@
              ctx.globalAlpha = 1;
          }
 
-       // =======================[UPDATED ANIMATION LOOP]===================
+
+
+         // Initialize character transformations
+         function initLogo() {
+             logoChars = [
+                 { type: 'E', x: 40, flip: false },
+                 { type: 'm', x: 120, flip: false },
+                 { type: 'u', x: 200, flip: false },
+                 { type: 'm', x: 280, flip: true },  // Horizontally flipped
+                 { type: 'E', x: 360, flip: true }     // Vertically flipped
+             ];
+         }
+
+         // Keep original starfield and grid code unchanged
+         // ... [All previous starfield and grid code here] ...
+
+         // In drawLogo() function:
+         function drawLogo() {
+             const scale = 1.5;
+             const baseX = width/2 - 120; // Center 500px wide logo
+
+             ctx.save();
+             ctx.translate(baseX, logoY);
+             ctx.scale(scale, scale);
+
+             // Draw cyan elements
+             ctx.strokeStyle = '#00FFFF';
+             ctx.lineWidth = 3;
+             ['e1', 'm1', 'm2', 'e2'].forEach(id => {
+                 const path = new Path2D(document.getElementById(id).getAttribute('d'));
+                 ctx.stroke(path);
+             });
+
+             // Draw orange u
+             ctx.strokeStyle = '#FFA500';
+             const uPath = new Path2D(document.getElementById('u').getAttribute('d'));
+             ctx.stroke(uPath);
+
+             ctx.restore();
+         }
+
+         function updateLogoPosition() {
+             const travelRatio = sunYOffset / MAX_SUN_TRAVEL;
+             logoY = height + 200 - (height - LOGO_FINAL_Y + 200) * travelRatio;
+             if(sunYOffset >= MAX_SUN_TRAVEL) logoY = LOGO_FINAL_Y;
+         }
+
          function update() {
              gridOffset += gridSpeed;
-             if (gridOffset > numGridLines) gridOffset = 0;
+             if(gridOffset > numGridLines) gridOffset = 0;
              updateStars();
              updateShootingStars();
              spawnShootingStar();
-             updateSunPosition(); // 🔥 Added sun movement
+
+             if(sunYOffset < MAX_SUN_TRAVEL) sunYOffset += SUN_SPEED;
+             updateLogoPosition();
          }
 
          function draw() {
              ctx.clearRect(0, 0, width, height);
 
-             // Draw starfield elements
+             // Background elements
              ctx.fillStyle = "#000000";
              ctx.fillRect(0, 0, width, horizon);
              drawStars();
              drawShootingStars();
-
-             // Draw sun system
-             drawSun(); // 🔥 Now includes glow and sun together
-
-             // Draw ground and grid
-             ctx.fillStyle = "#000000";
-             ctx.fillRect(0, horizon, width, height - horizon);
-             drawGrid();
-         }
-
-         // ============================
-         // NEW: SUN GLOW GRADIENT
-         // ============================
-         function drawSunGlow() {
-             const sunX = width / 2;
-             const sunY = horizon;
-             const sunRadius = 60;
-
-             // Create radial gradient
-             const gradient = ctx.createRadialGradient(
-                 sunX, sunY, sunRadius * 0.3,
-                 sunX, sunY, sunRadius * 4
-             );
-             gradient.addColorStop(0, 'rgba(255, 69, 0, 0.4)');
-             gradient.addColorStop(0.7, 'rgba(255, 215, 0, 0.2)');
-             gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-
-             // Draw gradient
-             ctx.fillStyle = gradient;
-             ctx.beginPath();
-             ctx.rect(0, 0, width, horizon);
-             ctx.fill();
-         }
-
-         // ============================
-         // MODIFIED DRAW FUNCTION
-         // ============================
-         function draw() {
-             ctx.clearRect(0, 0, width, height);
-
-             // Draw black background
-             ctx.fillStyle = "#000000";
-             ctx.fillRect(0, 0, width, horizon);
-
-             // Draw sun glow first
-             drawSunGlow();
-
-             // Then draw stars and shooting stars
-             drawStars();
-             drawShootingStars();
-
-             // Draw original sun on top
              drawSun();
-
-             // Draw lower half and grid
              ctx.fillStyle = "#000000";
              ctx.fillRect(0, horizon, width, height - horizon);
              drawGrid();
+
+             // Foreground logo
+             drawLogo();
          }
+
+         function update() {
+             gridOffset += gridSpeed;
+             if(gridOffset > numGridLines) gridOffset = 0;
+             updateStars();
+             updateShootingStars();
+             spawnShootingStar();
+
+             if(sunYOffset < MAX_SUN_TRAVEL) sunYOffset += SUN_SPEED;
+             updateLogoPosition();
+         }
+
+         function draw() {
+             ctx.clearRect(0, 0, width, height);
+
+             // Background elements
+             ctx.fillStyle = "#000000";
+             ctx.fillRect(0, 0, width, horizon);
+             drawStars();
+             drawShootingStars();
+             drawSun();
+             ctx.fillStyle = "#000000";
+             ctx.fillRect(0, horizon, width, height - horizon);
+             drawGrid();
+
+             // Foreground logo
+             drawLogo();
+         }
+
+         // Mouse listeners
+         canvas.addEventListener('mousemove', (e) => {
+             mouseX = e.clientX;
+             mouseY = e.clientY;
+         });
 
          function loop() {
              update();
@@ -351,12 +462,18 @@
              requestAnimationFrame(loop);
          }
 
+         initLogo();
          loop();
 
          window.addEventListener('resize', () => {
              width = canvas.width = window.innerWidth;
              height = canvas.height = window.innerHeight;
+             horizon = height * 2/3;
+             sunYOffset = 0;
+             logoY = height + 200;
+             initLogo();
          });
+
         </script>
     </body>
 </html>

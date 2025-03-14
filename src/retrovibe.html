@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>80s Sunset Scene with Relief</title>
+  <title>80s Sunset Scene</title>
   <style>
     html, body {
       margin: 0;
@@ -22,6 +22,7 @@
    const ctx = canvas.getContext('2d');
    let width = canvas.width = window.innerWidth;
    let height = canvas.height = window.innerHeight;
+   // Lower the horizon: 2/3 of the screen is sky, 1/3 is floor.
    const horizon = height * 2 / 3;
 
    // ============================
@@ -40,14 +41,15 @@
        });
    }
 
+   // Occasionally spawn a shooting star
    function spawnShootingStar() {
        if (shootingStars.length < 1 && Math.random() < 0.005) {
            shootingStars.push({
                x: Math.random() * width,
-               y: Math.random() * horizon * 0.5,
+               y: Math.random() * horizon * 0.5, // spawn in the upper half of the sky
                len: Math.random() * 80 + 80,
                speed: Math.random() * 10 + 10,
-               angle: Math.PI / 4,
+               angle: Math.PI / 4, // 45° diagonal downward/right
                life: 0,
                maxLife: 30 + Math.random() * 30
            });
@@ -101,7 +103,7 @@
    function drawSun() {
        const sunRadius = 60;
        const sunX = width / 2;
-       const sunY = horizon;
+       const sunY = horizon; // align with the horizon
        ctx.beginPath();
        ctx.arc(sunX, sunY, sunRadius, Math.PI, 2 * Math.PI);
        let gradient = ctx.createLinearGradient(0, sunY - sunRadius, 0, sunY);
@@ -122,96 +124,45 @@
        }
    }
 
-// ============================
-   // STABLE PERSPECTIVE GRID
+   // ============================
+   // PERSPECTIVE GRID (bottom half)
    // ============================
    let gridOffset = 0;
    const numGridLines = 30;
-   const numGridCols = 20;
-   const gridSpeed = 0.05;
-   const reliefMap = [];
-   const visibleGridLines = 25; // Only draw top 25 of 30 lines to prevent bottom flicker
-
-   function createRelief() {
-       for (let i = 0; i <= numGridCols; i++) {
-           reliefMap[i] = [];
-           for (let j = 0; j < visibleGridLines; j++) { // Only populate visible lines
-               reliefMap[i][j] = Math.random() < 0.15 ? Math.random() * 30 + 15 : 0;
-           }
-       }
-   }
+   const numGridCols = 20; // original vertical divisions
+   const gridSpeed = 0.05; // original grid movement speed
 
    function drawGrid() {
-       ctx.strokeStyle = "#00FFFF";
+       ctx.strokeStyle = "#00FFFF"; // retro neon cyan
        ctx.lineWidth = 1;
        ctx.globalAlpha = 0.6;
 
-       const horizontalYs = [];
-       for (let i = 0; i < visibleGridLines; i++) { // Only process visible lines
+       // Draw horizontal grid lines with perspective spacing
+       for (let i = 0; i < numGridLines; i++) {
            let t = (i + gridOffset) % numGridLines;
            let perspective = t / numGridLines;
+           // Using a squared function for non-linear (perspective) spacing:
            let y = horizon + (height - horizon) * Math.pow(perspective, 2);
-           horizontalYs.push(y);
+           ctx.beginPath();
+           ctx.moveTo(0, y);
+           ctx.lineTo(width, y);
+           ctx.stroke();
        }
 
-       const roadHalfWidth = 150;
+       // Parameter to widen the road at the horizon:
+       const roadHalfWidth = 150; // increases the horizontal span at the horizon
 
-       // Draw vertical lines with truncated bottoms
+       // Draw vertical grid lines: Instead of converging to a single point,
+       // they now converge to points along a horizontal line segment.
        for (let i = 0; i <= numGridCols; i++) {
-           const xBottom = (i / numGridCols) * width;
-           const f = i / numGridCols;
-           const vanishX = (1 - f) * (width / 2 - roadHalfWidth) + f * (width / 2 + roadHalfWidth);
-
+           let xBottom = (i / numGridCols) * width;
+           let f = i / numGridCols;
+           let vanishX = (1 - f) * (width / 2 - roadHalfWidth) + f * (width / 2 + roadHalfWidth);
            ctx.beginPath();
-           let lastY = horizon + (height - horizon) * Math.pow((visibleGridLines-1)/numGridLines, 2);
-           let lastX = xBottom + (vanishX - xBottom) * (1 - ((visibleGridLines-1)/numGridLines));
-
-           for (let j = 0; j < horizontalYs.length; j++) {
-               const baseY = horizontalYs[j];
-               const lift = reliefMap[i][j];
-               const y = baseY - lift;
-               const t = (baseY - horizon) / (height - horizon);
-               const x = xBottom + (vanishX - xBottom) * (1 - t);
-
-               if (j === 0) {
-                   ctx.moveTo(x, y);
-               } else {
-                   const cpX = (lastX + x) / 2;
-                   const cpY = (lastY + y) / 2 - lift * 0.5;
-                   ctx.quadraticCurveTo(cpX, cpY, x, y);
-               }
-
-               lastX = x;
-               lastY = y;
-           }
+           ctx.moveTo(xBottom, height);
+           ctx.lineTo(vanishX, horizon);
            ctx.stroke();
        }
-
-       // Draw horizontal lines without the bottom 5 lines
-       for (let j = 0; j < horizontalYs.length - 5; j++) { // Skip last 5 lines
-           const baseY = horizontalYs[j];
-           ctx.beginPath();
-
-           for (let i = 0; i <= numGridCols; i++) {
-               const lift = reliefMap[i][j];
-               const y = baseY - lift;
-               const f = i / numGridCols;
-               const vanishX = (1 - f) * (width / 2 - roadHalfWidth) + f * (width / 2 + roadHalfWidth);
-               const t = (baseY - horizon) / (height - horizon);
-               const x = (i / numGridCols) * width + (vanishX - (i / numGridCols) * width) * (1 - t);
-
-               if (i === 0) {
-                   ctx.moveTo(x, y);
-               } else {
-                   const prevX = (i - 1)/numGridCols * width + (vanishX - ((i - 1)/numGridCols * width)) * (1 - t);
-                   const cpX = (prevX + x) / 2;
-                   const cpY = (y + y) / 2 - lift * 0.3;
-                   ctx.quadraticCurveTo(cpX, cpY, x, y);
-               }
-           }
-           ctx.stroke();
-       }
-
        ctx.globalAlpha = 1;
    }
 
@@ -228,12 +179,16 @@
 
    function draw() {
        ctx.clearRect(0, 0, width, height);
-       ctx.fillStyle = "#000000";
+
+       // Top half: night sky with stars and setting sun
+       ctx.fillStyle = "black";
        ctx.fillRect(0, 0, width, horizon);
        drawStars();
        drawShootingStars();
        drawSun();
-       ctx.fillStyle = "#000040";
+
+       // Bottom half: grid floor (no stars)
+       ctx.fillStyle = "black";
        ctx.fillRect(0, horizon, width, height - horizon);
        drawGrid();
    }
@@ -244,14 +199,12 @@
        requestAnimationFrame(loop);
    }
 
-   // Initialize relief map and start animation
-   createRelief();
    loop();
 
+   // Adjust canvas size on window resize
    window.addEventListener('resize', () => {
        width = canvas.width = window.innerWidth;
        height = canvas.height = window.innerHeight;
-       createRelief(); // Regenerate relief map on resize
    });
   </script>
 </body>

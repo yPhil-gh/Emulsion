@@ -1,9 +1,10 @@
 let popSound = document.getElementById('popSound');
 let whooshSound = document.getElementById('whooshSound');
+let prevHoverState = null;
 
 let particles = [];
+let hoveredLetter = null;
 let mouseX = 0, mouseY = 0;
-
 const letters = {
     e1: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
     m1: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
@@ -41,6 +42,14 @@ const PARTICLES_LENGTH = 50;
 
 const FADE_OUT_DELAY = 5;
 let hoverStartTime = 0;
+
+// Pixel font data (7-segment style)
+const pixelFont = {
+    'E': [[0,0],[4,0],[0,3],[4,3],[0,6],[4,6]],
+    'm': [[0,0],[0,6],[2,3],[4,0],[4,6]],
+    'u': [[0,6],[4,6],[4,0]],
+    'È': [[4,0],[0,0],[0,3],[4,3],[0,6],[4,6]] // Inverted E
+};
 
 function initParticles(particlesPerLetter = 6) { // Add parameter to control count
     const baseX = width/2 - 248;
@@ -398,44 +407,32 @@ function drawParticles() {
     ctx.globalAlpha = 1;
 }
 
-const PARTICLE_IMPLODE_LIFETIME = 5000;
-
-let hoveredLetter = null;
-let prevHoverState = null;
-
-function updateLogo() {
-    Object.keys(letters).forEach(id => {
-        letters[id].visible = hoveredLetter !== id;
-    });
-}
-
-
-
-// Modify drawLogo() to check letter visibility
 function drawLogo() {
+
+
+    const scale = 1.0;
+    const baseX = width/2 - 248; // Center 500px wide logo
+
     ctx.save();
-    ctx.translate(width / 2 - 248, logoY);
-    ctx.scale(1.0, 1.0);
+    ctx.translate(baseX, logoY);
+    ctx.scale(scale, scale);
 
+    // Draw cyan elements
+    ctx.strokeStyle = '#00FFFF';
     ctx.lineWidth = 3;
-
     ['e1', 'm1', 'm2', 'e2'].forEach(id => {
-        if (letters[id].visible !== false) { // Only draw if visible
-            ctx.strokeStyle = '#00FFFF';
-            const path = new Path2D(document.getElementById(id).getAttribute('d'));
-            ctx.stroke(path);
-        }
+        const path = new Path2D(document.getElementById(id).getAttribute('d'));
+        ctx.stroke(path);
     });
 
-    if (letters['u'].visible !== false) { // Only draw if visible
-        ctx.strokeStyle = '#FFA500';
-        const uPath = new Path2D(document.getElementById('u').getAttribute('d'));
-        ctx.stroke(uPath);
-    }
+    // Draw orange u
+    ctx.strokeStyle = '#FFA500';
+    const uPath = new Path2D(document.getElementById('u').getAttribute('d'));
+    ctx.stroke(uPath);
 
     ctx.restore();
-}
 
+}
 
 function drawMoon() {
     ctx.save();
@@ -470,6 +467,41 @@ function updateLogoPosition() {
         logoY = LOGO_FINAL_Y;
         isNight = true;
     }
+}
+
+function updateLogo() {
+    const now = Date.now();
+
+    // Sound triggers
+    if (hoveredLetter !== prevHoverState) {
+        if (hoveredLetter) {
+            popSound.play();
+            hoverStartTime = now;
+        } else {
+            popSound.play();
+        }
+        prevHoverState = hoveredLetter;
+    }
+
+    particles.forEach(p => {
+        const isActive = p.letterId === hoveredLetter;
+
+        // Fade logic
+        if (isActive) {
+            // Start fading after delay
+            const timeActive = now - hoverStartTime;
+            p.alpha = timeActive > FADE_OUT_DELAY ?
+                Math.max(0, 1 - (timeActive - FADE_OUT_DELAY)/1000) : 1;
+        } else {
+            p.alpha = Math.max(0, p.alpha - 0.05);
+        }
+
+        // Position animation
+        const targetX = isActive ? p.origX + p.dx : p.origX;
+        const targetY = isActive ? p.origY + p.dy : p.origY;
+        p.x += (targetX - p.x) * 0.05;
+        p.y += (targetY - p.y) * 0.05;
+    });
 }
 
 function update() {
@@ -525,26 +557,18 @@ canvas.addEventListener('mousemove', (e) => {
     mouseX = e.clientX - rect.left;
     mouseY = e.clientY - rect.top;
 
-    let newHoveredLetter = null;
-
     // Check hover for each letter
+    /* hoveredLetter = null; */
     Object.entries(letters).forEach(([id, letter]) => {
         if (mouseX >= letter.bounds.minX &&
             mouseX <= letter.bounds.maxX &&
             mouseY >= letter.bounds.minY &&
-            mouseY <= letter.bounds.maxY &&
-            isNight) {
-            newHoveredLetter = id;
+            isNight &&
+            mouseY <= letter.bounds.maxY) {
+            hoveredLetter = id;
         }
     });
-
-    // Only update hoveredLetter if it changes
-    if (newHoveredLetter !== hoveredLetter) {
-        hoveredLetter = newHoveredLetter;
-        updateLogo();  // Call update to instantly hide/show letters
-    }
 });
-
 
 /* canvas.addEventListener('mouseleave', () => hoveredLetter = null);
  */

@@ -1,119 +1,155 @@
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-// Create a base drone
-function createDrone() {
-  const oscillator = audioContext.createOscillator();
-  const gain = audioContext.createGain();
+// Chip tune settings
+const NOTE_LENGTH = 0.15;
+const TEMPO = 140; // BPM
+const WAVE_TYPES = ['square', 'triangle'];
+const SCALE = [523.25, 587.33, 659.26, 698.46, 783.99, 880.00]; // C major pentatonic
 
-  oscillator.type = 'sine';
-  oscillator.frequency.value = 110 + Math.random() * 20;
-  gain.gain.value = 0.3;
+function createBubblyLead() {
+  let step = 0;
+  const pattern = [0, 2, 4, 2, 3, 5, 2, 4]; // Bouncy pattern
 
-  oscillator.connect(gain);
-  gain.connect(audioContext.destination);
-  oscillator.start();
+  function playSequence() {
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    const now = audioContext.currentTime;
 
-  // Slowly modulate frequency
-  setInterval(() => {
-    oscillator.frequency.linearRampToValueAtTime(
-      110 + Math.random() * 30,
-      audioContext.currentTime + 5
-    );
-  }, 5000);
+    // Sound parameters
+    osc.type = WAVE_TYPES[Math.floor(Math.random() * 2)];
+    if(osc.type === 'square') osc.detune.value = Math.random() * 20 - 10; // Detune slightly
+
+    // Melody logic
+    const note = SCALE[pattern[step % pattern.length]] * (Math.random() > 0.8 ? 2 : 1);
+    osc.frequency.setValueAtTime(note, now);
+
+    // Percussive envelope
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + NOTE_LENGTH);
+
+    // Effects chain
+    const lpf = audioContext.createBiquadFilter();
+    lpf.type = 'lowpass';
+    lpf.frequency.value = 2000;
+
+    osc.connect(gain).connect(lpf).connect(audioContext.destination);
+    osc.start(now);
+    osc.stop(now + NOTE_LENGTH * 1.5);
+
+    // Progress sequence
+    step++;
+    const swing = Math.random() > 0.6 ? 0.05 : -0.05;
+    const nextTime = (60/TEMPO) * 0.5 + swing;
+
+    setTimeout(playSequence, nextTime * 1000);
+  }
+
+  playSequence();
 }
 
-// Create randomized melodic sequence
-function createSequence() {
-  const scale = [220, 247, 262, 294, 330, 392, 440]; // A minor pentatonic
-  let currentNote = 0;
-  let patternInterval = 2000;
+function createBassline() {
+  let rootNote = SCALE[0]/2;
+  let step = 0;
 
-  function playNote() {
-    const oscillator = audioContext.createOscillator();
+  function play() {
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    const now = audioContext.currentTime;
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(rootNote * (step % 4 === 0 ? 0.8 : 1), now);
+
+    // Plucky envelope
+    gain.gain.setValueAtTime(0.15, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + NOTE_LENGTH * 2);
+
+    // Add some filter sweep
+    const lpf = audioContext.createBiquadFilter();
+    lpf.type = 'lowpass';
+    lpf.frequency.setValueAtTime(400, now);
+    lpf.frequency.exponentialRampToValueAtTime(200, now + NOTE_LENGTH);
+
+    osc.connect(gain).connect(lpf).connect(audioContext.destination);
+    osc.start(now);
+    osc.stop(now + NOTE_LENGTH * 3);
+
+    // Change root note occasionally
+    if(Math.random() > 0.9) {
+      rootNote = SCALE[Math.floor(Math.random() * 2)]/2;
+    }
+
+    step++;
+    setTimeout(play, (60/TEMPO) * 2 * 1000);
+  }
+
+  play();
+}
+
+function createPercussion() {
+  function playSnare() {
+    const noise = audioContext.createBufferSource();
+    const buffer = audioContext.createBuffer(1, 4096, audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+
+    // Generate noise
+    for(let i = 0; i < 4096; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+
+    const gain = audioContext.createGain();
+    const filter = audioContext.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.value = 1000;
+
+    noise.buffer = buffer;
+    noise.connect(filter).connect(gain).connect(audioContext.destination);
+
+    // Envelope
+    gain.gain.setValueAtTime(0.5, audioContext.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+    noise.start();
+    setTimeout(playSnare, (60/TEMPO) * 1000 * 2);
+  }
+
+  // Kick drum on downbeat
+  function playKick() {
+    const osc = audioContext.createOscillator();
     const gain = audioContext.createGain();
 
-    // Random parameters
-    oscillator.type = ['sine', 'square', 'sawtooth'][Math.floor(Math.random() * 3)];
-    gain.gain.value = 0.1 + Math.random() * 0.1;
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(150, audioContext.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.1);
 
-    // Random note from scale with chance to repeat
-    currentNote = Math.random() > 0.3 ?
-      scale[Math.floor(Math.random() * scale.length)] :
-      currentNote;
+    gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
 
-    oscillator.frequency.value = currentNote * (Math.random() > 0.8 ? 2 : 1);
+    osc.connect(gain).connect(audioContext.destination);
+    osc.start();
+    osc.stop(audioContext.currentTime + 0.3);
 
-    // Create envelope
-    gain.gain.setValueAtTime(0.01, audioContext.currentTime);
-    gain.gain.exponentialRampToValueAtTime(gain.gain.value, audioContext.currentTime + 0.1);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
-
-    oscillator.connect(gain);
-    gain.connect(audioContext.destination);
-    oscillator.start();
-    oscillator.stop(audioContext.currentTime + 2);
-
-    // Randomize next interval
-    patternInterval = 1000 + Math.random() * 3000;
-    setTimeout(playNote, patternInterval);
+    setTimeout(playKick, (60/TEMPO) * 1000 * 4);
   }
 
-  playNote();
+  playSnare();
+  playKick();
 }
 
-// Add effects
-function createEffects() {
-  const reverb = audioContext.createConvolver();
-  const delay = audioContext.createDelay();
-  const feedback = audioContext.createGain();
-  const wet = audioContext.createGain();
-
-  // Simple reverb impulse
-  const buffer = audioContext.createBuffer(2, audioContext.sampleRate * 2, audioContext.sampleRate);
-  for (let channel = 0; channel < 2; channel++) {
-    const data = buffer.getChannelData(channel);
-    for (let i = 0; i < data.length; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 2);
-    }
-  }
-  reverb.buffer = buffer;
-
-  delay.delayTime.value = 0.3;
-  feedback.gain.value = 0.4;
-  wet.gain.value = 0.3;
-
-  // Connect effects chain
-  delay.connect(feedback);
-  feedback.connect(delay);
-  delay.connect(wet);
-  wet.connect(audioContext.destination);
-
-  return { reverb, wet };
+// Start the cheerful tune!
+function startMusic() {
+  createBubblyLead();
+  setTimeout(createBassline, 500);
+  setTimeout(createPercussion, 1000);
 }
 
-// Initialize system
-function initGenerativeMusic() {
-  const { reverb, wet } = createEffects();
-
-  // Route all audio through effects
-  audioContext.createMediaStreamDestination().stream
-    .getAudioTracks().forEach(track => {
-      const mediaStreamSource = audioContext.createMediaStreamSource(new MediaStream([track]));
-      mediaStreamSource.connect(reverb);
-    });
-
-  createDrone();
-  setTimeout(createSequence, 2000); // Start sequence after drone
-}
-
-// Start/stop control
+// Toggle control
 let isPlaying = false;
-
 document.addEventListener('click', () => {
   if (!isPlaying) {
-    audioContext.resume();
-    initGenerativeMusic();
-    isPlaying = true;
+    audioContext.resume().then(() => {
+      startMusic();
+      isPlaying = true;
+    });
   } else {
     audioContext.suspend();
     isPlaying = false;

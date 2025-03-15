@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import fs from 'fs';
 import path from 'path';
-import { exec } from 'child_process';
+import { spawn } from 'child_process';
 import { getAllCoverImageUrls } from './steamgrid.js';
 import axios from 'axios';  // Import axios using ESM
 import { fileURLToPath } from "url";
@@ -136,15 +136,19 @@ ipcMain.on('fetch-images', (event, gameName) => {
 });
 
 ipcMain.on('run-command', (event, command) => {
+    const child = spawn(command, { shell: true });
 
-    const child = exec(command, (err, stdout, stderr) => {
-        if (err) {
-            console.error('Error executing command:', err);
-        }
-    });
     childProcesses.push(child);
 
-    // Optionally remove the child when it exits
+    child.stdout.on('data', (data) => {
+        console.log(`STDOUT: ${data}`);
+        event.reply('command-output', data.toString()); // Send output back
+    });
+
+    child.stderr.on('data', (data) => {
+        console.error(`STDERR: ${data}`);
+    });
+
     child.on('exit', () => {
         childProcesses = childProcesses.filter(cp => cp !== child);
     });

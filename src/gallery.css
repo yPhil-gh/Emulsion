@@ -84,6 +84,27 @@
   max-width: 150px;
 }
 
+@keyframes expandEffect {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(5);
+    }
+}
+
+@keyframes fadeInShadow {
+    0% { box-shadow: 0px 0px 0px rgba(255, 255, 255, 0); }
+    100% { box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.6); }
+}
+
+div.game-container.launching {
+  /* filter: blur(5px); */
+  box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.6);
+  animation: expandEffect 0.5s linear, fadeInShadow 0.4s ease-out;
+  z-index: 500;
+}
+
 div.game-container,
 div.menu-game-container {
   height: 26vh;

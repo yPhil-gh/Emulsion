@@ -1,4 +1,5 @@
-let popSound = document.getElementById('popSound');
+const popSounds = Array.from(document.querySelectorAll('.sound-pop'));
+
 let whooshSound = document.getElementById('whooshSound');
 let prevHoverState = null;
 
@@ -17,7 +18,7 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 let width = canvas.width = window.innerWidth;
 let height = canvas.height = window.innerHeight;
-const horizon = height * 2 / 3;
+let horizon = height * 2 / 3;
 let isNight = false;
 
 // 🔥 SUN CONFIGURATION
@@ -30,9 +31,8 @@ const SUN_SPEED = 0.9; // Pixels per frame
 const MAX_SUN_TRAVEL = height - horizon + 150; // Stop when logo reaches 100px from top
 
 // Logo configuration
-let logoY = height - 100; // Start below screen
+let logoY = height; // Start below screen
 let logoChars = [];
-
 
 // Logo configuration
 const LOGO_FINAL_Y = 300;
@@ -133,7 +133,7 @@ for (let i = 0; i < starCount; i++) {
 }
 
 function spawnShootingStar() {
-    if (shootingStars.length < 1 && Math.random() < 0.0001) {
+    if (shootingStars.length < 1 && Math.random() < 0.0001 && isNight) {
         shootingStars.push({
             x: Math.random() * width,
             y: Math.random() * horizon * 0.5,
@@ -141,7 +141,7 @@ function spawnShootingStar() {
             speed: Math.random() * 10 + 10,
             angle: Math.PI / 4,
             life: 0,
-            maxLife: 30 + Math.random() * 30
+            maxLife: 30 + Math.random() * 10
         });
     }
 }
@@ -178,7 +178,7 @@ function drawStars() {
 
 function drawShootingStars() {
     ctx.strokeStyle = "white";
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1;
     for (let s of shootingStars) {
         ctx.beginPath();
         ctx.moveTo(s.x, s.y);
@@ -438,27 +438,29 @@ function drawLogo() {
 
 }
 
+let moonAlpha = 0; // Start fully transparent
+
 function drawMoon() {
     ctx.save();
     const moonSize = 60;
     ctx.translate(width - moonSize - 220, 120);
 
-    // ctx.strokeStyle = '#FFA500';
+    ctx.globalAlpha = moonAlpha; // Apply opacity
+
     ctx.lineWidth = 2;
 
     const circus = new Path2D(document.getElementById('circus').getAttribute('d'));
-    // ctx.scale(1.5, 1.5);
     ctx.fillStyle = '#FFEEEE';
     ctx.fill(circus);
     ctx.stroke(circus);
 
     const crescent = new Path2D(document.getElementById('crescent').getAttribute('d'));
-    // ctx.scale(1.5, 1.5);
     ctx.fillStyle = '#000000';
     ctx.fill(crescent);
     ctx.stroke(crescent);
 
     ctx.restore();
+    ctx.globalAlpha = 1.0; // Reset opacity for other elements
 }
 
 function updateLogoPosition() {
@@ -473,6 +475,10 @@ function updateLogoPosition() {
     }
 }
 
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
 function updateLogo() {
     const now = Date.now();
 
@@ -483,10 +489,10 @@ function updateLogo() {
     // Sound triggers
     if (hoveredLetter !== prevHoverState) {
         if (hoveredLetter) {
-            popSound.play();
+            popSounds[getRandomInt(4)].play();
             hoverStartTime = now;
         } else {
-            popSound.play();
+            // popSound.play();
         }
         prevHoverState = hoveredLetter;
     }
@@ -498,8 +504,7 @@ function updateLogo() {
         if (isActive) {
             // Start fading after delay
             const timeActive = now - hoverStartTime;
-            p.alpha = timeActive > FADE_OUT_DELAY ?
-                Math.max(0, 1 - (timeActive - FADE_OUT_DELAY)/1000) : 1;
+            p.alpha = timeActive > FADE_OUT_DELAY ? Math.max(0, 1 - (timeActive - FADE_OUT_DELAY)/1000) : 1;
         } else {
             p.alpha = Math.max(0, p.alpha - 0.05);
         }
@@ -522,6 +527,10 @@ function update() {
 
     if(sunYOffset < MAX_SUN_TRAVEL) sunYOffset += SUN_SPEED;
     updateLogoPosition();
+
+    if (isNight && moonAlpha < 1) {
+        moonAlpha += 0.001; // Increase opacity gradually
+    }
 }
 
 function draw() {

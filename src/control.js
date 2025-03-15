@@ -531,6 +531,12 @@ function initGallery(currentIndex, disabledPlatform) {
         case 'PageUp':
             selectedIndex = Math.max(selectedIndex - LB.galleryNumOfCols * 10, 0);
             break;
+        case 'Home':
+            selectedIndex = 3;
+            break;
+        case 'End':
+            selectedIndex = gameContainers.length - 1;
+            break;
         case 'PageDown':
             // selectedIndex = Math.min(selectedIndex + (LB.galleryNumOfCols + 10), gameContainers.length);
             // Assume LB.galleryNumOfCols is the number of columns
@@ -553,14 +559,19 @@ function initGallery(currentIndex, disabledPlatform) {
             window.location.reload();
             break;
         case 'Enter':
-            const selectedGame = LB.utils.getSelectedGame(gameContainers, selectedIndex);
+            const selectedGameContainer = LB.utils.getSelectedGame(gameContainers, selectedIndex);
 
-            console.log("currentPageIndex: ", currentPageIndex);
+            console.log("selectedGameContainer: ", selectedGameContainer);
 
             if (currentPageIndex === 0) {
                 _toggleMenu(gameContainers, selectedIndex, galleryKeyDown, isMenuOpen);
             } else {
-                ipcRenderer.send('run-command', selectedGame.dataset.command);
+                selectedGameContainer.classList.add('launching');
+                console.log("new Date():", new Date().toISOString());
+                setTimeout(() => {
+                    ipcRenderer.send('run-command', selectedGameContainer.dataset.command);
+                    // ipcRenderer.send('run-command', "/home/px/src/emume/src/test.sh");
+                }, 600); // Tiny delay for a natural effect
             }
 
             break;

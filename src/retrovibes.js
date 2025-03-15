@@ -1,3 +1,126 @@
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+// Create a base drone
+function createDrone() {
+  const oscillator = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+
+  oscillator.type = 'sine';
+  oscillator.frequency.value = 110 + Math.random() * 20;
+  gain.gain.value = 0.3;
+
+  oscillator.connect(gain);
+  gain.connect(audioContext.destination);
+  oscillator.start();
+
+  // Slowly modulate frequency
+  setInterval(() => {
+    oscillator.frequency.linearRampToValueAtTime(
+      110 + Math.random() * 30,
+      audioContext.currentTime + 5
+    );
+  }, 5000);
+}
+
+// Create randomized melodic sequence
+function createSequence() {
+  const scale = [220, 247, 262, 294, 330, 392, 440]; // A minor pentatonic
+  let currentNote = 0;
+  let patternInterval = 2000;
+
+  function playNote() {
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+
+    // Random parameters
+    oscillator.type = ['sine', 'square', 'sawtooth'][Math.floor(Math.random() * 3)];
+    gain.gain.value = 0.1 + Math.random() * 0.1;
+
+    // Random note from scale with chance to repeat
+    currentNote = Math.random() > 0.3 ?
+      scale[Math.floor(Math.random() * scale.length)] :
+      currentNote;
+
+    oscillator.frequency.value = currentNote * (Math.random() > 0.8 ? 2 : 1);
+
+    // Create envelope
+    gain.gain.setValueAtTime(0.01, audioContext.currentTime);
+    gain.gain.exponentialRampToValueAtTime(gain.gain.value, audioContext.currentTime + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 2);
+
+    // Randomize next interval
+    patternInterval = 1000 + Math.random() * 3000;
+    setTimeout(playNote, patternInterval);
+  }
+
+  playNote();
+}
+
+// Add effects
+function createEffects() {
+  const reverb = audioContext.createConvolver();
+  const delay = audioContext.createDelay();
+  const feedback = audioContext.createGain();
+  const wet = audioContext.createGain();
+
+  // Simple reverb impulse
+  const buffer = audioContext.createBuffer(2, audioContext.sampleRate * 2, audioContext.sampleRate);
+  for (let channel = 0; channel < 2; channel++) {
+    const data = buffer.getChannelData(channel);
+    for (let i = 0; i < data.length; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 2);
+    }
+  }
+  reverb.buffer = buffer;
+
+  delay.delayTime.value = 0.3;
+  feedback.gain.value = 0.4;
+  wet.gain.value = 0.3;
+
+  // Connect effects chain
+  delay.connect(feedback);
+  feedback.connect(delay);
+  delay.connect(wet);
+  wet.connect(audioContext.destination);
+
+  return { reverb, wet };
+}
+
+// Initialize system
+function initGenerativeMusic() {
+  const { reverb, wet } = createEffects();
+
+  // Route all audio through effects
+  audioContext.createMediaStreamDestination().stream
+    .getAudioTracks().forEach(track => {
+      const mediaStreamSource = audioContext.createMediaStreamSource(new MediaStream([track]));
+      mediaStreamSource.connect(reverb);
+    });
+
+  createDrone();
+  setTimeout(createSequence, 2000); // Start sequence after drone
+}
+
+// Start/stop control
+let isPlaying = false;
+
+document.addEventListener('click', () => {
+  if (!isPlaying) {
+    audioContext.resume();
+    initGenerativeMusic();
+    isPlaying = true;
+  } else {
+    audioContext.suspend();
+    isPlaying = false;
+  }
+});
+
+// Scene
 const popSounds = Array.from(document.querySelectorAll('.sound-pop'));
 
 let whooshSound = document.getElementById('whooshSound');
@@ -542,6 +665,23 @@ function drawUrl() {
     ctx.globalAlpha = 1.0; // Reset opacity for other elements
 }
 
+let isCrossed = true; // Only tracks visual state
+
+function drawSpeaker() {
+    const iconX = width - 32;
+    const iconY = height - 10;
+
+    ctx.font = '24px Monospace';
+    ctx.fillStyle = '#FFEEEE';
+
+    ctx.fillText('🔇', iconX, iconY);
+
+    if (!isCrossed) {
+        ctx.clearRect(iconX - 6 , iconY - 22, 70, 70); // Clear only icon area
+        ctx.fillText('🔈', iconX, iconY);
+    }
+}
+
 function draw() {
     ctx.clearRect(0, 0, width, height);
 
@@ -561,7 +701,6 @@ function draw() {
     drawLogo();
     drawParticles();
     drawUrl();
-
     // Foreground elements
     const floorGradient = ctx.createLinearGradient(0, horizon, 0, height);
     floorGradient.addColorStop(0, "#220022"); // Black at the horizon
@@ -571,6 +710,8 @@ function draw() {
     ctx.fillStyle = floorGradient;
     ctx.fillRect(0, horizon, width, height - horizon);
     drawGrid();
+    drawSpeaker();
+
 }
 
 function loop() {
@@ -605,6 +746,11 @@ canvas.addEventListener('mousemove', (e) => {
         updateLogo();  // Call update to instantly hide/show letters
     }
 
+});
+
+canvas.addEventListener('click', (e) => {
+    isCrossed = !isCrossed; // Toggle visual state
+    drawSpeaker(); // Update display
 });
 
 /* canvas.addEventListener('mouseleave', () => hoveredLetter = null);

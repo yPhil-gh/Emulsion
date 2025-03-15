@@ -51,7 +51,7 @@ const pixelFont = {
     'È': [[4,0],[0,0],[0,3],[4,3],[0,6],[4,6]] // Inverted E
 };
 
-function initParticles(particlesPerLetter = 6) { // Add parameter to control count
+function initParticles(particlesPerLetter = 4) { // Add parameter to control count
     const baseX = width/2 - 248;
     particles = [];
 
@@ -438,14 +438,15 @@ function drawLogo() {
 
 }
 
-let moonAlpha = 0; // Start fully transparent
+let moonAlpha = 0;
+let linkAlpha = 0;
 
 function drawMoon() {
     ctx.save();
     const moonSize = 60;
     ctx.translate(width - moonSize - 220, 120);
 
-    ctx.globalAlpha = moonAlpha; // Apply opacity
+    ctx.globalAlpha = moonAlpha;
 
     ctx.lineWidth = 2;
 
@@ -533,6 +534,14 @@ function update() {
     }
 }
 
+function drawUrl() {
+    ctx.globalAlpha = moonAlpha;
+    ctx.font = "9pt Monospace";
+    ctx.fillStyle = '#FFEEEE';
+    ctx.fillText("yphil.gitlab.io",width / 2 - 60 , height / 2 - 50);
+    ctx.globalAlpha = 1.0; // Reset opacity for other elements
+}
+
 function draw() {
     ctx.clearRect(0, 0, width, height);
 
@@ -551,6 +560,7 @@ function draw() {
     drawMoon();
     drawLogo();
     drawParticles();
+    drawUrl();
 
     // Foreground elements
     const floorGradient = ctx.createLinearGradient(0, horizon, 0, height);

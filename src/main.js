@@ -1,12 +1,12 @@
-import { app, BrowserWindow, ipcMain, dialog } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog, globalShortcut } from 'electron';
 import fs from 'fs';
 import path from 'path';
-import { spawn } from 'child_process';
+import { spawn, exec } from 'child_process';
 import { getAllCoverImageUrls } from './steamgrid.js';
 import axios from 'axios';  // Import axios using ESM
 import { fileURLToPath } from "url";
 
-let childProcesses = [];
+let childProcesses = new Map();
 
 let mainWindow;
 
@@ -135,22 +135,33 @@ ipcMain.on('fetch-images', (event, gameName) => {
         });
 });
 
+// ipcMain.on('run-command', (event, command) => {
+
+//     const child = exec(command, (err, stdout, stderr) => {
+//         if (err) {
+//             console.error('Error executing command:', err);
+//         }
+//     });
+//     childProcesses.push(child);
+
+//     // Optionally remove the child when it exits
+//     child.on('exit', () => {
+//         childProcesses = childProcesses.filter(cp => cp !== child);
+//     });
+// });
+
+
 ipcMain.on('run-command', (event, command) => {
-    const child = spawn(command, { shell: true });
-
-    childProcesses.push(child);
-
-    child.stdout.on('data', (data) => {
-        console.log(`STDOUT: ${data}`);
-        event.reply('command-output', data.toString()); // Send output back
+    const child = spawn(command, {
+        shell: true,
+        detached: true,
+        stdio: 'ignore'
     });
 
-    child.stderr.on('data', (data) => {
-        console.error(`STDERR: ${data}`);
-    });
+    childProcesses.set(child.pid, child);
 
     child.on('exit', () => {
-        childProcesses = childProcesses.filter(cp => cp !== child);
+        childProcesses.delete(child.pid);
     });
 });
 
@@ -249,4 +260,24 @@ ipcMain.handle('quit', () => {
     app.quit();
 });
 
-app.whenReady().then(createWindows);
+// app.whenReady().then(createWindows);
+
+app.whenReady().then(() => {
+    createWindows();
+    globalShortcut.register('Ctrl+Shift+K', () => {
+        childProcesses.forEach((child, pid) => {
+            try {
+                if (process.platform === 'win32') {
+                    // Windows needs taskkill
+                    spawn('taskkill', ['/pid', pid, '/f', '/t']);
+                } else {
+                    // POSIX systems (Linux/Mac) use process groups
+                    process.kill(-pid, 'SIGKILL');
+                }
+            } catch (err) {
+                console.error(`Failed to kill PID ${pid}:`, err);
+            }
+        });
+        childProcesses.clear();
+    });
+});

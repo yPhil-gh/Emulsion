@@ -52,7 +52,8 @@
         "fs": "^0.0.1-security",
         "node-fetch": "^3.3.2",
         "path": "^0.12.7",
-        "steamgriddb": "^2.2.0"
+        "steamgriddb": "^2.2.0",
+        "tree-kill": "^1.2.2"
     },
     "platforms": [
         "amiga",

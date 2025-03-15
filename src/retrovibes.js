@@ -418,17 +418,21 @@ function drawLogo() {
     ctx.scale(scale, scale);
 
     // Draw cyan elements
-    ctx.strokeStyle = '#00FFFF';
     ctx.lineWidth = 3;
+
     ['e1', 'm1', 'm2', 'e2'].forEach(id => {
-        const path = new Path2D(document.getElementById(id).getAttribute('d'));
-        ctx.stroke(path);
+        if (letters[id].visible !== false) { // Only draw if visible
+            ctx.strokeStyle = '#00FFFF';
+            const path = new Path2D(document.getElementById(id).getAttribute('d'));
+            ctx.stroke(path);
+        }
     });
 
-    // Draw orange u
-    ctx.strokeStyle = '#FFA500';
-    const uPath = new Path2D(document.getElementById('u').getAttribute('d'));
-    ctx.stroke(uPath);
+    if (letters['u'].visible !== false) { // Only draw if visible
+        ctx.strokeStyle = '#FFA500';
+        const uPath = new Path2D(document.getElementById('u').getAttribute('d'));
+        ctx.stroke(uPath);
+    }
 
     ctx.restore();
 
@@ -471,6 +475,10 @@ function updateLogoPosition() {
 
 function updateLogo() {
     const now = Date.now();
+
+    Object.keys(letters).forEach(id => {
+        letters[id].visible = hoveredLetter !== id;
+    });
 
     // Sound triggers
     if (hoveredLetter !== prevHoverState) {
@@ -557,6 +565,9 @@ canvas.addEventListener('mousemove', (e) => {
     mouseX = e.clientX - rect.left;
     mouseY = e.clientY - rect.top;
 
+    let newHoveredLetter = null;
+
+
     // Check hover for each letter
     /* hoveredLetter = null; */
     Object.entries(letters).forEach(([id, letter]) => {
@@ -566,8 +577,15 @@ canvas.addEventListener('mousemove', (e) => {
             isNight &&
             mouseY <= letter.bounds.maxY) {
             hoveredLetter = id;
+            newHoveredLetter = id;
         }
     });
+
+    if (newHoveredLetter !== hoveredLetter) {
+        hoveredLetter = newHoveredLetter;
+        updateLogo();  // Call update to instantly hide/show letters
+    }
+
 });
 
 /* canvas.addEventListener('mouseleave', () => hoveredLetter = null);

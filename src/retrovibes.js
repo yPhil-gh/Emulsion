@@ -24,7 +24,9 @@ let isNight = false;
 const SUN_BASE_RADIUS = 120; // Doubled from original 60
 const GLOW_SCALE = 6; // Increased from 4
 let sunYOffset = 0; // Added for vertical movement
-const SUN_SPEED = 0.4; // Pixels per frame
+
+const SUN_SPEED = 0.9; // Pixels per frame
+
 const MAX_SUN_TRAVEL = height - horizon + 150; // Stop when logo reaches 100px from top
 
 // Logo configuration
@@ -36,6 +38,7 @@ let logoChars = [];
 const LOGO_FINAL_Y = 300;
 
 const PARTICLES_BASE_Y = LOGO_FINAL_Y;
+const PARTICLES_LENGTH = 50;
 
 const FADE_OUT_DELAY = 5;
 let hoverStartTime = 0;
@@ -48,7 +51,7 @@ const pixelFont = {
     'È': [[4,0],[0,0],[0,3],[4,3],[0,6],[4,6]] // Inverted E
 };
 
-function initParticles() {
+function initParticles(particlesPerLetter = 6) { // Add parameter to control count
     const baseX = width/2 - 248;
     particles = [];
 
@@ -58,7 +61,6 @@ function initParticles() {
         const svgPath = document.getElementById(id);
         const pathLength = svgPath.getTotalLength();
 
-        // Calculate letter bounds
         const bounds = {
             minX: Infinity,
             maxX: -Infinity,
@@ -66,27 +68,39 @@ function initParticles() {
             maxY: -Infinity
         };
 
-        for (let len = 0; len <= pathLength; len += 20) {
+        // Generate particles as lines along the path
+        for (let i = 0; i < particlesPerLetter; i++) {
+            const len = (i / particlesPerLetter) * pathLength;
+            const pointNext = svgPath.getPointAtLength(len + 1); // For angle calculation
             const point = svgPath.getPointAtLength(len);
+
+            // Calculate tangent direction
+            const len2 = Math.min(len + 1, pathLength); // Ensure within bounds
+            const point2 = svgPath.getPointAtLength(len2);
+            const angle = Math.atan2(pointNext.y - point.y, pointNext.x - point.x);
+
             const origX = baseX + point.x;
             const origY = PARTICLES_BASE_Y + point.y;
 
-            // Update bounds
             bounds.minX = Math.min(bounds.minX, origX);
             bounds.maxX = Math.max(bounds.maxX, origX);
             bounds.minY = Math.min(bounds.minY, origY);
             bounds.maxY = Math.max(bounds.maxY, origY);
 
             letter.particles.push({
-                color:letters[id].color,
-                rgbValues:letters[id].rgbValues,
+                spinSpeed: (Math.random() * 2 - 1) * PARTICLES_SPIN_SPEED,
+                currentAngle: angle,
+                color: letter.color,
+                rgbValues: letter.rgbValues,
                 origX, origY,
                 x: origX,
                 y: origY,
                 dx: (Math.random() - 0.5) * 525,
                 dy: (Math.random() - 0.5) * 525,
                 letterId: id,
-                alpha: 0 // START INVISIBLE
+                alpha: 0,
+                angle: angle,
+                lineLength: PARTICLES_LENGTH
             });
         }
 
@@ -101,7 +115,6 @@ function initParticles() {
         particles = particles.concat(letter.particles);
     });
 }
-
 
 // ============================
 // STARFIELD (top half)
@@ -352,17 +365,50 @@ function initLogo() {
     ];
 }
 
-function drawLogo() {
-    // ctx.clearRect(0, 0, width, height);
+const PARTICLES_SPIN_SPEED = 0.05;
 
-    particles.forEach(p => {
-        if (p.alpha > 0) { // Only draw visible particles
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(${p.rgbValues},${p.alpha})`; // Particles color
-            ctx.fill();
-        }
+// function drawParticles() {
+//     // ctx.clearRect(0, 0, width, height);
+//     particles.forEach(particle => {
+//         ctx.beginPath();
+//         const halfLen = particle.lineLength * 2;
+//         const dx = Math.cos(particle.angle) * halfLen;
+//         const dy = Math.sin(particle.angle) * halfLen;
+//         ctx.moveTo(particle.x - dx, particle.y - dy);
+//         ctx.lineTo(particle.x + dx, particle.y + dy);
+//         ctx.strokeStyle = particle.color;
+//         ctx.lineWidth = 2; // Adjust line thickness
+//         ctx.globalAlpha = particle.alpha;
+//         ctx.stroke();
+//     });
+//     ctx.globalAlpha = 1; // Reset alpha
+// }
+
+function drawParticles() {
+    // ctx.clearRect(0, 0, width, height);
+    particles.forEach(particle => {
+        ctx.beginPath();
+
+        // Calculate line endpoints with rotation
+        const halfLen = particle.lineLength / 2;
+        const dx = Math.cos(particle.currentAngle) * halfLen;
+        const dy = Math.sin(particle.currentAngle) * halfLen;
+
+        ctx.moveTo(particle.x - dx, particle.y - dy);
+        ctx.lineTo(particle.x + dx, particle.y + dy);
+
+        particle.currentAngle += particle.spinSpeed;
+
+        ctx.strokeStyle = particle.color;
+        ctx.lineWidth = 2;
+        ctx.globalAlpha = particle.alpha;
+        ctx.stroke();
     });
+    ctx.globalAlpha = 1;
+}
+
+function drawLogo() {
+
 
     const scale = 1.0;
     const baseX = width/2 - 248; // Center 500px wide logo
@@ -487,6 +533,7 @@ function draw() {
     drawSun();
     drawMoon();
     drawLogo();
+    drawParticles();
 
     // Foreground elements
     const floorGradient = ctx.createLinearGradient(0, horizon, 0, height);

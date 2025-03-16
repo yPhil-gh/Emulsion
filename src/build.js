@@ -222,6 +222,12 @@ function buildPrefsForm() {
     saveButton.classList.add('success');
     saveButton.textContent = 'Save';
 
+    const aboutButton = document.createElement('button');
+    aboutButton.type = 'button';
+    aboutButton.className = 'button';
+    aboutButton.classList.add('success');
+    aboutButton.textContent = 'About';
+
     const cancelButton = document.createElement('button');
     cancelButton.type = 'button';
     cancelButton.className = 'button';
@@ -229,7 +235,19 @@ function buildPrefsForm() {
     cancelButton.textContent = 'Cancel';
 
     buttons.appendChild(cancelButton);
+    buttons.appendChild(aboutButton);
     buttons.appendChild(saveButton);
+
+    function _formAboutButtonClick(event) {
+        console.log("event: ", event);
+        ipcRenderer.send('request-about-content');
+
+        document.getElementById('closeAbout').addEventListener('click', () => {
+            document.getElementById('aboutContainer').style.display = 'none';
+            document.getElementById('aboutContent').innerHTML = '';
+        });
+
+    }
 
     function _formCancelButtonClick(event) {
 
@@ -262,6 +280,7 @@ function buildPrefsForm() {
     }
 
     cancelButton.addEventListener('click', _formCancelButtonClick);
+    aboutButton.addEventListener('click', _formAboutButtonClick);
     saveButton.addEventListener('click', _formSaveButtonClick);
 
     form.appendChild(formTable);

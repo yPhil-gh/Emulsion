@@ -1,3 +1,8 @@
+// document.getElementById('closeAbout').addEventListener('click', () => {
+//     document.getElementById('aboutContainer').style.display = 'none';
+//     document.getElementById('aboutContent').innerHTML = '';
+// });
+
 function initSlideShow(platformToDisplay) {
 
     LB.utils.updateControls('dpad', 'button-dpad-ew', 'same');

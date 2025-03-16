@@ -7,6 +7,8 @@ const axios = require('axios');
 
 const LB = {}; // Launch Break :)
 
+window.ipcRenderer = ipcRenderer;
+
 const resolvedPath = path.resolve('.');
 
 LB.baseDir = resolvedPath;
@@ -231,3 +233,23 @@ async function getPlatformPreference(platformName, key) {
     }
 }
 
+
+ipcRenderer.on('deliver-about-content', (event, aboutContent) => {
+    const aboutContainer = document.getElementById('aboutContainer');
+    const aboutContentDiv = document.getElementById('aboutContent');
+    aboutContentDiv.innerHTML = aboutContent;
+
+    // Dynamically load external script
+    const script = document.createElement('script');
+    script.src = './retrovibes.js';
+    script.onload = () => {
+        console.log('retrovibes.js loaded successfully.');
+        // Call any initialization functions from retrovibes.js if necessary
+    };
+    script.onerror = () => {
+        console.error('Failed to load retrovibes.js.');
+    };
+    document.body.appendChild(script);
+
+    aboutContainer.style.display = 'block';
+});

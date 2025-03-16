@@ -1,10 +1,14 @@
 import { app, BrowserWindow, ipcMain, dialog, globalShortcut } from 'electron';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 import { spawn, exec } from 'child_process';
 import { getAllCoverImageUrls } from './steamgrid.js';
 import axios from 'axios';  // Import axios using ESM
-import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 let childProcesses = new Map();
 
@@ -81,17 +85,31 @@ const downloadAndSaveImage = async (imgSrc, platform, gameName) => {
     }
 };
 
+
 function createWindows() {
+  // Create the main window
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-      webPreferences: {
-        nodeIntegration: true,
-        contextIsolation: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
     },
   });
   mainWindow.loadFile('src/index.html');
 }
+
+ipcMain.on('request-about-content', (event) => {
+    console.log("event: ", event);
+    const aboutPath = path.join(__dirname, 'retrovibe.html');
+    fs.readFile(aboutPath, 'utf8', (err, data) => {
+        if (err) {
+            console.error('Failed to read about.html:', err);
+            return;
+        }
+        event.sender.send('deliver-about-content', data);
+    });
+});
 
 ipcMain.handle('download-image', async (event, imgSrc, platform, gameName) => {
     try {

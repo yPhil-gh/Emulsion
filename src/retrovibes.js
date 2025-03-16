@@ -232,7 +232,7 @@ class Seagull {
     constructor(xOffset, yOffset, isLeader = false) {
         this.x = xOffset; // Start position with offset
         this.y = yOffset; // Vertical position with offset
-        this.speed = 1 + Math.random() * 0.5; // Random speed (slower for followers)
+        this.speed = 0.2 + Math.random() * 0.2; // Random speed (slower for followers)
         this.flapPhase = Math.random() * Math.PI * 2; // Random flapping phase
         this.flapSpeed = 3 + Math.random() * 2; // Random flapping speed
         this.scale = 0.1 + Math.random() * 0.1; // Random size for depth effect
@@ -253,7 +253,7 @@ class Seagull {
     draw(ctx) {
         if (this.hasPassed) return; // Skip drawing if the seagull has passed
 
-        const flapHeight = Math.sin(this.flapPhase) * 3; // Subtle flapping motion
+        const flapHeight = Math.sin(this.flapPhase) * 0.8; // Subtle flapping motion
         ctx.save();
         ctx.translate(this.x, this.y + flapHeight);
         ctx.scale(this.scale, this.scale); // Scale for depth effect
@@ -875,6 +875,18 @@ function draw() {
 
     drawStars();
     drawShootingStars();
+
+    if (flock) {
+        const isFlockActive = updateFlock(flock);
+        drawFlock(flock, ctx);
+
+        // Optional: Reinitialize the flock if it has passed
+        // if (!isFlockActive) {
+        //     console.log("Reinitializing flock...");
+        //     flock = initFlock(width, height);
+        // }
+    }
+
     drawSun();
     drawMoon();
     drawLogo();
@@ -890,17 +902,6 @@ function draw() {
     ctx.fillRect(0, horizon, width, height - horizon);
     drawGrid();
     drawSpeaker();
-
-    if (flock) {
-        const isFlockActive = updateFlock(flock);
-        drawFlock(flock, ctx);
-
-        // Optional: Reinitialize the flock if it has passed
-        if (!isFlockActive) {
-            console.log("Reinitializing flock...");
-            flock = initFlock(width, height);
-        }
-    }
 }
 
 init();

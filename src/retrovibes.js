@@ -1,159 +1,38 @@
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+// Create a loop with Web Audio API
+const audioContext = new AudioContext();
+const tempo = 120; // BPM
+const interval = (20 / tempo) * 1000; // Convert BPM to milliseconds
 
-// Chip tune settings
-const NOTE_LENGTH = 0.15;
-const TEMPO = 140; // BPM
-const WAVE_TYPES = ['square', 'triangle'];
-const SCALE = [523.25, 587.33, 659.26, 698.46, 783.99, 880.00]; // C major pentatonic
-
-function createBubblyLead() {
-  let step = 0;
-  const pattern = [0, 2, 4, 2, 3, 5, 2, 4]; // Bouncy pattern
-
-  function playSequence() {
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    const now = audioContext.currentTime;
-
-    // Sound parameters
-    osc.type = WAVE_TYPES[Math.floor(Math.random() * 2)];
-    if(osc.type === 'square') osc.detune.value = Math.random() * 20 - 10; // Detune slightly
-
-    // Melody logic
-    const note = SCALE[pattern[step % pattern.length]] * (Math.random() > 0.8 ? 2 : 1);
-    osc.frequency.setValueAtTime(note, now);
-
-    // Percussive envelope
-    gain.gain.setValueAtTime(0.2, now);
-    gain.gain.exponentialRampToValueAtTime(0.01, now + NOTE_LENGTH);
-
-    // Effects chain
-    const lpf = audioContext.createBiquadFilter();
-    lpf.type = 'lowpass';
-    lpf.frequency.value = 2000;
-
-    osc.connect(gain).connect(lpf).connect(audioContext.destination);
-    osc.start(now);
-    osc.stop(now + NOTE_LENGTH * 1.5);
-
-    // Progress sequence
-    step++;
-    const swing = Math.random() > 0.6 ? 0.05 : -0.05;
-    const nextTime = (60/TEMPO) * 0.5 + swing;
-
-    setTimeout(playSequence, nextTime * 1000);
-  }
-
-  playSequence();
-}
-
-function createBassline() {
-  let rootNote = SCALE[0]/2;
-  let step = 0;
-
-  function play() {
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    const now = audioContext.currentTime;
-
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(rootNote * (step % 4 === 0 ? 0.8 : 1), now);
-
-    // Plucky envelope
-    gain.gain.setValueAtTime(0.15, now);
-    gain.gain.exponentialRampToValueAtTime(0.01, now + NOTE_LENGTH * 2);
-
-    // Add some filter sweep
-    const lpf = audioContext.createBiquadFilter();
-    lpf.type = 'lowpass';
-    lpf.frequency.setValueAtTime(400, now);
-    lpf.frequency.exponentialRampToValueAtTime(200, now + NOTE_LENGTH);
-
-    osc.connect(gain).connect(lpf).connect(audioContext.destination);
-    osc.start(now);
-    osc.stop(now + NOTE_LENGTH * 3);
-
-    // Change root note occasionally
-    if(Math.random() > 0.9) {
-      rootNote = SCALE[Math.floor(Math.random() * 2)]/2;
-    }
-
-    step++;
-    setTimeout(play, (60/TEMPO) * 2 * 1000);
-  }
-
-  play();
-}
-
-function createPercussion() {
-  function playSnare() {
-    const noise = audioContext.createBufferSource();
-    const buffer = audioContext.createBuffer(1, 4096, audioContext.sampleRate);
-    const data = buffer.getChannelData(0);
-
-    // Generate noise
-    for(let i = 0; i < 4096; i++) {
-      data[i] = Math.random() * 2 - 1;
-    }
-
-    const gain = audioContext.createGain();
-    const filter = audioContext.createBiquadFilter();
-    filter.type = 'highpass';
-    filter.frequency.value = 1000;
-
-    noise.buffer = buffer;
-    noise.connect(filter).connect(gain).connect(audioContext.destination);
-
-    // Envelope
-    gain.gain.setValueAtTime(0.5, audioContext.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-
-    noise.start();
-    setTimeout(playSnare, (60/TEMPO) * 1000 * 2);
-  }
-
-  // Kick drum on downbeat
-  function playKick() {
+function playKick() {
     const osc = audioContext.createOscillator();
     const gain = audioContext.createGain();
 
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(150, audioContext.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.1);
+    osc.frequency.setValueAtTime(120, audioContext.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.01);
 
-    gain.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+    gain.gain.setValueAtTime(1, audioContext.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
 
     osc.connect(gain).connect(audioContext.destination);
     osc.start();
     osc.stop(audioContext.currentTime + 0.3);
-
-    setTimeout(playKick, (60/TEMPO) * 1000 * 4);
-  }
-
-  playSnare();
-  playKick();
 }
 
-// Start the cheerful tune!
-function startMusic() {
-  createBubblyLead();
-  setTimeout(createBassline, 500);
-  setTimeout(createPercussion, 1000);
-}
+// Loop every 4 beats
+setInterval(playKick, interval * 4);
 
-// Toggle control
 let isPlaying = false;
+
 document.addEventListener('click', () => {
-  if (!isPlaying) {
-    audioContext.resume().then(() => {
-      startMusic();
-      isPlaying = true;
-    });
-  } else {
-    audioContext.suspend();
-    isPlaying = false;
-  }
+    if (!isPlaying) {
+        audioContext.resume().then(() => {
+            playKick();
+            isPlaying = true;
+        });
+    } else {
+        audioContext.suspend();
+        playKick = false;
+    }
 });
 
 // Scene

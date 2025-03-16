@@ -211,7 +211,7 @@ const SUN_BASE_RADIUS = 120; // Doubled from original 60
 const GLOW_SCALE = 6; // Increased from 4
 let sunYOffset = 0; // Added for vertical movement
 
-const SUN_SPEED = 0.04; // Pixels per frame
+const SUN_SPEED = 0.4; // Pixels per frame
 
 const MAX_SUN_TRAVEL = height - horizon + 150; // Stop when logo reaches 100px from top
 
@@ -233,17 +233,26 @@ class Goose {
     constructor(xOffset, yOffset, isLeader = false) {
         this.x = xOffset;
         this.y = yOffset;
-        this.speed = 0.2 + Math.random() * 0.2;
+        this.speed = 0.0002 + Math.random() * 0.2;
         this.flapPhase = Math.random() * Math.PI * 2;
-        this.flapSpeed = 3 + Math.random() * 2;
+        this.flapSpeed = 6 + Math.random() * 2;
         this.scale = 0.2 + Math.random() * 0.1;
         this.hasPassed = false;
         this.isLeader = isLeader;
     }
 
     update() {
+
+        if (!this.isLeader) {
+            // Followers naturally stay behind due to slower speed
+            this.x -= this.speed;
+        } else {
+            // Leader moves at fixed speed
+            this.x -= this.speed;
+        }
+
         this.x -= this.speed;
-        this.flapPhase += 0.1;
+        this.flapPhase += this.flapSpeed * 0.04; // Now using flapSpeed
         if (this.x < -50 && !this.hasPassed) {
             this.hasPassed = true;
         }
@@ -300,34 +309,37 @@ class Goose {
     }
 }
 
-
 function initFlock(canvasWidth, canvasHeight) {
     const flock = [];
+    const baseY = canvasHeight / 4 + 300;
+    const leaderSpacing = 40; // How far followers stay behind leader
 
-    const altitude = canvasHeight / 4 + 350;
-
-    const leader = new Goose(canvasWidth + 0, altitude, true); // Leader at the front
+    // Create leader (fixed speed, bigger scale)
+    const leader = new Goose(canvasWidth, baseY, true);
+    leader.speed = 0.09; // Fixed faster speed
+    leader.scale = 0.3; // Slightly larger
     flock.push(leader);
 
-    // Add followers in a V shape
-    const hSpacing = 20; // Horizontal spacing between seagulls
-    const vSpacing = 15; // Vertical spacing between seagulls
-    const vAngle = 10; // Angle of the V shape
-    for (let i = 1; i <= 7; i++) {
-        // Left side of the V
-        flock.push(new Goose(
-            canvasWidth + i * hSpacing, // Horizontal position
-            altitude + i * vSpacing * Math.sin(vAngle * Math.PI / 180) // Vertical position
-        ));
-        // Right side of the V
-        flock.push(new Goose(
-            canvasWidth + i * hSpacing, // Horizontal position
-            altitude - i * vSpacing * Math.sin(vAngle * Math.PI / 180) // Vertical position
-        ));
+    // Create followers in V shape
+    const angle = 30; // Degrees for V shape
+    for (let i = 1; i <= 5; i++) {
+        const xOffset = i * leaderSpacing;
+        const yOffset = i * 15 * Math.tan(angle * Math.PI / 180);
+
+        // Left side
+        const left = new Goose(canvasWidth + xOffset, baseY + yOffset);
+        left.speed = leader.speed - (Math.random() * 0.05); // Slightly slower than leader
+        flock.push(left);
+
+        // Right side
+        const right = new Goose(canvasWidth + xOffset, baseY - yOffset);
+        right.speed = leader.speed - (Math.random() * 0.05);
+        flock.push(right);
     }
 
     return flock;
 }
+
 
 // Update the flock's positions
 function updateFlock(flock) {
@@ -346,6 +358,18 @@ function drawFlock(flock, ctx) {
     flock.forEach(seagull => seagull.draw(ctx));
 }
 
+function resetParticleDirections() {
+    particles.forEach(particle => {
+        // Generate new random direction with varied force
+        const forceMultiplier = 0.8 + Math.random() * 0.4; // 80-120% force variation
+        particle.dx = (Math.random() - 0.5) * 525 * forceMultiplier;
+        particle.dy = (Math.random() - 0.5) * 525 * forceMultiplier;
+
+        // Also reset spin parameters for variety
+        particle.spinSpeed = (Math.random() - 0.5) * 0.15;
+        particle.currentAngle = Math.random() * Math.PI * 2;
+    });
+}
 
 function initParticles(particlesPerLetter = 4) { // Add parameter to control count
     const baseX = width/2 - 248;
@@ -384,15 +408,17 @@ function initParticles(particlesPerLetter = 4) { // Add parameter to control cou
             bounds.maxY = Math.max(bounds.maxY, origY);
 
             letter.particles.push({
-                spinSpeed: (Math.random() * 2 - 1) * PARTICLES_SPIN_SPEED,
-                currentAngle: angle,
+                currentAngle: Math.random() * Math.PI * 2, // Start at a random angle
+                spinSpeed: (Math.random() - 0.5) * 0.1, // Random spin direction
+                // spinSpeed: (Math.random() * 2 - 1) * PARTICLES_SPIN_SPEED,
+                // currentAngle: angle,
                 color: letter.color,
                 rgbValues: letter.rgbValues,
                 origX, origY,
                 x: origX,
                 y: origY,
-                dx: (Math.random() - 0.5) * 525,
-                dy: (Math.random() - 0.5) * 525,
+                dx: (Math.random() - 0.5) * 525 * Math.random(), // Add extra randomization
+                dy: (Math.random() - 0.5) * 525 * Math.random(),
                 letterId: id,
                 alpha: 0,
                 angle: angle,
@@ -695,7 +721,6 @@ const PARTICLES_SPIN_SPEED = 0.05;
 // }
 
 function drawParticles() {
-    // ctx.clearRect(0, 0, width, height);
     particles.forEach(particle => {
         ctx.beginPath();
 
@@ -707,7 +732,8 @@ function drawParticles() {
         ctx.moveTo(particle.x - dx, particle.y - dy);
         ctx.lineTo(particle.x + dx, particle.y + dy);
 
-        particle.currentAngle += particle.spinSpeed;
+        // Randomize direction by making the spinSpeed vary per frame slightly
+        particle.currentAngle += particle.spinSpeed * (Math.random() * 0.4 + 0.8);
 
         ctx.strokeStyle = particle.color;
         ctx.lineWidth = 2;
@@ -916,10 +942,22 @@ function drawUnmutedIcon(ctx, x, y, size) {
     });
 }
 
+let isMuted = true;
 
-let isMuted = false;
+startGroove();
 
 function toggleMute() {
+
+    if (!isPlaying) {
+        audioContext.resume().then(() => {
+            // startGroove();
+            isPlaying = true;
+        });
+    } else {
+        audioContext.suspend();
+        isPlaying = false;
+    }
+
     isMuted = !isMuted;
     drawVolumeControl();
 }
@@ -930,7 +968,7 @@ function drawVolumeControl() {
     const iconSize = 30;
 
     // Clear the area where the icon will be drawn
-    ctx.clearRect(iconX - 10, iconY - 10, iconSize + 20, iconSize + 20);
+    // ctx.clearRect(iconX - 10, iconY - 10, iconSize + 20, iconSize + 20);
 
     // Set the stroke style for the icon
     ctx.strokeStyle = '#FFEEEE';
@@ -1025,6 +1063,7 @@ canvas.addEventListener('mousemove', (e) => {
     if (newHoveredLetter !== hoveredLetter) {
         hoveredLetter = newHoveredLetter;
         updateLogo();  // Call update to instantly hide/show letters
+        resetParticleDirections();
     }
 
 });

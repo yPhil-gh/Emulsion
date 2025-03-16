@@ -242,9 +242,9 @@ function buildPrefsForm() {
         console.log("event: ", event);
         ipcRenderer.send('request-about-content');
 
-        document.getElementById('closeAbout').addEventListener('click', () => {
-            document.getElementById('aboutContainer').style.display = 'none';
-            document.getElementById('aboutContent').innerHTML = '';
+        document.getElementById('close-about').addEventListener('click', () => {
+            document.getElementById('about-container').style.display = 'none';
+            document.getElementById('about-content').innerHTML = '';
         });
 
     }

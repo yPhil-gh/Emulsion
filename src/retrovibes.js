@@ -839,18 +839,51 @@ function drawUrl() {
 
 let isCrossed = true; // Only tracks visual state
 
-function drawSpeaker() {
-    const iconX = width - 32;
-    const iconY = height - 10;
+function drawMutedIcon(ctx, x, y, size) {
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + size, y + size);
+    ctx.moveTo(x + size, y);
+    ctx.lineTo(x, y + size);
+    ctx.stroke();
+}
 
-    ctx.font = '24px Monospace';
-    ctx.fillStyle = '#FFEEEE';
+function drawUnmutedIcon(ctx, x, y, size) {
+    ctx.beginPath();
+    ctx.moveTo(x, y + size / 2);
+    ctx.lineTo(x + size / 2, y);
+    ctx.lineTo(x + size / 2, y + size);
+    ctx.closePath();
+    ctx.stroke();
 
-    ctx.fillText('🔇', iconX, iconY);
+    ctx.beginPath();
+    ctx.arc(x + size, y + size / 2, size / 4, -Math.PI / 4, Math.PI / 4);
+    ctx.stroke();
+}
 
-    if (!isCrossed) {
-        ctx.clearRect(iconX - 6 , iconY - 22, 70, 70); // Clear only icon area
-        ctx.fillText('🔈', iconX, iconY);
+let isMuted = false;
+
+function toggleMute() {
+    isMuted = !isMuted;
+    drawVolumeControl();
+}
+
+function drawVolumeControl() {
+    const iconX = width - 50;
+    const iconY = height - 50;
+    const iconSize = 30;
+
+    // Clear the area where the icon will be drawn
+    ctx.clearRect(iconX - 10, iconY - 10, iconSize + 20, iconSize + 20);
+
+    // Set the stroke style for the icon
+    ctx.strokeStyle = '#FFEEEE';
+    ctx.lineWidth = 2;
+
+    if (isMuted) {
+        drawMutedIcon(ctx, iconX, iconY, iconSize);
+    } else {
+        drawUnmutedIcon(ctx, iconX, iconY, iconSize);
     }
 }
 
@@ -901,7 +934,7 @@ function draw() {
     ctx.fillStyle = floorGradient;
     ctx.fillRect(0, horizon, width, height - horizon);
     drawGrid();
-    drawSpeaker();
+    drawVolumeControl();
 }
 
 init();
@@ -940,9 +973,16 @@ canvas.addEventListener('mousemove', (e) => {
 
 });
 
-canvas.addEventListener('click', (e) => {
-    isCrossed = !isCrossed; // Toggle visual state
-    drawSpeaker(); // Update display
+canvas.addEventListener('click', function(event) {
+    const iconX = width - 50;
+    const iconY = height - 50;
+    const iconSize = 30;
+
+    // Check if the click is within the volume icon area
+    if (event.clientX >= iconX && event.clientX <= iconX + iconSize &&
+        event.clientY >= iconY && event.clientY <= iconY + iconSize) {
+        toggleMute();
+    }
 });
 
 /* canvas.addEventListener('mouseleave', () => hoveredLetter = null);

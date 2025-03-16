@@ -235,8 +235,8 @@ async function getPlatformPreference(platformName, key) {
 
 
 ipcRenderer.on('deliver-about-content', (event, aboutContent) => {
-    const aboutContainer = document.getElementById('aboutContainer');
-    const aboutContentDiv = document.getElementById('aboutContent');
+    const aboutContainer = document.getElementById('about-container');
+    const aboutContentDiv = document.getElementById('about-content');
     aboutContentDiv.innerHTML = aboutContent;
 
     // Dynamically load external script
@@ -244,7 +244,6 @@ ipcRenderer.on('deliver-about-content', (event, aboutContent) => {
     script.src = './retrovibes.js';
     script.onload = () => {
         console.log('retrovibes.js loaded successfully.');
-        // Call any initialization functions from retrovibes.js if necessary
     };
     script.onerror = () => {
         console.error('Failed to load retrovibes.js.');

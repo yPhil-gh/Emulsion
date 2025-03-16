@@ -210,19 +210,20 @@ const SUN_BASE_RADIUS = 120; // Doubled from original 60
 const GLOW_SCALE = 6; // Increased from 4
 let sunYOffset = 0; // Added for vertical movement
 
-const SUN_SPEED = 0.08; // Pixels per frame
+const SUN_SPEED = 0.04; // Pixels per frame
 
-const MAX_SUN_TRAVEL = height - horizon + 150; // Stop when logo reaches 100px from top
+const MAX_SUN_TRAVEL = height - horizon + 150;
 
 // Logo configuration
-let logoY = height; // Start below screen
 let logoChars = [];
 
-const LOGO_INITIAL_Y_OFFSET = 150; // How far below horizon logo starts
-const LOGO_RISE_RATIO = 1.8; // How much faster logo rises compared to sun
+const LOGO_INITIAL_Y = horizon - 18; // Start just below horizon
+const LOGO_RISE_SPEED = 0.00000000003; // Base movement speed
+let logoSpeed = 0; // Current rise speed
 
+let logoY = LOGO_INITIAL_Y; // Start below screen
 // Logo configuration
-const LOGO_FINAL_Y = 300;
+const LOGO_FINAL_Y = 250;
 
 const PARTICLES_BASE_Y = LOGO_FINAL_Y;
 const PARTICLES_LENGTH = 50;
@@ -443,7 +444,7 @@ function initParticles(particlesPerLetter = 4) { // Add parameter to control cou
 // ============================
 // STARFIELD (top half)
 // ============================
-const starCount = 150;
+const starCount = 50;
 let stars = [];
 let shootingStars = [];
 for (let i = 0; i < starCount; i++) {
@@ -514,7 +515,19 @@ function drawShootingStars() {
 
 // =======================[UPDATED SUN SYSTEM]=======================
 function updateSunPosition() {
-    sunYOffset += SUN_SPEED; // Gradually lower the sun
+    if (sunYOffset > MAX_SUN_TRAVEL - 340) {
+        isNight = true;
+    }
+
+    if (sunYOffset < MAX_SUN_TRAVEL) {
+        sunYOffset += SUN_SPEED;
+    } else {
+        // isNight = true;
+        // Start logo movement when sun sets
+        // if (logoY > LOGO_FINAL_Y) {
+        //     logoSpeed = LOGO_RISE_SPEED;
+        // }
+    }
 }
 
 function drawSun() {
@@ -802,21 +815,19 @@ function drawMoon() {
     ctx.globalAlpha = 1.0; // Reset opacity for other elements
 }
 
+
 function updateLogoPosition() {
-    const travelRatio = sunYOffset / MAX_SUN_TRAVEL;
+    if (isNight && logoY > LOGO_FINAL_Y) {
+        // Ease-out animation
+        const remaining = logoY - LOGO_FINAL_Y;
+        logoSpeed = Math.max(0.5, remaining * 0.001);
+        logoY -= logoSpeed;
 
-    // New calculation with accelerated rise
-    const logoTravel = (height - LOGO_FINAL_Y + LOGO_INITIAL_Y_OFFSET);
-    logoY = horizon + LOGO_INITIAL_Y_OFFSET -
-           (logoTravel * Math.pow(travelRatio, LOGO_RISE_RATIO));
-
-    sunYOffset += SUN_SPEED;
-
-    // Ensure final position is exact
-    if (sunYOffset >= MAX_SUN_TRAVEL) {
-        sunYOffset = MAX_SUN_TRAVEL;
-        logoY = LOGO_FINAL_Y;
-        isNight = true;
+        // Snap to final position when close
+        if (remaining < 2) {
+            logoY = LOGO_FINAL_Y;
+            logoSpeed = 0;
+        }
     }
 }
 
@@ -870,7 +881,7 @@ function update() {
     spawnShootingStar();
     updateLogo();
 
-    if(sunYOffset < MAX_SUN_TRAVEL) sunYOffset += SUN_SPEED;
+    updateSunPosition();
     updateLogoPosition();
 
     if (isNight && moonAlpha < 1) {
@@ -886,7 +897,24 @@ function drawUrl() {
     ctx.globalAlpha = 1.0; // Reset opacity for other elements
 }
 
-let isCrossed = true; // Only tracks visual state
+function drawCredits() {
+    ctx.globalAlpha = 1; // Fades in with moon/night mode
+    ctx.font = "9pt Monospace";
+    ctx.fillStyle = '#FFEEEE';
+    ctx.textAlign = 'center';
+
+    // Main text
+    ctx.fillText("Made with ♥ by yphil", width / 2, height - 30);
+
+    // Secondary text (smaller/lighter)
+    ctx.font = "8pt Monospace";
+    ctx.fillStyle = 'rgba(255, 238, 238, 0.7)';
+    ctx.fillText("Press M to toggle audio", width / 2, height - 15);
+
+    // Reset context
+    ctx.textAlign = 'left';
+    ctx.globalAlpha = 1.0;
+}
 
 function drawMutedIcon(ctx, x, y, size) {
     // Draw speaker (triangle)
@@ -1036,6 +1064,7 @@ function draw() {
     ctx.fillStyle = floorGradient;
     ctx.fillRect(0, horizon, width, height - horizon);
     drawGrid();
+    drawCredits();
     drawVolumeControl();
 }
 

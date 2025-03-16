@@ -281,3 +281,64 @@ app.whenReady().then(() => {
         childProcesses.clear();
     });
 });
+
+// // npm install gamepad
+// import gamepad from 'gamepad';
+
+// // Initialize the gamepad system
+// gamepad.init();
+
+// // Set up gamepad detection
+// setInterval(gamepad.processEvents, 16);
+// setInterval(gamepad.detectDevices, 500);
+
+// // Store controller state
+// let controllerState = {};
+
+// // Listen for button events
+// gamepad.on('move', (id, axis, value) => {
+//     if (Math.abs(value) > 0.5) { // Deadzone threshold
+//         controllerState[axis] = value;
+//     }
+// });
+
+// gamepad.on('down', (id, button) => {
+//     controllerState[button] = true;
+
+//     // Example: Kill emulator on Start+Select press
+//     if (controllerState[9] && controllerState[8]) { // Adjust button numbers for your controller
+//         killAllProcesses();
+//     }
+// });
+
+// gamepad.on('up', (id, button) => {
+//     controllerState[button] = false;
+// });
+
+// function killAllProcesses() {
+//     // Use your existing kill logic
+//     childProcesses.forEach((child, pid) => {
+//         try {
+//             if (process.platform === 'win32') {
+//                 spawn('taskkill', ['/pid', pid, '/f', '/t']);
+//             } else {
+//                 process.kill(-pid, 'SIGKILL');
+//             }
+//         } catch (err) {
+//             console.error(`Failed to kill PID ${pid}:`, err);
+//         }
+//     });
+//     childProcesses.clear();
+// }
+
+// // Other option
+// import iohook from 'iohook';
+
+// iohook.on('keypress', (event) => {
+//     if (event.keycode === YOUR_CONTROLLER_MAPPED_KEY) {
+//         killAllProcesses();
+//     }
+// });
+
+// iohook.start();
+

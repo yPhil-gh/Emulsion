@@ -7,7 +7,18 @@ const KEYS = [
     [58.27, 69.30, 77.78] // Bb minor
 ];
 
-// ██████╗ ██████╗  ██████╗██╗  ██╗
+const electricColors = [
+    "#00FFFF", // Cyan
+    "#FF00FF", // Magenta
+    "#00FF00", // Lime
+    "#FF007F", // Bright Pink
+    "#7F00FF", // Electric Purple
+    "#FFAA00", // Electric Orange
+    "#00FF7F", // Spring Green
+    "#FF007F"  // Hot Pink
+];
+
+
 const reverb = audioContext.createConvolver();
 const impulse = audioContext.createBuffer(2, audioContext.sampleRate * 2, audioContext.sampleRate);
 for (let channel = 0; channel < 2; channel++) {
@@ -19,13 +30,12 @@ for (let channel = 0; channel < 2; channel++) {
 reverb.buffer = impulse;
 reverb.connect(audioContext.destination);
 
-// ██╗  ██╗██╗████████╗
 function createKick() {
     const osc = audioContext.createOscillator();
     const gain = audioContext.createGain();
 
     osc.frequency.setValueAtTime(150, audioContext.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.1);
+    osc.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.01);
 
     gain.gain.setValueAtTime(1, audioContext.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
@@ -35,7 +45,6 @@ function createKick() {
     osc.stop(audioContext.currentTime + 0.3);
 }
 
-// ██╗  ██╗██╗██╗  ██╗
 function createHiHat() {
     const noise = audioContext.createBufferSource();
     const buffer = audioContext.createBuffer(1, 4096, audioContext.sampleRate);
@@ -59,7 +68,6 @@ function createHiHat() {
     noise.stop(audioContext.currentTime + 0.1);
 }
 
-// ██████╗  █████╗ ███████╗███████╗
 function createBass(note, filterCutoff, resonance) {
     const osc = audioContext.createOscillator();
     const filter = audioContext.createBiquadFilter();
@@ -80,7 +88,6 @@ function createBass(note, filterCutoff, resonance) {
     osc.stop(audioContext.currentTime + 0.2);
 }
 
-// ████████╗███████╗██╗  ██╗
 function startGroove() {
     let barCount = 0;
     let filterCutoff = 200;
@@ -139,7 +146,7 @@ function startGroove() {
             const sweep = audioContext.createOscillator();
             sweep.type = 'sawtooth';
             sweep.frequency.setValueAtTime(200, audioContext.currentTime);
-            sweep.frequency.exponentialRampToValueAtTime(2000, audioContext.currentTime + 1);
+            sweep.frequency.exponentialRampToValueAtTime(Math.random() * 2000, audioContext.currentTime + 1);
 
             const sweepGain = audioContext.createGain();
             sweepGain.gain.setValueAtTime(0.2, audioContext.currentTime);
@@ -427,8 +434,12 @@ const reliefMap = Array(numGridCols + 1).fill().map(() =>
     )
 );
 
+
 function drawGrid() {
-    ctx.strokeStyle = "#00FFFF";
+    // Define the color for special horizontal lines
+    const specialLineColor = "#FF0000"; // Red color
+    const specialLineFrequency = 5; // Every 5th line will be special
+
     ctx.lineWidth = 1;
 
     // Calculate horizontal positions with seamless wrap
@@ -445,7 +456,7 @@ function drawGrid() {
     const roadHalfWidth = 200;
     for (let col = 0; col <= numGridCols; col++) {
         const xNorm = col / numGridCols;
-        const vanishX = width/2 - roadHalfWidth + xNorm * 2 * roadHalfWidth;
+        const vanishX = width / 2 - roadHalfWidth + xNorm * 2 * roadHalfWidth;
 
         let lastPoint = null;
 
@@ -464,6 +475,7 @@ function drawGrid() {
                 } else if (pos.t < 0.3) {
                     baseAlpha = (pos.t - 0.1) / 0.2;
                 } else if (pos.t <= 0.7) {
+                    // ctx.strokeStyle = randomColor;
                     baseAlpha = 1;
                 } else if (pos.t < 0.9) {
                     baseAlpha = 1 - (pos.t - 0.7) / 0.2;
@@ -485,8 +497,16 @@ function drawGrid() {
         });
     }
 
-    // Draw horizontal lines with connected relief and fading
+    // Draw horizontal lines with potential special coloring
     horizontalPositions.forEach((pos, row) => {
+        // Determine the color for this horizontal line
+        if (row % specialLineFrequency === 0) {
+            // let randomColor = electricColors[Math.floor(Math.random() * electricColors.length)];
+            ctx.strokeStyle = "#FFFFFF"; // Special color for specific lines
+        } else {
+            ctx.strokeStyle = "#00FFFF"; // Default cyan color
+        }
+
         // Calculate alpha based on row's t
         let baseAlpha;
         if (pos.t < 0.1) {
@@ -507,7 +527,7 @@ function drawGrid() {
 
         for (let col = 0; col <= numGridCols; col++) {
             const xNorm = col / numGridCols;
-            const vanishX = width/2 - roadHalfWidth + xNorm * 2 * roadHalfWidth;
+            const vanishX = width / 2 - roadHalfWidth + xNorm * 2 * roadHalfWidth;
             const lift = reliefMap[col][row];
             const y = pos.yBase - lift;
             const x = xNorm * width + (vanishX - xNorm * width) * (1 - pos.t);
@@ -529,6 +549,7 @@ function drawGrid() {
 
     ctx.globalAlpha = 1;
 }
+
 
 
 

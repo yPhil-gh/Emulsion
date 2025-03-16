@@ -170,17 +170,17 @@ function startGroove() {
     playBar();
 }
 
-document.addEventListener('click', () => {
-    if (!isPlaying) {
-        audioContext.resume().then(() => {
-            startGroove();
-            isPlaying = true;
-        });
-    } else {
-        audioContext.suspend();
-        isPlaying = false;
-    }
-});
+// document.addEventListener('click', () => {
+//     if (!isPlaying) {
+//         audioContext.resume().then(() => {
+//             startGroove();
+//             isPlaying = true;
+//         });
+//     } else {
+//         audioContext.suspend();
+//         isPlaying = false;
+//     }
+// });
 
 // Scene
 const popSounds = Array.from(document.querySelectorAll('.sound-pop'));
@@ -840,6 +840,32 @@ function drawUrl() {
 let isCrossed = true; // Only tracks visual state
 
 function drawMutedIcon(ctx, x, y, size) {
+    // Draw speaker (triangle)
+    ctx.beginPath();
+    ctx.moveTo(x, y + size / 2);
+    ctx.lineTo(x + size / 2, y);
+    ctx.lineTo(x + size / 2, y + size);
+    ctx.closePath();
+    ctx.stroke();
+
+    // Parameters for arcs
+    const arcRadii = [size / 2.5, size / 2, size / 1.5]; // Increased radii for larger arcs
+    const arcOffsets = [-16, -14, -12]; // Offsets to position arcs closer to the triangle
+
+    // Draw sound waves (arcs)
+    arcRadii.forEach((radius, index) => {
+        ctx.beginPath();
+        ctx.arc(
+            x + size + arcOffsets[index], // X position adjusted by offset
+            y + size / 2,                 // Y position
+            radius,                       // Radius
+            -Math.PI / 4,                 // Start angle
+            Math.PI / 4                   // End angle
+        );
+        ctx.stroke();
+    });
+
+    // Cross
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.lineTo(x + size, y + size);
@@ -849,6 +875,7 @@ function drawMutedIcon(ctx, x, y, size) {
 }
 
 function drawUnmutedIcon(ctx, x, y, size) {
+    // Draw speaker (triangle)
     ctx.beginPath();
     ctx.moveTo(x, y + size / 2);
     ctx.lineTo(x + size / 2, y);
@@ -856,10 +883,24 @@ function drawUnmutedIcon(ctx, x, y, size) {
     ctx.closePath();
     ctx.stroke();
 
-    ctx.beginPath();
-    ctx.arc(x + size, y + size / 2, size / 4, -Math.PI / 4, Math.PI / 4);
-    ctx.stroke();
+    // Parameters for arcs
+    const arcRadii = [size / 2.5, size / 2, size / 1.5]; // Increased radii for larger arcs
+    const arcOffsets = [-16, -14, -12]; // Offsets to position arcs closer to the triangle
+
+    // Draw sound waves (arcs)
+    arcRadii.forEach((radius, index) => {
+        ctx.beginPath();
+        ctx.arc(
+            x + size + arcOffsets[index], // X position adjusted by offset
+            y + size / 2,                 // Y position
+            radius,                       // Radius
+            -Math.PI / 4,                 // Start angle
+            Math.PI / 4                   // End angle
+        );
+        ctx.stroke();
+    });
 }
+
 
 let isMuted = false;
 
@@ -978,9 +1019,16 @@ canvas.addEventListener('click', function(event) {
     const iconY = height - 50;
     const iconSize = 30;
 
+    // Get the bounding rectangle of the canvas
+    const rect = canvas.getBoundingClientRect();
+
+    // Calculate mouse position within the canvas
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+
     // Check if the click is within the volume icon area
-    if (event.clientX >= iconX && event.clientX <= iconX + iconSize &&
-        event.clientY >= iconY && event.clientY <= iconY + iconSize) {
+    if (mouseX >= iconX && mouseX <= iconX + iconSize &&
+        mouseY >= iconY && mouseY <= iconY + iconSize) {
         toggleMute();
     }
 });

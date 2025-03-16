@@ -57,7 +57,6 @@ function buildSlide(platformName, preferences) {
     return slide;
 }
 
-
 LB.prefs.load()
     .then((preferences) => {
 

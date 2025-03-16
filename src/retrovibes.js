@@ -1,5 +1,5 @@
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-const TEMPO = 120; // Classic dance tempo
+const TEMPO = 180; // Classic dance tempo
 let isPlaying = false;
 let currentKey = 0;
 const KEYS = [
@@ -60,7 +60,7 @@ function createHiHat() {
 }
 
 // ██████╗  █████╗ ███████╗███████╗
-function createBass(note) {
+function createBass(note, filterCutoff, resonance) {
     const osc = audioContext.createOscillator();
     const filter = audioContext.createBiquadFilter();
     const gain = audioContext.createGain();
@@ -69,7 +69,8 @@ function createBass(note) {
     osc.frequency.setValueAtTime(note, audioContext.currentTime);
 
     filter.type = 'lowpass';
-    filter.frequency.value = 200;
+    filter.frequency.setValueAtTime(filterCutoff, audioContext.currentTime);
+    filter.Q.value = resonance;
 
     gain.gain.setValueAtTime(0.4, audioContext.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
@@ -82,10 +83,34 @@ function createBass(note) {
 // ████████╗███████╗██╗  ██╗
 function startGroove() {
     let barCount = 0;
+    let filterCutoff = 200;
+    let resonance = 5;
+    let filterLFO = audioContext.createOscillator();
+
+    // Initialize filter modulation
+    filterLFO.type = 'sine';
+    filterLFO.frequency.value = 0.1; // Slow modulation
+    filterLFO.start();
 
     function playBar() {
         const isKeyChangeBar = barCount % 5 === 4; // Change key every 5th bar
+        const isCrazyBar = barCount % 12 === 11; // Crazy bar every 12 bars
         const key = isKeyChangeBar ? KEYS[(currentKey + 1) % KEYS.length] : KEYS[currentKey];
+
+        // Evolving filter cutoff
+        if (Math.random() > 0.8) {
+            // Drastic change
+            const targetCutoff = 200 + Math.random() * 1800;
+            filterLFO.frequency.setValueAtTime(0.5 + Math.random() * 2, audioContext.currentTime);
+            filterCutoff = targetCutoff;
+        } else {
+            // Subtle change
+            filterCutoff += (Math.random() - 0.5) * 50;
+            filterCutoff = Math.min(Math.max(filterCutoff, 100), 2000);
+        }
+
+        // Modulate resonance
+        resonance = 5 + Math.random() * 2;
 
         // Kick on 1 and 3
         [0, 2].forEach(beat => {
@@ -97,10 +122,33 @@ function startGroove() {
             setTimeout(createHiHat, (60/TEMPO) * beat * 1000);
         });
 
-        // Bass on 1 and 2.5
-        [0, 2.5].forEach(beat => {
-            setTimeout(() => createBass(key[0]), (60/TEMPO) * beat * 1000);
+        // Dynamic bass rhythm
+        const bassPattern = isCrazyBar ?
+            [0, 1.25, 2.75] : // Crazy pattern
+            Math.random() > 0.5 ?
+                [0, 2.5] : // tu-tutu
+                [0, 1.5, 3]; // tutu-tu
+
+        bassPattern.forEach(beat => {
+            setTimeout(() => createBass(key[0], filterCutoff, resonance), (60/TEMPO) * beat * 1000);
         });
+
+        // Crazy bar effects
+        if (isCrazyBar) {
+            // Wild filter sweep
+            const sweep = audioContext.createOscillator();
+            sweep.type = 'sawtooth';
+            sweep.frequency.setValueAtTime(200, audioContext.currentTime);
+            sweep.frequency.exponentialRampToValueAtTime(2000, audioContext.currentTime + 1);
+
+            const sweepGain = audioContext.createGain();
+            sweepGain.gain.setValueAtTime(0.2, audioContext.currentTime);
+            sweepGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+
+            sweep.connect(sweepGain).connect(audioContext.destination);
+            sweep.start();
+            sweep.stop(audioContext.currentTime + 1.5);
+        }
 
         barCount++;
 

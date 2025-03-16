@@ -7,18 +7,6 @@ const KEYS = [
     [58.27, 69.30, 77.78] // Bb minor
 ];
 
-const electricColors = [
-    "#00FFFF", // Cyan
-    "#FF00FF", // Magenta
-    "#00FF00", // Lime
-    "#FF007F", // Bright Pink
-    "#7F00FF", // Electric Purple
-    "#FFAA00", // Electric Orange
-    "#00FF7F", // Spring Green
-    "#FF007F"  // Hot Pink
-];
-
-
 const reverb = audioContext.createConvolver();
 const impulse = audioContext.createBuffer(2, audioContext.sampleRate * 2, audioContext.sampleRate);
 for (let channel = 0; channel < 2; channel++) {
@@ -199,6 +187,17 @@ const letters = {
     u: { color: 'rgb(255, 165, 0)', rgbValues: '255, 165, 0', bounds: null, particles: [] }
 };
 
+const electricColors = [
+    "#00FFFF", // Cyan
+    "#FF00FF", // Magenta
+    "#00FF00", // Lime
+    "#FF007F", // Bright Pink
+    "#7F00FF", // Electric Purple
+    "#FFAA00", // Electric Orange
+    "#00FF7F", // Spring Green
+    "#FF007F"  // Hot Pink
+];
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 let width = canvas.width = window.innerWidth;
@@ -211,13 +210,16 @@ const SUN_BASE_RADIUS = 120; // Doubled from original 60
 const GLOW_SCALE = 6; // Increased from 4
 let sunYOffset = 0; // Added for vertical movement
 
-const SUN_SPEED = 0.4; // Pixels per frame
+const SUN_SPEED = 0.08; // Pixels per frame
 
 const MAX_SUN_TRAVEL = height - horizon + 150; // Stop when logo reaches 100px from top
 
 // Logo configuration
 let logoY = height; // Start below screen
 let logoChars = [];
+
+const LOGO_INITIAL_Y_OFFSET = 150; // How far below horizon logo starts
+const LOGO_RISE_RATIO = 1.8; // How much faster logo rises compared to sun
 
 // Logo configuration
 const LOGO_FINAL_Y = 300;
@@ -802,9 +804,15 @@ function drawMoon() {
 
 function updateLogoPosition() {
     const travelRatio = sunYOffset / MAX_SUN_TRAVEL;
-    logoY = height + 200 - (height - LOGO_FINAL_Y + 200) * travelRatio;
 
-    sunYOffset += SUN_SPEED; // Ensure sunYOffset updates consistently
+    // New calculation with accelerated rise
+    const logoTravel = (height - LOGO_FINAL_Y + LOGO_INITIAL_Y_OFFSET);
+    logoY = horizon + LOGO_INITIAL_Y_OFFSET -
+           (logoTravel * Math.pow(travelRatio, LOGO_RISE_RATIO));
+
+    sunYOffset += SUN_SPEED;
+
+    // Ensure final position is exact
     if (sunYOffset >= MAX_SUN_TRAVEL) {
         sunYOffset = MAX_SUN_TRAVEL;
         logoY = LOGO_FINAL_Y;

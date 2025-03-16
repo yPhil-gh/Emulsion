@@ -1,14 +1,31 @@
-// Create a loop with Web Audio API
-const audioContext = new AudioContext();
-const tempo = 120; // BPM
-const interval = (20 / tempo) * 1000; // Convert BPM to milliseconds
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const TEMPO = 120; // Classic dance tempo
+let isPlaying = false;
+let currentKey = 0;
+const KEYS = [
+    [55, 65.41, 73.42], // A minor
+    [58.27, 69.30, 77.78] // Bb minor
+];
 
-function playKick() {
+// ██████╗ ██████╗  ██████╗██╗  ██╗
+const reverb = audioContext.createConvolver();
+const impulse = audioContext.createBuffer(2, audioContext.sampleRate * 2, audioContext.sampleRate);
+for (let channel = 0; channel < 2; channel++) {
+    const data = impulse.getChannelData(channel);
+    for (let i = 0; i < data.length; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 2);
+    }
+}
+reverb.buffer = impulse;
+reverb.connect(audioContext.destination);
+
+// ██╗  ██╗██╗████████╗
+function createKick() {
     const osc = audioContext.createOscillator();
     const gain = audioContext.createGain();
 
-    osc.frequency.setValueAtTime(120, audioContext.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.01);
+    osc.frequency.setValueAtTime(150, audioContext.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.1);
 
     gain.gain.setValueAtTime(1, audioContext.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
@@ -18,20 +35,95 @@ function playKick() {
     osc.stop(audioContext.currentTime + 0.3);
 }
 
-// Loop every 4 beats
-setInterval(playKick, interval * 4);
+// ██╗  ██╗██╗██╗  ██╗
+function createHiHat() {
+    const noise = audioContext.createBufferSource();
+    const buffer = audioContext.createBuffer(1, 4096, audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
 
-let isPlaying = false;
+    for(let i = 0; i < 4096; i++) {
+        data[i] = Math.random() * 2 - 1;
+    }
+
+    const filter = audioContext.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.value = 7000;
+
+    const gain = audioContext.createGain();
+    gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+    noise.buffer = buffer;
+    noise.connect(filter).connect(gain).connect(audioContext.destination);
+    noise.start();
+    noise.stop(audioContext.currentTime + 0.1);
+}
+
+// ██████╗  █████╗ ███████╗███████╗
+function createBass(note) {
+    const osc = audioContext.createOscillator();
+    const filter = audioContext.createBiquadFilter();
+    const gain = audioContext.createGain();
+
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(note, audioContext.currentTime);
+
+    filter.type = 'lowpass';
+    filter.frequency.value = 200;
+
+    gain.gain.setValueAtTime(0.4, audioContext.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+
+    osc.connect(filter).connect(gain).connect(audioContext.destination);
+    osc.start();
+    osc.stop(audioContext.currentTime + 0.2);
+}
+
+// ████████╗███████╗██╗  ██╗
+function startGroove() {
+    let barCount = 0;
+
+    function playBar() {
+        const isKeyChangeBar = barCount % 5 === 4; // Change key every 5th bar
+        const key = isKeyChangeBar ? KEYS[(currentKey + 1) % KEYS.length] : KEYS[currentKey];
+
+        // Kick on 1 and 3
+        [0, 2].forEach(beat => {
+            setTimeout(createKick, (60/TEMPO) * beat * 1000);
+        });
+
+        // Hi-hat on every 8th note
+        [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5].forEach(beat => {
+            setTimeout(createHiHat, (60/TEMPO) * beat * 1000);
+        });
+
+        // Bass on 1 and 2.5
+        [0, 2.5].forEach(beat => {
+            setTimeout(() => createBass(key[0]), (60/TEMPO) * beat * 1000);
+        });
+
+        barCount++;
+
+        // Update key after change bar
+        if (isKeyChangeBar) {
+            currentKey = (currentKey + 1) % KEYS.length;
+        }
+
+        setTimeout(playBar, (60/TEMPO) * 4 * 1000); // 4-bar loop
+    }
+
+    playBar();
+}
 
 document.addEventListener('click', () => {
     if (!isPlaying) {
         audioContext.resume().then(() => {
-            playKick();
+            startGroove();
             isPlaying = true;
         });
     } else {
         audioContext.suspend();
-        playKick = false;
+        isPlaying = false;
     }
 });
 

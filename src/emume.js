@@ -230,60 +230,54 @@ let hoverStartTime = 0;
 
 class Seagull {
     constructor(xOffset, yOffset, isLeader = false) {
-        this.x = xOffset; // Start position with offset
-        this.y = yOffset; // Vertical position with offset
-        this.speed = 0.2 + Math.random() * 0.2; // Random speed (slower for followers)
-        this.flapPhase = Math.random() * Math.PI * 2; // Random flapping phase
-        this.flapSpeed = 3 + Math.random() * 2; // Random flapping speed
-        this.scale = 0.1 + Math.random() * 0.1; // Random size for depth effect
-        this.hasPassed = false; // Track if the seagull has passed
-        this.isLeader = isLeader; // Is this seagull the leader?
+        this.x = xOffset;
+        this.y = yOffset;
+        this.speed = 0.3 + Math.random() * 0.2; // Random speed
+        this.flapPhase = Math.random() * Math.PI * 2; // Random wing phase
+        this.flapSpeed = 0.1; // Speed of flapping
+        this.scale = 0.8 + Math.random() * 0.2; // Randomized scale
+        this.hasPassed = false;
+        this.isLeader = isLeader;
     }
 
     update() {
-        this.x -= this.speed; // Move left
-        this.flapPhase += 0.1; // Animate flapping
+        this.x -= this.speed;
+        this.flapPhase += this.flapSpeed; // Wing movement
 
-        // Mark as passed if offscreen
         if (this.x < -50 && !this.hasPassed) {
             this.hasPassed = true;
         }
     }
 
     draw(ctx) {
-        if (this.hasPassed) return; // Skip drawing if the seagull has passed
+        if (this.hasPassed) return;
 
-        const flapHeight = Math.sin(this.flapPhase) * 0.8; // Subtle flapping motion
+        const wingFlap = Math.sin(this.flapPhase) * 5; // Wing movement range
         ctx.save();
-        ctx.translate(this.x, this.y + flapHeight);
-        ctx.scale(this.scale, this.scale); // Scale for depth effect
-        ctx.scale(-1, 1); // Flip horizontally (vertical axis)
+        ctx.translate(this.x, this.y);
+        ctx.scale(this.scale, this.scale);
+        ctx.scale(-1, 1); // Flip left
 
-        // Draw seagull body (thin and elongated, now pointing left)
+        // Body shape (elongated triangle)
         ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.bezierCurveTo(10, -5, 20, -5, 30, 0); // Top curve
-        ctx.bezierCurveTo(20, 5, 10, 5, 0, 0); // Bottom curve
-        ctx.fillStyle = 'white';
-        ctx.fill();
-
-        // Draw wings (corrected orientation, now pointing left)
-        ctx.beginPath();
-        ctx.moveTo(10, 0);
-        ctx.lineTo(-10, -15 + flapHeight); // Top wing
-        ctx.lineTo(-10, 15 - flapHeight); // Bottom wing
+        ctx.moveTo(-20, 0); // Head
+        ctx.lineTo(20, -5); // Top curve
+        ctx.lineTo(50, 0); // Tail
+        ctx.lineTo(20, 5); // Bottom curve
         ctx.closePath();
         ctx.fillStyle = 'white';
         ctx.fill();
+        ctx.stroke();
 
-        // Draw tail (now pointing left)
+        // Wing (flapping effect)
         ctx.beginPath();
-        ctx.moveTo(30, 0);
-        ctx.lineTo(40, -5); // Top tail feather
-        ctx.lineTo(40, 5); // Bottom tail feather
+        ctx.moveTo(5, 0);
+        ctx.lineTo(-15, -10 + wingFlap);
+        ctx.lineTo(-15, 10 - wingFlap);
         ctx.closePath();
         ctx.fillStyle = 'white';
         ctx.fill();
+        ctx.stroke();
 
         ctx.restore();
     }

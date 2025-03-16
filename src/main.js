@@ -101,7 +101,7 @@ function createWindows() {
 
 ipcMain.on('request-about-content', (event) => {
     console.log("event: ", event);
-    const aboutPath = path.join(__dirname, 'retrovibe.html');
+    const aboutPath = path.join(__dirname, 'emume.html');
     fs.readFile(aboutPath, 'utf8', (err, data) => {
         if (err) {
             console.error('Failed to read about.html:', err);

@@ -228,22 +228,22 @@ const PARTICLES_LENGTH = 50;
 const FADE_OUT_DELAY = 5;
 let hoverStartTime = 0;
 
-class Seagull {
+// Seagull
+class Goose {
     constructor(xOffset, yOffset, isLeader = false) {
         this.x = xOffset;
         this.y = yOffset;
-        this.speed = 0.3 + Math.random() * 0.2; // Random speed
-        this.flapPhase = Math.random() * Math.PI * 2; // Random wing phase
-        this.flapSpeed = 0.1; // Speed of flapping
-        this.scale = 0.8 + Math.random() * 0.2; // Randomized scale
+        this.speed = 0.2 + Math.random() * 0.2;
+        this.flapPhase = Math.random() * Math.PI * 2;
+        this.flapSpeed = 3 + Math.random() * 2;
+        this.scale = 0.2 + Math.random() * 0.1;
         this.hasPassed = false;
         this.isLeader = isLeader;
     }
 
     update() {
         this.x -= this.speed;
-        this.flapPhase += this.flapSpeed; // Wing movement
-
+        this.flapPhase += 0.1;
         if (this.x < -50 && !this.hasPassed) {
             this.hasPassed = true;
         }
@@ -252,40 +252,61 @@ class Seagull {
     draw(ctx) {
         if (this.hasPassed) return;
 
-        const wingFlap = Math.sin(this.flapPhase) * 5; // Wing movement range
+        const flapAngle = Math.sin(this.flapPhase);
         ctx.save();
-        ctx.translate(this.x, this.y);
+
+        // Vertical wobble + rotation
+        ctx.translate(this.x, this.y + flapAngle * 0.5); // More pronounced wobble
         ctx.scale(this.scale, this.scale);
-        ctx.scale(-1, 1); // Flip left
+        ctx.scale(-1, 1); // Face left
 
-        // Body shape (elongated triangle)
+        // Subtle body rotation (around center point)
+        ctx.translate(-20, 0); // Move to body center
+        ctx.rotate(flapAngle * 0.03); // Tiny rotation
+        ctx.translate(20, 0); // Move back
+
+        // Slim body (preserved from before)
         ctx.beginPath();
-        ctx.moveTo(-20, 0); // Head
-        ctx.lineTo(20, -5); // Top curve
-        ctx.lineTo(50, 0); // Tail
-        ctx.lineTo(20, 5); // Bottom curve
-        ctx.closePath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(-30, -3);
+        ctx.lineTo(-40, 0);
+        ctx.lineTo(-30, 3);
+        ctx.lineTo(0, 0);
         ctx.fillStyle = 'white';
         ctx.fill();
-        ctx.stroke();
 
-        // Wing (flapping effect)
+        // Improved wing with wider base
+        const wingBaseX = -20;
+        const wingLength = 25;
+        const wingTipX = wingBaseX - wingLength * Math.cos(flapAngle);
+        const wingTipY = wingLength * Math.sin(flapAngle);
+
         ctx.beginPath();
-        ctx.moveTo(5, 0);
-        ctx.lineTo(-15, -10 + wingFlap);
-        ctx.lineTo(-15, 10 - wingFlap);
+        ctx.moveTo(wingBaseX, 0);
+        ctx.lineTo(wingTipX, wingTipY);
+        ctx.lineTo(wingBaseX - 15, 0); // Wider base
         ctx.closePath();
-        ctx.fillStyle = 'white';
         ctx.fill();
-        ctx.stroke();
+
+        // Tail (unchanged)
+        ctx.beginPath();
+        ctx.moveTo(-40, 0);
+        ctx.lineTo(-45, -2);
+        ctx.lineTo(-45, 2);
+        ctx.closePath();
+        ctx.fill();
 
         ctx.restore();
     }
 }
 
+
 function initFlock(canvasWidth, canvasHeight) {
     const flock = [];
-    const leader = new Seagull(canvasWidth + 0, canvasHeight / 4 + 0, true); // Leader at the front
+
+    const altitude = canvasHeight / 4 + 350;
+
+    const leader = new Goose(canvasWidth + 0, altitude, true); // Leader at the front
     flock.push(leader);
 
     // Add followers in a V shape
@@ -294,14 +315,14 @@ function initFlock(canvasWidth, canvasHeight) {
     const vAngle = 10; // Angle of the V shape
     for (let i = 1; i <= 7; i++) {
         // Left side of the V
-        flock.push(new Seagull(
+        flock.push(new Goose(
             canvasWidth + i * hSpacing, // Horizontal position
-            canvasHeight / 4 + i * vSpacing * Math.sin(vAngle * Math.PI / 180) // Vertical position
+            altitude + i * vSpacing * Math.sin(vAngle * Math.PI / 180) // Vertical position
         ));
         // Right side of the V
-        flock.push(new Seagull(
+        flock.push(new Goose(
             canvasWidth + i * hSpacing, // Horizontal position
-            canvasHeight / 4 - i * vSpacing * Math.sin(vAngle * Math.PI / 180) // Vertical position
+            altitude - i * vSpacing * Math.sin(vAngle * Math.PI / 180) // Vertical position
         ));
     }
 
@@ -948,7 +969,7 @@ function draw() {
         const isFlockActive = updateFlock(flock);
         drawFlock(flock, ctx);
 
-        // Optional: Reinitialize the flock if it has passed
+        // Reinitialize the flock if it has passed
         // if (!isFlockActive) {
         //     console.log("Reinitializing flock...");
         //     flock = initFlock(width, height);

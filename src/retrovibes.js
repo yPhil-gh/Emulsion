@@ -211,7 +211,7 @@ const SUN_BASE_RADIUS = 120; // Doubled from original 60
 const GLOW_SCALE = 6; // Increased from 4
 let sunYOffset = 0; // Added for vertical movement
 
-const SUN_SPEED = 0.9; // Pixels per frame
+const SUN_SPEED = 0.04; // Pixels per frame
 
 const MAX_SUN_TRAVEL = height - horizon + 150; // Stop when logo reaches 100px from top
 
@@ -228,13 +228,109 @@ const PARTICLES_LENGTH = 50;
 const FADE_OUT_DELAY = 5;
 let hoverStartTime = 0;
 
-// Pixel font data (7-segment style)
-const pixelFont = {
-    'E': [[0,0],[4,0],[0,3],[4,3],[0,6],[4,6]],
-    'm': [[0,0],[0,6],[2,3],[4,0],[4,6]],
-    'u': [[0,6],[4,6],[4,0]],
-    'È': [[4,0],[0,0],[0,3],[4,3],[0,6],[4,6]] // Inverted E
-};
+class Seagull {
+    constructor(xOffset, yOffset, isLeader = false) {
+        this.x = xOffset; // Start position with offset
+        this.y = yOffset; // Vertical position with offset
+        this.speed = 1 + Math.random() * 0.5; // Random speed (slower for followers)
+        this.flapPhase = Math.random() * Math.PI * 2; // Random flapping phase
+        this.flapSpeed = 3 + Math.random() * 2; // Random flapping speed
+        this.scale = 0.1 + Math.random() * 0.1; // Random size for depth effect
+        this.hasPassed = false; // Track if the seagull has passed
+        this.isLeader = isLeader; // Is this seagull the leader?
+    }
+
+    update() {
+        this.x -= this.speed; // Move left
+        this.flapPhase += 0.1; // Animate flapping
+
+        // Mark as passed if offscreen
+        if (this.x < -50 && !this.hasPassed) {
+            this.hasPassed = true;
+        }
+    }
+
+    draw(ctx) {
+        if (this.hasPassed) return; // Skip drawing if the seagull has passed
+
+        const flapHeight = Math.sin(this.flapPhase) * 3; // Subtle flapping motion
+        ctx.save();
+        ctx.translate(this.x, this.y + flapHeight);
+        ctx.scale(this.scale, this.scale); // Scale for depth effect
+        ctx.scale(-1, 1); // Flip horizontally (vertical axis)
+
+        // Draw seagull body (thin and elongated, now pointing left)
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(10, -5, 20, -5, 30, 0); // Top curve
+        ctx.bezierCurveTo(20, 5, 10, 5, 0, 0); // Bottom curve
+        ctx.fillStyle = 'white';
+        ctx.fill();
+
+        // Draw wings (corrected orientation, now pointing left)
+        ctx.beginPath();
+        ctx.moveTo(10, 0);
+        ctx.lineTo(-10, -15 + flapHeight); // Top wing
+        ctx.lineTo(-10, 15 - flapHeight); // Bottom wing
+        ctx.closePath();
+        ctx.fillStyle = 'white';
+        ctx.fill();
+
+        // Draw tail (now pointing left)
+        ctx.beginPath();
+        ctx.moveTo(30, 0);
+        ctx.lineTo(40, -5); // Top tail feather
+        ctx.lineTo(40, 5); // Bottom tail feather
+        ctx.closePath();
+        ctx.fillStyle = 'white';
+        ctx.fill();
+
+        ctx.restore();
+    }
+}
+
+function initFlock(canvasWidth, canvasHeight) {
+    const flock = [];
+    const leader = new Seagull(canvasWidth + 0, canvasHeight / 4 + 0, true); // Leader at the front
+    flock.push(leader);
+
+    // Add followers in a V shape
+    const hSpacing = 20; // Horizontal spacing between seagulls
+    const vSpacing = 15; // Vertical spacing between seagulls
+    const vAngle = 10; // Angle of the V shape
+    for (let i = 1; i <= 7; i++) {
+        // Left side of the V
+        flock.push(new Seagull(
+            canvasWidth + i * hSpacing, // Horizontal position
+            canvasHeight / 4 + i * vSpacing * Math.sin(vAngle * Math.PI / 180) // Vertical position
+        ));
+        // Right side of the V
+        flock.push(new Seagull(
+            canvasWidth + i * hSpacing, // Horizontal position
+            canvasHeight / 4 - i * vSpacing * Math.sin(vAngle * Math.PI / 180) // Vertical position
+        ));
+    }
+
+    return flock;
+}
+
+// Update the flock's positions
+function updateFlock(flock) {
+    flock.forEach(seagull => seagull.update());
+
+    // Check if all seagulls have passed
+    if (flock.every(seagull => seagull.hasPassed)) {
+        console.log("All seagulls have passed!");
+        return false; // Return false if the flock is done
+    }
+    return true; // Return true if the flock is still active
+}
+
+// Draw the flock
+function drawFlock(flock, ctx) {
+    flock.forEach(seagull => seagull.draw(ctx));
+}
+
 
 function initParticles(particlesPerLetter = 4) { // Add parameter to control count
     const baseX = width/2 - 248;
@@ -758,6 +854,13 @@ function drawSpeaker() {
     }
 }
 
+let flock;
+
+function init() {
+    // Initialize the flock once
+    flock = initFlock(width, height);
+}
+
 function draw() {
     ctx.clearRect(0, 0, width, height);
 
@@ -788,7 +891,19 @@ function draw() {
     drawGrid();
     drawSpeaker();
 
+    if (flock) {
+        const isFlockActive = updateFlock(flock);
+        drawFlock(flock, ctx);
+
+        // Optional: Reinitialize the flock if it has passed
+        if (!isFlockActive) {
+            console.log("Reinitializing flock...");
+            flock = initFlock(width, height);
+        }
+    }
 }
+
+init();
 
 function loop() {
     update();

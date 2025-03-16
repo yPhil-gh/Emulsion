@@ -1,5 +1,8 @@
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-const TEMPO = 180; // Classic dance tempo
+
+window.audioContext = audioContext;
+
+const TEMPO = 220; // Classic dance tempo
 let isPlaying = false;
 let currentKey = 0;
 const KEYS = [
@@ -904,7 +907,7 @@ function drawCredits() {
     ctx.textAlign = 'center';
 
     // Main text
-    ctx.fillText("Made with ♥ by yphil", width / 2, height - 30);
+    ctx.fillText("Made with ♥ by yPhil", width / 2, height - 30);
 
     // Secondary text (smaller/lighter)
     ctx.font = "8pt Monospace";

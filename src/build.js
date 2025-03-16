@@ -244,6 +244,7 @@ function buildPrefsForm() {
 
         document.getElementById('close-about').addEventListener('click', (event) => {
             event.stopPropagation();
+            window.audioContext.suspend();
             document.getElementById('about-container').style.display = 'none';
             document.getElementById('about-content').innerHTML = '';
         });

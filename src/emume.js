@@ -242,33 +242,89 @@ const ufoFrequency = 30; // 5 minutes
 
 class UFO {
     constructor() {
-        this.size = { width: 16, height: 8 };
+        this.size = { width: 28, height: 20 };
         this.position = {
             x: width - 20, // 20px from right edge
-            y: 20 // 20px from top
+            y: 40 // 20px from top
         };
+        this.speed = Math.random() * 3;
+        this.dotPhase = 0;
+        this.trail = [];
+        this.fillcolor = randomColor;
+    }
+
+    update() {
+        // Simple left-to-right movement
+        this.position.x += this.speed;
+
+        // Add trail points
+        this.trail.push({x: this.position.x, y: this.position.y});
+        if(this.trail.length > 18) this.trail.shift();
+
+        // Reset position when offscreen right
+        if(this.position.x > width + 16) {
+            this.position.x = -16;
+            this.fillcolor = electricColors[Math.floor(Math.random() * electricColors.length)];
+            this.position.y = Math.random() * (height/2);
+            this.trail = [];
+        }
+
+        // Dot animation
+        this.dotPhase = (this.dotPhase + 0.2) % 4;
     }
 
     draw(ctx) {
         ctx.save();
 
-        // UFO body (white diamond)
+        if(this.trail.length > 1) {
+            const startPos = this.trail[0];
+            const endPos = this.trail[this.trail.length - 1];
+
+            // Create gradient from first to last point
+            const gradient = ctx.createLinearGradient(
+                startPos.x + 8, startPos.y,
+                endPos.x + 8, endPos.y
+            );
+            gradient.addColorStop(0, '#000000');
+            gradient.addColorStop(1, '#FF0000');
+
+            // Draw main trail path
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(startPos.x + 8, startPos.y);
+            this.trail.forEach(pos => ctx.lineTo(pos.x + 8, pos.y));
+            ctx.stroke();
+
+            // Draw orange start point
+            ctx.fillStyle = '#000000';
+            ctx.beginPath();
+            ctx.arc(startPos.x + 8, startPos.y, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Draw blue end point
+            ctx.fillStyle = '#000000';
+            ctx.beginPath();
+            ctx.arc(endPos.x + 8, endPos.y, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Draw UFO body
         ctx.strokeStyle = '#FFFFFF';
+        ctx.fillStyle = this.fillcolor;
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(this.position.x, this.position.y);
-        ctx.lineTo(this.position.x + 8, this.position.y - 4); // Top point
-        ctx.lineTo(this.position.x + 16, this.position.y); // Right point
-        ctx.lineTo(this.position.x + 8, this.position.y + 4); // Bottom point
+        ctx.lineTo(this.position.x + 8, this.position.y - 4);
+        ctx.lineTo(this.position.x + 16, this.position.y);
+        ctx.lineTo(this.position.x + 8, this.position.y + 4);
         ctx.closePath();
-        ctx.stroke();
+        ctx.fill();
 
-        // Static dots (white with first one red)
-        [4, 8, 12].forEach((xOffset, index) => {
-            ctx.fillStyle = index === 0 ? '#FF0000' : '#FFFFFF';
-            ctx.beginPath();
-            ctx.arc(this.position.x + xOffset, this.position.y, 1, 0, Math.PI * 2);
-            ctx.fill();
+        // Draw dots
+        [4, 8, 12, 16].forEach((x, index) => {
+            ctx.fillStyle = Math.floor(this.dotPhase) === index ? 'red' : '#000000';
+            ctx.fillRect(this.position.x + x - 2, this.position.y - 1, 2, 2);
         });
 
         ctx.restore();
@@ -1062,7 +1118,7 @@ function update() {
     updateMoon();
     updateSunPosition();
     updateLogoPosition();
-    // ufo.update(width, height, isNight);
+    ufo.update(width, height, isNight);
 
     if (isNight && moonAlpha < 1) {
         moonAlpha += 0.001; // Increase opacity gradually

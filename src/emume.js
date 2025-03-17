@@ -207,7 +207,8 @@ const electricColors = [
 
 let randomColor = electricColors[Math.floor(Math.random() * electricColors.length)];
 
-const sunSpeed = 0.4; // Pixels per frame
+const sunSpeed = 0.04; // Pixels per frame
+
 const sunBaseRadius = 120;
 const sunGlowScale = 6;
 let sunYOffset = 0;
@@ -238,81 +239,116 @@ const particlesBaseY = logoFinalY;
 const particlesLength = 50;
 const particlesFadeOutDelay = 5;
 const particlesSpinSpeed = 0.05;
-const ufoFrequency = 30; // 5 minutes
+const ufoFrequency = 120000; // 2 minutes
 
 class UFO {
-    constructor() {
+    constructor(canvasWidth, canvasHeight) {
+        this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
         this.size = { width: 28, height: 20 };
-        this.position = {
-            x: width - 20, // 20px from right edge
-            y: 40 // 20px from top
-        };
-        this.speed = Math.random() * 3;
+        this.reset(); // Start inactive
         this.dotPhase = 0;
-        this.trail = [];
-        this.fillcolor = randomColor;
+        this.ufoFrequency = ufoFrequency; // Spawn every 5 seconds
+        this.lastSpawnTime = performance.now();
     }
 
-    update() {
-        // Simple left-to-right movement
-        this.position.x += this.speed;
+    reset() {
+        this.active = false; // UFO starts inactive
+        this.position = { x: -50, y: Math.random() * (this.canvasHeight / 2) };
+        this.baseSpeed = Math.random() * (6 - 3) + 1.1;
+        this.speed = this.baseSpeed;
+        this.state = "normal";
+        this.trail = [];
+        this.fillcolor = electricColors[Math.floor(Math.random() * electricColors.length)];
+    }
 
-        // Add trail points
-        this.trail.push({x: this.position.x, y: this.position.y});
-        if(this.trail.length > 18) this.trail.shift();
+    update(mouseX, mouseY) {
+        const now = performance.now();
 
-        // Reset position when offscreen right
-        if(this.position.x > width + 16) {
-            this.position.x = -16;
-            this.fillcolor = electricColors[Math.floor(Math.random() * electricColors.length)];
-            this.position.y = Math.random() * (height/2);
-            this.trail = [];
+        // Check if it's time to spawn
+        if (!this.active && now - this.lastSpawnTime > this.ufoFrequency) {
+            this.active = true;
+            this.lastSpawnTime = now;
         }
 
-        // Dot animation
+        if (!this.active) return; // Skip update if inactive
+
         this.dotPhase = (this.dotPhase + 0.2) % 4;
+
+        // Mouse detection
+        const ufoBounds = {
+            left: this.position.x - 10,
+            right: this.position.x + this.size.width + 10,
+            top: this.position.y - 10,
+            bottom: this.position.y + this.size.height + 10
+        };
+
+        this.mouseOver = mouseX > ufoBounds.left &&
+            mouseX < ufoBounds.right &&
+            mouseY > ufoBounds.top &&
+            mouseY < ufoBounds.bottom;
+
+        // State machine logic
+        switch (this.state) {
+            case "normal":
+                if (this.mouseOver) {
+                    this.state = "evading";
+                    this.targetY = this.position.y + (Math.random() > 0.5 ? -15 : 15);
+                }
+                this.position.x += this.speed;
+                break;
+
+            case "evading":
+                const dy = this.targetY - this.position.y;
+                this.position.y += dy * 0.5;
+                if (Math.abs(dy) < 1) {
+                    this.state = "exiting";
+                    this.speed = this.baseSpeed * 2;
+                }
+                break;
+
+            case "exiting":
+                this.position.x += this.speed;
+                break;
+        }
+
+        // Update trail
+        this.trail.push({ x: this.position.x, y: this.position.y });
+        if (this.trail.length > 18) this.trail.shift();
+
+        // Deactivate when offscreen
+        if (this.position.x > this.canvasWidth + 100) {
+            this.reset();
+        }
     }
 
     draw(ctx) {
+        if (!this.active) return;
+
         ctx.save();
 
-        if(this.trail.length > 1) {
+        // Draw trail
+        if (this.trail.length > 1) {
             const startPos = this.trail[0];
             const endPos = this.trail[this.trail.length - 1];
 
-            // Create gradient from first to last point
             const gradient = ctx.createLinearGradient(
                 startPos.x + 8, startPos.y,
                 endPos.x + 8, endPos.y
             );
-            gradient.addColorStop(0, '#000000');
-            gradient.addColorStop(1, '#FF0000');
+            gradient.addColorStop(0, "#000000");
+            gradient.addColorStop(1, "#FF0000");
 
-            // Draw main trail path
             ctx.strokeStyle = gradient;
             ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(startPos.x + 8, startPos.y);
             this.trail.forEach(pos => ctx.lineTo(pos.x + 8, pos.y));
             ctx.stroke();
-
-            // Draw orange start point
-            ctx.fillStyle = '#000000';
-            ctx.beginPath();
-            ctx.arc(startPos.x + 8, startPos.y, 1.5, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Draw blue end point
-            ctx.fillStyle = '#000000';
-            ctx.beginPath();
-            ctx.arc(endPos.x + 8, endPos.y, 1.5, 0, Math.PI * 2);
-            ctx.fill();
         }
 
-        // Draw UFO body
-        ctx.strokeStyle = '#FFFFFF';
+        // Draw UFO
         ctx.fillStyle = this.fillcolor;
-        ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(this.position.x, this.position.y);
         ctx.lineTo(this.position.x + 8, this.position.y - 4);
@@ -330,6 +366,7 @@ class UFO {
         ctx.restore();
     }
 }
+
 
 // Geese
 class Goose {
@@ -1118,7 +1155,8 @@ function update() {
     updateMoon();
     updateSunPosition();
     updateLogoPosition();
-    ufo.update(width, height, isNight);
+    // ufo.update(width, height, isNight);
+    ufo.update(mouseX, mouseY);
 
     if (isNight && moonAlpha < 1) {
         moonAlpha += 0.001; // Increase opacity gradually

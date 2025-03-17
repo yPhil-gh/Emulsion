@@ -1,165 +1,165 @@
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+// const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-window.audioContext = audioContext;
+// window.audioContext = audioContext;
 
-const TEMPO = 220; // Classic dance tempo
-let isPlaying = false;
-let currentKey = 0;
-const KEYS = [
-    [55, 65.41, 73.42], // A minor
-    [58.27, 69.30, 77.78] // Bb minor
-];
+// const TEMPO = 220; // Classic dance tempo
+// let isPlaying = false;
+// let currentKey = 0;
+// const KEYS = [
+//     [55, 65.41, 73.42], // A minor
+//     [58.27, 69.30, 77.78] // Bb minor
+// ];
 
-const reverb = audioContext.createConvolver();
-const impulse = audioContext.createBuffer(2, audioContext.sampleRate * 2, audioContext.sampleRate);
-for (let channel = 0; channel < 2; channel++) {
-    const data = impulse.getChannelData(channel);
-    for (let i = 0; i < data.length; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 2);
-    }
-}
-reverb.buffer = impulse;
-reverb.connect(audioContext.destination);
+// const reverb = audioContext.createConvolver();
+// const impulse = audioContext.createBuffer(2, audioContext.sampleRate * 2, audioContext.sampleRate);
+// for (let channel = 0; channel < 2; channel++) {
+//     const data = impulse.getChannelData(channel);
+//     for (let i = 0; i < data.length; i++) {
+//         data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 2);
+//     }
+// }
+// reverb.buffer = impulse;
+// reverb.connect(audioContext.destination);
 
-function createKick() {
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
+// function createKick() {
+//     const osc = audioContext.createOscillator();
+//     const gain = audioContext.createGain();
 
-    osc.frequency.setValueAtTime(150, audioContext.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.01);
+//     osc.frequency.setValueAtTime(150, audioContext.currentTime);
+//     osc.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.01);
 
-    gain.gain.setValueAtTime(1, audioContext.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+//     gain.gain.setValueAtTime(1, audioContext.currentTime);
+//     gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
 
-    osc.connect(gain).connect(audioContext.destination);
-    osc.start();
-    osc.stop(audioContext.currentTime + 0.3);
-}
+//     osc.connect(gain).connect(audioContext.destination);
+//     osc.start();
+//     osc.stop(audioContext.currentTime + 0.3);
+// }
 
-function createHiHat() {
-    const noise = audioContext.createBufferSource();
-    const buffer = audioContext.createBuffer(1, 4096, audioContext.sampleRate);
-    const data = buffer.getChannelData(0);
+// function createHiHat() {
+//     const noise = audioContext.createBufferSource();
+//     const buffer = audioContext.createBuffer(1, 4096, audioContext.sampleRate);
+//     const data = buffer.getChannelData(0);
 
-    for(let i = 0; i < 4096; i++) {
-        data[i] = Math.random() * 2 - 1;
-    }
+//     for(let i = 0; i < 4096; i++) {
+//         data[i] = Math.random() * 2 - 1;
+//     }
 
-    const filter = audioContext.createBiquadFilter();
-    filter.type = 'highpass';
-    filter.frequency.value = 7000;
+//     const filter = audioContext.createBiquadFilter();
+//     filter.type = 'highpass';
+//     filter.frequency.value = 7000;
 
-    const gain = audioContext.createGain();
-    gain.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+//     const gain = audioContext.createGain();
+//     gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+//     gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
 
-    noise.buffer = buffer;
-    noise.connect(filter).connect(gain).connect(audioContext.destination);
-    noise.start();
-    noise.stop(audioContext.currentTime + 0.1);
-}
+//     noise.buffer = buffer;
+//     noise.connect(filter).connect(gain).connect(audioContext.destination);
+//     noise.start();
+//     noise.stop(audioContext.currentTime + 0.1);
+// }
 
-function createBass(note, filterCutoff, resonance) {
-    const osc = audioContext.createOscillator();
-    const filter = audioContext.createBiquadFilter();
-    const gain = audioContext.createGain();
+// function createBass(note, filterCutoff, resonance) {
+//     const osc = audioContext.createOscillator();
+//     const filter = audioContext.createBiquadFilter();
+//     const gain = audioContext.createGain();
 
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(note, audioContext.currentTime);
+//     osc.type = 'square';
+//     osc.frequency.setValueAtTime(note, audioContext.currentTime);
 
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(filterCutoff, audioContext.currentTime);
-    filter.Q.value = resonance;
+//     filter.type = 'lowpass';
+//     filter.frequency.setValueAtTime(filterCutoff, audioContext.currentTime);
+//     filter.Q.value = resonance;
 
-    gain.gain.setValueAtTime(0.4, audioContext.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+//     gain.gain.setValueAtTime(0.4, audioContext.currentTime);
+//     gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
 
-    osc.connect(filter).connect(gain).connect(audioContext.destination);
-    osc.start();
-    osc.stop(audioContext.currentTime + 0.2);
-}
+//     osc.connect(filter).connect(gain).connect(audioContext.destination);
+//     osc.start();
+//     osc.stop(audioContext.currentTime + 0.2);
+// }
 
-function startGroove() {
-    let barCount = 0;
-    let filterCutoff = 200;
-    let resonance = 5;
-    let filterLFO = audioContext.createOscillator();
+// function startGroove() {
+//     let barCount = 0;
+//     let filterCutoff = 200;
+//     let resonance = 5;
+//     let filterLFO = audioContext.createOscillator();
 
-    // Initialize filter modulation
-    filterLFO.type = 'sine';
-    filterLFO.frequency.value = 0.1; // Slow modulation
-    filterLFO.start();
+//     // Initialize filter modulation
+//     filterLFO.type = 'sine';
+//     filterLFO.frequency.value = 0.1; // Slow modulation
+//     filterLFO.start();
 
-    function playBar() {
-        const isKeyChangeBar = barCount % 5 === 4; // Change key every 5th bar
-        const isCrazyBar = barCount % 12 === 11; // Crazy bar every 12 bars
-        const key = isKeyChangeBar ? KEYS[(currentKey + 1) % KEYS.length] : KEYS[currentKey];
+//     function playBar() {
+//         const isKeyChangeBar = barCount % 5 === 4; // Change key every 5th bar
+//         const isCrazyBar = barCount % 12 === 11; // Crazy bar every 12 bars
+//         const key = isKeyChangeBar ? KEYS[(currentKey + 1) % KEYS.length] : KEYS[currentKey];
 
-        // Evolving filter cutoff
-        if (Math.random() > 0.8) {
-            // Drastic change
-            const targetCutoff = 200 + Math.random() * 1800;
-            filterLFO.frequency.setValueAtTime(0.5 + Math.random() * 2, audioContext.currentTime);
-            filterCutoff = targetCutoff;
-        } else {
-            // Subtle change
-            filterCutoff += (Math.random() - 0.5) * 50;
-            filterCutoff = Math.min(Math.max(filterCutoff, 100), 2000);
-        }
+//         // Evolving filter cutoff
+//         if (Math.random() > 0.8) {
+//             // Drastic change
+//             const targetCutoff = 200 + Math.random() * 1800;
+//             filterLFO.frequency.setValueAtTime(0.5 + Math.random() * 2, audioContext.currentTime);
+//             filterCutoff = targetCutoff;
+//         } else {
+//             // Subtle change
+//             filterCutoff += (Math.random() - 0.5) * 50;
+//             filterCutoff = Math.min(Math.max(filterCutoff, 100), 2000);
+//         }
 
-        // Modulate resonance
-        resonance = 5 + Math.random() * 2;
+//         // Modulate resonance
+//         resonance = 5 + Math.random() * 2;
 
-        // Kick on 1 and 3
-        [0, 2].forEach(beat => {
-            setTimeout(createKick, (60/TEMPO) * beat * 1000);
-        });
+//         // Kick on 1 and 3
+//         [0, 2].forEach(beat => {
+//             setTimeout(createKick, (60/TEMPO) * beat * 1000);
+//         });
 
-        // Hi-hat on every 8th note
-        [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5].forEach(beat => {
-            setTimeout(createHiHat, (60/TEMPO) * beat * 1000);
-        });
+//         // Hi-hat on every 8th note
+//         [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5].forEach(beat => {
+//             setTimeout(createHiHat, (60/TEMPO) * beat * 1000);
+//         });
 
-        // Dynamic bass rhythm
-        const bassPattern = isCrazyBar ?
-            [0, 1.25, 2.75] : // Crazy pattern
-            Math.random() > 0.5 ?
-                [0, 2.5] : // tu-tutu
-                [0, 1.5, 3]; // tutu-tu
+//         // Dynamic bass rhythm
+//         const bassPattern = isCrazyBar ?
+//             [0, 1.25, 2.75] : // Crazy pattern
+//             Math.random() > 0.5 ?
+//                 [0, 2.5] : // tu-tutu
+//                 [0, 1.5, 3]; // tutu-tu
 
-        bassPattern.forEach(beat => {
-            setTimeout(() => createBass(key[0], filterCutoff, resonance), (60/TEMPO) * beat * 1000);
-        });
+//         bassPattern.forEach(beat => {
+//             setTimeout(() => createBass(key[0], filterCutoff, resonance), (60/TEMPO) * beat * 1000);
+//         });
 
-        // Crazy bar effects
-        if (isCrazyBar) {
-            // Wild filter sweep
-            const sweep = audioContext.createOscillator();
-            sweep.type = 'sawtooth';
-            sweep.frequency.setValueAtTime(200, audioContext.currentTime);
-            sweep.frequency.exponentialRampToValueAtTime(Math.random() * 2000, audioContext.currentTime + 1);
+//         // Crazy bar effects
+//         if (isCrazyBar) {
+//             // Wild filter sweep
+//             const sweep = audioContext.createOscillator();
+//             sweep.type = 'sawtooth';
+//             sweep.frequency.setValueAtTime(200, audioContext.currentTime);
+//             sweep.frequency.exponentialRampToValueAtTime(Math.random() * 2000, audioContext.currentTime + 1);
 
-            const sweepGain = audioContext.createGain();
-            sweepGain.gain.setValueAtTime(0.2, audioContext.currentTime);
-            sweepGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+//             const sweepGain = audioContext.createGain();
+//             sweepGain.gain.setValueAtTime(0.2, audioContext.currentTime);
+//             sweepGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
 
-            sweep.connect(sweepGain).connect(audioContext.destination);
-            sweep.start();
-            sweep.stop(audioContext.currentTime + 1.5);
-        }
+//             sweep.connect(sweepGain).connect(audioContext.destination);
+//             sweep.start();
+//             sweep.stop(audioContext.currentTime + 1.5);
+//         }
 
-        barCount++;
+//         barCount++;
 
-        // Update key after change bar
-        if (isKeyChangeBar) {
-            currentKey = (currentKey + 1) % KEYS.length;
-        }
+//         // Update key after change bar
+//         if (isKeyChangeBar) {
+//             currentKey = (currentKey + 1) % KEYS.length;
+//         }
 
-        setTimeout(playBar, (60/TEMPO) * 4 * 1000); // 4-bar loop
-    }
+//         setTimeout(playBar, (60/TEMPO) * 4 * 1000); // 4-bar loop
+//     }
 
-    playBar();
-}
+//     playBar();
+// }
 
 // document.addEventListener('click', () => {
 //     if (!isPlaying) {
@@ -213,9 +213,9 @@ const SUN_BASE_RADIUS = 120; // Doubled from original 60
 const GLOW_SCALE = 6; // Increased from 4
 let sunYOffset = 0; // Added for vertical movement
 
-const SUN_SPEED = 0.04; // Pixels per frame
+const SUN_SPEED = 0.4; // Pixels per frame
 
-const MAX_SUN_TRAVEL = height - horizon + 150;
+const MAX_SUN_TRAVEL = height - horizon + 250;
 
 // Logo configuration
 let logoChars = [];
@@ -518,7 +518,7 @@ function drawShootingStars() {
 
 // =======================[UPDATED SUN SYSTEM]=======================
 function updateSunPosition() {
-    if (sunYOffset > MAX_SUN_TRAVEL - 340) {
+    if (sunYOffset > MAX_SUN_TRAVEL - 200) {
         isNight = true;
     }
 
@@ -983,7 +983,7 @@ function drawUnmutedIcon(ctx, x, y, size) {
 
 let isMuted = true;
 
-startGroove();
+// startGroove();
 
 function toggleMute() {
 

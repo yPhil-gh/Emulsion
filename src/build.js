@@ -239,15 +239,22 @@ function buildPrefsForm() {
     buttons.appendChild(saveButton);
 
     function _formAboutButtonClick(event) {
-        console.log("event: ", event);
-        ipcRenderer.send('request-about-content');
 
-        document.getElementById('close-about').addEventListener('click', (event) => {
-            event.stopPropagation();
-            window.audioContext.suspend();
-            document.getElementById('about-container').style.display = 'none';
-            document.getElementById('about-content').innerHTML = '';
-        });
+        const canvas = document.getElementById('canvas');
+
+        if (!canvas) {
+
+            ipcRenderer.send('request-about-content');
+
+            document.getElementById('close-about').addEventListener('click', (event) => {
+                event.stopPropagation();
+                // window.audioContext.suspend();
+                document.getElementById('about-container').style.display = 'none';
+            });
+
+        } else {
+            document.getElementById('about-container').style.display = 'block';
+        }
 
     }
 

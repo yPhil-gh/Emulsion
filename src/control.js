@@ -323,8 +323,8 @@ function initGallery(currentIndex, disabledPlatform) {
                 break;
             case 'Enter':
                 const menuSelectedGame = LB.utils.getSelectedGame(menuGameContainers, menuSelectedIndex);
-                const menuSelectedGameImg = menuSelectedGame.querySelector('.game-image');
-                _closeMenu(menuSelectedGameImg.src);
+                // const menuSelectedGameImg = menuSelectedGame.querySelector('.game-image');
+                // _closeMenu(menuSelectedGameImg.src);
                 break;
             case 'Escape':
                 _closeMenu();

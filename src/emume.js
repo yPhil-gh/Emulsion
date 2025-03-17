@@ -174,14 +174,16 @@
 // });
 
 // Scene
-const popSounds = Array.from(document.querySelectorAll('.sound-pop'));
 
-let whooshSound = document.getElementById('whooshSound');
-let prevHoverState = null;
 
-let particles = [];
-let hoveredLetter = null;
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let width = canvas.width = window.innerWidth;
+let height = canvas.height = window.innerHeight;
+let horizon = height * 2 / 3;
+let isNight = false;
 let mouseX = 0, mouseY = 0;
+
 const letters = {
     e1: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
     m1: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
@@ -189,6 +191,8 @@ const letters = {
     e2: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
     u: { color: 'rgb(255, 165, 0)', rgbValues: '255, 165, 0', bounds: null, particles: [] }
 };
+
+const popSounds = Array.from(document.querySelectorAll('.sound-pop'));
 
 const electricColors = [
     "#00FFFF", // Cyan
@@ -201,40 +205,77 @@ const electricColors = [
     "#FF007F"  // Hot Pink
 ];
 
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-let width = canvas.width = window.innerWidth;
-let height = canvas.height = window.innerHeight;
-let horizon = height * 2 / 3;
-let isNight = false;
+let randomColor = electricColors[Math.floor(Math.random() * electricColors.length)];
 
-// 🔥 SUN CONFIGURATION
-const SUN_BASE_RADIUS = 120; // Doubled from original 60
-const GLOW_SCALE = 6; // Increased from 4
-let sunYOffset = 0; // Added for vertical movement
+const sunSpeed = 0.4; // Pixels per frame
+const sunBaseRadius = 120;
+const sunGlowScale = 6;
+let sunYOffset = 0;
 
-const SUN_SPEED = 0.4; // Pixels per frame
+const maxSunTravel = height - horizon + 250;
+const nightOffset = 400;
 
-const MAX_SUN_TRAVEL = height - horizon + 250;
+const moonSpeed = 0.008;
+const moonAmplitude = 0.2; // Vertical movement
+let moonX = width - 160;
+let moonFloatPhase = 0;
+let moonAlpha = 0;
 
-// Logo configuration
+let starsMoveLeft = false;
+
+// Logo conf
 let logoChars = [];
-
-const LOGO_INITIAL_Y = horizon - 18; // Start just below horizon
-const LOGO_RISE_SPEED = 0.00000000003; // Base movement speed
+const logoInitialY = horizon - 18; // Just below horizon
+const logoFinalY = 250;
 let logoSpeed = 0; // Current rise speed
+let logoY = logoInitialY; // below screen
+let letterHoverStartTime = 0;
+let prevHoverState = null;
+let hoveredLetter = null;
 
-let logoY = LOGO_INITIAL_Y; // Start below screen
-// Logo configuration
-const LOGO_FINAL_Y = 250;
+let particles = [];
+const particlesBaseY = logoFinalY;
+const particlesLength = 50;
+const particlesFadeOutDelay = 5;
+const particlesSpinSpeed = 0.05;
+const ufoFrequency = 30; // 5 minutes
 
-const PARTICLES_BASE_Y = LOGO_FINAL_Y;
-const PARTICLES_LENGTH = 50;
+class UFO {
+    constructor() {
+        this.size = { width: 16, height: 8 };
+        this.position = {
+            x: width - 20, // 20px from right edge
+            y: 20 // 20px from top
+        };
+    }
 
-const FADE_OUT_DELAY = 5;
-let hoverStartTime = 0;
+    draw(ctx) {
+        ctx.save();
 
-// Seagull
+        // UFO body (white diamond)
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(this.position.x, this.position.y);
+        ctx.lineTo(this.position.x + 8, this.position.y - 4); // Top point
+        ctx.lineTo(this.position.x + 16, this.position.y); // Right point
+        ctx.lineTo(this.position.x + 8, this.position.y + 4); // Bottom point
+        ctx.closePath();
+        ctx.stroke();
+
+        // Static dots (white with first one red)
+        [4, 8, 12].forEach((xOffset, index) => {
+            ctx.fillStyle = index === 0 ? '#FF0000' : '#FFFFFF';
+            ctx.beginPath();
+            ctx.arc(this.position.x + xOffset, this.position.y, 1, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        ctx.restore();
+    }
+}
+
+// Geese
 class Goose {
     constructor(xOffset, yOffset, isLeader = false) {
         this.x = xOffset;
@@ -318,7 +359,7 @@ class Goose {
 function initFlock(canvasWidth, canvasHeight) {
     const flock = [];
     const baseY = canvasHeight / 4 + 300;
-    const leaderSpacing = 40; // How far followers stay behind leader
+    const leaderSpacing = 20; // How far followers stay behind leader
 
     // Create leader (fixed speed, bigger scale)
     const leader = new Goose(canvasWidth, baseY, true);
@@ -346,20 +387,16 @@ function initFlock(canvasWidth, canvasHeight) {
     return flock;
 }
 
-
-// Update the flock's positions
 function updateFlock(flock) {
     flock.forEach(seagull => seagull.update());
 
-    // Check if all seagulls have passed
     if (flock.every(seagull => seagull.hasPassed)) {
-        console.log("All seagulls have passed!");
-        return false; // Return false if the flock is done
+        console.log("All birds have passed");
+        return false; // The flock is done
     }
-    return true; // Return true if the flock is still active
+    return true; // The flock is still active
 }
 
-// Draw the flock
 function drawFlock(flock, ctx) {
     flock.forEach(seagull => seagull.draw(ctx));
 }
@@ -406,7 +443,7 @@ function initParticles(particlesPerLetter = 4) { // Add parameter to control cou
             const angle = Math.atan2(pointNext.y - point.y, pointNext.x - point.x);
 
             const origX = baseX + point.x;
-            const origY = PARTICLES_BASE_Y + point.y;
+            const origY = particlesBaseY + point.y;
 
             bounds.minX = Math.min(bounds.minX, origX);
             bounds.maxX = Math.max(bounds.maxX, origX);
@@ -428,7 +465,7 @@ function initParticles(particlesPerLetter = 4) { // Add parameter to control cou
                 letterId: id,
                 alpha: 0,
                 angle: angle,
-                lineLength: PARTICLES_LENGTH
+                lineLength: particlesLength
             });
         }
 
@@ -455,7 +492,7 @@ for (let i = 0; i < starCount; i++) {
         x: Math.random() * width,
         y: Math.random() * horizon,
         size: Math.random() * 1.5 + 0.5,
-        speed: Math.random() * 0.0002 + 0.05,
+        speed: Math.random() * 0.0002 + 0.02,
         opacity: Math.random() * 0.5 + 0.5
     });
 }
@@ -474,13 +511,6 @@ function spawnShootingStar() {
     }
 }
 
-function updateStars() {
-    for (let star of stars) {
-        star.x -= star.speed;
-        if (star.x < 0) star.x = width;
-    }
-}
-
 function updateShootingStars() {
     for (let i = shootingStars.length - 1; i >= 0; i--) {
         let s = shootingStars[i];
@@ -491,6 +521,28 @@ function updateShootingStars() {
             shootingStars.splice(i, 1);
         }
     }
+}
+
+function updateStars() {
+    for (let star of stars) {
+        if (starsMoveLeft) {
+            // Original left movement
+            star.x -= star.speed;
+            if (star.x < 0) star.x = width;
+        } else {
+            // Inverted right movement
+            star.x += star.speed;
+            if (star.x > width) star.x = 0;
+        }
+    }
+}
+
+function toggleStarDirection() {
+    starsMoveLeft = !starsMoveLeft;
+
+    stars.forEach(star => {
+        star.speed *= -1;
+    });
 }
 
 function drawStars() {
@@ -516,20 +568,14 @@ function drawShootingStars() {
 }
 
 
-// =======================[UPDATED SUN SYSTEM]=======================
+// SUN
 function updateSunPosition() {
-    if (sunYOffset > MAX_SUN_TRAVEL - 200) {
+    if (sunYOffset > maxSunTravel - nightOffset) {
         isNight = true;
     }
 
-    if (sunYOffset < MAX_SUN_TRAVEL) {
-        sunYOffset += SUN_SPEED;
-    } else {
-        // isNight = true;
-        // Start logo movement when sun sets
-        // if (logoY > LOGO_FINAL_Y) {
-        //     logoSpeed = LOGO_RISE_SPEED;
-        // }
+    if (sunYOffset < maxSunTravel) {
+        sunYOffset += sunSpeed;
     }
 }
 
@@ -538,8 +584,8 @@ function drawSun() {
     const sunY = horizon + sunYOffset;
 
     const gradient = ctx.createRadialGradient(
-        sunX, sunY, SUN_BASE_RADIUS * 0.3,
-        sunX, sunY, SUN_BASE_RADIUS * GLOW_SCALE
+        sunX, sunY, sunBaseRadius * 0.3,
+        sunX, sunY, sunBaseRadius * sunGlowScale
     );
     gradient.addColorStop(0, 'rgba(255, 69, 0, 0.5)');
     gradient.addColorStop(0.5, 'rgba(255, 215, 0, 0.25)');
@@ -553,8 +599,8 @@ function drawSun() {
 
     // Main sun body (now larger)
     ctx.beginPath();
-    ctx.arc(sunX, sunY, SUN_BASE_RADIUS, Math.PI, 2 * Math.PI);
-    let sunGradient = ctx.createLinearGradient(0, sunY - SUN_BASE_RADIUS, 0, sunY);
+    ctx.arc(sunX, sunY, sunBaseRadius, Math.PI, 2 * Math.PI);
+    let sunGradient = ctx.createLinearGradient(0, sunY - sunBaseRadius, 0, sunY);
     sunGradient.addColorStop(0, "#FF4500");
     sunGradient.addColorStop(1, "#FFD700");
     ctx.fillStyle = sunGradient;
@@ -563,9 +609,9 @@ function drawSun() {
     // Sun details (scaled appropriately)
     const numLines = 8; // 🔥 Increased lines for bigger sun
     for (let i = 0; i < numLines; i++) {
-        let lineY = sunY - SUN_BASE_RADIUS + (i + 1) * (SUN_BASE_RADIUS / (numLines + 1));
+        let lineY = sunY - sunBaseRadius + (i + 1) * (sunBaseRadius / (numLines + 1));
         ctx.beginPath();
-        let dx = Math.sqrt(SUN_BASE_RADIUS ** 2 - (sunY - lineY) ** 2);
+        let dx = Math.sqrt(sunBaseRadius ** 2 - (sunY - lineY) ** 2);
         ctx.moveTo(sunX - dx, lineY);
         ctx.lineTo(sunX + dx, lineY);
         ctx.lineWidth = 1 + (i / numLines) * 5; // 🔥 Thicker lines
@@ -574,9 +620,7 @@ function drawSun() {
     }
 }
 
-// ============================
-// GRID SYSTEM WITH STABLE RELIEF
-// ============================
+// GRID
 const numGridLines = 40;
 const numGridCols = 30;
 const gridSpeed = 0.08;
@@ -588,7 +632,6 @@ const reliefMap = Array(numGridCols + 1).fill().map(() =>
         Math.random() < 0.12 ? Math.random() * 35 + 15 : 0
     )
 );
-
 
 function drawGrid() {
     // Define the color for special horizontal lines
@@ -656,8 +699,7 @@ function drawGrid() {
     horizontalPositions.forEach((pos, row) => {
         // Determine the color for this horizontal line
         if (row % specialLineFrequency === 0) {
-            // let randomColor = electricColors[Math.floor(Math.random() * electricColors.length)];
-            ctx.strokeStyle = "#FFFFFF"; // Special color for specific lines
+            ctx.strokeStyle = randomColor; // Special color for specific lines
         } else {
             ctx.strokeStyle = "#00FFFF"; // Default cyan color
         }
@@ -705,9 +747,6 @@ function drawGrid() {
     ctx.globalAlpha = 1;
 }
 
-
-
-
 // Initialize character transformations
 function initLogo() {
     logoChars = [
@@ -718,25 +757,6 @@ function initLogo() {
         { type: 'E', x: 360, flip: true }     // Vertically flipped
     ];
 }
-
-const PARTICLES_SPIN_SPEED = 0.05;
-
-// function drawParticles() {
-//     // ctx.clearRect(0, 0, width, height);
-//     particles.forEach(particle => {
-//         ctx.beginPath();
-//         const halfLen = particle.lineLength * 2;
-//         const dx = Math.cos(particle.angle) * halfLen;
-//         const dy = Math.sin(particle.angle) * halfLen;
-//         ctx.moveTo(particle.x - dx, particle.y - dy);
-//         ctx.lineTo(particle.x + dx, particle.y + dy);
-//         ctx.strokeStyle = particle.color;
-//         ctx.lineWidth = 2; // Adjust line thickness
-//         ctx.globalAlpha = particle.alpha;
-//         ctx.stroke();
-//     });
-//     ctx.globalAlpha = 1; // Reset alpha
-// }
 
 function drawParticles() {
     particles.forEach(particle => {
@@ -792,14 +812,32 @@ function drawLogo() {
 
 }
 
-let moonAlpha = 0;
-let linkAlpha = 0;
+function updateMoon() {
+    // Horizontal movement
+    moonX -= moonSpeed;
+    moonFloatPhase += 0.02;
+
+    // Reset position when fully offscreen left
+    if (moonX < - 120) {
+        moonX = width + 60;
+    }
+
+    // Update alpha based on position (fade at edges)
+    // const screenRatio = moonX / width;
+    // moonAlpha = Math.sin(Math.PI * screenRatio);
+}
 
 function drawMoon() {
     ctx.save();
     const moonSize = 60;
-    ctx.translate(width - moonSize - 220, 120);
 
+    // Calculate vertical position with floating effect
+    const floatY = 120 + Math.sin(moonFloatPhase) * moonAmplitude;
+
+    ctx.translate(moonX, floatY);
+
+    // // Fade when near edges
+    // ctx.globalAlpha = Math.max(0, Math.min(1, moonAlpha));
     ctx.globalAlpha = moonAlpha;
 
     ctx.lineWidth = 2;
@@ -810,25 +848,25 @@ function drawMoon() {
     ctx.stroke(circus);
 
     const crescent = new Path2D(document.getElementById('crescent').getAttribute('d'));
-    ctx.fillStyle = '#000000';
+    ctx.fillStyle = '#111122';
     ctx.fill(crescent);
     ctx.stroke(crescent);
 
     ctx.restore();
-    ctx.globalAlpha = 1.0; // Reset opacity for other elements
 }
 
 
+
 function updateLogoPosition() {
-    if (isNight && logoY > LOGO_FINAL_Y) {
+    if (isNight && logoY > logoFinalY) {
         // Ease-out animation
-        const remaining = logoY - LOGO_FINAL_Y;
+        const remaining = logoY - logoFinalY;
         logoSpeed = Math.max(0.5, remaining * 0.001);
         logoY -= logoSpeed;
 
         // Snap to final position when close
         if (remaining < 2) {
-            logoY = LOGO_FINAL_Y;
+            logoY = logoFinalY;
             logoSpeed = 0;
         }
     }
@@ -849,7 +887,7 @@ function updateLogo() {
     if (hoveredLetter !== prevHoverState) {
         if (hoveredLetter) {
             popSounds[getRandomInt(4)].play();
-            hoverStartTime = now;
+            letterHoverStartTime = now;
         } else {
             // popSound.play();
         }
@@ -862,8 +900,8 @@ function updateLogo() {
         // Fade logic
         if (isActive) {
             // Start fading after delay
-            const timeActive = now - hoverStartTime;
-            p.alpha = timeActive > FADE_OUT_DELAY ? Math.max(0, 1 - (timeActive - FADE_OUT_DELAY)/1000) : 1;
+            const timeActive = now - letterHoverStartTime;
+            p.alpha = timeActive > particlesFadeOutDelay ? Math.max(0, 1 - (timeActive - particlesFadeOutDelay)/1000) : 1;
         } else {
             p.alpha = Math.max(0, p.alpha - 0.05);
         }
@@ -876,27 +914,11 @@ function updateLogo() {
     });
 }
 
-function update() {
-    gridOffset += gridSpeed;
-    if(gridOffset > numGridLines) gridOffset = 0;
-    updateStars();
-    updateShootingStars();
-    spawnShootingStar();
-    updateLogo();
-
-    updateSunPosition();
-    updateLogoPosition();
-
-    if (isNight && moonAlpha < 1) {
-        moonAlpha += 0.001; // Increase opacity gradually
-    }
-}
-
 function drawUrl() {
     ctx.globalAlpha = moonAlpha;
     ctx.font = "9pt Monospace";
     ctx.fillStyle = '#FFEEEE';
-    ctx.fillText("yphil.gitlab.io",width / 2 - 60 , height / 2 - 50);
+    ctx.fillText("yphil.gitlab.io",width / 2 - 60 , height / 2 - 100);
     ctx.globalAlpha = 1.0; // Reset opacity for other elements
 }
 
@@ -1027,6 +1049,26 @@ function init() {
     flock = initFlock(width, height);
 }
 
+
+let ufo = new UFO(canvas.width, canvas.height);
+
+function update() {
+    gridOffset += gridSpeed;
+    if(gridOffset > numGridLines) gridOffset = 0;
+    updateStars();
+    updateShootingStars();
+    spawnShootingStar();
+    updateLogo();
+    updateMoon();
+    updateSunPosition();
+    updateLogoPosition();
+    // ufo.update(width, height, isNight);
+
+    if (isNight && moonAlpha < 1) {
+        moonAlpha += 0.001; // Increase opacity gradually
+    }
+}
+
 function draw() {
     ctx.clearRect(0, 0, width, height);
 
@@ -1041,6 +1083,8 @@ function draw() {
 
     drawStars();
     drawShootingStars();
+
+    ufo.draw(ctx);
 
     if (flock) {
         const isFlockActive = updateFlock(flock);

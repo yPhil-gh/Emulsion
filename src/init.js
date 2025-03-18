@@ -13,7 +13,7 @@ const resolvedPath = path.resolve('.');
 
 LB.baseDir = resolvedPath;
 
-LB.galleryNumOfCols = 6;
+LB.galleryNumOfCols = 7;
 
 LB.prefs = {
     load: getPrefs,

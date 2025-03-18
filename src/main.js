@@ -336,7 +336,6 @@ app.whenReady().then(() => {
         }
 
         if (buttonStates.back && buttonStates.dpdown) {
-            console.log('Back and D-Pad Down.');
             killChildProcesses(childProcesses);
         }
     });

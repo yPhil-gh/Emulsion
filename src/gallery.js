@@ -117,12 +117,16 @@ function buildSettingsPageContent(platforms) {
     const pageContent = document.createElement('div');
     pageContent.classList.add('page-content');
 
+    pageContent.style.gridTemplateColumns = `repeat(${LB.galleryNumOfCols}, 1fr)`;
+
     let i = 0;
     platforms.forEach((platformName) => {
         // if (platformName === "settings") return;
 
         const platformContainer = document.createElement('div');
         platformContainer.classList.add('game-container', 'platform-container');
+        platformContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+
         platformContainer.title = platformName;
         platformContainer.classList.add('settings');
         platformContainer.setAttribute('data-platform', platformName);
@@ -192,6 +196,8 @@ async function buildGallery(params) {
         pageContent = document.createElement('div');
         pageContent.classList.add('page-content');
 
+        pageContent.style.gridTemplateColumns = `repeat(${LB.galleryNumOfCols}, 1fr)`;
+
         const gameFiles = await scanDirectory(gamesDir, extensions, true);
 
         function formatTitle(title) {
@@ -217,6 +223,7 @@ async function buildGallery(params) {
 
             const gameContainer = document.createElement('div');
             gameContainer.classList.add('game-container');
+            gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
             gameContainer.title = fileNameWithoutExt;
             gameContainer.setAttribute('data-game-name', fileNameWithoutExt);
             gameContainer.setAttribute('data-platform', platform);

@@ -323,8 +323,8 @@ function initGallery(currentIndex, disabledPlatform) {
                 break;
             case 'Enter':
                 const menuSelectedGame = LB.utils.getSelectedGame(menuGameContainers, menuSelectedIndex);
-                // const menuSelectedGameImg = menuSelectedGame.querySelector('.game-image');
-                // _closeMenu(menuSelectedGameImg.src);
+                const menuSelectedGameImg = menuSelectedGame.querySelector('.game-image');
+                _closeMenu(menuSelectedGameImg.src);
                 break;
             case 'Escape':
                 _closeMenu();
@@ -585,6 +585,7 @@ function initGallery(currentIndex, disabledPlatform) {
             document.getElementById('galleries').style.display = 'none';
             window.removeEventListener('keydown', galleryKeyDown);
             LB.control.initSlideShow(currentIndex);
+            document.querySelector('header .item-number').textContent = '';
             break;
         default:
             break;

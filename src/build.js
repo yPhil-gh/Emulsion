@@ -5,6 +5,8 @@ async function buildGameMenu(gameName, image) {
 
         const currentImageContainer = document.createElement('div');
         currentImageContainer.classList.add('menu-game-container', 'current-image');
+        currentImageContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+
         const currentImage = document.createElement('img');
         currentImage.src = image.src;
         currentImage.alt = 'Current game image';
@@ -25,6 +27,7 @@ async function buildGameMenu(gameName, image) {
             urls.forEach((url) => {
                 const gameContainer = document.createElement('div');
                 gameContainer.classList.add('menu-game-container');
+                gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
 
                 const img = document.createElement('img');
                 img.src = url;
@@ -182,7 +185,7 @@ function buildPrefsForm() {
 
     const statusLabelPlatormName = document.createElement('span');
     statusLabelPlatormName.id = 'form-status-label-platform-name';
-    statusLabelPlatormName.textContent = `Emume is `;
+    statusLabelPlatormName.textContent = `EmumE is Cool`;
 
     const statusLabelPlatormStatus = document.createElement('span');
     statusLabelPlatormStatus.id = 'form-status-label-platform-status';

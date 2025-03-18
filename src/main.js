@@ -11,6 +11,12 @@ import gamecontroller from "sdl2-gamecontroller";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+const buttonStates = {
+  back: false,
+  dpdown: false,
+};
+
+
 gamecontroller.on("error", (data) => console.log("error", data));
 gamecontroller.on("warning", (data) => console.log("warning", data));
 
@@ -23,8 +29,12 @@ gamecontroller.on("controller-device-added", (data) => {
     gamecontroller.setLeds(0x0f, 0x62, 0xfe, data.player);
 });
 
-gamecontroller.on("back:down", (data) => {
-    console.log("Hello Back button!");
+gamecontroller.on('controller-button-up', (event) => {
+  if (event.button === 'back') {
+    buttonStates.back = false;
+  } else if (event.button === 'dpdown') {
+    buttonStates.dpdown = false;
+  }
 });
 
 // gamecontroller.on("controller-button-down", (data) => {
@@ -298,22 +308,40 @@ ipcMain.handle('quit', () => {
 
 // app.whenReady().then(createWindows);
 
+function killChildProcesses(childProcesses) {
+    childProcesses.forEach((child, pid) => {
+        try {
+            if (process.platform === 'win32') {
+                // Windows needs taskkill
+                spawn('taskkill', ['/pid', pid, '/f', '/t']);
+            } else {
+                // POSIX systems (Linux/Mac) use process groups
+                process.kill(-pid, 'SIGKILL');
+            }
+        } catch (err) {
+            console.error(`Failed to kill PID ${pid}:`, err);
+        }
+    });
+    childProcesses.clear();
+}
+
 app.whenReady().then(() => {
     createWindows();
+
+    gamecontroller.on('controller-button-down', (event) => {
+        if (event.button === 'back') {
+            buttonStates.back = true;
+        } else if (event.button === 'dpdown') {
+            buttonStates.dpdown = true;
+        }
+
+        if (buttonStates.back && buttonStates.dpdown) {
+            console.log('Back and D-Pad Down.');
+            killChildProcesses(childProcesses);
+        }
+    });
+
     globalShortcut.register('Ctrl+Shift+K', () => {
-        childProcesses.forEach((child, pid) => {
-            try {
-                if (process.platform === 'win32') {
-                    // Windows needs taskkill
-                    spawn('taskkill', ['/pid', pid, '/f', '/t']);
-                } else {
-                    // POSIX systems (Linux/Mac) use process groups
-                    process.kill(-pid, 'SIGKILL');
-                }
-            } catch (err) {
-                console.error(`Failed to kill PID ${pid}:`, err);
-            }
-        });
-        childProcesses.clear();
+        killChildProcesses(childProcesses);
     });
 });

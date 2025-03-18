@@ -32,15 +32,15 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh; /* Use min-height to allow content to grow */
+  min-height: 100vh; /* allow content to grow */
   overflow: hidden;
-  perspective: 600px; /* Add perspective for 3D effect */
+  /* perspective: 600px; */
 }
 
 a {
   cursor: pointer;
   text-decoration: underline;
-  font-weight: bold; /* Bold text */
+  font-weight: bold;
 }
 
 main {
@@ -51,9 +51,8 @@ main {
   min-height: 100vh;
   min-width: 100vw;
   overflow: hidden;
-  perspective: 600px; /* Add perspective for 3D effect */
+  perspective: 1300px;
   margin: 0;
-  /* padding: 100px 0 100px 0; */
 }
 
 header, footer  {

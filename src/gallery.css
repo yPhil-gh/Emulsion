@@ -164,7 +164,7 @@ div.platform-container {
   bottom: 0;
   left: 0;
   z-index: 1;
-  /* overflow: hidden; */
+  overflow: hidden;
   /* white-space: nowrap; */
   text-overflow: ellipsis;
 

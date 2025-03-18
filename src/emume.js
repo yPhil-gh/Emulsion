@@ -1,178 +1,134 @@
-// const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+// Music
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-// window.audioContext = audioContext;
+// Create main output gain node
+const masterGain = audioContext.createGain();
+masterGain.connect(audioContext.destination);
+masterGain.gain.value = 0.3;
 
-// const TEMPO = 220; // Classic dance tempo
-// let isPlaying = false;
-// let currentKey = 0;
-// const KEYS = [
-//     [55, 65.41, 73.42], // A minor
-//     [58.27, 69.30, 77.78] // Bb minor
-// ];
+// Warm pad setup
+function createPad() {
+    const osc1 = audioContext.createOscillator();
+    const osc2 = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    const lfo = audioContext.createOscillator();
+    const filter = audioContext.createBiquadFilter();
 
-// const reverb = audioContext.createConvolver();
-// const impulse = audioContext.createBuffer(2, audioContext.sampleRate * 2, audioContext.sampleRate);
-// for (let channel = 0; channel < 2; channel++) {
-//     const data = impulse.getChannelData(channel);
-//     for (let i = 0; i < data.length; i++) {
-//         data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 2);
-//     }
-// }
-// reverb.buffer = impulse;
-// reverb.connect(audioContext.destination);
+    // Oscillator settings
+    osc1.type = 'sawtooth';
+    osc2.type = 'sawtooth';
+    osc1.frequency.value = 110;
+    osc2.frequency.value = 164.8;
+    osc1.detune.value = 3;
+    osc2.detune.value = -3;
 
-// function createKick() {
-//     const osc = audioContext.createOscillator();
-//     const gain = audioContext.createGain();
+    // Slow random detune evolution
+    setInterval(() => {
+        osc1.detune.linearRampToValueAtTime(Math.random() * 20 - 10, audioContext.currentTime + 15);
+        osc2.detune.linearRampToValueAtTime(Math.random() * 20 - 10, audioContext.currentTime + 15);
+    }, 15000);
 
-//     osc.frequency.setValueAtTime(150, audioContext.currentTime);
-//     osc.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.01);
+    // Filter setup
+    filter.type = 'lowpass';
+    filter.frequency.value = 800;
+    filter.Q.value = 2;
 
-//     gain.gain.setValueAtTime(1, audioContext.currentTime);
-//     gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+    // LFO for filter modulation
+    lfo.type = 'sine';
+    lfo.frequency.value = 0.05;
+    lfo.connect(filter.frequency);
+    lfo.frequency.linearRampToValueAtTime(0.1, audioContext.currentTime + 120);
 
-//     osc.connect(gain).connect(audioContext.destination);
-//     osc.start();
-//     osc.stop(audioContext.currentTime + 0.3);
-// }
+    // Connections
+    osc1.connect(filter);
+    osc2.connect(filter);
+    filter.connect(gain);
+    gain.connect(masterGain);
 
-// function createHiHat() {
-//     const noise = audioContext.createBufferSource();
-//     const buffer = audioContext.createBuffer(1, 4096, audioContext.sampleRate);
-//     const data = buffer.getChannelData(0);
+    // Slow fade-in
+    gain.gain.setValueAtTime(0, audioContext.currentTime);
+    gain.gain.linearRampToValueAtTime(0.8, audioContext.currentTime + 15);
 
-//     for(let i = 0; i < 4096; i++) {
-//         data[i] = Math.random() * 2 - 1;
-//     }
+    // Start oscillators
+    osc1.start();
+    osc2.start();
+    lfo.start();
 
-//     const filter = audioContext.createBiquadFilter();
-//     filter.type = 'highpass';
-//     filter.frequency.value = 7000;
+    return { osc1, osc2, gain, lfo };
+}
 
-//     const gain = audioContext.createGain();
-//     gain.gain.setValueAtTime(0.3, audioContext.currentTime);
-//     gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+// Clave sound with reverb
+function createClave() {
+    const env = audioContext.createGain();
+    const osc = audioContext.createOscillator();
+    const reverb = audioContext.createConvolver();
 
-//     noise.buffer = buffer;
-//     noise.connect(filter).connect(gain).connect(audioContext.destination);
-//     noise.start();
-//     noise.stop(audioContext.currentTime + 0.1);
-// }
+    // Clave sound
+    osc.type = 'square';
+    osc.frequency.value = 1200;
+    osc.connect(env);
 
-// function createBass(note, filterCutoff, resonance) {
-//     const osc = audioContext.createOscillator();
-//     const filter = audioContext.createBiquadFilter();
-//     const gain = audioContext.createGain();
+    // Envelope
+    env.gain.setValueAtTime(0.5, audioContext.currentTime);
+    env.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
 
-//     osc.type = 'square';
-//     osc.frequency.setValueAtTime(note, audioContext.currentTime);
+    // Reverb setup
+    const reverbTime = 3;
+    const impulse = audioContext.createBuffer(2, audioContext.sampleRate * reverbTime, audioContext.sampleRate);
+    const impulseL = impulse.getChannelData(0);
+    const impulseR = impulse.getChannelData(1);
 
-//     filter.type = 'lowpass';
-//     filter.frequency.setValueAtTime(filterCutoff, audioContext.currentTime);
-//     filter.Q.value = resonance;
+    for (let i = 0; i < impulse.length; i++) {
+        impulseL[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / impulse.length, 1);
+        impulseR[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / impulse.length, 1);
+    }
 
-//     gain.gain.setValueAtTime(0.4, audioContext.currentTime);
-//     gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+    reverb.buffer = impulse;
+    env.connect(reverb);
+    reverb.connect(masterGain);
 
-//     osc.connect(filter).connect(gain).connect(audioContext.destination);
-//     osc.start();
-//     osc.stop(audioContext.currentTime + 0.2);
-// }
+    osc.start();
+    osc.stop(audioContext.currentTime + 1.5);
+}
 
-// function startGroove() {
-//     let barCount = 0;
-//     let filterCutoff = 200;
-//     let resonance = 5;
-//     let filterLFO = audioContext.createOscillator();
+// Create initial pads
+const pad1 = createPad();
+const pad2 = createPad();
 
-//     // Initialize filter modulation
-//     filterLFO.type = 'sine';
-//     filterLFO.frequency.value = 0.1; // Slow modulation
-//     filterLFO.start();
+// Random clave trigger (60-120 seconds)
+function scheduleClave() {
+    setTimeout(() => {
+        createClave();
+        scheduleClave();
+    }, 60000 + Math.random() * 60000);
+}
 
-//     function playBar() {
-//         const isKeyChangeBar = barCount % 5 === 4; // Change key every 5th bar
-//         const isCrazyBar = barCount % 12 === 11; // Crazy bar every 12 bars
-//         const key = isKeyChangeBar ? KEYS[(currentKey + 1) % KEYS.length] : KEYS[currentKey];
+scheduleClave();
 
-//         // Evolving filter cutoff
-//         if (Math.random() > 0.8) {
-//             // Drastic change
-//             const targetCutoff = 200 + Math.random() * 1800;
-//             filterLFO.frequency.setValueAtTime(0.5 + Math.random() * 2, audioContext.currentTime);
-//             filterCutoff = targetCutoff;
-//         } else {
-//             // Subtle change
-//             filterCutoff += (Math.random() - 0.5) * 50;
-//             filterCutoff = Math.min(Math.max(filterCutoff, 100), 2000);
-//         }
+// Gradual harmonic evolution
+setInterval(() => {
+    const newFreq1 = [110, 130.8, 164.8, 220][Math.floor(Math.random() * 4)];
+    const newFreq2 = newFreq1 * 1.5;
 
-//         // Modulate resonance
-//         resonance = 5 + Math.random() * 2;
+    pad1.osc1.frequency.linearRampToValueAtTime(newFreq1, audioContext.currentTime + 30);
+    pad2.osc2.frequency.linearRampToValueAtTime(newFreq2, audioContext.currentTime + 30);
+}, 45000);
 
-//         // Kick on 1 and 3
-//         [0, 2].forEach(beat => {
-//             setTimeout(createKick, (60/TEMPO) * beat * 1000);
-//         });
+let isPlaying = false;
 
-//         // Hi-hat on every 8th note
-//         [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5].forEach(beat => {
-//             setTimeout(createHiHat, (60/TEMPO) * beat * 1000);
-//         });
+async function toggleAudio() {
+  if (isPlaying) {
+    await audioContext.suspend();
+  } else {
+    await audioContext.resume();
+  }
+  isPlaying = !isPlaying;
+}
 
-//         // Dynamic bass rhythm
-//         const bassPattern = isCrazyBar ?
-//             [0, 1.25, 2.75] : // Crazy pattern
-//             Math.random() > 0.5 ?
-//                 [0, 2.5] : // tu-tutu
-//                 [0, 1.5, 3]; // tutu-tu
+audioContext.suspend();
 
-//         bassPattern.forEach(beat => {
-//             setTimeout(() => createBass(key[0], filterCutoff, resonance), (60/TEMPO) * beat * 1000);
-//         });
-
-//         // Crazy bar effects
-//         if (isCrazyBar) {
-//             // Wild filter sweep
-//             const sweep = audioContext.createOscillator();
-//             sweep.type = 'sawtooth';
-//             sweep.frequency.setValueAtTime(200, audioContext.currentTime);
-//             sweep.frequency.exponentialRampToValueAtTime(Math.random() * 2000, audioContext.currentTime + 1);
-
-//             const sweepGain = audioContext.createGain();
-//             sweepGain.gain.setValueAtTime(0.2, audioContext.currentTime);
-//             sweepGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
-
-//             sweep.connect(sweepGain).connect(audioContext.destination);
-//             sweep.start();
-//             sweep.stop(audioContext.currentTime + 1.5);
-//         }
-
-//         barCount++;
-
-//         // Update key after change bar
-//         if (isKeyChangeBar) {
-//             currentKey = (currentKey + 1) % KEYS.length;
-//         }
-
-//         setTimeout(playBar, (60/TEMPO) * 4 * 1000); // 4-bar loop
-//     }
-
-//     playBar();
-// }
-
-// document.addEventListener('click', () => {
-//     if (!isPlaying) {
-//         audioContext.resume().then(() => {
-//             startGroove();
-//             isPlaying = true;
-//         });
-//     } else {
-//         audioContext.suspend();
-//         isPlaying = false;
-//     }
-// });
-
+// Start the audio context on first user interaction
+document.addEventListener('click', toggleAudio);
 // Scene
 
 
@@ -1015,6 +971,37 @@ function drawUrl() {
     ctx.globalAlpha = 1.0; // Reset opacity for other elements
 }
 
+let cubeLogoImage = null;
+
+function preloadCubeLogo() {
+    cubeLogoImage = new Image();
+    cubeLogoImage.src = '../img/emume.png';
+    cubeLogoImage.onerror = () => console.error('Failed to load cube logo');
+}
+
+function drawCubeLogo() {
+    if (!cubeLogoImage || !cubeLogoImage.complete) return;
+
+    ctx.globalAlpha = moonAlpha;
+
+    // New dimensions
+    const targetWidth = 200; // px
+    const targetHeight = 200; // px
+
+    // Centered with new size
+    const x = (ctx.canvas.width - targetWidth) / 2 - 10;
+    const y = 16;
+
+    ctx.drawImage(
+        cubeLogoImage,
+        x, y,
+        targetWidth,
+        targetHeight
+    );
+    ctx.globalAlpha = 1.0; // Reset opacity for other elements
+}
+
+
 function drawCredits() {
     ctx.globalAlpha = 1; // Fades in with moon/night mode
     ctx.font = "9pt Monospace";
@@ -1022,12 +1009,12 @@ function drawCredits() {
     ctx.textAlign = 'center';
 
     // Main text
-    ctx.fillText("Made with ♥ by yPhil", width / 2, height - 30);
+    ctx.fillText("HTML5 Canvas / Web audio API demo by yPhil 2025", width / 2, height - 30);
 
     // Secondary text (smaller/lighter)
     ctx.font = "8pt Monospace";
     ctx.fillStyle = 'rgba(255, 238, 238, 0.7)';
-    ctx.fillText("Press M to toggle audio", width / 2, height - 15);
+    ctx.fillText("You really should be watching this fullscreen ; Press M to toggle audio", width / 2, height - 15);
 
     // Reset context
     ctx.textAlign = 'left';
@@ -1140,6 +1127,7 @@ let flock;
 function init() {
     // Initialize the flock once
     flock = initFlock(width, height);
+    preloadCubeLogo();
 }
 
 
@@ -1207,6 +1195,7 @@ function draw() {
     drawGrid();
     drawCredits();
     drawVolumeControl();
+    drawCubeLogo();
 }
 
 init();

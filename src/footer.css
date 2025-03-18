@@ -45,15 +45,21 @@ footer #footer-menu {
   display: flex;
 }
 
-.status-item {
+.control-item {
   display: flex;
   align-items: center;
-  width: 35%;
   gap: 10px;
-  /* justify-content: space-between; */
+
+  width: 35%;
+
+  animation: fadeIn 0.5s forwards;
 }
 
-.status-item * {
+#circle {
+  cursor: pointer;
+}
+
+.control-item * {
   gap: 10px;
 }
 

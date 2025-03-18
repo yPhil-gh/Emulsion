@@ -137,7 +137,13 @@ function buildSettingsPageContent(platforms) {
         platformNameElement.classList.add('platform-name');
 
         const platformImage = document.createElement('img');
-        platformImage.src = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
+
+        if (platformName === 'settings') {
+            platformImage.src = path.join(LB.baseDir, 'img', 'emume.png');
+        } else {
+            platformImage.src = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
+        }
+
         platformImage.classList.add('platform-image');
         platformImage.classList.add('game-image');
 

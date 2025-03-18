@@ -63,7 +63,8 @@ function initSlideShow(platformToDisplay) {
 
     // Click to select adjacent slides
     slides.forEach((slide, index) => {
-        slide.addEventListener('click', () => {
+        slide.addEventListener('click', (event) => {
+            event.stopPropagation();
             if (slide.classList.contains('adjacent')) {
                 currentIndex = index; // Set the clicked slide as the current slide
                 updateCarousel();
@@ -92,12 +93,10 @@ function initSlideShow(platformToDisplay) {
             window.removeEventListener('keydown', homeKeyDown);
 
             let activeGalleryIndex;
-            let numberOfPlatforms = 0;
             let activePlatformName;
 
             slides.forEach((slide, index) => {
                 // console.log("slide, index: ", slide, index);
-                numberOfPlatforms++;
                 if (slide.classList.contains('active')) {
                     activePlatformName = slide.dataset.platform;
                     activeGalleryIndex = index;
@@ -162,6 +161,14 @@ function initGallery(currentIndex, disabledPlatform) {
                     block: "start",
                 });
 
+                if (currentIndex === 0) {
+                    console.log("Bingo!: ");
+                    LB.utils.updateControls('square', 'same', 'Fetch cover', 'off');
+                } else {
+                    LB.utils.updateControls('square', 'same', 'Fetch cover', 'on');
+
+                }
+
                 currentPageIndex = currentIndex;
                 gameContainers = Array.from(page.querySelectorAll('.game-container') || []);
 
@@ -199,7 +206,13 @@ function initGallery(currentIndex, disabledPlatform) {
 
                 document.querySelector('header .item-number').textContent = gameContainers.length;
                 // document.querySelector('header .platform-image img').src = `../img/platforms/${page.dataset.platform}.png`;
-                document.querySelector('header .platform-image').style.backgroundImage = `url('../img/platforms/${page.dataset.platform}.png')`;
+
+                if (page.dataset.platform === 'settings') {
+                    document.querySelector('header .platform-image').style.backgroundImage = `url('../img/emume.png')`;
+                } else {
+                    document.querySelector('header .platform-image').style.backgroundImage = `url('../img/platforms/${page.dataset.platform}.png')`;
+                }
+
                 document.querySelector('header .prev-link').onclick = function() {
                     prevPage();
                 };
@@ -266,10 +279,6 @@ function initGallery(currentIndex, disabledPlatform) {
 
     function _toggleMenu(gameContainers, selectedIndex, listener, isMenuOpen, platformToOpen) {
 
-        // if (platformToOpen) {
-        //     _openMenu(disabledPlatform);
-        // }
-
         const menu = document.getElementById('menu');
         const menuContainer = document.getElementById('menu-container');
 
@@ -326,6 +335,9 @@ function initGallery(currentIndex, disabledPlatform) {
                 const menuSelectedGameImg = menuSelectedGame.querySelector('.game-image');
                 _closeMenu(menuSelectedGameImg.src);
                 break;
+            case 'F5':
+                window.location.reload();
+                break;
             case 'Escape':
                 _closeMenu();
                 break;
@@ -360,6 +372,9 @@ function initGallery(currentIndex, disabledPlatform) {
         };
 
         function _openMenu(platformToOpen) {
+
+            LB.utils.updateControls('square', 'same', 'Fetch cover', 'off');
+            LB.utils.updateControls('dpad', 'same', 'Fetch cover', 'off');
 
             menu.style.height = '83vh';
 
@@ -448,6 +463,9 @@ function initGallery(currentIndex, disabledPlatform) {
         }
 
         async function _closeMenu(imgSrc) {
+
+            // LB.utils.updateControls('square', 'same', 'Fetch cover', 'on');
+            LB.utils.updateControls('dpad', 'same', 'Browse', 'on');
 
             document.querySelector('header .prev-link').style.opacity = 1;
             document.querySelector('header .next-link').style.opacity = 1;

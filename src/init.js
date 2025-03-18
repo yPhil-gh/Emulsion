@@ -101,12 +101,17 @@ function cleanFileName(fileName) {
   // Step 5: Remove extra spaces and trim.
   let normalized = _normalizeSpaces(withAcronymSplit);
 
-  // Final pass: If the string ends with ", The", move it to the front.
-  return _moveTrailingArticleToFront(normalized);
+  let articleToFront = _moveTrailingArticleToFront(withAcronymSplit);
+
+  return _removeBrackets(articleToFront);
 }
 
 function _removeAfterUnderscore(fileName) {
   return fileName.split('_')[0];
+}
+
+function _removeBrackets(s) {
+    return s.replace(/\s*\[.*?\]/g, '');
 }
 
 // Inserts a space after a sequence like "3D" when it is immediately followed by an uppercase letter and a lowercase letter.

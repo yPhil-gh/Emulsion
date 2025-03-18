@@ -260,6 +260,13 @@ const defaultPreferences = {
         "emulator": "",
         "emulatorArgs": "",
         "extensions": [".z64"]
+    },
+    "ps2": {
+        "isEnabled": false,
+        "gamesDir": "",
+        "emulator": "",
+        "emulatorArgs": "",
+        "extensions": [".bin", ".iso"]
     }
 };
 

@@ -1,16 +1,16 @@
 {
     "name": "emume",
-    "type": "module",
     "version": "1.0.9",
     "context": "prod",
-    "description": "A frontend to launch games",
+    "description": "Symmetrical launch break",
     "homepage": "https://gitlab.com/yphil/emume",
     "license": "GPLv3",
     "author": {
         "name": "yPhil",
         "email": "yphil@gnu.org"
     },
-    "keywords": [],
+    "keywords": ["games", "emulation"],
+    "type": "module",
     "main": "src/main.js",
     "scripts": {
         "start": "electron . --no-sandbox",
@@ -52,6 +52,7 @@
         "fs": "^0.0.1-security",
         "node-fetch": "^3.3.2",
         "path": "^0.12.7",
+        "sdl2-gamecontroller": "^1.0.11",
         "steamgriddb": "^2.2.0",
         "tree-kill": "^1.2.2"
     },

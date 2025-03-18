@@ -6,13 +6,30 @@ import { dirname, join } from 'path';
 import { spawn, exec } from 'child_process';
 import { getAllCoverImageUrls } from './steamgrid.js';
 import axios from 'axios';  // Import axios using ESM
+import gamecontroller from "sdl2-gamecontroller";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-let childProcesses = new Map();
+gamecontroller.on("error", (data) => console.log("error", data));
+gamecontroller.on("warning", (data) => console.log("warning", data));
 
-let mainWindow;
+gamecontroller.on("sdl-init", (data) => {
+    console.log("SDL2 Initialized");
+});
+
+gamecontroller.on("controller-device-added", (data) => {
+    // console.log("controller connected", data);
+    gamecontroller.setLeds(0x0f, 0x62, 0xfe, data.player);
+});
+
+gamecontroller.on("back:down", (data) => {
+    console.log("Hello Back button!");
+});
+
+// gamecontroller.on("controller-button-down", (data) => {
+//     console.log("button pressed", data);
+// });
 
 const preferencesFilePath = path.join(app.getPath('userData'), "preferences.json");
 
@@ -51,14 +68,12 @@ function savePreferences(preferences) {
     }
 }
 
-// Utility function to ensure the directory exists
 const createDirectoryIfNeeded = (dirPath) => {
     if (!fs.existsSync(dirPath)) {
         fs.mkdirSync(dirPath, { recursive: true });
     }
 };
 
-// The function to download and save the image
 const downloadAndSaveImage = async (imgSrc, platform, gameName) => {
     const saveDir = path.join(app.getPath('userData'), 'covers', platform);  // Store images in userData/covers/platform
     const savePath = path.join(saveDir, `${gameName}.jpg`);
@@ -85,6 +100,7 @@ const downloadAndSaveImage = async (imgSrc, platform, gameName) => {
     }
 };
 
+let mainWindow;
 
 function createWindows() {
   // Create the main window
@@ -168,6 +184,8 @@ ipcMain.on('fetch-images', (event, gameName) => {
 //     });
 // });
 
+
+let childProcesses = new Map();
 
 ipcMain.on('run-command', (event, command) => {
     const child = spawn(command, {
@@ -299,64 +317,3 @@ app.whenReady().then(() => {
         childProcesses.clear();
     });
 });
-
-// // npm install gamepad
-// import gamepad from 'gamepad';
-
-// // Initialize the gamepad system
-// gamepad.init();
-
-// // Set up gamepad detection
-// setInterval(gamepad.processEvents, 16);
-// setInterval(gamepad.detectDevices, 500);
-
-// // Store controller state
-// let controllerState = {};
-
-// // Listen for button events
-// gamepad.on('move', (id, axis, value) => {
-//     if (Math.abs(value) > 0.5) { // Deadzone threshold
-//         controllerState[axis] = value;
-//     }
-// });
-
-// gamepad.on('down', (id, button) => {
-//     controllerState[button] = true;
-
-//     // Example: Kill emulator on Start+Select press
-//     if (controllerState[9] && controllerState[8]) { // Adjust button numbers for your controller
-//         killAllProcesses();
-//     }
-// });
-
-// gamepad.on('up', (id, button) => {
-//     controllerState[button] = false;
-// });
-
-// function killAllProcesses() {
-//     // Use your existing kill logic
-//     childProcesses.forEach((child, pid) => {
-//         try {
-//             if (process.platform === 'win32') {
-//                 spawn('taskkill', ['/pid', pid, '/f', '/t']);
-//             } else {
-//                 process.kill(-pid, 'SIGKILL');
-//             }
-//         } catch (err) {
-//             console.error(`Failed to kill PID ${pid}:`, err);
-//         }
-//     });
-//     childProcesses.clear();
-// }
-
-// // Other option
-// import iohook from 'iohook';
-
-// iohook.on('keypress', (event) => {
-//     if (event.keycode === YOUR_CONTROLLER_MAPPED_KEY) {
-//         killAllProcesses();
-//     }
-// });
-
-// iohook.start();
-

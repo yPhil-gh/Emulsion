@@ -1,59 +1,19 @@
-import HID from 'node-hid';
+import gamecontroller from "sdl2-gamecontroller";
 
-// 🔹 1️⃣ List Available Gamepads
-const gamepads = HID.devices().filter(d => d.usagePage === 1 && d.usage === 5);
+gamecontroller.on("error", (data) => console.log("error", data));
+gamecontroller.on("warning", (data) => console.log("warning", data));
+// gamecontroller.on("a:down", (data) => console.log("Hello Cross button world"));
+gamecontroller.on("back:down", (data) => console.log("Hello Back button!"));
 
-if (gamepads.length === 0) {
-    console.log("No gamepads found!");
-    process.exit(1);
-}
+gamecontroller.on("sdl-init", (data) => {
+    console.log("SDL2 Initialized!");
+});
 
-// Pick the first gamepad found
-const { vendorId, productId } = gamepads[0];
-console.log(`Found gamepad: VID=${vendorId}, PID=${productId}`);
+gamecontroller.on("controller-device-added", (data) => {
+    console.log("controller connected", data);
+    gamecontroller.setLeds(0x0f, 0x62, 0xfe, data.player);
+});
 
-// 🔹 2️⃣ Create Gamepad Class
-class Gamepad {
-    constructor(vid, pid) {
-        this.device = new HID.HID(vid, pid);
-        this.prevState = new Array(16).fill(0); // Store previous button states
-    }
-
-    onInput(callback) {
-        this.device.on('data', data => {
-            const buttons = Array.from(data.subarray(0, 16)); // First 16 bytes (buttons)
-            const axes = new DataView(data.buffer).getFloat32(16, true);
-
-            let buttonEvents = [];
-
-            // 🔹 Detect Press & Release Events
-            buttons.forEach((state, i) => {
-                if (state === 1 && this.prevState[i] === 0) {
-                    buttonEvents.push({ type: "pressed", button: `B${i}` });
-                } else if (state === 0 && this.prevState[i] === 1) {
-                    buttonEvents.push({ type: "released", button: `B${i}` });
-                }
-            });
-
-            // 🔹 Update State
-            this.prevState = buttons;
-
-            if (buttonEvents.length > 0) {
-                callback({ buttonEvents, axes });
-            }
-        });
-
-        this.device.on('error', err => {
-            console.error("Gamepad disconnected:", err);
-        });
-    }
-}
-
-// 🔹 3️⃣ Create Gamepad Instance & Log Button Presses
-const gamepad = new Gamepad(vendorId, productId);
-
-gamepad.onInput(({ buttonEvents, axes }) => {
-    buttonEvents.forEach(event => {
-        console.log(`Button ${event.button} was ${event.type}`);
-    });
+gamecontroller.on("controller-button-down", (data) => {
+    console.log("button pressed", data);
 });

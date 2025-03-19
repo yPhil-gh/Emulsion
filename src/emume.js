@@ -832,7 +832,7 @@ function drawParticles() {
 
 const cubeAnimation = {
     progress: 0,    // 0-1 (0 = left, 1 = final position)
-    speed: 0.02,     // Animation speed (adjust as needed)
+    speed: 0.002,     // Animation speed (adjust as needed)
     isAnimating: true
 };
 
@@ -845,8 +845,8 @@ function drawCube() {
     const scale = 1.0;
 
     // E element animation (left to right)
-    const startXE = -500;
-    const finalXE = width/2 - 120;
+    const startXE = -150;
+    const finalXE = width/2 - 110;
     const currentXE = lerp(startXE, finalXE, easeOutQuad(cubeAnimation.progress));
     const yE = 16;
 
@@ -854,9 +854,15 @@ function drawCube() {
     const startYM = -350;
     const finalYM = -32;
     const currentYM = lerp(startYM, finalYM, easeOutQuad(cubeAnimation.progress));
-    const xM = width/2 - 128;
+    const xM = width/2 - 118;
 
-    // Draw E with original colors
+    // U element animation (left to right)
+    const startXU = width;
+    const finalXU = width/2 - 118;
+    const currentXU = lerp(startXU, finalXU, easeOutQuad(cubeAnimation.progress));
+    const yU = -32;
+
+    // E
     ctx.save();
     ctx.translate(currentXE, yE);
     ctx.scale(scale, scale);
@@ -873,7 +879,7 @@ function drawCube() {
     });
     ctx.restore();
 
-    // Draw M with original colors
+    // M
     ctx.save();
     ctx.translate(xM, currentYM);
     ctx.scale(scale, scale);
@@ -889,6 +895,24 @@ function drawCube() {
         ctx.fill(path);
     });
     ctx.restore();
+
+    // U
+    ctx.save();
+    ctx.translate(currentXU, yU);
+    ctx.scale(scale, scale);
+    ['U1', 'U2', 'U3', 'U4', 'U5'].forEach(id => {
+        const pathElement = document.getElementById(id);
+        const path = new Path2D(pathElement.getAttribute('d'));
+
+        // Get original fill color from SVG element
+        const style = pathElement.getAttribute('style');
+        const fillColor = style.match(/fill:#([a-f0-9]{6}|[a-f0-9]{3})/i)[0];
+
+        ctx.fillStyle = fillColor.split(':')[1];
+        ctx.fill(path);
+    });
+    ctx.restore();
+
 }
 
 function lerp(start, end, t) {

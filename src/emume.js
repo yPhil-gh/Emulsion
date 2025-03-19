@@ -1,5 +1,5 @@
 // Vars -----------------------------
-const globalSpeed = 0.4; // Pixels per frame
+const globalSpeed = 0.04; // Pixels per frame
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -191,19 +191,24 @@ setInterval(() => {
 let isPlaying = false;
 
 async function toggleAudio() {
-  if (isPlaying) {
-    await audioContext.suspend();
-  } else {
-    await audioContext.resume();
-  }
-  isPlaying = !isPlaying;
+    const audioControlIcon = document.getElementById('audio-control-icon');
+
+    if (isPlaying) {
+        await audioContext.suspend();
+        audioControlIcon.classList.add('fa-volume-mute');
+        audioControlIcon.classList.remove('fa-volume-up');
+    } else {
+        await audioContext.resume();
+        audioControlIcon.classList.remove('fa-volume-mute');
+        audioControlIcon.classList.add('fa-volume-up');
+    }
+    isPlaying = !isPlaying;
 }
 
 audioContext.suspend();
 
 // Start the audio context on first user interaction
-document.addEventListener('click', toggleAudio);
-
+document.getElementById('audio-control').addEventListener('click', toggleAudio);
 
 // Scene -------------------------------
 
@@ -1068,6 +1073,27 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
 
+function playRandomPop() {
+    const randomIndex = getRandomInt(popSounds.length);
+    const audio = popSounds[randomIndex].cloneNode(true); // Clone the audio element
+
+    // Remove the element after playback ends
+    audio.addEventListener('ended', () => {
+        audio.remove();
+    });
+
+    audio.play(); // Play the clone
+}
+
+// function playCubeImpact() {
+//     const audio = document.getElementById('bass-drop');
+
+//     // Remove the element after playback ends
+//     audio.addEventListener('ended', () => {
+//         audio.remove();
+//     });
+// }
+
 function updateLogo() {
     const now = Date.now();
 
@@ -1076,12 +1102,10 @@ function updateLogo() {
     });
 
     // Sound triggers
-    if (hoveredLetter !== prevHoverState) {
+    if (cubeLettersGlueAnimationState === 'COMPLETED' && hoveredLetter !== prevHoverState) {
         if (hoveredLetter) {
-            popSounds[getRandomInt(4)].play();
+            playRandomPop();
             letterHoverStartTime = now;
-        } else {
-            // popSound.play();
         }
         prevHoverState = hoveredLetter;
     }
@@ -1231,39 +1255,44 @@ let isMuted = true;
 // startGroove();
 
 function toggleMute() {
+    const audioControlIcon = document.getElementById('audio-control-icon');
 
     if (!isPlaying) {
         audioContext.resume().then(() => {
             // startGroove();
             isPlaying = true;
+            audioControlIcon.classList.remove('fa-volume-mute');
+            audioControlIcon.classList.add('fa-volume-up');
         });
     } else {
         audioContext.suspend();
         isPlaying = false;
+        audioControlIcon.classList.add('fa-volume-mute');
+        audioControlIcon.classList.remove('fa-volume-up');
     }
 
     isMuted = !isMuted;
-    drawVolumeControl();
+    // drawVolumeControl();
 }
 
-function drawVolumeControl() {
-    const iconX = width - 50;
-    const iconY = height - 50;
-    const iconSize = 30;
+// function drawVolumeControl() {
+//     const iconX = width - 50;
+//     const iconY = height - 50;
+//     const iconSize = 30;
 
-    // Clear the area where the icon will be drawn
-    // ctx.clearRect(iconX - 10, iconY - 10, iconSize + 20, iconSize + 20);
+//     // Clear the area where the icon will be drawn
+//     // ctx.clearRect(iconX - 10, iconY - 10, iconSize + 20, iconSize + 20);
 
-    // Set the stroke style for the icon
-    ctx.strokeStyle = '#FFEEEE';
-    ctx.lineWidth = 2;
+//     // Set the stroke style for the icon
+//     ctx.strokeStyle = '#FFEEEE';
+//     ctx.lineWidth = 2;
 
-    if (isMuted) {
-        drawMutedIcon(ctx, iconX, iconY, iconSize);
-    } else {
-        drawUnmutedIcon(ctx, iconX, iconY, iconSize);
-    }
-}
+//     if (isMuted) {
+//         drawMutedIcon(ctx, iconX, iconY, iconSize);
+//     } else {
+//         drawUnmutedIcon(ctx, iconX, iconY, iconSize);
+//     }
+// }
 
 function init() {
     // Initialize the flock once
@@ -1274,6 +1303,7 @@ function init() {
 function updateCubeLettersGlueAlpha() {
     if (isCubeAnimEnded) {
         if (cubeLettersGlueAnimationState === 'INCREASING') {
+            document.getElementById('bass-drop').play();
             cubeLettersGlueAlpha += 0.09;
             if (cubeLettersGlueAlpha >= 1) {
                 cubeLettersGlueAlpha = 1; // Ensure it doesn't exceed 1
@@ -1358,7 +1388,7 @@ function draw() {
     ctx.fillRect(0, horizon, width, height - horizon);
     drawGrid();
     drawCredits();
-    drawVolumeControl();
+    // drawVolumeControl();
     drawCube();
 }
 
@@ -1402,7 +1432,7 @@ canvas.addEventListener('mousemove', (e) => {
 canvas.addEventListener('click', function(event) {
     const iconX = width - 50;
     const iconY = height - 50;
-    const iconSize = 30;
+    const iconSize = 10;
 
     // Get the bounding rectangle of the canvas
     const rect = canvas.getBoundingClientRect();

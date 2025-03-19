@@ -13,14 +13,25 @@
          canvas {
              display: block;
          }
+         #audio-control {
+             position: absolute;
+             bottom: 0;
+             right: 5px;
+             z-index:2;
+             color: #00FFFF;
+             cursor:pointer;
+         }
         </style>
+        <link rel="stylesheet" href="../font/Fork-Awesome-1.2.0/css/fork-awesome.css">
     </head>
     <body>
-        <audio class="sound-pop" src="./sounds/glass-break-0.ogg"></audio>
+        <audio class="sound-pop" id="sound-test" src="./sounds/glass-break-0.ogg"></audio>
         <audio class="sound-pop" src="./sounds/glass-break-1.ogg"></audio>
         <audio class="sound-pop" src="./sounds/glass-break-2.ogg"></audio>
         <audio class="sound-pop" src="./sounds/glass-break-3.ogg"></audio>
         <audio class="sound-pop" src="./sounds/glass-break-4.ogg"></audio>
+        <audio class="sound-pop" src="./sounds/complete.oga"></audio>
+        <audio id="bass-drop" src="./sounds/bass-drop.ogg"></audio>
 
         <audio id="pop" src="pop.oga"></audio>
 
@@ -161,6 +172,9 @@
         </svg>
 
         <canvas id="canvas"></canvas>
-        <script src="emume.js"></script>
+        <div id="audio-control">
+            <i id="audio-control-icon" class="fa fa-volume-mute" aria-hidden="true"></i>
+        </div>
+        <!-- <script src="emume.js"></script> -->
     </body>
 </html>

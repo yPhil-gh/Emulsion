@@ -843,27 +843,51 @@ function startCubeAnimation() {
 
 function drawCube() {
     const scale = 1.0;
-    const finalX = width/2 - 140; // Final X position
-    const finalY = 16;            // Final Y position
 
-    // Starting position (off-screen left)
-    const startX = -500;          // Start 500px left of screen
-    const startY = finalY;
+    // E element animation (left to right)
+    const finalXE = width/2 - 140;
+    const finalYE = 16;
+    const startXE = -500;
+    const currentXE = lerp(startXE, finalXE, easeOutQuad(cubeAnimation.progress));
 
-    // Calculate current position with easing
-    const currentX = lerp(startX, finalX, easeOutQuad(cubeAnimation.progress));
-    const currentY = finalY; // Keep Y fixed if you only want horizontal movement
+    // M element animation (top to bottom)
+    const finalYM = 116;
+    const startYM = -200;
+    const currentYM = lerp(startYM, finalYM, easeOutQuad(cubeAnimation.progress));
+    const xM = width/2 - 70;
 
+    // Draw E with original colors
     ctx.save();
-    ctx.translate(currentX, currentY);
+    ctx.translate(currentXE, finalYE);
     ctx.scale(scale, scale);
-
     ['E1', 'E2', 'E3', 'E4', 'E5', 'E6'].forEach(id => {
-        ctx.fillStyle = '#0000FF';
-        const path = new Path2D(document.getElementById(id).getAttribute('d'));
+        const pathElement = document.getElementById(id);
+        const path = new Path2D(pathElement.getAttribute('d'));
+
+        // Get original fill color from SVG element
+        const style = pathElement.getAttribute('style');
+        const fillColor = style.match(/fill:#([a-f0-9]{6}|[a-f0-9]{3})/i)[0];
+
+        ctx.fillStyle = fillColor.split(':')[1];
         ctx.fill(path);
     });
+    ctx.restore();
 
+    // Draw M with original colors
+    ctx.save();
+    ctx.translate(xM, currentYM);
+    ctx.scale(scale, scale);
+    ['M1', 'M2', 'M3'].forEach(id => { // Add M4,M5,M6 if needed
+        const pathElement = document.getElementById(id);
+        const path = new Path2D(pathElement.getAttribute('d'));
+
+        // Get original fill color from SVG element
+        const style = pathElement.getAttribute('style');
+        const fillColor = style.match(/fill:#([a-f0-9]{6}|[a-f0-9]{3})/i)[0];
+
+        ctx.fillStyle = fillColor.split(':')[1];
+        ctx.fill(path);
+    });
     ctx.restore();
 }
 

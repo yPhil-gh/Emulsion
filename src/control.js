@@ -411,33 +411,33 @@ function initGallery(currentIndex, disabledPlatform) {
 
                         const platformText = document.getElementById('platform-text-div');
 
-                        if (platformToggle) {
-                            platformToggle.addEventListener('click', (event) => {
-                                console.log("event: ", event);
+                        // if (platformToggle) {
+                        //     platformToggle.addEventListener('click', (event) => {
+                        //         console.log("event: ", event);
 
-                                const gamesDir = gamesDirInput.value;
-                                const emulator = emulatorInput.value;
+                        //         const gamesDir = gamesDirInput.value;
+                        //         const emulator = emulatorInput.value;
 
-                                // Your condition to prevent checking
-                                const shouldPreventCheck = !gamesDir || !emulator;
+                        //         // Your condition to prevent checking
+                        //         const shouldPreventCheck = !gamesDir || !emulator;
 
-                                console.log("shouldPreventCheck: ", shouldPreventCheck);
+                        //         console.log("shouldPreventCheck: ", shouldPreventCheck);
 
-                                if (shouldPreventCheck) {
-                                    event.preventDefault(); // Prevent the checkbox from changing state
-                                    console.log("Checkbox state change prevented.");
-                                    platformText.textContent = 'Please provide both a games directory and an emulator and an emulator and an emulator.';
-                                } else {
-                                    // Allow the checkbox to change state
-                                    // Update the label text after the state changes
-                                    platformToggle.addEventListener('change', () => {
-                                        // document.getElementById('form-status-label').textContent = platformToggle.checked ? "Enabled" : "Disabled";
-                                        document.getElementById('form-status-label-platform-status').textContent = platformToggle.checked ? 'On' : 'Off';
+                        //         if (shouldPreventCheck) {
+                        //             event.preventDefault(); // Prevent the checkbox from changing state
+                        //             console.log("Checkbox state change prevented.");
+                        //             platformText.textContent = 'Please provide both a games directory and an emulator and an emulator and an emulator.';
+                        //         } else {
+                        //             // Allow the checkbox to change state
+                        //             // Update the label text after the state changes
+                        //             platformToggle.addEventListener('change', () => {
+                        //                 // document.getElementById('form-status-label').textContent = platformToggle.checked ? "Enabled" : "Disabled";
+                        //                 document.getElementById('form-status-label-platform-status').textContent = platformToggle.checked ? 'On' : 'Off';
 
-                                    });
-                                }
-                            });
-                        }
+                        //             });
+                        //         }
+                        //     });
+                        // }
 
 
                     } else {

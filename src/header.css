@@ -2,7 +2,6 @@ header {
   top: 0;
   display: none;
   justify-content: space-between;
-  border-bottom: 1px solid var(--color-bg1);
   height: 101px;
   z-index: 12;
 }

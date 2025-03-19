@@ -3,7 +3,7 @@
   width: 100%;
   position: fixed;
   left: 0;
-  background-color: var(--color-bg2);
+  background-color: var(--color-bg1);
   color: white;
   /* align-items: center; */
   justify-content: center;
@@ -21,7 +21,6 @@
   overflow: hidden;
   bottom: 100px;
   /* transition: height 0.3s ease; */
-  /* border-top: 15px solid var(--footer-bg-color); */
 }
 
 #form-container {

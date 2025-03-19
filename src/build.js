@@ -3,6 +3,8 @@ async function buildGameMenu(gameName, image) {
         const gameMenuContainer = document.createElement('div');
         gameMenuContainer.classList.add('page-content');
 
+        gameMenuContainer.style.gridTemplateColumns = `repeat(${LB.galleryNumOfCols}, 1fr)`;
+
         const currentImageContainer = document.createElement('div');
         currentImageContainer.classList.add('menu-game-container', 'current-image');
         currentImageContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
@@ -318,8 +320,8 @@ function buildPlatformForm(platformName) {
   //    </div>
   //   </div>
 
-    const platformMenuContainer = document.createElement('div');
-    platformMenuContainer.classList.add('platform-menu-container', 'theme-light');
+    const formContainer = document.createElement('div');
+    formContainer.classList.add('platform-menu-container');
 
     const platformMenuImageCtn = document.createElement('div');
     platformMenuImageCtn.classList.add('platform-menu-image-ctn');
@@ -333,6 +335,25 @@ function buildPlatformForm(platformName) {
     statusCheckBox.type = 'checkbox';
     statusCheckBox.id = 'input-platform-toggle-checkbox';
     statusCheckBox.classList.add('is-medium');
+
+
+    statusCheckBox.addEventListener('change', (event) => {
+        console.log("event: ", event);
+        const gamesDir = gamesDirInput.value;
+        const emulator = emulatorInput.value;
+        const isNotEnablable = !gamesDir || !emulator;
+
+        if (isNotEnablable) {
+            event.preventDefault(); // Prevent the default behavior
+            statusCheckBox.checked = !statusCheckBox.checked; // Revert the checkbox state
+            console.log("Checkbox state change prevented.");
+            platformText.textContent = 'Please provide both a games directory and an emulator.';
+        } else {
+            // Update the label text after the state changes
+            document.getElementById('form-status-label-platform-status').textContent = statusCheckBox.checked ? 'On' : 'Off';
+        }
+    });
+
 
     const statusLabel = document.createElement('label');
     statusLabel.classList.add('checkbox');
@@ -348,6 +369,12 @@ function buildPlatformForm(platformName) {
     statusLabel.appendChild(statusCheckBox);
     statusLabel.appendChild(statusLabelPlatormName);
     statusLabel.appendChild(statusLabelPlatormStatus);
+
+    // Row 2: Details text
+    const platformText = document.createElement('div');
+    platformText.classList.add('box');
+    platformText.id = 'platform-text-div';
+    platformText.textContent = 'plop';
 
     const gamesDirField = document.createElement('div');
     gamesDirField.classList.add('field', 'has-addons', 'is-expanded');
@@ -412,19 +439,104 @@ function buildPlatformForm(platformName) {
     cancelButton.classList.add('is-info', 'button', 'is-medium');
     cancelButton.textContent = 'Cancel';
 
-    platformMenuContainer.appendChild(platformMenuImageCtn);
-    platformMenuContainer.appendChild(statusLabel);
-    platformMenuContainer.appendChild(gamesDirField);
-    platformMenuContainer.appendChild(emulatorField);
-    platformMenuContainer.appendChild(emulatorArgsInput);
-    platformMenuContainer.appendChild(cancelButton);
+    LB.prefs.getValue(platformName, 'gamesDir')
+        .then((value) => {
+            gamesDirInput.value = value;
+        })
+        .catch((error) => {
+            console.error('Failed to get platform preference:', error);
+        });
 
-    const platformMenuContainerButtons = document.createElement('div');
-    platformMenuContainerButtons.className = 'form-buttons';
-    platformMenuContainerButtons.appendChild(cancelButton);
-    platformMenuContainerButtons.appendChild(saveButton);
+    LB.prefs.getValue(platformName, 'emulator')
+        .then((value) => {
+            emulatorInput.value = value;
+        })
+        .catch((error) => {
+            console.error('Failed to get platform preference:', error);
+        });
 
-    platformMenuContainer.appendChild(platformMenuContainerButtons);
+    LB.prefs.getValue(platformName, 'emulatorArgs')
+        .then((value) => {
+            emulatorArgsInput.value = value;
+        })
+        .catch((error) => {
+            console.error('Failed to get platform preference:', error);
+        });
+
+
+    gamesDirButton.addEventListener('click', _gamesDirButtonClick);
+    emulatorButton.addEventListener('click', _emulatorButtonClick);
+
+    async function _gamesDirButtonClick(event) {
+        event.stopPropagation();
+        const selectedPath = await ipcRenderer.invoke('select-file-or-directory', 'openDirectory');
+        if (selectedPath) {
+            gamesDirInput.value = selectedPath;
+        }
+    }
+
+    async function _emulatorButtonClick(event) {
+        event.stopPropagation();
+        const selectedPath = await ipcRenderer.invoke('select-file-or-directory', 'openFile');
+        if (selectedPath) {
+            emulatorInput.value = selectedPath;
+        }
+    }
+
+    formContainer.appendChild(platformMenuImageCtn);
+    formContainer.appendChild(statusLabel);
+    formContainer.appendChild(platformText);
+    formContainer.appendChild(gamesDirField);
+    formContainer.appendChild(emulatorField);
+    formContainer.appendChild(emulatorArgsInput);
+    formContainer.appendChild(cancelButton);
+
+    const formContainerButtons = document.createElement('div');
+    formContainerButtons.className = 'form-buttons';
+    formContainerButtons.appendChild(cancelButton);
+    formContainerButtons.appendChild(saveButton);
+
+    LB.prefs.getValue(platformName, 'isEnabled')
+        .then((value) => {
+            console.log("value!", value);
+            statusCheckBox.checked = value;
+            statusLabelPlatormStatus.textContent = value ? 'On' : 'Off';
+        })
+        .catch((error) => {
+            console.error('Failed to get platform preference:', error);
+        });
+
+
+    cancelButton.addEventListener('click', _cancelButtonClick);
+    saveButton.addEventListener('click', _saveButtonClick);
+
+
+    function _cancelButtonClick(event) {
+
+        const escapeKeyEvent = new KeyboardEvent('keydown', {
+            key: 'Escape',
+            keyCode: 27,
+            code: 'Escape', // The physical key on the keyboard
+            which: 27,     // Same as keyCode
+            bubbles: true
+        });
+
+        document.dispatchEvent(escapeKeyEvent);
+    }
+
+    async function _saveButtonClick(event) {
+
+        try {
+            await LB.prefs.save(platformName, 'isEnabled', statusCheckBox.checked);
+            await LB.prefs.save(platformName, 'gamesDir', gamesDirInput.value);
+            await LB.prefs.save(platformName, 'emulator', emulatorInput.value);
+            await LB.prefs.save(platformName, 'emulatorArgs', emulatorArgsInput.value);
+        } catch (error) {
+            console.error('Failed to save preferences:', error);
+        }
+    }
+
+    formContainer.appendChild(formContainerButtons);
 
     // OLD
 
@@ -580,7 +692,7 @@ function buildPlatformForm(platformName) {
     //     document.getElementById('form-status-label').textContent = event.target.checked ? "Disabled" : "Enabled";
     // });
 
-    return platformMenuContainer;
+    return formContainer;
 }
 
 LB.build = {

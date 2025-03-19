@@ -111,18 +111,3 @@ input[type="checkbox"] {
 /*     transition: none; */
 /*   } */
 /* } */
-
-#platform-text-div {
-  background-color: white;
-  color: black;
-  border-radius: 5px;
-  padding: 0.2em;
-  font-size: 12pt;
-
-  text-wrap: wrap;
-  height: 50px;
-}
-
-th, td {
-  padding-bottom: 1em;
-}

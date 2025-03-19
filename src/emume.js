@@ -1,4 +1,78 @@
-// Music
+// Vars -----------------------------
+const globalSpeed = 0.4; // Pixels per frame
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let width = canvas.width = window.innerWidth;
+let height = canvas.height = window.innerHeight;
+let horizon = height * 2 / 3;
+let isNight = false;
+let mouseX = 0, mouseY = 0;
+
+const letters = {
+    e1: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
+    m1: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
+    m2: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
+    e2: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
+    u: { color: 'rgb(255, 165, 0)', rgbValues: '255, 165, 0', bounds: null, particles: [] }
+};
+
+const popSounds = Array.from(document.querySelectorAll('.sound-pop'));
+
+const electricColors = [
+    "#00FFFF", // Cyan
+    "#FF00FF", // Magenta
+    "#00FF00", // Lime
+    "#FF007F", // Bright Pink
+    "#7F00FF", // Electric Purple
+    "#FFAA00", // Electric Orange
+    "#00FF7F", // Spring Green
+    "#FF007F"  // Hot Pink
+];
+
+let randomColor = electricColors[Math.floor(Math.random() * electricColors.length)];
+
+const sunSpeed = globalSpeed;
+const sunBaseRadius = 120;
+const sunGlowScale = 6;
+let sunYOffset = 0;
+const maxSunTravel = height - horizon + 250;
+const nightOffset = 400;
+
+const moonSpeed = 0.008;
+const moonAmplitude = 0.2; // Vertical movement
+let moonX = width - 160;
+let moonFloatPhase = 0;
+let moonAlpha = 0;
+
+let starsMoveLeft = false;
+
+// Logo conf
+let logoChars = [];
+const logoInitialY = horizon - 18; // Just below horizon
+const logoFinalY = 250;
+let logoSpeed = 0; // Current rise speed
+let logoY = logoInitialY; // below screen
+let letterHoverStartTime = 0;
+let prevHoverState = null;
+let hoveredLetter = null;
+
+let particles = [];
+const particlesBaseY = logoFinalY;
+const particlesLength = 50;
+const particlesFadeOutDelay = 5;
+const particlesSpinSpeed = 0.05;
+const ufoFrequency = 120000; // 2 minutes
+
+// Cube logo
+const cubeSpeed = sunSpeed / 500;
+let cubeLettersGlueAnimationState = 'INCREASING';
+
+// Birds
+
+let flock;
+
+// Music -----------------------------
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
 // Create main output gain node
@@ -129,73 +203,9 @@ audioContext.suspend();
 
 // Start the audio context on first user interaction
 document.addEventListener('click', toggleAudio);
-// Scene
 
 
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-let width = canvas.width = window.innerWidth;
-let height = canvas.height = window.innerHeight;
-let horizon = height * 2 / 3;
-let isNight = false;
-let mouseX = 0, mouseY = 0;
-
-const letters = {
-    e1: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
-    m1: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
-    m2: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
-    e2: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
-    u: { color: 'rgb(255, 165, 0)', rgbValues: '255, 165, 0', bounds: null, particles: [] }
-};
-
-const popSounds = Array.from(document.querySelectorAll('.sound-pop'));
-
-const electricColors = [
-    "#00FFFF", // Cyan
-    "#FF00FF", // Magenta
-    "#00FF00", // Lime
-    "#FF007F", // Bright Pink
-    "#7F00FF", // Electric Purple
-    "#FFAA00", // Electric Orange
-    "#00FF7F", // Spring Green
-    "#FF007F"  // Hot Pink
-];
-
-let randomColor = electricColors[Math.floor(Math.random() * electricColors.length)];
-
-const sunSpeed = 0.04; // Pixels per frame
-
-const sunBaseRadius = 120;
-const sunGlowScale = 6;
-let sunYOffset = 0;
-
-const maxSunTravel = height - horizon + 250;
-const nightOffset = 400;
-
-const moonSpeed = 0.008;
-const moonAmplitude = 0.2; // Vertical movement
-let moonX = width - 160;
-let moonFloatPhase = 0;
-let moonAlpha = 0;
-
-let starsMoveLeft = false;
-
-// Logo conf
-let logoChars = [];
-const logoInitialY = horizon - 18; // Just below horizon
-const logoFinalY = 250;
-let logoSpeed = 0; // Current rise speed
-let logoY = logoInitialY; // below screen
-let letterHoverStartTime = 0;
-let prevHoverState = null;
-let hoveredLetter = null;
-
-let particles = [];
-const particlesBaseY = logoFinalY;
-const particlesLength = 50;
-const particlesFadeOutDelay = 5;
-const particlesSpinSpeed = 0.05;
-const ufoFrequency = 120000; // 2 minutes
+// Scene -------------------------------
 
 class UFO {
     constructor(canvasWidth, canvasHeight) {
@@ -323,6 +333,7 @@ class UFO {
     }
 }
 
+let ufo = new UFO(canvas.width, canvas.height);
 
 // Geese
 class Goose {
@@ -832,7 +843,7 @@ function drawParticles() {
 
 const cubeAnimation = {
     progress: 0,    // 0-1 (0 = left, 1 = final position)
-    speed: 0.002,     // Animation speed (adjust as needed)
+    speed: cubeSpeed,     // Animation speed (adjust as needed)
     isAnimating: true
 };
 
@@ -841,12 +852,33 @@ function startCubeAnimation() {
     cubeAnimation.isAnimating = true;
 }
 
+let cubeLettersGlueAlpha = 0.0;
+let isCubeAnimEnded = false;
+
 function drawCube() {
     const scale = 1.0;
+    ctx.globalAlpha = moonAlpha;
+
+    // Define animation progress thresholds
+    const startAnimation = 0.0;
+    const endAnimation = 1.0;
+
+    // Check animation progress to trigger actions
+    if (cubeAnimation.progress <= startAnimation) {
+        // Actions before animation starts
+        console.log("Animation is about to start.");
+    } else if (cubeAnimation.progress > startAnimation && cubeAnimation.progress < endAnimation) {
+        // Actions during animation
+        console.log("Animation in progress.");
+    } else if (cubeAnimation.progress >= endAnimation) {
+        // Actions after animation ends
+        isCubeAnimEnded = true;
+        console.log("Animation has completed.");
+    }
 
     // E element animation (left to right)
     const startXE = -150;
-    const finalXE = width/2 - 110;
+    const finalXE = width / 2 - 110;
     const currentXE = lerp(startXE, finalXE, easeOutQuad(cubeAnimation.progress));
     const yE = 16;
 
@@ -854,15 +886,17 @@ function drawCube() {
     const startYM = -350;
     const finalYM = -32;
     const currentYM = lerp(startYM, finalYM, easeOutQuad(cubeAnimation.progress));
-    const xM = width/2 - 118;
+    const xM = width / 2 - 118;
 
     // U element animation (left to right)
     const startXU = width;
-    const finalXU = width/2 - 118;
+    const finalXU = width / 2 - 118;
     const currentXU = lerp(startXU, finalXU, easeOutQuad(cubeAnimation.progress));
     const yU = -32;
 
-    // E
+    let glueColor = 'rgba(255, 238, 238,' + cubeLettersGlueAlpha + ')';
+
+    // Draw 'E'
     ctx.save();
     ctx.translate(currentXE, yE);
     ctx.scale(scale, scale);
@@ -876,14 +910,18 @@ function drawCube() {
 
         ctx.fillStyle = fillColor.split(':')[1];
         ctx.fill(path);
+        if (isCubeAnimEnded) {
+            ctx.strokeStyle = glueColor;
+            ctx.stroke(path);
+        }
     });
     ctx.restore();
 
-    // M
+    // Draw 'M'
     ctx.save();
     ctx.translate(xM, currentYM);
     ctx.scale(scale, scale);
-    ['M1', 'M2', 'M3'].forEach(id => { // Add M4,M5,M6 if needed
+    ['M1', 'M2', 'M3'].forEach(id => { // Add M4, M5, M6 if needed
         const pathElement = document.getElementById(id);
         const path = new Path2D(pathElement.getAttribute('d'));
 
@@ -892,11 +930,16 @@ function drawCube() {
         const fillColor = style.match(/fill:#([a-f0-9]{6}|[a-f0-9]{3})/i)[0];
 
         ctx.fillStyle = fillColor.split(':')[1];
+        if (isCubeAnimEnded) {
+            ctx.strokeStyle = glueColor;
+            ctx.stroke(path);
+        }
+
         ctx.fill(path);
     });
     ctx.restore();
 
-    // U
+    // Draw 'U'
     ctx.save();
     ctx.translate(currentXU, yU);
     ctx.scale(scale, scale);
@@ -909,11 +952,18 @@ function drawCube() {
         const fillColor = style.match(/fill:#([a-f0-9]{6}|[a-f0-9]{3})/i)[0];
 
         ctx.fillStyle = fillColor.split(':')[1];
+        if (isCubeAnimEnded) {
+            ctx.strokeStyle = glueColor;
+            ctx.stroke(path);
+        }
+        ctx.fill(path);
         ctx.fill(path);
     });
     ctx.restore();
 
+    ctx.globalAlpha = 1;
 }
+
 
 function lerp(start, end, t) {
     return start * (1 - t) + end * t;
@@ -1215,16 +1265,31 @@ function drawVolumeControl() {
     }
 }
 
-let flock;
-
 function init() {
     // Initialize the flock once
     flock = initFlock(width, height);
     preloadCubeLogo();
 }
 
-
-let ufo = new UFO(canvas.width, canvas.height);
+function updateCubeLettersGlueAlpha() {
+    if (isCubeAnimEnded) {
+        if (cubeLettersGlueAnimationState === 'INCREASING') {
+            cubeLettersGlueAlpha += 0.09;
+            if (cubeLettersGlueAlpha >= 1) {
+                cubeLettersGlueAlpha = 1; // Ensure it doesn't exceed 1
+                cubeLettersGlueAnimationState = 'DECREASING'; // Switch to decreasing
+            }
+        } else if (cubeLettersGlueAnimationState === 'DECREASING') {
+            cubeLettersGlueAlpha -= 0.03;
+            if (cubeLettersGlueAlpha <= 0) {
+                cubeLettersGlueAlpha = 0; // Ensure it doesn't go below 0
+                cubeLettersGlueAnimationState = 'COMPLETED'; // Mark the animation as completed
+            }
+        }
+    }
+    // Ensure cubeLettersGlueAlpha remains within [0, 1]
+    cubeLettersGlueAlpha = Math.max(0, Math.min(cubeLettersGlueAlpha, 1));
+}
 
 function update() {
     gridOffset += gridSpeed;
@@ -1246,6 +1311,8 @@ function update() {
     if (isNight && moonAlpha < 1) {
         moonAlpha += 0.001; // Increase opacity gradually
     }
+
+    updateCubeLettersGlueAlpha();
 }
 
 function draw() {

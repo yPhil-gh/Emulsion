@@ -1,5 +1,6 @@
 /* Form container */
-#platform-form {
+#platform-form,
+.platform-menu-container {
   /* padding: 20px; */
   margin-top: 1em;
 
@@ -26,33 +27,31 @@
   min-width: 100px; /* Ensure labels align nicely */
 }
 
-/* Input fields */
-#platform-form input[type="text"] {
-  flex: 1;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
+/* /\* Input fields *\/ */
+/* #platform-form input[type="text"] { */
+/*   flex: 1; */
+/*   padding: 8px; */
+/*   border: 1px solid #ccc; */
+/*   border-radius: 4px; */
+/*   font-size: 14px; */
+/* } */
+
+.form-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: var(--bulma-block-spacing);
+
+  margin-top: 1em;
+}
+
+.platform-menu-image-ctn {
+  text-align: center;
 }
 
 /* Buttons */
 button {
-  padding: 8px 12px;
   font-family: var(--font-main);
-
-  font-weight: bold;
-  font-size: 16pt;
-
-  color: black;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
-}
-
-#platform-form .button:hover {
-  background-color: #0056b3;
+  width: 100%;
 }
 
 /* Details text div */
@@ -65,36 +64,18 @@ button {
   color: #333;
 }
 
-td.col1 {
-  /* width: 400px; */
-  /* padding-right: 2em; */
+label {
+  display: flex !important;
+  flex-direction: row;
 }
 
-td.col2 {
-  width: 100%;
-}
-
-/* td.col3 { */
-/*   width: 300px; */
-/* } */
-
-input, button {
-  width: 100%;
+#form-status-label-platform-name {
+  margin-left: var(--bulma-block-spacing);
 }
 
 input[type="checkbox"] {
   height: 30px;
   width: 30px;
-}
-
-.form-checkbox-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.form-status-label {
-  /* margin-left: 0.5em; */
 }
 
 /* input:focus, */
@@ -140,4 +121,8 @@ input[type="checkbox"] {
 
   text-wrap: wrap;
   height: 50px;
+}
+
+th, td {
+  padding-bottom: 1em;
 }

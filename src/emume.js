@@ -1,5 +1,5 @@
 // Vars -----------------------------
-const globalSpeed = 0.04; // Pixels per frame
+const globalSpeed = 0.4; // Pixels per frame
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');

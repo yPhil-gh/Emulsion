@@ -307,18 +307,137 @@ function buildPlatformForm(platformName) {
         return buildPrefsForm();
     }
 
+   //  <div class="field has-addons">
+  //    <div class="control">
+  //    <input class="input" type="text" placeholder="Find a repository">
+  //   </div>
+  //   <div class="control">
+  //     <button class="button is-info">
+  //      Search
+  //     </button>
+  //    </div>
+  //   </div>
+
+    const platformMenuContainer = document.createElement('div');
+    platformMenuContainer.classList.add('platform-menu-container', 'theme-light');
+
+    const platformMenuImageCtn = document.createElement('div');
+    platformMenuImageCtn.classList.add('platform-menu-image-ctn');
+    const platformMenuImage = document.createElement('img');
+    platformMenuImage.src = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
+    platformMenuImage.width = '250';
+
+    platformMenuImageCtn.appendChild(platformMenuImage);
+
+    const statusCheckBox = document.createElement('input');
+    statusCheckBox.type = 'checkbox';
+    statusCheckBox.id = 'input-platform-toggle-checkbox';
+    statusCheckBox.classList.add('is-medium');
+
+    const statusLabel = document.createElement('label');
+    statusLabel.classList.add('checkbox');
+    statusLabel.id = 'form-status-label';
+
+    const statusLabelPlatormName = document.createElement('span');
+    statusLabelPlatormName.id = 'form-status-label-platform-name';
+    statusLabelPlatormName.textContent = `${platformName} is `;
+
+    const statusLabelPlatormStatus = document.createElement('span');
+    statusLabelPlatormStatus.id = 'form-status-label-platform-status';
+
+    statusLabel.appendChild(statusCheckBox);
+    statusLabel.appendChild(statusLabelPlatormName);
+    statusLabel.appendChild(statusLabelPlatormStatus);
+
+    const gamesDirField = document.createElement('div');
+    gamesDirField.classList.add('field', 'has-addons', 'is-expanded');
+    const gamesDirInputControl = document.createElement('div');
+    gamesDirInputControl.classList.add('control', 'is-expanded');
+    const gamesDirInput = document.createElement('input');
+    gamesDirInput.type = 'text';
+    gamesDirInput.classList.add('input', 'is-medium');
+    gamesDirInput.placeholder = 'Your games directory';
+
+    const gamesDirButtonControl = document.createElement('div');
+    gamesDirButtonControl.classList.add('control');
+    gamesDirButtonControl.type = 'text';
+    const gamesDirButton = document.createElement('button', 'is-info');
+    gamesDirButton.classList.add('button', 'is-medium');
+    gamesDirButton.textContent = 'Browse';
+
+    gamesDirInputControl.appendChild(gamesDirInput);
+    gamesDirButtonControl.appendChild(gamesDirButton);
+    gamesDirField.appendChild(gamesDirInputControl);
+    gamesDirField.appendChild(gamesDirButtonControl);
+
+    const emulatorField = document.createElement('div');
+    emulatorField.classList.add('field', 'has-addons', 'is-expanded');
+    const emulatorInputControl = document.createElement('div');
+    emulatorInputControl.classList.add('control', 'is-expanded');
+    const emulatorInput = document.createElement('input');
+    emulatorInput.type = 'text';
+    emulatorInput.classList.add('input', 'is-medium');
+    emulatorInput.placeholder = 'Your emulator';
+
+    const emulatorButtonControl = document.createElement('div');
+    emulatorButtonControl.classList.add('control');
+    const emulatorButton = document.createElement('button', 'is-info');
+    emulatorButtonControl.type = 'text';
+    emulatorButton.classList.add('button', 'is-medium');
+    emulatorButton.textContent = 'Browse';
+
+    emulatorInputControl.appendChild(emulatorInput);
+    emulatorButtonControl.appendChild(emulatorButton);
+    emulatorField.appendChild(emulatorInputControl);
+    emulatorField.appendChild(emulatorButtonControl);
+
+    const emulatorArgsDirField = document.createElement('div');
+    emulatorArgsDirField.classList.add('field');
+    const emulatorArgsInputControl = document.createElement('div');
+    emulatorArgsInputControl.classList.add('control');
+    const emulatorArgsInput = document.createElement('input', 'is-medium');
+    emulatorArgsInputControl.classList.add('input');
+    emulatorArgsInputControl.type = 'text';
+    emulatorArgsInputControl.placeholder = 'Your emulator args';
+    emulatorArgsInput.classList.add('input', 'is-medium');
+    emulatorArgsInput.placeholder = 'Your emulator arguments';
+
+    const saveButton = document.createElement('button');
+    saveButton.type = 'button';
+    saveButton.classList.add('button', 'is-success', 'is-medium');
+    saveButton.textContent = 'Save';
+
+    const cancelButton = document.createElement('button');
+    cancelButton.type = 'button';
+    cancelButton.classList.add('is-info', 'button', 'is-medium');
+    cancelButton.textContent = 'Cancel';
+
+    platformMenuContainer.appendChild(platformMenuImageCtn);
+    platformMenuContainer.appendChild(statusLabel);
+    platformMenuContainer.appendChild(gamesDirField);
+    platformMenuContainer.appendChild(emulatorField);
+    platformMenuContainer.appendChild(emulatorArgsInput);
+    platformMenuContainer.appendChild(cancelButton);
+
+    const platformMenuContainerButtons = document.createElement('div');
+    platformMenuContainerButtons.className = 'form-buttons';
+    platformMenuContainerButtons.appendChild(cancelButton);
+    platformMenuContainerButtons.appendChild(saveButton);
+
+    platformMenuContainer.appendChild(platformMenuContainerButtons);
+
+    // OLD
+
+
     const formTable = document.createElement('table');
 
     const form = document.createElement('form');
     form.id = 'platform-form';
     form.className = 'platform-form';
 
-    const menuImageContainer = document.createElement('div');
-    menuImageContainer.className = 'menu-image-container';
     const menuImage = document.createElement('img');
     menuImage.src = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
     menuImage.width = '250';
-    menuImageContainer.appendChild(menuImage);
 
     const row0 = document.createElement('tr');
     const row0td1 = document.createElement('td');
@@ -336,122 +455,122 @@ function buildPlatformForm(platformName) {
     const row1td2 = document.createElement('td');
     const row1td3 = document.createElement('td');
 
-    const statusCheckBox = document.createElement('input');
-    statusCheckBox.type = 'checkbox';
-    statusCheckBox.id = 'input-platform-toggle-checkbox';
+    // const statusCheckBox = document.createElement('input');
+    // statusCheckBox.type = 'checkbox';
+    // statusCheckBox.id = 'input-platform-toggle-checkbox';
 
-    const statusLabel = document.createElement('div');
-    statusLabel.id = 'form-status-label';
-    statusLabel.setAttribute('for', 'input-platform-toggle-checkbox');
+    // const statusLabel = document.createElement('div');
+    // statusLabel.id = 'form-status-label';
+    // statusLabel.setAttribute('for', 'input-platform-toggle-checkbox');
 
-    const statusLabelPlatormName = document.createElement('span');
-    statusLabelPlatormName.id = 'form-status-label-platform-name';
-    statusLabelPlatormName.textContent = `${platformName} is `;
+    // const statusLabelPlatormName = document.createElement('span');
+    // statusLabelPlatormName.id = 'form-status-label-platform-name';
+    // statusLabelPlatormName.textContent = `${platformName} is `;
 
-    const statusLabelPlatormStatus = document.createElement('span');
-    statusLabelPlatormStatus.id = 'form-status-label-platform-status';
+    // const statusLabelPlatormStatus = document.createElement('span');
+    // statusLabelPlatormStatus.id = 'form-status-label-platform-status';
 
-    statusLabel.appendChild(statusLabelPlatormName);
-    statusLabel.appendChild(statusLabelPlatormStatus);
+    // statusLabel.appendChild(statusLabelPlatormName);
+    // statusLabel.appendChild(statusLabelPlatormStatus);
 
-    row1td2.colSpan = 2;
-    row1td1.appendChild(statusCheckBox);
-    row1td2.appendChild(statusLabel);
+    // row1td2.colSpan = 2;
+    // row1td1.appendChild(statusCheckBox);
+    // row1td2.appendChild(statusLabel);
 
-    row1.appendChild(row1td1);
-    row1.appendChild(row1td2);
-    row1.appendChild(row1td3);
-    form.appendChild(row1);
+    // row1.appendChild(row1td1);
+    // row1.appendChild(row1td2);
+    // row1.appendChild(row1td3);
+    // form.appendChild(row1);
 
-    // Row 2: Details text
-    const row2 = document.createElement('tr');
-    const platformText = document.createElement('div');
-    const row2td1 = document.createElement('td');
-    row2td1.colSpan = 3;
-    platformText.id = 'platform-text-div';
-    platformText.textContent = 'plop';
-    row2td1.appendChild(platformText);
-    row2.appendChild(row2td1);
+    // // Row 2: Details text
+    // const row2 = document.createElement('tr');
+    // const platformText = document.createElement('div');
+    // const row2td1 = document.createElement('td');
+    // row2td1.colSpan = 3;
+    // platformText.id = 'platform-text-div';
+    // platformText.textContent = 'plop';
+    // row2td1.appendChild(platformText);
+    // row2.appendChild(row2td1);
 
-    formTable.appendChild(row0);
-    formTable.appendChild(row1);
-    formTable.appendChild(row2);
+    // formTable.appendChild(row0);
+    // formTable.appendChild(row1);
+    // formTable.appendChild(row2);
 
-    // Row 3: Games Directory
-    const gamesDirRow = createFormTableRow('Games', 'input-games-dir', `Select your ${LB.utils.capitalizeWord(platformName)} games directory path`, 'Browse', platformName);
-    formTable.appendChild(gamesDirRow);
+    // // Row 3: Games Directory
+    // const gamesDirRow = createFormTableRow('Games', 'input-games-dir', `Select your ${LB.utils.capitalizeWord(platformName)} games directory path`, 'Browse', platformName);
+    // formTable.appendChild(gamesDirRow);
 
-    // Row 4: Emulator
-    const emulatorRow = createFormTableRow('Emulator', 'input-emulator', `Select your ${LB.utils.capitalizeWord(platformName)} emulator (file path or name)`, 'Browse', platformName);
-    formTable.appendChild(emulatorRow);
+    // // Row 4: Emulator
+    // const emulatorRow = createFormTableRow('Emulator', 'input-emulator', `Select your ${LB.utils.capitalizeWord(platformName)} emulator (file path or name)`, 'Browse', platformName);
+    // formTable.appendChild(emulatorRow);
 
-    // Row 5: Emulator Args
-    const emulatorArgsRow = createFormTableRow('Args', 'input-emulator-args', `The arguments to your ${LB.utils.capitalizeWord(platformName)} emulator`, null, platformName, 2);
-    formTable.appendChild(emulatorArgsRow);
+    // // Row 5: Emulator Args
+    // const emulatorArgsRow = createFormTableRow('Args', 'input-emulator-args', `The arguments to your ${LB.utils.capitalizeWord(platformName)} emulator`, null, platformName, 2);
+    // formTable.appendChild(emulatorArgsRow);
 
-    const buttons = document.createElement('div');
-    buttons.className = 'buttons';
+    // const buttons = document.createElement('div');
+    // buttons.className = 'buttons';
 
-    const saveButton = document.createElement('button');
-    saveButton.type = 'button';
-    saveButton.className = 'button';
-    saveButton.classList.add('success');
-    saveButton.textContent = 'Save';
+    // // const saveButton = document.createElement('button');
+    // // saveButton.type = 'button';
+    // // saveButton.className = 'button';
+    // // saveButton.classList.add('success');
+    // // saveButton.textContent = 'Save';
 
-    const cancelButton = document.createElement('button');
-    cancelButton.type = 'button';
-    cancelButton.className = 'button';
-    cancelButton.classList.add('info');
-    cancelButton.textContent = 'Cancel';
+    // // const cancelButton = document.createElement('button');
+    // // cancelButton.type = 'button';
+    // // cancelButton.className = 'button';
+    // // cancelButton.classList.add('info');
+    // // cancelButton.textContent = 'Cancel';
 
-    buttons.appendChild(cancelButton);
-    buttons.appendChild(saveButton);
+    // // buttons.appendChild(cancelButton);
+    // // buttons.appendChild(saveButton);
 
-    function _formCancelButtonClick(event) {
+    // function _formCancelButtonClick(event) {
 
-        const escapeKeyEvent = new KeyboardEvent('keydown', {
-            key: 'Escape',
-            keyCode: 27,
-            code: 'Escape', // The physical key on the keyboard
-            which: 27,     // Same as keyCode
-            bubbles: true
-        });
+    //     const escapeKeyEvent = new KeyboardEvent('keydown', {
+    //         key: 'Escape',
+    //         keyCode: 27,
+    //         code: 'Escape', // The physical key on the keyboard
+    //         which: 27,     // Same as keyCode
+    //         bubbles: true
+    //     });
 
-        document.dispatchEvent(escapeKeyEvent);
-    }
+    //     document.dispatchEvent(escapeKeyEvent);
+    // }
 
-    async function _formSaveButtonClick(event) {
+    // async function _formSaveButtonClick(event) {
 
-        const isEnabled = document.getElementById('input-platform-toggle-checkbox').checked;
-        const gamesDir = document.getElementById('input-games-dir').value;
-        const emulator = document.getElementById('input-emulator').value;
-        const emulatorArgs = document.getElementById('input-emulator-args').value;
+    //     const isEnabled = document.getElementById('input-platform-toggle-checkbox').checked;
+    //     const gamesDir = document.getElementById('input-games-dir').value;
+    //     const emulator = document.getElementById('input-emulator').value;
+    //     const emulatorArgs = document.getElementById('input-emulator-args').value;
 
-        try {
-            await LB.prefs.save(platformName, 'isEnabled', isEnabled);
-            await LB.prefs.save(platformName, 'gamesDir', gamesDir);
-            await LB.prefs.save(platformName, 'emulator', emulator);
-            await LB.prefs.save(platformName, 'emulatorArgs', emulatorArgs);
-        } catch (error) {
-            console.error('Failed to save preferences:', error);
-        }
-    }
+    //     try {
+    //         await LB.prefs.save(platformName, 'isEnabled', isEnabled);
+    //         await LB.prefs.save(platformName, 'gamesDir', gamesDir);
+    //         await LB.prefs.save(platformName, 'emulator', emulator);
+    //         await LB.prefs.save(platformName, 'emulatorArgs', emulatorArgs);
+    //     } catch (error) {
+    //         console.error('Failed to save preferences:', error);
+    //     }
+    // }
 
-    cancelButton.addEventListener('click', _formCancelButtonClick);
-    saveButton.addEventListener('click', _formSaveButtonClick);
+    // cancelButton.addEventListener('click', _formCancelButtonClick);
+    // saveButton.addEventListener('click', _formSaveButtonClick);
 
-    form.appendChild(formTable);
-    form.appendChild(buttons);
+    // form.appendChild(formTable);
+    // form.appendChild(buttons);
 
-    LB.prefs.getValue(platformName, 'isEnabled')
-        .then((value) => {
-            console.log("value!", value);
-            statusCheckBox.checked = value;
-            statusLabelPlatormStatus.textContent = value ? 'On' : 'Off';
-        })
-        .catch((error) => {
-            console.error('Failed to get platform preference:', error);
-        });
+    // LB.prefs.getValue(platformName, 'isEnabled')
+    //     .then((value) => {
+    //         console.log("value!", value);
+    //         statusCheckBox.checked = value;
+    //         statusLabelPlatormStatus.textContent = value ? 'On' : 'Off';
+    //     })
+    //     .catch((error) => {
+    //         console.error('Failed to get platform preference:', error);
+    //     });
 
 
     // toggleInput.addEventListener('change', (event) => {
@@ -461,7 +580,7 @@ function buildPlatformForm(platformName) {
     //     document.getElementById('form-status-label').textContent = event.target.checked ? "Disabled" : "Enabled";
     // });
 
-    return form;
+    return platformMenuContainer;
 }
 
 LB.build = {

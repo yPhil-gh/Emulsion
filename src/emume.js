@@ -830,8 +830,53 @@ function drawParticles() {
     ctx.globalAlpha = 1;
 }
 
-function drawLogo() {
+const cubeAnimation = {
+    progress: 0,    // 0-1 (0 = left, 1 = final position)
+    speed: 0.02,     // Animation speed (adjust as needed)
+    isAnimating: true
+};
 
+function startCubeAnimation() {
+    cubeAnimation.progress = 0;
+    cubeAnimation.isAnimating = true;
+}
+
+function drawCube() {
+    const scale = 1.0;
+    const finalX = width/2 - 140; // Final X position
+    const finalY = 16;            // Final Y position
+
+    // Starting position (off-screen left)
+    const startX = -500;          // Start 500px left of screen
+    const startY = finalY;
+
+    // Calculate current position with easing
+    const currentX = lerp(startX, finalX, easeOutQuad(cubeAnimation.progress));
+    const currentY = finalY; // Keep Y fixed if you only want horizontal movement
+
+    ctx.save();
+    ctx.translate(currentX, currentY);
+    ctx.scale(scale, scale);
+
+    ['E1', 'E2', 'E3', 'E4', 'E5', 'E6'].forEach(id => {
+        ctx.fillStyle = '#0000FF';
+        const path = new Path2D(document.getElementById(id).getAttribute('d'));
+        ctx.fill(path);
+    });
+
+    ctx.restore();
+}
+
+function lerp(start, end, t) {
+    return start * (1 - t) + end * t;
+}
+
+function easeOutQuad(t) {
+    return t * (2 - t);
+}
+
+
+function drawLogo() {
 
     const scale = 1.0;
     const baseX = width/2 - 248; // Center 500px wide logo
@@ -1009,7 +1054,7 @@ function drawCredits() {
     ctx.textAlign = 'center';
 
     // Main text
-    ctx.fillText("HTML5 Canvas / Web audio API demo by yPhil 2025", width / 2, height - 30);
+    ctx.fillText("HTML5 Canvas / Web audio API interactive cracktro by yPhil 2025", width / 2, height - 30);
 
     // Secondary text (smaller/lighter)
     ctx.font = "8pt Monospace";
@@ -1146,6 +1191,10 @@ function update() {
     // ufo.update(width, height, isNight);
     ufo.update(mouseX, mouseY);
 
+    if (cubeAnimation.isAnimating && cubeAnimation.progress < 1) {
+        cubeAnimation.progress = Math.min(cubeAnimation.progress + cubeAnimation.speed, 1);
+    }
+
     if (isNight && moonAlpha < 1) {
         moonAlpha += 0.001; // Increase opacity gradually
     }
@@ -1195,7 +1244,7 @@ function draw() {
     drawGrid();
     drawCredits();
     drawVolumeControl();
-    drawCubeLogo();
+    drawCube();
 }
 
 init();

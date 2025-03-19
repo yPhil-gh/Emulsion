@@ -845,20 +845,20 @@ function drawCube() {
     const scale = 1.0;
 
     // E element animation (left to right)
-    const finalXE = width/2 - 140;
-    const finalYE = 16;
     const startXE = -500;
+    const finalXE = width/2 - 120;
     const currentXE = lerp(startXE, finalXE, easeOutQuad(cubeAnimation.progress));
+    const yE = 16;
 
     // M element animation (top to bottom)
-    const finalYM = 116;
-    const startYM = -200;
+    const startYM = -350;
+    const finalYM = -32;
     const currentYM = lerp(startYM, finalYM, easeOutQuad(cubeAnimation.progress));
-    const xM = width/2 - 70;
+    const xM = width/2 - 128;
 
     // Draw E with original colors
     ctx.save();
-    ctx.translate(currentXE, finalYE);
+    ctx.translate(currentXE, yE);
     ctx.scale(scale, scale);
     ['E1', 'E2', 'E3', 'E4', 'E5', 'E6'].forEach(id => {
         const pathElement = document.getElementById(id);

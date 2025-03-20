@@ -50,8 +50,15 @@ label {
   margin-left: 60px;
 }
 
+label.checkbox {
+  font-family: var(--font-main);
+  font-weight: 600;
+  font-size: 16pt;
+  /* font-style: normal; */
+}
+
 #form-status-label-platform-name {
-  margin-left: var(--bulma-block-spacing);
+
 }
 
 .field {
@@ -110,7 +117,6 @@ label {
   border-radius: 6px;
   box-sizing: border-box;
   color: #FFFFFF;
-  cursor: pointer;
   display: inline-block;
   /* font-family: nunito,roboto,proxima-nova,"proxima nova",sans-serif; */
   font-size: 16px;

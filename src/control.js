@@ -336,6 +336,13 @@ function initGallery(currentIndex, disabledPlatform) {
                 window.location.reload();
                 break;
             case 'Escape':
+
+                const platformCtns = document.querySelectorAll('.platform-container');
+
+                document.querySelector('header .platform-name').textContent = 'Settings';
+                document.querySelector('header .item-number').textContent = platformCtns.length;
+                document.querySelector('header .item-type').textContent = 'platforms';
+
                 _closeMenu();
                 break;
             }
@@ -396,8 +403,12 @@ function initGallery(currentIndex, disabledPlatform) {
                         const platformForm = LB.build.platformForm(platformToOpen || container.dataset.platform);
                         menuContainer.appendChild(platformForm);
 
-                        document.querySelector('header .item-number').textContent = gameContainers.length;
-                        document.querySelector('header .item-type').textContent = ' platforms';
+                        document.querySelector('header .platform-name').textContent = platformToOpen || container.dataset.platform;
+                        document.querySelector('header .item-type').textContent = 'Settings';
+
+                        // document.querySelector('header .item-type').textContent = 'Select a platform';
+                        document.querySelector('header .item-number').textContent = '';
+
 
                     } else {
                         const gameImage = container.querySelector('img');

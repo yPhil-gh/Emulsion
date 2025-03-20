@@ -26,7 +26,7 @@ LB.enabledPlatforms = [];
 LB.isMenuOpen = false;
 
 LB.utils = {
-    capitalizeWord: capitalizeWord,
+    cleanupName: cleanupName,
     cleanFileName: cleanFileName,
     simulateKeyDown: simulateKeyDown,
     getSelectedGame: getSelectedGame,
@@ -60,7 +60,6 @@ function updateControls(section, newIcon, newText, display) {
     }
 }
 
-
 function getSelectedGame(gameContainers, selectedIndex) {
     let selectedContainer;
     gameContainers.forEach(async (container, index) => {
@@ -71,7 +70,6 @@ function getSelectedGame(gameContainers, selectedIndex) {
     });
     return selectedContainer || null;
 }
-
 
 function simulateKeyDown(key) {
   const keyCode = key === 'ArrowDown' ? 40 : 38;
@@ -146,13 +144,22 @@ function _moveTrailingArticleToFront(s) {
   return s;
 }
 
-function capitalizeWord(word) {
+function cleanupName(word) {
     switch (word) {
     case 'snes':
         return "SNES";
         break;
     case 'pcengine':
         return "PCEngine";
+        break;
+    case 'psx':
+        return "PlayStation";
+        break;
+    case 'ps2':
+        return "PlayStation 2";
+        break;
+    case 'n64':
+        return "Nintendo64";
         break;
     default:
         break;

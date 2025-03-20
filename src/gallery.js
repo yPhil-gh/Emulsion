@@ -3,7 +3,7 @@ LB.gallery = {
         return new Promise(async (resolve, reject) => {
             try {
                 const galleriesContainer = document.getElementById('galleries');
-                let index = 1;
+                let index = 1; // Start indexing from 1
 
                 const platforms = Object.keys(preferences);
 
@@ -33,10 +33,9 @@ LB.gallery = {
                             const container = await buildGallery(params); // Await the async buildGallery
                             if (container) {
                                 galleriesContainer.appendChild(container);
+                                index++; // Only increment index if a gallery is built
                             }
                         }
-
-                        index++;
                     } else if (platformName === 'settings') {
                         const params = {
                             platform: platformName,
@@ -53,11 +52,11 @@ LB.gallery = {
 
                         if (container) {
                             galleriesContainer.appendChild(container);
+                            index++; // Only increment index if a gallery is built
                         }
-
-                        index++;
                     } else {
-                        reject('No prefs for ', platformName);
+                        reject('No prefs for ' + platformName);
+                        // Do not increment index here
                     }
                 }
 

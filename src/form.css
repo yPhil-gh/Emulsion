@@ -21,29 +21,6 @@
   margin-bottom: 15px;
 }
 
-/* Labels */
-#platform-form label {
-  font-weight: bold;
-  min-width: 100px; /* Ensure labels align nicely */
-}
-
-/* /\* Input fields *\/ */
-/* #platform-form input[type="text"] { */
-/*   flex: 1; */
-/*   padding: 8px; */
-/*   border: 1px solid #ccc; */
-/*   border-radius: 4px; */
-/*   font-size: 14px; */
-/* } */
-
-.form-buttons {
-  display: flex;
-  flex-direction: row;
-  gap: var(--bulma-block-spacing);
-
-  margin-top: 1em;
-}
-
 .platform-menu-image-ctn {
   text-align: center;
 }
@@ -61,16 +38,125 @@ button {
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  color: #333;
 }
 
 label {
+  font-family: 'sans-serif';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 12pt;
   display: flex !important;
   flex-direction: row;
+  margin-left: 60px;
 }
 
 #form-status-label-platform-name {
   margin-left: var(--bulma-block-spacing);
+}
+
+.field {
+  display: flex;
+  flex-direction: row;
+}
+
+#menu {
+  /* display: none; */
+  width: 100%;
+  position: fixed;
+  left: 0;
+  background-color: var(--color-bg1);
+  /* align-items: center; */
+  justify-content: center;
+  font-size: 16pt;
+  font-weight: bold;
+  z-index: 3; /* Ensure it's above other content */
+  /* pointer-events: none; /\* Prevent the footer from blocking clicks *\/ */
+  opacity: 0; /* Start fully transparent */
+  animation: fadeIn 0.3s ease-in-out forwards; /* Apply the fadeIn animation */
+
+  display: flex;
+
+  /* flex-direction: column; */
+  align-items: stretch;
+  overflow: hidden;
+  bottom: 100px;
+  /* transition: height 0.3s ease; */
+}
+
+
+#form-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.cancel-save-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  justify-content: space-between;
+  margin-top: 1em;
+}
+
+.cancel-save-buttons .button {
+  min-width: 200px;
+}
+
+.button {
+  max-width: fit-content;
+
+  background: var(--color-button-off);
+  border: 1px solid var(--color-border-on);
+  border-radius: 6px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  /* font-family: nunito,roboto,proxima-nova,"proxima nova",sans-serif; */
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 16px;
+  min-height: 40px;
+  outline: 0;
+  padding: 12px 14px;
+  text-rendering: geometricprecision;
+  text-transform: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+}
+
+.button-browse {
+  margin-left: 1em;
+}
+
+.input {
+  width: -webkit-fill-available;
+  min-height: 40px;
+
+  font-size: 12pt;
+  font-weight: 700;
+
+  color: var(--color-text-1);
+
+  background-color: var(--color-bg2);
+  border: 1px solid var(--color-border-off);
+  border-radius: 6px;
+  /* box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px; */
+  font-family: var(--font-main);
+
+}
+
+.input:hover,
+.input:focus,
+.input:active,
+.button:hover,
+.button:focus,
+.button:active {
+  background-color: var(--color-button-on);
+  background-position: 0 0;
+  color: #ffffff;
 }
 
 input[type="checkbox"] {
@@ -78,54 +164,29 @@ input[type="checkbox"] {
   width: 30px;
 }
 
-/* input:focus, */
-/* textarea:focus, */
-/* select:focus, */
-/* button:focus { */
-/*   outline: 2px solid var(--color-focus); /\* Use your custom color variable *\/ */
-/*   outline-offset: 2px; /\* Optional: Add space between the outline and the element *\/ */
-/* } */
-
-/* Optional: Remove the default focus ring for specific elements */
-/* input[type="checkbox"]:focus, */
-/* input[type="radio"]:focus { */
-/*   outline: none; /\* Remove default outline *\/ */
-/*   box-shadow: 0 0 0 2px var(--color-focus); /\* Add a custom focus ring *\/ */
-/* } */
-
-/* @media (hover: hover) { */
-/*   input[type="checkbox"]:not(:disabled):hover { */
-/*     background-color: var(--checkbox-hover-color); */
-/*     outline: 6px solid var(--checkbox-hover-color); */
-/*     transform: scale(1.05); */
-/*   } */
-/* } */
-
-/* input[type="checkbox"]:focus-visible { */
-/*   outline: 6px solid var(--checkbox-hover-color); */
-/*   transform: scale(1.05); */
-/* } */
-
-/* @media (prefers-reduced-motion: reduce) { */
-/*   input[type="checkbox"] { */
-/*     transition: none; */
-/*   } */
-/* } */
-
-.field {
-  display: flex;
-  flex-direction: row;
+.input:focus {
+  border: 1px solid var(--color-border-on);
 }
 
-/* .button { */
-/*   display: -webkit-inline-flex; */
-/*   display: inline-flex; */
-/*   background: #24292e; */
-/*   color: #fff; */
-/*   border-radius: 5px; */
-/*   padding: .5em 1em; */
-/*   text-decoration: none; */
-/*   -webkit-align-items: center; */
-/*   align-items: center; */
-/*   transition: background .2s ease-out; */
-/* } */
+input[type="checkbox"]:focus {
+  outline: 2px solid var(--color-border-on);
+}
+
+.button:active {
+  opacity: .5;
+}
+
+.dual-ctn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+div.form-icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 60px;
+  color: var(--color-icon);
+}

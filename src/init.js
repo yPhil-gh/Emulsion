@@ -204,6 +204,19 @@ async function updatePreference(platformName, key, value) {
         preferences[platformName][key] = value;
         await ipcRenderer.invoke('save-preferences', preferences);
 
+        const notifications = document.getElementById('notifications');
+        const notification = document.getElementById('notification');
+
+        notification.textContent = 'Preferences saved successfuly';
+
+        notifications.style.opacity = 1;
+
+        // Fade out after 1 second (same duration as the transition)
+        setTimeout(() => {
+            notifications.style.opacity = 0;
+        }, 3000); // Adjust timing to match your transition duration
+
+
         console.log(`${platformName} Preferences saved successfully!`);
 
         return 'OK';

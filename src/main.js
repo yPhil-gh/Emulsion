@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, dialog, globalShortcut } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog, globalShortcut, Menu } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -16,6 +16,7 @@ const buttonStates = {
   dpdown: false,
 };
 
+let isProd = false;
 
 gamecontroller.on("error", (data) => console.log("error", data));
 gamecontroller.on("warning", (data) => console.log("warning", data));
@@ -122,7 +123,7 @@ function createWindows() {
       contextIsolation: false,
     },
   });
-  mainWindow.loadFile('src/index.html');
+    mainWindow.loadFile('src/index.html');
 }
 
 ipcMain.on('request-about-content', (event) => {
@@ -135,6 +136,26 @@ ipcMain.on('request-about-content', (event) => {
         }
         event.sender.send('deliver-about-content', data);
     });
+});
+
+ipcMain.on('show-context-menu', (event, params) => {
+    const template = [
+        { role: 'cut' },
+        { role: 'copy' },
+        { role: 'paste' }
+    ];
+    const devToolsEntry = {
+        label: 'Inspect Element',
+        click: () => {
+            mainWindow.inspectElement(params.x, params.y);
+        },
+    };
+    if (!isProd) {
+        template.push({ type: 'separator' });
+        template.push(devToolsEntry);
+    }
+    const menu = Menu.buildFromTemplate(template);
+    menu.popup({ window: mainWindow });
 });
 
 ipcMain.handle('download-image', async (event, imgSrc, platform, gameName) => {

@@ -97,3 +97,10 @@ LB.prefs.load()
     .catch(error => {
         console.error('Failed to load platforms:', error);
     });
+
+window.addEventListener('contextmenu', (event) => {
+    event.preventDefault();
+    if (event.target.nodeName === 'INPUT' || event.target.nodeName === 'TEXTAREA') {
+        ipcRenderer.send('show-context-menu', { x: event.x, y: event.y });
+    }
+});

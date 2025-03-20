@@ -5,13 +5,23 @@
   --color-border: #999;
   --color-succes: #00ff18;
   --color-info: #007bff;
+  --color-icon: #007bff;
   --color-disabled: #333;
   --color-bg1: #0B192C;
   --color-bg2: #1E3E62;
   --color-header-bg: #050c16;
+  --color-text-1: #93FFD8;
+  --color-text-2: #FFFFFF;
   --color-footer-bg: #050c16;
   --color-header-border: #1E3E62;
   --color-footer-border: #1E3E62;
+  --color-button-off: #FF4742;
+  --color-button-on: #050c16;
+  --color-button-border: #FF4742;
+
+  --color-border-on: #FF4742;
+  --color-border-off: #1E3E62;
+
   --color-fg1: #00FFF5;
   --color-fg2: #A3F7BF;
   --slide-rotation-angle: 90deg;
@@ -25,9 +35,13 @@
   max-width: 100%; /* Prevent elements from exceeding the viewport width */
 }
 
+*:focus {
+    outline: none;
+}
+
 body {
   background-color: var(--color-bg1);
-  color: #93FFD8;
+  color: var(--color-text-1);
   font-family: var(--font-main);
   letter-spacing: 1px;
   margin: 0;
@@ -40,10 +54,12 @@ body {
   /* perspective: 600px; */
 }
 
-a {
-  cursor: pointer;
-  text-decoration: underline;
-  font-weight: bold;
+.success {
+  background-color: var(--color-succes);
+}
+
+.info {
+  background-color: var(--color-info);
 }
 
 main {
@@ -65,7 +81,6 @@ header, footer  {
   position: fixed;
   left: 0;
   height: 100px;
-  color: white;
   align-items: center;
   justify-content: space-between;
   font-size: 24px;

@@ -3,7 +3,7 @@ footer {
   /* padding: inherit; */
 
   /* flex-direction: column; */
-  align-items: stretch;
+  align-items: center;
 
   bottom: 0;
   /* transition: height 0.3s ease; */
@@ -30,7 +30,7 @@ footer {
 
 footer #controls {
   display: flex;
-  width: 100%;
+  /* width: 100%; */
   flex-direction: row;
   margin-left: 0.5em;
 }
@@ -47,10 +47,8 @@ footer #footer-menu {
   display: flex;
   align-items: center;
   gap: 10px;
-
-  width: 35%;
-
-  animation: fadeIn 0.5s forwards;
+  margin-right: 1em;
+  animation: fadeIn 1s forwards;
 }
 
 #circle {
@@ -141,4 +139,16 @@ div.game-menu-controls {
 
 #image-list::-webkit-scrollbar-track {
     /* border-radius: 4px; */
+}
+
+#notifications {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  opacity: 0; /* Start invisible */
+  transition: opacity 0.5s ease-in-out; /* Smooth transition */
+}
+
+#notification {
+  margin-right: 0.5em;
 }

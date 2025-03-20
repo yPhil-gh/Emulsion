@@ -309,17 +309,6 @@ function buildPlatformForm(platformName) {
         return buildPrefsForm();
     }
 
-   //  <div class="field has-addons">
-  //    <div class="control">
-  //    <input class="input" type="text" placeholder="Find a repository">
-  //   </div>
-  //   <div class="control">
-  //     <button class="button is-info">
-  //      Search
-  //     </button>
-  //    </div>
-  //   </div>
-
     const formContainer = document.createElement('div');
     formContainer.classList.add('platform-menu-container');
 
@@ -334,8 +323,7 @@ function buildPlatformForm(platformName) {
     const statusCheckBox = document.createElement('input');
     statusCheckBox.type = 'checkbox';
     statusCheckBox.id = 'input-platform-toggle-checkbox';
-    statusCheckBox.classList.add('is-medium');
-
+    statusCheckBox.classList.add('checkbox');
 
     statusCheckBox.addEventListener('change', (event) => {
         console.log("event: ", event);
@@ -370,59 +358,80 @@ function buildPlatformForm(platformName) {
     statusLabel.appendChild(statusLabelPlatormName);
     statusLabel.appendChild(statusLabelPlatormStatus);
 
-    const platformText = document.createElement('div');
-    platformText.classList.add('box');
-    platformText.id = 'platform-text-div';
-    platformText.textContent = 'plop';
-
     const gamesDirGroup = document.createElement('div');
 
-    gamesDirGroup.classList.add('nice-form-group');
     const gamesDirInput = document.createElement('input');
     gamesDirInput.type = 'text';
-    gamesDirInput.classList.add('input', 'is-medium');
+    gamesDirInput.classList.add('input');
     gamesDirInput.placeholder = 'Your games directory';
 
     const gamesDirLabel = document.createElement('label');
     gamesDirLabel.textContent = 'Games directory';
-    const gamesDirButton = document.createElement('button', 'is-info');
-    gamesDirButton.classList.add('button', 'is-medium');
+
+    const gamesDirSubLabel = document.createElement('label');
+    gamesDirSubLabel.id = 'games-dir-sub-label';
+    gamesDirSubLabel.classList.add('sub-label');
+
+    const gamesDirButton = document.createElement('button');
+    gamesDirButton.classList.add('button', 'button-browse', 'info');
     gamesDirButton.textContent = 'Browse';
 
     const gamesDirCtn = document.createElement('div');
     gamesDirCtn.classList.add('dual-ctn');
 
+    const gamesDirIcon = document.createElement('div');
+    gamesDirIcon.classList.add('form-icon');
+    gamesDirIcon.innerHTML = '<i class="form-icon fa fa-2x fa-folder-open-o" aria-hidden="true"></i>';
+
+    gamesDirCtn.appendChild(gamesDirIcon);
     gamesDirCtn.appendChild(gamesDirInput);
     gamesDirCtn.appendChild(gamesDirButton);
 
     gamesDirGroup.appendChild(gamesDirLabel);
     gamesDirGroup.appendChild(gamesDirCtn);
+    gamesDirGroup.appendChild(gamesDirSubLabel);
 
     const emulatorGroup = document.createElement('div');
-    emulatorGroup.classList.add('nice-form-group');
+
+    const emulatorIcon = document.createElement('div');
+    emulatorIcon.classList.add('form-icon');
+    emulatorIcon.innerHTML = '<i class="form-icon fa fa-2x fa-gamepad" aria-hidden="true"></i>';
+
     const emulatorInputLabel = document.createElement('label');
     emulatorInputLabel.textContent = "Emulator";
+
+    const emulatorSubLabel = document.createElement('label');
+    emulatorSubLabel.id = 'emulator-sub-label';
+    emulatorSubLabel.classList.add('sub-label');
+
     const emulatorInput = document.createElement('input');
     emulatorInput.type = 'text';
     emulatorInput.classList.add('input');
     emulatorInput.placeholder = 'Your emulator';
 
-
     const emulatorCtn = document.createElement('div');
     emulatorCtn.classList.add('dual-ctn');
 
     const emulatorButton = document.createElement('button');
-    emulatorButton.classList.add('button');
+    emulatorButton.classList.add('button', 'button-browse');
     emulatorButton.textContent = 'Browse';
 
+    emulatorCtn.appendChild(emulatorIcon);
     emulatorCtn.appendChild(emulatorInput);
     emulatorCtn.appendChild(emulatorButton);
 
     emulatorGroup.appendChild(emulatorInputLabel);
     emulatorGroup.appendChild(emulatorCtn);
+    emulatorGroup.appendChild(emulatorSubLabel);
 
     const emulatorArgsGroup = document.createElement('div');
-    emulatorArgsGroup.classList.add('nice-form-group');
+
+    const emulatorArgsCtn = document.createElement('div');
+    emulatorArgsCtn.classList.add('dual-ctn');
+
+    const emulatorArgsIcon = document.createElement('div');
+    emulatorArgsIcon.classList.add('form-icon');
+    emulatorArgsIcon.innerHTML = '<i class="form-icon emulator-args-icon fa fa-2x fa-cog" aria-hidden="true"></i>';
 
     const emulatorArgsLabel = document.createElement('label');
     emulatorArgsLabel.textContent = 'Emulator Arguments';
@@ -432,17 +441,19 @@ function buildPlatformForm(platformName) {
     emulatorArgsInput.type = 'text';
     emulatorArgsInput.placeholder = 'Your emulator arguments';
 
+    emulatorArgsCtn.appendChild(emulatorArgsIcon);
+    emulatorArgsCtn.appendChild(emulatorArgsInput);
     emulatorArgsGroup.appendChild(emulatorArgsLabel);
-    emulatorArgsGroup.appendChild(emulatorArgsInput);
+    emulatorArgsGroup.appendChild(emulatorArgsCtn);
 
     const saveButton = document.createElement('button');
     saveButton.type = 'button';
-    saveButton.classList.add('button', 'is-success', 'is-medium');
+    saveButton.classList.add('button');
     saveButton.textContent = 'Save';
 
     const cancelButton = document.createElement('button');
     cancelButton.type = 'button';
-    cancelButton.classList.add('is-info', 'button', 'is-medium');
+    cancelButton.classList.add('is-info', 'button');
     cancelButton.textContent = 'Cancel';
 
     LB.prefs.getValue(platformName, 'gamesDir')
@@ -491,14 +502,13 @@ function buildPlatformForm(platformName) {
 
     formContainer.appendChild(platformMenuImageCtn);
     formContainer.appendChild(statusLabel);
-    formContainer.appendChild(platformText);
     formContainer.appendChild(gamesDirGroup);
     formContainer.appendChild(emulatorGroup);
-    formContainer.appendChild(emulatorArgsInput);
+    formContainer.appendChild(emulatorArgsGroup);
     formContainer.appendChild(cancelButton);
 
     const formContainerButtons = document.createElement('div');
-    formContainerButtons.classList.add('form-buttons', 'nice-form-group');
+    formContainerButtons.classList.add('cancel-save-buttons');
     formContainerButtons.appendChild(cancelButton);
     formContainerButtons.appendChild(saveButton);
 
@@ -531,6 +541,20 @@ function buildPlatformForm(platformName) {
     }
 
     async function _saveButtonClick(event) {
+
+        if (!gamesDirInput.value) {
+            gamesDirSubLabel.textContent = 'This field cannot be empty';
+            return;
+        }
+
+        gamesDirSubLabel.textContent = '';
+
+        if (!emulatorInput.value) {
+            emulatorSubLabel.textContent = 'This field cannot be empty';
+            return;
+        }
+
+        emulatorSubLabel.textContent = '';
 
         try {
             await LB.prefs.save(platformName, 'isEnabled', statusCheckBox.checked);

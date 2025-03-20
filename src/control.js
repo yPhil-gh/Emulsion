@@ -327,9 +327,6 @@ function initGallery(currentIndex, disabledPlatform) {
             case 'ArrowDown':
                 menuSelectedIndex = Math.min(menuSelectedIndex + LB.galleryNumOfCols, menuGameContainers.length);
                 break;
-            case 'i':
-                _closeMenu();
-                break;
             case 'Enter':
                 const menuSelectedGame = LB.utils.getSelectedGame(menuGameContainers, menuSelectedIndex);
                 const menuSelectedGameImg = menuSelectedGame.querySelector('.game-image');
@@ -399,46 +396,8 @@ function initGallery(currentIndex, disabledPlatform) {
                         const platformForm = LB.build.platformForm(platformToOpen || container.dataset.platform);
                         menuContainer.appendChild(platformForm);
 
-                        const platformToggle = document.getElementById('input-platform-toggle-checkbox');
-
                         document.querySelector('header .item-number').textContent = gameContainers.length;
                         document.querySelector('header .item-type').textContent = ' platforms';
-
-                        const isEnabled = document.getElementById('input-platform-toggle-checkbox');
-                        const gamesDirInput = document.getElementById('input-games-dir');
-                        const emulatorInput = document.getElementById('input-emulator');
-                        const emulatorArgs = document.getElementById('input-emulator-args');
-
-                        const platformText = document.getElementById('platform-text-div');
-
-                        // if (platformToggle) {
-                        //     platformToggle.addEventListener('click', (event) => {
-                        //         console.log("event: ", event);
-
-                        //         const gamesDir = gamesDirInput.value;
-                        //         const emulator = emulatorInput.value;
-
-                        //         // Your condition to prevent checking
-                        //         const shouldPreventCheck = !gamesDir || !emulator;
-
-                        //         console.log("shouldPreventCheck: ", shouldPreventCheck);
-
-                        //         if (shouldPreventCheck) {
-                        //             event.preventDefault(); // Prevent the checkbox from changing state
-                        //             console.log("Checkbox state change prevented.");
-                        //             platformText.textContent = 'Please provide both a games directory and an emulator and an emulator and an emulator.';
-                        //         } else {
-                        //             // Allow the checkbox to change state
-                        //             // Update the label text after the state changes
-                        //             platformToggle.addEventListener('change', () => {
-                        //                 // document.getElementById('form-status-label').textContent = platformToggle.checked ? "Enabled" : "Disabled";
-                        //                 document.getElementById('form-status-label-platform-status').textContent = platformToggle.checked ? 'On' : 'Off';
-
-                        //             });
-                        //         }
-                        //     });
-                        // }
-
 
                     } else {
                         const gameImage = container.querySelector('img');

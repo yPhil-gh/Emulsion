@@ -370,64 +370,70 @@ function buildPlatformForm(platformName) {
     statusLabel.appendChild(statusLabelPlatormName);
     statusLabel.appendChild(statusLabelPlatormStatus);
 
-    // Row 2: Details text
     const platformText = document.createElement('div');
     platformText.classList.add('box');
     platformText.id = 'platform-text-div';
     platformText.textContent = 'plop';
 
-    const gamesDirField = document.createElement('div');
-    gamesDirField.classList.add('field', 'has-addons', 'is-expanded');
-    const gamesDirInputControl = document.createElement('div');
-    gamesDirInputControl.classList.add('control', 'is-expanded');
+    const gamesDirGroup = document.createElement('div');
+
+    gamesDirGroup.classList.add('nice-form-group');
     const gamesDirInput = document.createElement('input');
     gamesDirInput.type = 'text';
     gamesDirInput.classList.add('input', 'is-medium');
     gamesDirInput.placeholder = 'Your games directory';
 
-    const gamesDirButtonControl = document.createElement('div');
-    gamesDirButtonControl.classList.add('control');
-    gamesDirButtonControl.type = 'text';
+    const gamesDirLabel = document.createElement('label');
+    gamesDirLabel.textContent = 'Games directory';
     const gamesDirButton = document.createElement('button', 'is-info');
     gamesDirButton.classList.add('button', 'is-medium');
     gamesDirButton.textContent = 'Browse';
 
-    gamesDirInputControl.appendChild(gamesDirInput);
-    gamesDirButtonControl.appendChild(gamesDirButton);
-    gamesDirField.appendChild(gamesDirInputControl);
-    gamesDirField.appendChild(gamesDirButtonControl);
+    const gamesDirCtn = document.createElement('div');
+    gamesDirCtn.classList.add('dual-ctn');
 
-    const emulatorField = document.createElement('div');
-    emulatorField.classList.add('field', 'has-addons', 'is-expanded');
-    const emulatorInputControl = document.createElement('div');
-    emulatorInputControl.classList.add('control', 'is-expanded');
+    gamesDirCtn.appendChild(gamesDirInput);
+    gamesDirCtn.appendChild(gamesDirButton);
+
+    gamesDirGroup.appendChild(gamesDirLabel);
+    gamesDirGroup.appendChild(gamesDirCtn);
+
+    const emulatorGroup = document.createElement('div');
+    emulatorGroup.classList.add('nice-form-group');
+    const emulatorInputLabel = document.createElement('label');
+    emulatorInputLabel.textContent = "Emulator";
     const emulatorInput = document.createElement('input');
     emulatorInput.type = 'text';
-    emulatorInput.classList.add('input', 'is-medium');
+    emulatorInput.classList.add('input');
     emulatorInput.placeholder = 'Your emulator';
 
-    const emulatorButtonControl = document.createElement('div');
-    emulatorButtonControl.classList.add('control');
-    const emulatorButton = document.createElement('button', 'is-info');
-    emulatorButtonControl.type = 'text';
-    emulatorButton.classList.add('button', 'is-medium');
+
+    const emulatorCtn = document.createElement('div');
+    emulatorCtn.classList.add('dual-ctn');
+
+    const emulatorButton = document.createElement('button');
+    emulatorButton.classList.add('button');
     emulatorButton.textContent = 'Browse';
 
-    emulatorInputControl.appendChild(emulatorInput);
-    emulatorButtonControl.appendChild(emulatorButton);
-    emulatorField.appendChild(emulatorInputControl);
-    emulatorField.appendChild(emulatorButtonControl);
+    emulatorCtn.appendChild(emulatorInput);
+    emulatorCtn.appendChild(emulatorButton);
 
-    const emulatorArgsDirField = document.createElement('div');
-    emulatorArgsDirField.classList.add('field');
-    const emulatorArgsInputControl = document.createElement('div');
-    emulatorArgsInputControl.classList.add('control');
-    const emulatorArgsInput = document.createElement('input', 'is-medium');
-    emulatorArgsInputControl.classList.add('input');
-    emulatorArgsInputControl.type = 'text';
-    emulatorArgsInputControl.placeholder = 'Your emulator args';
-    emulatorArgsInput.classList.add('input', 'is-medium');
+    emulatorGroup.appendChild(emulatorInputLabel);
+    emulatorGroup.appendChild(emulatorCtn);
+
+    const emulatorArgsGroup = document.createElement('div');
+    emulatorArgsGroup.classList.add('nice-form-group');
+
+    const emulatorArgsLabel = document.createElement('label');
+    emulatorArgsLabel.textContent = 'Emulator Arguments';
+
+    const emulatorArgsInput = document.createElement('input');
+    emulatorArgsInput.classList.add('input');
+    emulatorArgsInput.type = 'text';
     emulatorArgsInput.placeholder = 'Your emulator arguments';
+
+    emulatorArgsGroup.appendChild(emulatorArgsLabel);
+    emulatorArgsGroup.appendChild(emulatorArgsInput);
 
     const saveButton = document.createElement('button');
     saveButton.type = 'button';
@@ -486,13 +492,13 @@ function buildPlatformForm(platformName) {
     formContainer.appendChild(platformMenuImageCtn);
     formContainer.appendChild(statusLabel);
     formContainer.appendChild(platformText);
-    formContainer.appendChild(gamesDirField);
-    formContainer.appendChild(emulatorField);
+    formContainer.appendChild(gamesDirGroup);
+    formContainer.appendChild(emulatorGroup);
     formContainer.appendChild(emulatorArgsInput);
     formContainer.appendChild(cancelButton);
 
     const formContainerButtons = document.createElement('div');
-    formContainerButtons.className = 'form-buttons';
+    formContainerButtons.classList.add('form-buttons', 'nice-form-group');
     formContainerButtons.appendChild(cancelButton);
     formContainerButtons.appendChild(saveButton);
 

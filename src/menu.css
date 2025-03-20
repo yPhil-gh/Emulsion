@@ -28,3 +28,24 @@
   flex-direction: row;
   align-items: center;
 }
+
+.control {
+  width: 100%;
+}
+
+/* .input { */
+/*   width: 70% !important; */
+/* } */
+
+.button {
+  padding: 0.5em;
+  text-align: center;
+  display: inline-block;
+  font-size: 16px;
+  max-width: fit-content;
+}
+
+.dual-ctn {
+  display: flex;
+  flex-direction: row;
+}

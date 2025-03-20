@@ -111,3 +111,21 @@ input[type="checkbox"] {
 /*     transition: none; */
 /*   } */
 /* } */
+
+.field {
+  display: flex;
+  flex-direction: row;
+}
+
+/* .button { */
+/*   display: -webkit-inline-flex; */
+/*   display: inline-flex; */
+/*   background: #24292e; */
+/*   color: #fff; */
+/*   border-radius: 5px; */
+/*   padding: .5em 1em; */
+/*   text-decoration: none; */
+/*   -webkit-align-items: center; */
+/*   align-items: center; */
+/*   transition: background .2s ease-out; */
+/* } */

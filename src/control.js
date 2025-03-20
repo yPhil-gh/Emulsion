@@ -252,6 +252,217 @@ function initGallery(currentIndex, disabledPlatform) {
         // _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), selectedIndex, galleryKeyDown, isMenuOpen, disabledPlatform);
     }
 
+    function _toggleMenu(gameContainers, selectedIndex, listener, isMenuOpen, platformToOpen) {
+
+        const menu = document.getElementById('menu');
+        const menuContainer = document.getElementById('menu-container');
+
+        // const footer = document.getElementById('footer');
+        // const footerMenuContainer = document.getElementById('footer-menu-container');
+
+        const controls = document.getElementById('controls');
+
+        let menuSelectedIndex = 1;
+
+        const selectedGame = LB.utils.getSelectedGame(gameContainers, selectedIndex);
+        const selectedGameImg = selectedGame.querySelector('.game-image');
+
+        function menuKeyDown(event) {
+
+            console.log("event: ", event.keyCode);
+
+            event.stopPropagation();
+            event.stopImmediatePropagation(); // Stops other listeners on the same element
+            const menuGameContainers = Array.from(menu.querySelectorAll('.menu-game-container'));
+            console.log("menuGameContainers len: ", menuGameContainers.length);
+
+            switch (event.key) {
+            case 'ArrowRight':
+                if (event.shiftKey) {
+                    // nextPage();
+                } else {
+                    menuSelectedIndex = (menuSelectedIndex + 1) % menuGameContainers.length;
+                    // selectedIndex = (selectedIndex + 1) % gameContainers.length;
+                }
+                break;
+            case 'ArrowLeft':
+                if (event.shiftKey) {
+                    // prevPage();
+                } else {
+                    if (menuSelectedIndex !== 1) {
+                        menuSelectedIndex = (menuSelectedIndex - 1 + menuGameContainers.length) % menuGameContainers.length;
+                    }
+                }
+                break;
+            case 'ArrowUp':
+                if (menuSelectedIndex > LB.galleryNumOfCols) {
+                    menuSelectedIndex = Math.max(menuSelectedIndex - LB.galleryNumOfCols, 0);
+                }
+                break;
+            case 'ArrowDown':
+                menuSelectedIndex = Math.min(menuSelectedIndex + LB.galleryNumOfCols, menuGameContainers.length);
+                break;
+            case 'Enter':
+                const menuSelectedGame = LB.utils.getSelectedGame(menuGameContainers, menuSelectedIndex);
+                const menuSelectedGameImg = menuSelectedGame.querySelector('.game-image');
+                _closeMenu(menuSelectedGameImg.src);
+                break;
+            case 'F5':
+                window.location.reload();
+                break;
+            case 'Escape':
+                _closeMenu();
+                break;
+            }
+
+            menuGameContainers.forEach((container, index) => {
+                container.classList.toggle('selected', index === menuSelectedIndex);
+            });
+
+            if (!event.shiftKey) {
+                if (menuSelectedIndex < menuGameContainers.length && menuSelectedIndex > 0) {
+                    menuGameContainers[menuSelectedIndex].scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                    });
+                }
+            }
+        }
+
+        const downloadImage = async (imgSrc, platform, gameName) => {
+            try {
+                const result = await ipcRenderer.invoke('download-image', imgSrc, platform, gameName);
+                if (result.success) {
+                    console.log(`Image saved at ${result.path}`);
+                } else {
+                    console.error(`Error saving image: ${result.error}`);
+                }
+            } catch (error) {
+                console.error('Error communicating with main process:', error);
+                alert('Failed to save image');
+            }
+        };
+
+        function _openMenu(platformToOpen) {
+
+            LB.utils.updateControls('square', 'same', 'Fetch cover', 'off');
+            LB.utils.updateControls('dpad', 'same', 'Fetch cover', 'off');
+
+            menu.style.height = '83vh';
+
+            document.querySelector('#header .prev-link').style.opacity = 0;
+            document.querySelector('#header .next-link').style.opacity = 0;
+
+            console.log("platformToOpen: ", platformToOpen);
+
+            menuContainer.innerHTML = '';
+
+            window.removeEventListener('keydown', listener);
+            window.addEventListener('keydown', menuKeyDown);
+
+
+            gameContainers.forEach(async (container, index) => {
+                if (index === selectedIndex) {
+
+                    console.log("container: ", container);
+
+                    if (container.classList.contains('settings')) {
+
+                        const platformForm = LB.build.platformForm(platformToOpen || container.dataset.platform);
+                        menuContainer.appendChild(platformForm);
+
+                        document.querySelector('header .item-number').textContent = gameContainers.length;
+                        document.querySelector('header .item-type').textContent = ' platforms';
+
+                    } else {
+                        const gameImage = container.querySelector('img');
+                        await LB.build.gameMenu(container.title, gameImage)
+                            .then((gameMenu) => {
+
+                                menuContainer.appendChild(gameMenu);
+
+                                const spinner = document.body.querySelector('.spinner');
+                                setTimeout(() => spinner.remove(), 500);
+
+                                const menuGameContainers = Array.from(gameMenu.querySelectorAll('.menu-game-container'));
+                                console.log("menuGameContainers len: ", menuGameContainers.length);
+
+                            });
+
+                    }
+
+                }
+            });
+
+        }
+
+        async function _closeMenu(imgSrc) {
+
+            // LB.utils.updateControls('square', 'same', 'Fetch cover', 'on');
+            LB.utils.updateControls('dpad', 'same', 'Browse', 'on');
+
+            document.querySelector('header .prev-link').style.opacity = 1;
+            document.querySelector('header .next-link').style.opacity = 1;
+
+            console.log("selectedIndex after: ", selectedIndex);
+
+            LB.imageSrc = imgSrc;
+            console.log("closeMenu: ");
+            document.getElementById('menu-container').innerHTML = '';
+            // footer.style.height = '100px'; // original height
+
+            menu.style.height = '0';
+
+            // controls.style.display = 'flex';
+            window.removeEventListener('keydown', menuKeyDown);
+            window.addEventListener('keydown', listener);
+
+            if (imgSrc) {
+                const selectedGameImg = selectedGame.querySelector('.game-image');
+                if (!selectedGameImg) return;
+
+                // LB.utils.updateControls('circle', 'same', 'Back');
+
+                // Create a burst effect by rapidly scaling and fading out
+                // selectedGameImg.style.transform = "scale(1.3)";
+                // selectedGameImg.style.opacity = "0";
+
+                selectedGameImg.src = imgSrc + '?t=' + new Date().getTime();
+
+                const spinner = document.createElement('div');
+                spinner.classList.add(`spinner-${Math.floor(Math.random() * 20) + 1}`, 'spinner');
+                spinner.classList.add('image-spinner');
+
+                selectedGame.appendChild(spinner);
+
+                selectedGameImg.onload = () => {
+                    // Zoom in with a punchy effect
+                    selectedGameImg.style.transform = "scale(1)";
+                    selectedGameImg.style.opacity = "1";
+                    spinner.remove();
+                };
+
+                downloadImage(imgSrc, selectedGame.dataset.platform, selectedGame.dataset.gameName);
+
+            }
+
+
+            isMenuOpen = false;
+        }
+
+
+        if (!isMenuOpen) {
+            console.log("disabledPlatformZ: ", disabledPlatform);
+            _openMenu(disabledPlatform);
+            isMenuOpen = true;
+        } else {
+            _closeMenu();
+            isMenuOpen = false;
+        }
+    }
+
+
+
     function galleryKeyDown(event) {
         switch (event.key) {
             case 'ArrowRight':

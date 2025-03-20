@@ -639,15 +639,15 @@ function buildPlatformForm(platformName) {
     // formTable.appendChild(row2);
 
     // // Row 3: Games Directory
-    // const gamesDirRow = createFormTableRow('Games', 'input-games-dir', `Select your ${LB.utils.cleanupName(platformName)} games directory path`, 'Browse', platformName);
+    // const gamesDirRow = createFormTableRow('Games', 'input-games-dir', `Select your ${LB.utils.capitalizeWord(platformName)} games directory path`, 'Browse', platformName);
     // formTable.appendChild(gamesDirRow);
 
     // // Row 4: Emulator
-    // const emulatorRow = createFormTableRow('Emulator', 'input-emulator', `Select your ${LB.utils.cleanupName(platformName)} emulator (file path or name)`, 'Browse', platformName);
+    // const emulatorRow = createFormTableRow('Emulator', 'input-emulator', `Select your ${LB.utils.capitalizeWord(platformName)} emulator (file path or name)`, 'Browse', platformName);
     // formTable.appendChild(emulatorRow);
 
     // // Row 5: Emulator Args
-    // const emulatorArgsRow = createFormTableRow('Args', 'input-emulator-args', `The arguments to your ${LB.utils.cleanupName(platformName)} emulator`, null, platformName, 2);
+    // const emulatorArgsRow = createFormTableRow('Args', 'input-emulator-args', `The arguments to your ${LB.utils.capitalizeWord(platformName)} emulator`, null, platformName, 2);
     // formTable.appendChild(emulatorArgsRow);
 
     // const buttons = document.createElement('div');

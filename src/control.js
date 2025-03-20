@@ -95,13 +95,11 @@ function initSlideShow(platformToDisplay) {
             let activeGalleryIndex;
             let activePlatformName;
 
-
             slides.forEach((slide, index) => {
                 // console.log("slide, index: ", slide, index);
                 if (slide.classList.contains('active')) {
                     activePlatformName = slide.dataset.platform;
                     activeGalleryIndex = index;
-                    console.warn("activePlatformName: ", activePlatformName, index);
                 }
             });
 
@@ -164,6 +162,7 @@ function initGallery(currentIndex, disabledPlatform) {
                 });
 
                 if (currentIndex === 0) {
+                    console.log("Bingo!: ");
                     LB.utils.updateControls('square', 'same', 'Fetch cover', 'off');
                 } else {
                     LB.utils.updateControls('square', 'same', 'Fetch cover', 'on');
@@ -176,7 +175,11 @@ function initGallery(currentIndex, disabledPlatform) {
                 gameContainers.forEach((container, index) => {
 
                     container.addEventListener('click', (event) => {
+
+                        console.log("event.currentTarget: ", event.currentTarget);
                         if (event.currentTarget.classList.contains('settings')) {
+                            console.log("event.currentTarget.dataset.index: ", parseInt(event.currentTarget.dataset.index));
+                            console.log("currentIndex: ", currentIndex);
 
                             _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), event.currentTarget.dataset.index / 1, galleryKeyDown, false, disabledPlatform);
 
@@ -196,8 +199,9 @@ function initGallery(currentIndex, disabledPlatform) {
                         behavior: "instant",
                         block: "center"
                     });
+                console.log("firstGameContainer: ", firstGameContainer);
 
-                document.querySelector('header .platform-name').textContent = LB.utils.cleanupName(page.dataset.platform);
+                document.querySelector('header .platform-name').textContent = LB.utils.capitalizeWord(page.dataset.platform);
                 document.querySelector('header .item-type').textContent = currentIndex === 0 ? ' platforms' : ' games';
 
                 document.querySelector('header .item-number').textContent = gameContainers.length;
@@ -271,6 +275,8 @@ function initGallery(currentIndex, disabledPlatform) {
         _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), selectedIndex, galleryKeyDown, isMenuOpen, disabledPlatform);
     }
 
+    console.log("gameContainers, selectedIndex, _handleKeyDown, isMenuOpen, disabledPlatform: ", gameContainers, selectedIndex, galleryKeyDown, isMenuOpen, disabledPlatform);
+
     function _toggleMenu(gameContainers, selectedIndex, listener, isMenuOpen, platformToOpen) {
 
         const menu = document.getElementById('menu');
@@ -288,9 +294,12 @@ function initGallery(currentIndex, disabledPlatform) {
 
         function menuKeyDown(event) {
 
+            console.log("event: ", event.keyCode);
+
             event.stopPropagation();
             event.stopImmediatePropagation(); // Stops other listeners on the same element
             const menuGameContainers = Array.from(menu.querySelectorAll('.menu-game-container'));
+            console.log("menuGameContainers len: ", menuGameContainers.length);
 
             switch (event.key) {
             case 'ArrowRight':
@@ -376,6 +385,7 @@ function initGallery(currentIndex, disabledPlatform) {
             document.querySelector('#header .prev-link').style.opacity = 0;
             document.querySelector('#header .next-link').style.opacity = 0;
 
+            console.log("platformToOpen: ", platformToOpen);
 
             menuContainer.innerHTML = '';
 
@@ -386,6 +396,7 @@ function initGallery(currentIndex, disabledPlatform) {
             gameContainers.forEach(async (container, index) => {
                 if (index === selectedIndex) {
 
+                    console.log("container: ", container);
 
                     if (container.classList.contains('settings')) {
 
@@ -410,6 +421,7 @@ function initGallery(currentIndex, disabledPlatform) {
                                 setTimeout(() => spinner.remove(), 500);
 
                                 const menuGameContainers = Array.from(gameMenu.querySelectorAll('.menu-game-container'));
+                                console.log("menuGameContainers len: ", menuGameContainers.length);
 
                             });
 
@@ -428,8 +440,10 @@ function initGallery(currentIndex, disabledPlatform) {
             document.querySelector('header .prev-link').style.opacity = 1;
             document.querySelector('header .next-link').style.opacity = 1;
 
+            console.log("selectedIndex after: ", selectedIndex);
 
             LB.imageSrc = imgSrc;
+            console.log("closeMenu: ");
             document.getElementById('menu-container').innerHTML = '';
             // footer.style.height = '100px'; // original height
 
@@ -474,6 +488,7 @@ function initGallery(currentIndex, disabledPlatform) {
 
 
         if (!isMenuOpen) {
+            console.log("disabledPlatformZ: ", disabledPlatform);
             _openMenu(disabledPlatform);
             isMenuOpen = true;
         } else {
@@ -484,6 +499,7 @@ function initGallery(currentIndex, disabledPlatform) {
 
     function galleryKeyDown(event) {
         // event.preventDefault(); // Prevent default scrolling behavior
+        console.log("event.keyCode: ", event.keyCode);
         switch (event.key) {
         case 'ArrowRight':
             if (event.shiftKey) {
@@ -528,6 +544,7 @@ function initGallery(currentIndex, disabledPlatform) {
             selectedIndex = Math.min(newIndex, gameContainers.length - 1);
             break;
         case 'i':
+            console.log("i: isMenuOpen: ", isMenuOpen);
             _toggleMenu(gameContainers, selectedIndex, galleryKeyDown, isMenuOpen);
             // window.removeEventListener('keydown', _handleKeyDown);
             break;
@@ -537,6 +554,7 @@ function initGallery(currentIndex, disabledPlatform) {
         case 'Enter':
             const selectedGameContainer = LB.utils.getSelectedGame(gameContainers, selectedIndex);
 
+            console.log("selectedGameContainer: ", selectedGameContainer);
 
             if (currentPageIndex === 0) {
                 _toggleMenu(gameContainers, selectedIndex, galleryKeyDown, isMenuOpen);

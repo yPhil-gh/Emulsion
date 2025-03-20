@@ -282,13 +282,6 @@ const defaultPreferences = {
         "emulatorArgs": "",
         "extensions": [".z64"]
     },
-    "psx": {
-        "isEnabled": false,
-        "gamesDir": "",
-        "emulator": "",
-        "emulatorArgs": "",
-        "extensions": [".srm"]
-    },
     "ps2": {
         "isEnabled": false,
         "gamesDir": "",

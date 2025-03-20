@@ -99,7 +99,7 @@ function initSlideShow(platformToDisplay) {
                 // console.log("slide, index: ", slide, index);
                 if (slide.classList.contains('active')) {
                     activePlatformName = slide.dataset.platform;
-                    activeGalleryIndex = index;
+                    activeGalleryIndex = slide.dataset.index;
                 }
             });
 
@@ -128,33 +128,30 @@ function initSlideShow(platformToDisplay) {
 }
 
 function initGallery(currentIndex, disabledPlatform) {
+    console.log("currentIndex: ", currentIndex);
 
     LB.utils.updateControls('dpad', 'button-dpad-nesw', 'same');
     LB.utils.updateControls('square', 'same', 'Fetch cover', 'on');
     LB.utils.updateControls('circle', 'same', 'Back');
 
     const header = document.getElementById('header');
-
-    document.getElementById('header').style.display = 'flex';
+    header.style.display = 'flex';
 
     const galleries = document.getElementById('galleries');
     const pages = Array.from(galleries.querySelectorAll('.page'));
     const totalPages = pages.length;
-    const angleIncrement = 360 / totalPages;
 
-    const radius = (window.innerWidth / 2) / Math.tan((angleIncrement / 2) * (Math.PI / 180));
+    let currentPageIndex = currentIndex; // Initialize currentPageIndex
+    let gameContainers = []; // Initialize gameContainers
 
-    let currentPageIndex;
+    function updateCarousel() {
+        console.log("currentIndex: ", currentIndex);
+        pages.forEach((page, pageIndex) => {
+            // Convert page.dataset.index to a number for comparison
+            const pageIndexNumber = Number(page.dataset.index);
 
-    let gameContainers;
-
-    function gameContainerClick(event) {
-        ipcRenderer.send('run-command', event.currentTarget.dataset.command);
-    }
-
-    function updateCarousel(direction) {
-        pages.forEach((page, index) => {
-            if (index === currentIndex) {
+            if (pageIndexNumber === currentIndex) {
+                console.log("YEAH! page.dataset.index, currentIndex: ", pageIndexNumber, currentIndex);
 
                 page.scrollIntoView({
                     behavior: "smooth",
@@ -166,46 +163,33 @@ function initGallery(currentIndex, disabledPlatform) {
                     LB.utils.updateControls('square', 'same', 'Fetch cover', 'off');
                 } else {
                     LB.utils.updateControls('square', 'same', 'Fetch cover', 'on');
-
                 }
 
                 currentPageIndex = currentIndex;
                 gameContainers = Array.from(page.querySelectorAll('.game-container') || []);
 
                 gameContainers.forEach((container, index) => {
-
                     container.addEventListener('click', (event) => {
-
-                        console.log("event.currentTarget: ", event.currentTarget);
                         if (event.currentTarget.classList.contains('settings')) {
-                            console.log("event.currentTarget.dataset.index: ", parseInt(event.currentTarget.dataset.index));
-                            console.log("currentIndex: ", currentIndex);
-
                             _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), event.currentTarget.dataset.index / 1, galleryKeyDown, false, disabledPlatform);
-
                         } else {
                             ipcRenderer.send('run-command', event.currentTarget.dataset.command);
                         }
                     });
-
                     container.classList.remove('selected');
                 });
 
                 const firstGameContainer = page.querySelector('.game-container');
-
                 firstGameContainer.classList.add('selected');
                 firstGameContainer.focus();
                 firstGameContainer.scrollIntoView({
-                        behavior: "instant",
-                        block: "center"
-                    });
-                console.log("firstGameContainer: ", firstGameContainer);
+                    behavior: "instant",
+                    block: "center"
+                });
 
                 document.querySelector('header .platform-name').textContent = LB.utils.capitalizeWord(page.dataset.platform);
                 document.querySelector('header .item-type').textContent = currentIndex === 0 ? ' platforms' : ' games';
-
                 document.querySelector('header .item-number').textContent = gameContainers.length;
-                // document.querySelector('header .platform-image img').src = `../img/platforms/${page.dataset.platform}.png`;
 
                 if (page.dataset.platform === 'settings') {
                     document.querySelector('header .platform-image').style.backgroundImage = `url('../img/emume.png')`;
@@ -224,11 +208,13 @@ function initGallery(currentIndex, disabledPlatform) {
                 // Active page
                 page.classList.add('active');
                 page.classList.remove('next', 'prev');
-            } else if (index < currentIndex) {
+            } else if (pageIndexNumber < currentIndex) {
+                console.log("NOPE pageIndex, currentIndex: ", pageIndexNumber, currentIndex);
                 // Previous page
                 page.classList.remove('active', 'next');
                 page.classList.add('prev');
-            } else if (index > currentIndex) {
+            } else if (pageIndexNumber > currentIndex) {
+                console.log("NOPE pageIndex, currentIndex: ", pageIndexNumber, currentIndex);
                 // Next page
                 page.classList.remove('active', 'prev');
                 page.classList.add('next');
@@ -238,22 +224,14 @@ function initGallery(currentIndex, disabledPlatform) {
 
     function nextPage() {
         currentIndex = (currentIndex + 1) % totalPages;
-        updateCarousel('next');
+        console.log("currentIndex: ", currentIndex);
+        updateCarousel();
     }
 
     function prevPage() {
         currentIndex = (currentIndex - 1 + totalPages) % totalPages;
-        updateCarousel('prev');
+        updateCarousel();
     }
-
-    // galleries.addEventListener('wheel', (event) => {
-    //     event.preventDefault(); // Prevent default scrolling behavior
-    //     if (event.deltaY > 0) {
-    //         nextPage();
-    //     } else if (event.deltaY < 0) {
-    //         prevPage();
-    //     }
-    // });
 
     // Handle click events on adjacent pages
     pages.forEach((page, index) => {
@@ -266,351 +244,75 @@ function initGallery(currentIndex, disabledPlatform) {
     });
 
     let isMenuOpen = false;
-
     let selectedIndex = 0;
-
-    let ImageMenuSelectedIndex = 0;
 
     if (disabledPlatform) {
         _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), selectedIndex, galleryKeyDown, isMenuOpen, disabledPlatform);
     }
 
-    console.log("gameContainers, selectedIndex, _handleKeyDown, isMenuOpen, disabledPlatform: ", gameContainers, selectedIndex, galleryKeyDown, isMenuOpen, disabledPlatform);
-
-    function _toggleMenu(gameContainers, selectedIndex, listener, isMenuOpen, platformToOpen) {
-
-        const menu = document.getElementById('menu');
-        const menuContainer = document.getElementById('menu-container');
-
-        // const footer = document.getElementById('footer');
-        // const footerMenuContainer = document.getElementById('footer-menu-container');
-
-        const controls = document.getElementById('controls');
-
-        let menuSelectedIndex = 1;
-
-        const selectedGame = LB.utils.getSelectedGame(gameContainers, selectedIndex);
-        const selectedGameImg = selectedGame.querySelector('.game-image');
-
-        function menuKeyDown(event) {
-
-            console.log("event: ", event.keyCode);
-
-            event.stopPropagation();
-            event.stopImmediatePropagation(); // Stops other listeners on the same element
-            const menuGameContainers = Array.from(menu.querySelectorAll('.menu-game-container'));
-            console.log("menuGameContainers len: ", menuGameContainers.length);
-
-            switch (event.key) {
+    function galleryKeyDown(event) {
+        switch (event.key) {
             case 'ArrowRight':
                 if (event.shiftKey) {
-                    // nextPage();
+                    nextPage();
                 } else {
-                    menuSelectedIndex = (menuSelectedIndex + 1) % menuGameContainers.length;
-                    // selectedIndex = (selectedIndex + 1) % gameContainers.length;
+                    selectedIndex = (selectedIndex + 1) % gameContainers.length;
                 }
                 break;
             case 'ArrowLeft':
                 if (event.shiftKey) {
-                    // prevPage();
+                    prevPage();
                 } else {
-                    if (menuSelectedIndex !== 1) {
-                        menuSelectedIndex = (menuSelectedIndex - 1 + menuGameContainers.length) % menuGameContainers.length;
-                    }
+                    selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
                 }
                 break;
             case 'ArrowUp':
-                if (menuSelectedIndex > LB.galleryNumOfCols) {
-                    menuSelectedIndex = Math.max(menuSelectedIndex - LB.galleryNumOfCols, 0);
-                }
+                selectedIndex = Math.max(selectedIndex - LB.galleryNumOfCols, 0);
                 break;
             case 'ArrowDown':
-                menuSelectedIndex = Math.min(menuSelectedIndex + LB.galleryNumOfCols, menuGameContainers.length);
+                selectedIndex = Math.min(selectedIndex + LB.galleryNumOfCols, gameContainers.length);
                 break;
             case 'Enter':
-                const menuSelectedGame = LB.utils.getSelectedGame(menuGameContainers, menuSelectedIndex);
-                const menuSelectedGameImg = menuSelectedGame.querySelector('.game-image');
-                _closeMenu(menuSelectedGameImg.src);
-                break;
-            case 'F5':
-                window.location.reload();
+                const selectedGameContainer = LB.utils.getSelectedGame(gameContainers, selectedIndex);
+                if (currentPageIndex === 0) {
+                    _toggleMenu(gameContainers, selectedIndex, galleryKeyDown, isMenuOpen);
+                } else {
+                    selectedGameContainer.classList.add('launching');
+                    setTimeout(() => {
+                        ipcRenderer.send('run-command', selectedGameContainer.dataset.command);
+                    }, 600);
+                }
                 break;
             case 'Escape':
-
-                const platformCtns = document.querySelectorAll('.platform-container');
-
-                document.querySelector('header .platform-name').textContent = 'Settings';
-                document.querySelector('header .item-number').textContent = platformCtns.length;
-                document.querySelector('header .item-type').textContent = 'platforms';
-
-                _closeMenu();
+                document.getElementById('slideshow').style.display = 'flex';
+                document.getElementById('galleries').style.display = 'none';
+                window.removeEventListener('keydown', galleryKeyDown);
+                LB.control.initSlideShow(currentIndex);
+                document.querySelector('header .item-number').textContent = '';
                 break;
-            }
-
-            menuGameContainers.forEach((container, index) => {
-                container.classList.toggle('selected', index === menuSelectedIndex);
-            });
-
-            if (!event.shiftKey) {
-                if (menuSelectedIndex < menuGameContainers.length && menuSelectedIndex > 0) {
-                    menuGameContainers[menuSelectedIndex].scrollIntoView({
-                        behavior: "smooth",
-                        block: "center"
-                    });
-                }
-            }
-        }
-
-        const downloadImage = async (imgSrc, platform, gameName) => {
-            try {
-                const result = await ipcRenderer.invoke('download-image', imgSrc, platform, gameName);
-                if (result.success) {
-                    console.log(`Image saved at ${result.path}`);
-                } else {
-                    console.error(`Error saving image: ${result.error}`);
-                }
-            } catch (error) {
-                console.error('Error communicating with main process:', error);
-                alert('Failed to save image');
-            }
-        };
-
-        function _openMenu(platformToOpen) {
-
-            LB.utils.updateControls('square', 'same', 'Fetch cover', 'off');
-            LB.utils.updateControls('dpad', 'same', 'Fetch cover', 'off');
-
-            menu.style.height = '83vh';
-
-            document.querySelector('#header .prev-link').style.opacity = 0;
-            document.querySelector('#header .next-link').style.opacity = 0;
-
-            console.log("platformToOpen: ", platformToOpen);
-
-            menuContainer.innerHTML = '';
-
-            window.removeEventListener('keydown', listener);
-            window.addEventListener('keydown', menuKeyDown);
-
-
-            gameContainers.forEach(async (container, index) => {
-                if (index === selectedIndex) {
-
-                    console.log("container: ", container);
-
-                    if (container.classList.contains('settings')) {
-
-                        const platformForm = LB.build.platformForm(platformToOpen || container.dataset.platform);
-                        menuContainer.appendChild(platformForm);
-
-                        document.querySelector('header .platform-name').textContent = platformToOpen || container.dataset.platform;
-                        document.querySelector('header .item-type').textContent = 'Settings';
-
-                        // document.querySelector('header .item-type').textContent = 'Select a platform';
-                        document.querySelector('header .item-number').textContent = '';
-
-
-                    } else {
-                        const gameImage = container.querySelector('img');
-                        await LB.build.gameMenu(container.title, gameImage)
-                            .then((gameMenu) => {
-
-                                menuContainer.appendChild(gameMenu);
-
-                                const spinner = document.body.querySelector('.spinner');
-                                setTimeout(() => spinner.remove(), 500);
-
-                                const menuGameContainers = Array.from(gameMenu.querySelectorAll('.menu-game-container'));
-                                console.log("menuGameContainers len: ", menuGameContainers.length);
-
-                            });
-
-                    }
-
-                }
-            });
-
-        }
-
-        async function _closeMenu(imgSrc) {
-
-            // LB.utils.updateControls('square', 'same', 'Fetch cover', 'on');
-            LB.utils.updateControls('dpad', 'same', 'Browse', 'on');
-
-            document.querySelector('header .prev-link').style.opacity = 1;
-            document.querySelector('header .next-link').style.opacity = 1;
-
-            console.log("selectedIndex after: ", selectedIndex);
-
-            LB.imageSrc = imgSrc;
-            console.log("closeMenu: ");
-            document.getElementById('menu-container').innerHTML = '';
-            // footer.style.height = '100px'; // original height
-
-            menu.style.height = '0';
-
-            // controls.style.display = 'flex';
-            window.removeEventListener('keydown', menuKeyDown);
-            window.addEventListener('keydown', listener);
-
-            if (imgSrc) {
-                const selectedGameImg = selectedGame.querySelector('.game-image');
-                if (!selectedGameImg) return;
-
-                // LB.utils.updateControls('circle', 'same', 'Back');
-
-                // Create a burst effect by rapidly scaling and fading out
-                // selectedGameImg.style.transform = "scale(1.3)";
-                // selectedGameImg.style.opacity = "0";
-
-                selectedGameImg.src = imgSrc + '?t=' + new Date().getTime();
-
-                const spinner = document.createElement('div');
-                spinner.classList.add(`spinner-${Math.floor(Math.random() * 20) + 1}`, 'spinner');
-                spinner.classList.add('image-spinner');
-
-                selectedGame.appendChild(spinner);
-
-                selectedGameImg.onload = () => {
-                    // Zoom in with a punchy effect
-                    selectedGameImg.style.transform = "scale(1)";
-                    selectedGameImg.style.opacity = "1";
-                    spinner.remove();
-                };
-
-                downloadImage(imgSrc, selectedGame.dataset.platform, selectedGame.dataset.gameName);
-
-            }
-
-
-            isMenuOpen = false;
-        }
-
-
-        if (!isMenuOpen) {
-            console.log("disabledPlatformZ: ", disabledPlatform);
-            _openMenu(disabledPlatform);
-            isMenuOpen = true;
-        } else {
-            _closeMenu();
-            isMenuOpen = false;
-        }
-    }
-
-    function galleryKeyDown(event) {
-        // event.preventDefault(); // Prevent default scrolling behavior
-        console.log("event.keyCode: ", event.keyCode);
-        switch (event.key) {
-        case 'ArrowRight':
-            if (event.shiftKey) {
-                nextPage();
-            } else {
-                selectedIndex = (selectedIndex + 1) % gameContainers.length;
-            }
-            break;
-        case 'ArrowLeft':
-            if (event.shiftKey) {
-                prevPage();
-            } else {
-                selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
-            }
-            break;
-        case 'ArrowUp':
-            selectedIndex = Math.max(selectedIndex - LB.galleryNumOfCols, 0);
-            break;
-        case 'ArrowDown':
-            selectedIndex = Math.min(selectedIndex + LB.galleryNumOfCols, gameContainers.length);
-            break;
-        case 'PageUp':
-            selectedIndex = Math.max(selectedIndex - LB.galleryNumOfCols * 10, 0);
-            break;
-        case 'Home':
-            selectedIndex = 3;
-            break;
-        case 'End':
-            selectedIndex = gameContainers.length - 1;
-            break;
-        case 'PageDown':
-            // selectedIndex = Math.min(selectedIndex + (LB.galleryNumOfCols + 10), gameContainers.length);
-            // Assume LB.galleryNumOfCols is the number of columns
-            const col = selectedIndex % LB.galleryNumOfCols;              // current column index
-            const currentRow = Math.floor(selectedIndex / LB.galleryNumOfCols); // current row
-            const newRow = currentRow + 10;                                // move 10 rows down
-
-            // Compute the new index in the same column
-            let newIndex = newRow * LB.galleryNumOfCols + col;
-
-            // Clamp the new index to ensure it doesn't exceed the number of containers
-            selectedIndex = Math.min(newIndex, gameContainers.length - 1);
-            break;
-        case 'i':
-            console.log("i: isMenuOpen: ", isMenuOpen);
-            _toggleMenu(gameContainers, selectedIndex, galleryKeyDown, isMenuOpen);
-            // window.removeEventListener('keydown', _handleKeyDown);
-            break;
-        case 'F5':
-            window.location.reload();
-            break;
-        case 'Enter':
-            const selectedGameContainer = LB.utils.getSelectedGame(gameContainers, selectedIndex);
-
-            console.log("selectedGameContainer: ", selectedGameContainer);
-
-            if (currentPageIndex === 0) {
-                _toggleMenu(gameContainers, selectedIndex, galleryKeyDown, isMenuOpen);
-            } else {
-                selectedGameContainer.classList.add('launching');
-                console.log("new Date():", new Date().toISOString());
-                setTimeout(() => {
-                    ipcRenderer.send('run-command', selectedGameContainer.dataset.command);
-                    // ipcRenderer.send('run-command', "/home/px/src/emume/src/test.sh");
-                }, 600); // Tiny delay for a natural effect
-            }
-
-            break;
-        case 'Escape':
-            document.getElementById('slideshow').style.display = 'flex';
-            document.getElementById('galleries').style.display = 'none';
-            window.removeEventListener('keydown', galleryKeyDown);
-            LB.control.initSlideShow(currentIndex);
-            document.querySelector('header .item-number').textContent = '';
-            break;
-        default:
-            break;
         }
 
         gameContainers.forEach((container, index) => {
             container.classList.toggle('selected', index === selectedIndex);
         });
 
-        if (!event.shiftKey) {
-            if (selectedIndex < gameContainers.length && selectedIndex > 0) {
-                // gameContainers[selectedIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-
-                gameContainers[selectedIndex].scrollIntoView({
-                    behavior: "smooth",
-                    block: "center"
-                });
-
-                // gameContainers[selectedIndex].scrollIntoViewIfNeeded();
-
-            }
+        if (!event.shiftKey && selectedIndex < gameContainers.length && selectedIndex > 0) {
+            gameContainers[selectedIndex].scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
         }
-
-
     }
 
     galleries.addEventListener('wheel', (event) => {
-        event.preventDefault(); // Prevent default scrolling
+        event.preventDefault();
         if (event.shiftKey) {
-            // With Shift pressed, directly trigger page navigation
             if (event.deltaY > 0) {
                 nextPage();
             } else if (event.deltaY < 0) {
                 prevPage();
             }
         } else {
-            // Without Shift, simulate arrow key events
             if (event.deltaY > 0) {
                 simulateKeyDown('ArrowDown');
             } else if (event.deltaY < 0) {
@@ -620,9 +322,7 @@ function initGallery(currentIndex, disabledPlatform) {
     });
 
     window.addEventListener('keydown', galleryKeyDown);
-    // Initialize the carousel
-    updateCarousel(gameContainers);
-
+    updateCarousel(); // Initialize the carousel
 }
 
 function simulateKeyDown(key) {

@@ -35,11 +35,13 @@ function isPlatformEnablable(platform, preferences) {
 function buildSlide(platformName, preferences) {
 
     if (!isPlatformValid(platformName, preferences)) {
+        console.log("null: ", platformName);
         return null;
     }
 
     const slide = document.createElement("div");
     slide.className = "slide";
+    slide.setAttribute('data-index', preferences[platformName].index);
     slide.id = platformName;
     const platformImgPath = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
     const emumeImgPath = path.join(LB.baseDir, 'img', 'emume.png');
@@ -78,9 +80,8 @@ LB.prefs.load()
     .then(({ platforms, preferences }) => {
         window.platforms = platforms;
 
-        let i = 0;
         platforms.forEach((platform) => {
-            const homeSlide = buildSlide(platform, preferences, LB.userDataPath);
+            const homeSlide = buildSlide(platform, preferences);
             if (homeSlide) {
                 slideshow.appendChild(homeSlide);
             }

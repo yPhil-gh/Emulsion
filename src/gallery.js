@@ -3,7 +3,7 @@ LB.gallery = {
         return new Promise(async (resolve, reject) => {
             try {
                 const galleriesContainer = document.getElementById('galleries');
-                let index = 1;
+                let i = 0;
 
                 const platforms = Object.keys(preferences);
 
@@ -16,6 +16,7 @@ LB.gallery = {
                         let emulatorArgs = prefs.emulatorArgs;
                         let extensions = prefs.extensions;
                         let isEnabled = prefs.isEnabled;
+                        let index = prefs.index;
 
                         const params = {
                             platform: platformName,
@@ -23,20 +24,22 @@ LB.gallery = {
                             emulator,
                             emulatorArgs,
                             userDataPath,
-                            index,
+                            index: index,
                             platforms,
-                            extensions
+                            extensions,
+                            isEnabled
                         };
+
+                        const container = await buildGallery(params);
+                        if (container) {
+                            galleriesContainer.appendChild(container);
+                            i++;
+                        }
 
                         if (isEnabled) {
                             LB.enabledPlatforms.push(platformName);
-                            const container = await buildGallery(params); // Await the async buildGallery
-                            if (container) {
-                                galleriesContainer.appendChild(container);
-                            }
                         }
 
-                        index++;
                     } else if (platformName === 'settings') {
                         const params = {
                             platform: platformName,
@@ -44,7 +47,7 @@ LB.gallery = {
                             emulator: 'none',
                             emulatorArgs: 'none',
                             userDataPath,
-                            index,
+                            index: i,
                             platforms,
                             extensions: 'none'
                         };
@@ -55,7 +58,7 @@ LB.gallery = {
                             galleriesContainer.appendChild(container);
                         }
 
-                        index++;
+                        i++;
                     } else {
                         reject('No prefs for ', platformName);
                     }
@@ -167,10 +170,7 @@ async function buildGallery(params) {
     const index = params.index;
     const platforms = params.platforms;
     const extensions = params.extensions;
-
-    if (!gamesDir || !emulator) {
-        return null;
-    }
+    const isEnabled = params.isEnabled;
 
     const galleryContainer = document.createElement('div');
     galleryContainer.id = `page-${platform}`;
@@ -180,6 +180,7 @@ async function buildGallery(params) {
     const page = document.createElement('div');
     page.classList.add('page');
     page.id = `page${index}`;
+    page.setAttribute('data-index', index);
     page.setAttribute('data-platform', platform);
 
     const pagePrevLink = document.createElement('a');
@@ -203,6 +204,21 @@ async function buildGallery(params) {
         pageContent.classList.add('page-content');
 
         pageContent.style.gridTemplateColumns = `repeat(${LB.galleryNumOfCols}, 1fr)`;
+
+
+        if (!isEnabled) {
+            pageContent.textContent = 'EMPTY';
+
+            const gameContainer = document.createElement('div');
+            gameContainer.classList.add('game-container');
+            gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+            gameContainer.title = 'Empty';
+            gameContainer.setAttribute('data-platform', platform);
+
+            pageContent.appendChild(gameContainer);
+            page.appendChild(pageContent);
+            return page;
+        }
 
         const gameFiles = await scanDirectory(gamesDir, extensions, true);
 

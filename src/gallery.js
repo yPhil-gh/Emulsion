@@ -216,6 +216,7 @@ async function buildGallery(params) {
             gameContainer.setAttribute('data-platform', platform);
 
             pageContent.appendChild(gameContainer);
+            page.setAttribute('data-status', 'disabled');
             page.appendChild(pageContent);
             return page;
         }

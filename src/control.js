@@ -19,7 +19,7 @@ function initSlideShow(platformToDisplay) {
     const radius = 500;
     let currentIndex = platformToDisplay ? platformToDisplay : 0;
 
-    function updateCarousel() {
+    function updateHomeCarousel() {
         const angleIncrement = 360 / totalSlides;
 
         slides.forEach((slide, index) => {
@@ -44,12 +44,12 @@ function initSlideShow(platformToDisplay) {
 
     function nextSlide() {
         currentIndex = (currentIndex + 1) % totalSlides;
-        updateCarousel();
+        updateHomeCarousel();
     }
 
     function prevSlide() {
         currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
-        updateCarousel();
+        updateHomeCarousel();
     }
 
     slideshow.addEventListener('wheel', (event) => {
@@ -67,7 +67,7 @@ function initSlideShow(platformToDisplay) {
             event.stopPropagation();
             if (slide.classList.contains('adjacent')) {
                 currentIndex = index; // Set the clicked slide as the current slide
-                updateCarousel();
+                updateHomeCarousel();
             } else if (slide.classList.contains('active')) {
                 simulateKeyDown('Enter');
             }
@@ -99,7 +99,7 @@ function initSlideShow(platformToDisplay) {
                 // console.log("slide, index: ", slide, index);
                 if (slide.classList.contains('active')) {
                     activePlatformName = slide.dataset.platform;
-                    activeGalleryIndex = slide.dataset.index;
+                    activeGalleryIndex = index;
                 }
             });
 
@@ -124,11 +124,11 @@ function initSlideShow(platformToDisplay) {
 
     // window.addEventListener('keyup', onKeyUp);
 
-    updateCarousel();
+    updateHomeCarousel();
 }
 
 function initGallery(currentIndex, disabledPlatform) {
-    console.log("currentIndex: ", currentIndex);
+    console.log('INIT!');
 
     LB.utils.updateControls('dpad', 'button-dpad-nesw', 'same');
     LB.utils.updateControls('square', 'same', 'Fetch cover', 'on');
@@ -144,14 +144,20 @@ function initGallery(currentIndex, disabledPlatform) {
     let currentPageIndex = currentIndex; // Initialize currentPageIndex
     let gameContainers = []; // Initialize gameContainers
 
-    function updateCarousel() {
+    const enabledPages = pages.filter(page => page.dataset.status !== 'disabled');
+
+    function updatePagesCarousel() {
         console.log("currentIndex: ", currentIndex);
         pages.forEach((page, pageIndex) => {
-            // Convert page.dataset.index to a number for comparison
             const pageIndexNumber = Number(page.dataset.index);
 
+            if (page.dataset.status === 'disabled') {
+                // Skip disabled pages
+                page.classList.remove('active', 'next', 'prev');
+                return;
+            }
+
             if (pageIndexNumber === currentIndex) {
-                console.log("YEAH! page.dataset.index, currentIndex: ", pageIndexNumber, currentIndex);
 
                 page.scrollIntoView({
                     behavior: "smooth",
@@ -159,7 +165,6 @@ function initGallery(currentIndex, disabledPlatform) {
                 });
 
                 if (currentIndex === 0) {
-                    console.log("Bingo!: ");
                     LB.utils.updateControls('square', 'same', 'Fetch cover', 'off');
                 } else {
                     LB.utils.updateControls('square', 'same', 'Fetch cover', 'on');
@@ -223,31 +228,28 @@ function initGallery(currentIndex, disabledPlatform) {
     }
 
     function nextPage() {
-        currentIndex = (currentIndex + 1) % totalPages;
-        console.log("currentIndex: ", currentIndex);
-        updateCarousel();
+        // Find the index of the current page in the enabledPages array
+        const currentEnabledIndex = enabledPages.findIndex(page => Number(page.dataset.index) === currentIndex);
+        const nextEnabledIndex = (currentEnabledIndex + 1) % enabledPages.length;
+
+        // Update currentIndex to the next enabled page's dataset.index
+        currentIndex = Number(enabledPages[nextEnabledIndex].dataset.index);
+
+        updatePagesCarousel();
     }
 
     function prevPage() {
-        currentIndex = (currentIndex - 1 + totalPages) % totalPages;
-        updateCarousel();
+        const currentEnabledIndex = enabledPages.findIndex(page => Number(page.dataset.index) === currentIndex);
+        const prevEnabledIndex = (currentEnabledIndex - 1 + enabledPages.length) % enabledPages.length;
+        currentIndex = Number(enabledPages[prevEnabledIndex].dataset.index);
+        updatePagesCarousel();
     }
-
-    // Handle click events on adjacent pages
-    pages.forEach((page, index) => {
-        page.addEventListener('click', () => {
-            if (page.classList.contains('adjacent')) {
-                currentIndex = index; // Set the clicked page as the current page
-                updateCarousel();
-            }
-        });
-    });
 
     let isMenuOpen = false;
     let selectedIndex = 0;
 
     if (disabledPlatform) {
-        _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), selectedIndex, galleryKeyDown, isMenuOpen, disabledPlatform);
+        // _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), selectedIndex, galleryKeyDown, isMenuOpen, disabledPlatform);
     }
 
     function galleryKeyDown(event) {
@@ -322,7 +324,7 @@ function initGallery(currentIndex, disabledPlatform) {
     });
 
     window.addEventListener('keydown', galleryKeyDown);
-    updateCarousel(); // Initialize the carousel
+    updatePagesCarousel(); // Initialize the carousel
 }
 
 function simulateKeyDown(key) {

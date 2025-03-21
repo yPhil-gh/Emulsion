@@ -10,11 +10,14 @@ let isNight = false;
 let mouseX = 0, mouseY = 0;
 
 const letters = {
-    e1: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
-    m1: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
-    m2: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
-    e2: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
-    u: { color: 'rgb(255, 165, 0)', rgbValues: '255, 165, 0', bounds: null, particles: [] }
+    e: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
+    m: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
+    u: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
+    l: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
+    s: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
+    i: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
+    o: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
+    n: { color: 'rgb(255, 165, 0)', rgbValues: '255, 165, 0', bounds: null, particles: [] }
 };
 
 const popSounds = Array.from(document.querySelectorAll('.sound-pop'));
@@ -53,6 +56,7 @@ const logoInitialY = horizon - 18; // Just below horizon
 const logoFinalY = 250;
 let logoSpeed = 0; // Current rise speed
 let logoY = logoInitialY; // below screen
+let logoX = width/2 - 248;
 let letterHoverStartTime = 0;
 let prevHoverState = null;
 let hoveredLetter = null;
@@ -480,7 +484,7 @@ function resetParticleDirections() {
 }
 
 function initParticles(particlesPerLetter = 4) { // Add parameter to control count
-    const baseX = width/2 - 248;
+    const baseX = width/2 - 148;
     particles = [];
 
     Object.keys(letters).forEach(id => {
@@ -815,11 +819,13 @@ function drawGrid() {
 // Initialize character transformations
 function initLogo() {
     logoChars = [
-        { type: 'E', x: 40, flip: false },
-        { type: 'm', x: 120, flip: false },
-        { type: 'u', x: 200, flip: false },
-        { type: 'm', x: 280, flip: true },  // Horizontally flipped
-        { type: 'E', x: 360, flip: true }     // Vertically flipped
+        { type: 'e', x: 200, flip: false },
+        { type: 'm', x: 290, flip: false },
+        { type: 'u', x: 300, flip: false },
+        { type: 's', x: 280, flip: false },
+        { type: 'i', x: 280, flip: false },
+        { type: 'o', x: 280, flip: false },
+        { type: 'n', x: 360, flip: false }
     ];
 }
 
@@ -982,16 +988,16 @@ function easeOutQuad(t) {
 function drawLogo() {
 
     const scale = 1.0;
-    const baseX = width/2 - 248; // Center 500px wide logo
+    const baseX = width/2 - 135; // Center 500px wide logo
 
     ctx.save();
     ctx.translate(baseX, logoY);
     ctx.scale(scale, scale);
 
     // Draw cyan elements
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 1;
 
-    ['e1', 'm1', 'm2', 'e2'].forEach(id => {
+    ['e', 'm', 'u', 'l', 's', 'i', 'o', 'n'].forEach(id => {
         if (letters[id].visible !== false) { // Only draw if visible
             ctx.strokeStyle = '#00FFFF';
             const path = new Path2D(document.getElementById(id).getAttribute('d'));

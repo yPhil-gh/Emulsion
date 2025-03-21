@@ -269,7 +269,7 @@ ipcRenderer.on('deliver-about-content', (event, aboutContent) => {
 
     // Dynamically load external script
     const script = document.createElement('script');
-    script.src = './emume.js';
+    script.src = path.join(LB.baseDir, 'src', 'js', 'emume.js');
     script.onload = () => {
         console.log('retrovibes.js loaded successfully.');
     };

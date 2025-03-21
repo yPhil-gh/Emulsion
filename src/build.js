@@ -15,7 +15,7 @@ async function buildGameMenu(gameName, image) {
         currentImageContainer.appendChild(currentImage);
 
         const spinner = document.createElement('div');
-        spinner.classList.add(`spinner-${Math.floor(Math.random() * 20) + 1}`, 'spinner');
+        spinner.classList.add(`spinner-${Math.floor(Math.random() * 18) + 1}`, 'spinner');
 
         document.body.appendChild(spinner);
 
@@ -514,7 +514,6 @@ function buildPlatformForm(platformName) {
 
     LB.prefs.getValue(platformName, 'isEnabled')
         .then((value) => {
-            console.log("value!", value);
             statusCheckBox.checked = value;
             statusLabelPlatormStatus.textContent = value ? 'On' : 'Off';
         })
@@ -561,6 +560,7 @@ function buildPlatformForm(platformName) {
             await LB.prefs.save(platformName, 'gamesDir', gamesDirInput.value);
             await LB.prefs.save(platformName, 'emulator', emulatorInput.value);
             await LB.prefs.save(platformName, 'emulatorArgs', emulatorArgsInput.value);
+            window.location.reload();
         } catch (error) {
             console.error('Failed to save preferences:', error);
         }

@@ -56,7 +56,7 @@ function updateControls(section, newIcon, newText, display) {
     }
 
     if (textSpan && newText !== 'same') {
-        textSpan.textContent = newText;
+        textSpan.innerHTML = newText;
     }
 }
 

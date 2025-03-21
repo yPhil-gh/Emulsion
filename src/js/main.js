@@ -18,7 +18,7 @@ console.log("path.join(path.resolve(app.getAppPath()), 'src'): ", path.join(path
 import { readFile } from 'fs/promises';
 
 async function loadPackageJson() {
-    const filePath = new URL('../package.json', import.meta.url);
+    const filePath = new URL('../../package.json', import.meta.url);
     const data = await readFile(filePath, 'utf-8');
     return JSON.parse(data);
 }
@@ -153,12 +153,12 @@ function createWindows() {
       contextIsolation: false,
     },
   });
-    mainWindow.loadFile('src/index.html');
+    mainWindow.loadFile('src/html/index.html');
 }
 
 ipcMain.on('request-about-content', (event) => {
     console.log("event: ", event);
-    const aboutPath = path.join(__dirname, 'emume.html');
+    const aboutPath = path.join(app.getAppPath(), 'src', 'html', 'emume.html');
     fs.readFile(aboutPath, 'utf8', (err, data) => {
         if (err) {
             console.error('Failed to read about.html:', err);
@@ -267,57 +267,95 @@ const defaultPreferences = {
         "isEnabled": true,
         "gamesDir": "/media/px/ptidisk/retropie-mount/roms/amiga",
         "emulator": "amiberry",
-        "emulatorArgs": "",
-        "extensions": [""]
+        "emulatorArgs": "-plop",
+        "index": 0,
+        "extensions": [
+            ""
+        ]
     },
     "amiga": {
-        "isEnabled": false,
-        "gamesDir": "",
+        "isEnabled": true,
+        "gamesDir": "/media/px/ptidisk/retropie-mount/roms/amiga",
         "emulator": "amiberry",
         "emulatorArgs": "",
-        "extensions": [".lha", ".adf"]
+        "index": 1,
+        "extensions": [
+            ".lha",
+            ".adf"
+        ]
     },
     "snes": {
-        "isEnabled": false,
+        "isEnabled": true,
         "gamesDir": "/media/px/ptidisk/retropie-mount/roms/snes",
         "emulator": "Mesen",
         "emulatorArgs": "--fullscreen",
-        "extensions": [".smc"]
+        "index": 2,
+        "extensions": [
+            ".smc"
+        ]
     },
     "pcengine": {
-        "isEnabled": false,
+        "isEnabled": true,
         "gamesDir": "/media/px/ptidisk/retropie-mount/roms/pcengine",
         "emulator": "mednafen",
         "emulatorArgs": "",
-        "extensions": [".pce"]
+        "index": 3,
+        "extensions": [
+            ".pce"
+        ]
     },
     "dreamcast": {
         "isEnabled": false,
         "gamesDir": "/media/px/ptidisk/retropie-mount/roms/dreamcast",
         "emulator": "flycast-x86_64.AppImage",
         "emulatorArgs": "",
-        "extensions": [".gdi", ".cdi"]
+        "index": 4,
+        "extensions": [
+            ".gdi",
+            ".cdi"
+        ]
     },
     "gamecube": {
-        "isEnabled": false,
-        "gamesDir": "",
-        "emulator": "darker",
-        "emulatorArgs": "",
-        "extensions": [".iso", ".ciso"]
+        "isEnabled": true,
+        "gamesDir": "/media/px/ptidisk/retropie-mount/roms/gc",
+        "emulator": "mupen64plus",
+        "emulatorArgs": "--input /usr/lib/x86_64-linux-gnu/mupen64plus/mupen64plus-input-sdl.so --gfx /usr/lib/x86_64-linux-gnu/mupen64plus/mupen64plus-video-rice.so --fullscreen --resolution 1920x1080",
+        "index": 5,
+        "extensions": [
+            ".iso",
+            ".ciso"
+        ]
     },
     "n64": {
-        "isEnabled": false,
-        "gamesDir": "",
-        "emulator": "",
+        "isEnabled": true,
+        "gamesDir": "/media/px/ptidisk/retropie-mount/roms/n64",
+        "emulator": "mupen64plus",
         "emulatorArgs": "",
-        "extensions": [".z64"]
+        "index": 6,
+        "extensions": [
+            ".z64"
+        ]
+    },
+    "psx": {
+        "isEnabled": true,
+        "gamesDir": "/media/px/ptidisk/retropie-mount/roms/psx",
+        "emulator": "duckstation",
+        "emulatorArgs": "",
+        "index": 7,
+        "extensions": [
+            ".srm"
+        ]
     },
     "ps2": {
-        "isEnabled": false,
-        "gamesDir": "",
-        "emulator": "",
+        "isEnabled": true,
+        "gamesDir": "/media/px/ptidisk/retropie-mount/roms/ps2",
+        "emulator": "pcsx2",
         "emulatorArgs": "",
-        "extensions": [".bin", ".iso"]
+        "index": 8,
+        "extensions": [
+            ".bin",
+            ".iso"
+        ]
     }
 };
 

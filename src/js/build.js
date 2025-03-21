@@ -187,7 +187,7 @@ function buildPrefsForm() {
 
     const statusLabelPlatormName = document.createElement('span');
     statusLabelPlatormName.id = 'form-status-label-platform-name';
-    statusLabelPlatormName.textContent = `EmumE is Cool`;
+    statusLabelPlatormName.textContent = `Emulsion is Cool`;
 
     const statusLabelPlatormStatus = document.createElement('span');
     statusLabelPlatormStatus.id = 'form-status-label-platform-status';

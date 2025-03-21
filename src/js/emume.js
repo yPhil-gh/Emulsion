@@ -1142,7 +1142,7 @@ let cubeLogoImage = null;
 
 function preloadCubeLogo() {
     cubeLogoImage = new Image();
-    cubeLogoImage.src = '../img/emume.png';
+    cubeLogoImage.src = '../../img/emume.png';
     cubeLogoImage.onerror = () => console.error('Failed to load cube logo');
 }
 

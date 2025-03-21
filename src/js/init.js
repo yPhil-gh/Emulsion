@@ -59,7 +59,7 @@ function updateControls(section, newIcon, newText, display) {
     }
 
     if (icon && newIcon !== 'same') {
-        icon.src = `../img/controls/${newIcon}.png`;
+        icon.src = `../../img/controls/${newIcon}.png`;
     }
 
     if (textSpan && newText !== 'same') {
@@ -274,7 +274,7 @@ ipcRenderer.on('deliver-about-content', (event, aboutContent) => {
         console.log('retrovibes.js loaded successfully.');
     };
     script.onerror = () => {
-        console.error('Failed to load retrovibes.js.');
+        console.error('Failed to load emume.js.');
     };
     document.body.appendChild(script);
 

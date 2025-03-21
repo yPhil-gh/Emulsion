@@ -1,9 +1,9 @@
 {
-    "name": "emume",
+    "name": "emulsion",
     "version": "1.0.15",
     "context": "prod",
     "description": "Symmetrical launch break",
-    "homepage": "https://gitlab.com/yphil/emume",
+    "homepage": "https://gitlab.com/yphil/emulsion",
     "license": "GPLv3",
     "author": {
         "name": "yPhil",
@@ -11,7 +11,7 @@
     },
     "keywords": ["games", "emulation"],
     "type": "module",
-    "main": "src/main.js",
+    "main": "src/js/main.js",
     "scripts": {
         "start": "electron . --no-sandbox",
         "prebuild": "rm -rf ./dist ./out ./node_modules ./repack ./tmp && npm install",
@@ -28,8 +28,8 @@
             "!**/node_modules/**/tests",
             "!**/node_modules/**/examples"
         ],
-        "appId": "com.yphil.emume",
-        "productName": "emume",
+        "appId": "com.yphil.emulsion",
+        "productName": "emulsion",
         "linux": {
             "target": [
                 "AppImage",

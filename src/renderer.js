@@ -78,7 +78,6 @@ LB.prefs.load()
             });
     })
     .then(({ platforms, preferences }) => {
-        window.platforms = platforms;
 
         platforms.forEach((platform) => {
             const homeSlide = buildSlide(platform, preferences);
@@ -91,7 +90,6 @@ LB.prefs.load()
         galleriesContainer.style.display = 'none';
         LB.control.initSlideShow();
 
-        // document.getElementById("header").style.display = 'flex';
         document.getElementById("main").style.display = 'flex';
         document.getElementById("footer").style.display = 'flex';
     })
@@ -105,3 +103,4 @@ window.addEventListener('contextmenu', (event) => {
         ipcRenderer.send('show-context-menu', { x: event.x, y: event.y });
     }
 });
+

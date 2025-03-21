@@ -1,6 +1,6 @@
 {
     "name": "emume",
-    "version": "1.0.9",
+    "version": "1.0.15",
     "context": "prod",
     "description": "Symmetrical launch break",
     "homepage": "https://gitlab.com/yphil/emume",
@@ -14,7 +14,7 @@
     "main": "src/main.js",
     "scripts": {
         "start": "electron . --no-sandbox",
-        "prebuild": "rm -rfv ./dist ./out ./node_modules ./repack ./tmp && npm install",
+        "prebuild": "rm -rf ./dist ./out ./node_modules ./repack ./tmp && npm install",
         "build": "electron-builder --linux --x64 --publish never"
     },
     "build": {
@@ -29,7 +29,7 @@
             "!**/node_modules/**/examples"
         ],
         "appId": "com.yphil.emume",
-        "productName": "EmumE",
+        "productName": "emume",
         "linux": {
             "target": [
                 "AppImage",

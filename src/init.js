@@ -11,7 +11,14 @@ window.ipcRenderer = ipcRenderer;
 
 const resolvedPath = path.resolve('.');
 
-LB.baseDir = resolvedPath;
+// LB.baseDir = resolvedPath;
+// console.log("resolvedPath init: ", LB.baseDir);
+
+// LB.baseDir = path.join(path.resolve(app.getAppPath()), 'src');
+
+// console.log("path.join(path.resolve(app.getAppPath()), 'src'): ", path.join(path.resolve(app.getAppPath()), 'src'));
+
+// console.log("app.getAppPath(): ", app.getAppPath());
 
 LB.galleryNumOfCols = 7;
 
@@ -167,7 +174,10 @@ async function _loadUserData() {
         const preferences = await ipcRenderer.invoke('load-preferences');
 
         LB.userDataPath = preferences.userDataPath;
+        LB.baseDir = path.resolve(preferences.appPath);
+        console.log("LB.baseDir: ", LB.baseDir);
         delete preferences.userDataPath;
+        delete preferences.appPath;
         LB.preferences = preferences;
 
         return preferences;

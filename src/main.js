@@ -11,6 +11,10 @@ import gamecontroller from "sdl2-gamecontroller";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+console.log("__dirname: ", __dirname);
+
+console.log("path.join(path.resolve(app.getAppPath()), 'src'): ", path.join(path.resolve(app.getAppPath()), 'src'));
+
 import { readFile } from 'fs/promises';
 
 async function loadPackageJson() {
@@ -320,6 +324,9 @@ const defaultPreferences = {
 ipcMain.handle('load-preferences', () => {
     const preferences = loadPreferences();
     const userDataPath = app.getPath('userData');
+    const appPath = app.getAppPath();
+
+    console.log("appPath: ", appPath);
 
     if (preferences.error) {
 
@@ -347,6 +354,7 @@ ipcMain.handle('load-preferences', () => {
     } else {
 
         preferences.userDataPath = userDataPath;
+        preferences.appPath = appPath;
         return preferences;
     }
 });

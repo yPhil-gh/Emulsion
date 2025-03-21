@@ -11,6 +11,15 @@ import gamecontroller from "sdl2-gamecontroller";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+import { readFile } from 'fs/promises';
+
+async function loadPackageJson() {
+    const filePath = new URL('../package.json', import.meta.url);
+    const data = await readFile(filePath, 'utf-8');
+    return JSON.parse(data);
+}
+
+const pjson = await loadPackageJson();
 const buttonStates = {
   back: false,
   dpdown: false,
@@ -43,6 +52,23 @@ gamecontroller.on('controller-button-up', (event) => {
 // });
 
 const preferencesFilePath = path.join(app.getPath('userData'), "preferences.json");
+
+
+function showHelp() {
+    console.log(`
+Usage: ${pjson.name.toLowerCase()} [options]
+
+Options:
+  --fullscreen  Start the app in full screen mode.
+  --help        Show this help message.
+  --version     Displays the version number / tag.
+    `);
+    app.quit();
+}
+
+if (process.argv.includes('--help')) {
+    showHelp();
+}
 
 function loadPreferences() {
     try {
@@ -117,7 +143,8 @@ function createWindows() {
   // Create the main window
   mainWindow = new BrowserWindow({
     width: 800,
-    height: 600,
+      height: 600,
+      fullscreen: process.argv.includes('--fullscreen'),
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,

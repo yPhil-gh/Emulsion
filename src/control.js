@@ -249,7 +249,7 @@ function initGallery(currentIndex, disabledPlatform) {
     let selectedIndex = 0;
 
     if (disabledPlatform) {
-        // _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), selectedIndex, galleryKeyDown, isMenuOpen, disabledPlatform);
+        _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), selectedIndex, galleryKeyDown, isMenuOpen, disabledPlatform);
     }
 
     function _toggleMenu(gameContainers, selectedIndex, listener, isMenuOpen, platformToOpen) {

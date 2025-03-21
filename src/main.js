@@ -61,7 +61,6 @@ Usage: ${pjson.name.toLowerCase()} [options]
 Options:
   --fullscreen  Start the app in full screen mode.
   --help        Show this help message.
-  --version     Displays the version number / tag.
     `);
     app.quit();
 }

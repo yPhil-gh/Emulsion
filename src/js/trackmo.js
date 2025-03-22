@@ -1,6 +1,8 @@
 // Vars -----------------------------
 const globalSpeed = 0.4; // Pixels per frame
 
+const liquidColor = '#660099';
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 let width = canvas.width = window.innerWidth;
@@ -134,7 +136,7 @@ function shootBubbles() {
     function bubblePos() {
         return {
             left: Math.floor(Math.random() * -31) + 37,
-            bottom: Math.floor(Math.random() * 2) + 60
+            bottom: Math.floor(Math.random() * -12) + 40
         };
     }
 
@@ -1052,11 +1054,29 @@ drawVerticalLine();
 // }, 2000); // Updates after 2 seconds
 
 const testTube = document.querySelector('.test-tube-container');
+const drop = document.querySelector('.test-tube-drop');
 
 function updateTestTube() {
-
+    // Update opacity of the test tube
     testTube.style.opacity = moonAlpha;
 
+}
+
+let dropHeight = 300;
+let dropY = 210;
+
+function updateDrop() {
+    if (dropHeight > 0) {
+        dropHeight -= 7.0;
+        dropY += 7.0;
+    }
+
+    drop.style.height = `${dropHeight}px`;
+    drop.style.top = `${dropY}px`;
+
+    if (dropHeight <= 0) {
+        drop.style.display = "none";
+    }
 }
 
 function updateLogoPosition() {
@@ -1342,6 +1362,11 @@ function update() {
 
     if (cubeAnimation.isAnimating && cubeAnimation.progress < 1) {
         cubeAnimation.progress = Math.min(cubeAnimation.progress + cubeAnimation.speed, 1);
+    }
+
+    if (isCubeAnimEnded) {
+        drop.style.display = 'block';
+        updateDrop();
     }
 
     if (isNight && moonAlpha < 1) {

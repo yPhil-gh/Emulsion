@@ -1,3 +1,28 @@
+const container = document.querySelector('.liquid');
+
+function hslColors () {
+  let colors = [];
+  let hue = Math.floor(Math.random() * (320 - 153) + 153);
+  let saturation = Math.floor(Math.random() * (100 - 90) + 90);
+  let lightness = Math.floor(Math.random() * (80 - 70) + 70);
+
+  colors.push(`hsl(${hue},${saturation}%, ${lightness}%)`);
+  return colors;
+};
+
+
+function colors() {
+  let template = `
+  <div class="color" style="background: ${hslColors()};">       </div>
+  `;
+
+  container.insertAdjacentHTML('beforeend', template);
+};
+
+for(i = 0; i < 30; i++) {
+  colors();
+};
+
 // Vars -----------------------------
 const globalSpeed = 0.4; // Pixels per frame
 
@@ -53,19 +78,21 @@ let starsMoveLeft = false;
 // Logo conf
 let logoChars = [];
 const logoInitialY = horizon - 18; // Just below horizon
-const logoFinalY = 250;
+const logoFinalY = 200;
 let logoSpeed = 0; // Current rise speed
 let logoY = logoInitialY; // below screen
 let logoX = width/2 - 248;
 let letterHoverStartTime = 0;
 let prevHoverState = null;
 let hoveredLetter = null;
+let logoColor = '#00FFFF';
 
 let particles = [];
 const particlesBaseY = logoFinalY;
 const particlesLength = 50;
 const particlesFadeOutDelay = 5;
 const particlesSpinSpeed = 0.05;
+
 const ufoFrequency = 120000; // 2 minutes
 
 // Cube logo
@@ -844,7 +871,7 @@ function drawParticles() {
         // Randomize direction by making the spinSpeed vary per frame slightly
         particle.currentAngle += particle.spinSpeed * (Math.random() * 0.4 + 0.8);
 
-        ctx.strokeStyle = particle.color;
+        ctx.strokeStyle = logoColor;
         ctx.lineWidth = 2;
         ctx.globalAlpha = particle.alpha;
         ctx.stroke();
@@ -999,17 +1026,17 @@ function drawLogo() {
 
     ['e', 'm', 'u', 'l', 's', 'i', 'o', 'n'].forEach(id => {
         if (letters[id].visible !== false) { // Only draw if visible
-            ctx.strokeStyle = '#00FFFF';
+            ctx.strokeStyle = logoColor;
             const path = new Path2D(document.getElementById(id).getAttribute('d'));
             ctx.stroke(path);
         }
     });
 
-    if (letters['u'].visible !== false) { // Only draw if visible
-        ctx.strokeStyle = '#FFA500';
-        const uPath = new Path2D(document.getElementById('u').getAttribute('d'));
-        ctx.stroke(uPath);
-    }
+    // if (letters['u'].visible !== false) { // Only draw if visible
+    //     ctx.strokeStyle = '#FFA500';
+    //     const uPath = new Path2D(document.getElementById('u').getAttribute('d'));
+    //     ctx.stroke(uPath);
+    // }
 
     ctx.restore();
 
@@ -1140,7 +1167,7 @@ function drawUrl() {
     ctx.globalAlpha = moonAlpha;
     ctx.font = "9pt Monospace";
     ctx.fillStyle = '#FFEEEE';
-    ctx.fillText("yphil.gitlab.io",width / 2 - 60 , height / 2 - 100);
+    ctx.fillText("Version " + window.versionNumber + " - yphil.gitlab.io",width / 2 - 120 , height / 2 - 100);
     ctx.globalAlpha = 1.0; // Reset opacity for other elements
 }
 
@@ -1182,7 +1209,7 @@ function drawCredits() {
     ctx.textAlign = 'center';
 
     // Main text
-    ctx.fillText("HTML5 Canvas / Web audio API interactive cracktro by yPhil 2025", width / 2, height - 30);
+    ctx.fillText("HTML5 Canvas / Web audio API interactive trackmo by yPhil 2025", width / 2, height - 30);
 
     // Secondary text (smaller/lighter)
     ctx.font = "8pt Monospace";

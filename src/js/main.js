@@ -158,7 +158,7 @@ function createWindows() {
 
 ipcMain.on('request-about-content', (event) => {
     console.log("event: ", event);
-    const aboutPath = path.join(app.getAppPath(), 'src', 'html', 'emume.html');
+    const aboutPath = path.join(app.getAppPath(), 'src', 'html', 'trackmo.html');
     fs.readFile(aboutPath, 'utf8', (err, data) => {
         if (err) {
             console.error('Failed to read about.html:', err);
@@ -363,6 +363,7 @@ ipcMain.handle('load-preferences', () => {
     const preferences = loadPreferences();
     const userDataPath = app.getPath('userData');
     const appPath = app.getAppPath();
+    const versionNumber = pjson.version;
 
     console.log("appPath: ", appPath);
 
@@ -393,6 +394,7 @@ ipcMain.handle('load-preferences', () => {
 
         preferences.userDataPath = userDataPath;
         preferences.appPath = appPath;
+        preferences.versionNumber = versionNumber;
         return preferences;
     }
 });

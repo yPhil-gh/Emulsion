@@ -3,25 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title>80s Sunset Scene with Gradient</title>
-        <style>
-         html, body {
-             margin: 0;
-             padding: 0;
-             overflow: hidden;
-             background: black;
-         }
-         canvas {
-             display: block;
-         }
-         #audio-control {
-             position: absolute;
-             bottom: 0;
-             right: 5px;
-             z-index:2;
-             color: #00FFFF;
-             cursor:pointer;
-         }
-        </style>
+        <link rel="stylesheet" href="../css/trackmo.css">
         <link rel="stylesheet" href="../../font/Fork-Awesome-1.2.0/css/fork-awesome.css">
     </head>
     <body>
@@ -171,10 +153,30 @@
         </svg>
 
         <canvas id="canvas"></canvas>
+        <div class="container">
+            <div class="test-tube">
+                <!--
+                     <div class="line-top">
+                     <span class="line-top__line1"></span>
+                     <span class="line-top__line2"></span>
+                     </div>
+
+                     <div class="top"></div>
+                -->
+                <div class="liquid">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#a231ff" fill-opacity="1" d="M0,192L80,208C160,224,320,256,480,234.7C640,213,800,139,960,117.3C1120,96,1280,128,1360,144L1440,160L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path></svg>
+                    <div class="liquid__bottom"></div>
+                </div>
+
+                <div class="tube"></div>
+            </div>
+            <a href="https://dribbble.com/myacode" class="dribbble" target="_blank"><ion-icon name="logo-dribbble"></ion-icon></a>
+        </div>
+
         <div id="audio-control">
             <i id="audio-control-icon" class="fa fa-volume-mute" aria-hidden="true"></i>
         </div>
-        <!-- <script src="emume.js"></script> -->
+        <script src="../js/trackmo.js"></script>
     </body>
 </html>
 

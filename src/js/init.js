@@ -175,6 +175,7 @@ async function _loadUserData() {
 
         LB.userDataPath = preferences.userDataPath;
         LB.baseDir = path.resolve(preferences.appPath);
+        window.versionNumber = preferences.versionNumber;
         console.log("LB.baseDir: ", LB.baseDir);
         delete preferences.userDataPath;
         delete preferences.appPath;
@@ -269,12 +270,12 @@ ipcRenderer.on('deliver-about-content', (event, aboutContent) => {
 
     // Dynamically load external script
     const script = document.createElement('script');
-    script.src = path.join(LB.baseDir, 'src', 'js', 'emume.js');
+    script.src = path.join(LB.baseDir, 'src', 'js', 'trackmo.js');
     script.onload = () => {
-        console.log('retrovibes.js loaded successfully.');
+        console.log('Script load.');
     };
     script.onerror = () => {
-        console.error('Failed to load emume.js.');
+        console.error('Failed to load script');
     };
     document.body.appendChild(script);
 

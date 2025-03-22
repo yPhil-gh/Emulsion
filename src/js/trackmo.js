@@ -1,7 +1,8 @@
 // Vars -----------------------------
 const globalSpeed = 0.4; // Pixels per frame
 
-const liquidColor = '#660099';
+const liquidColorStart = '#660099';
+const liquidColorEnd = '#EEEEFF';
 
 const wave = document.querySelector('.wave');
 
@@ -860,7 +861,7 @@ function drawCube() {
     const currentXU = lerp(startXU, finalXU, easeOutQuad(cubeAnimation.progress));
     const yU = -32;
 
-    let glueColor = 'rgba(255, 238, 238,' + cubeLettersGlueAlpha + ')';
+    let glueColor = 'rgba(0, 255, 0,' + cubeLettersGlueAlpha + ')';
 
     // Draw 'E'
     ctx.save();
@@ -1090,8 +1091,13 @@ function updateDrop() {
 }
 
 const bubbles = document.querySelector('.bubble');
+const tube = document.querySelector('.tube');
 
 function updateBoil() {
+
+    wave.style.setProperty('--wave-after-radius', '56%');
+    wave.style.setProperty('--wave-before-radius', '200%');
+    tube.style.setProperty('--glow', 'drop-shadow(0 0 0.75rem #00CC66)');
 
     shootBubbles();
 
@@ -1343,6 +1349,8 @@ function init() {
     preloadCubeLogo();
 }
 
+let isGlued = false;
+
 function updateCubeLettersGlueAlpha() {
     if (isCubeAnimEnded) {
         if (cubeLettersGlueAnimationState === 'INCREASING') {
@@ -1357,6 +1365,7 @@ function updateCubeLettersGlueAlpha() {
             if (cubeLettersGlueAlpha <= 0) {
                 cubeLettersGlueAlpha = 0; // Ensure it doesn't go below 0
                 cubeLettersGlueAnimationState = 'COMPLETED'; // Mark the animation as completed
+                isGlued = true;
             }
         }
     }
@@ -1388,7 +1397,7 @@ function update() {
         cubeAnimation.progress = Math.min(cubeAnimation.progress + cubeAnimation.speed, 1);
     }
 
-    if (isCubeAnimEnded) {
+    if (isGlued) {
         drop.style.display = 'block';
         updateDrop();
 

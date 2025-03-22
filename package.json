@@ -9,7 +9,10 @@
         "name": "yPhil",
         "email": "yphil@gnu.org"
     },
-    "keywords": ["games", "emulation"],
+    "keywords": [
+        "games",
+        "emulation"
+    ],
     "type": "module",
     "main": "src/js/main.js",
     "scripts": {
@@ -50,6 +53,7 @@
         "axios": "^1.7.9",
         "cheerio": "^1.0.0",
         "fs": "^0.0.1-security",
+        "howler": "^2.2.4",
         "node-fetch": "^3.3.2",
         "path": "^0.12.7",
         "sdl2-gamecontroller": "^1.0.11",

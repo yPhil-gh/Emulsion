@@ -1,17 +1,96 @@
+// Vars -----------------------------
+const globalSpeed = 0.4; // Pixels per frame
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let width = canvas.width = window.innerWidth;
+let height = canvas.height = window.innerHeight;
+let horizon = height * 2 / 3;
+let isNight = false;
+let mouseX = 0, mouseY = 0;
+
+const letters = {
+    e: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
+    m: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
+    u: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
+    l: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
+    s: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
+    i: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
+    o: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
+    n: { color: 'rgb(255, 165, 0)', rgbValues: '255, 165, 0', bounds: null, particles: [] }
+};
+
+const popSounds = Array.from(document.querySelectorAll('.sound-pop'));
+
+const electricColors = [
+    "#00FFFF", // Cyan
+    "#FF00FF", // Magenta
+    "#00FF00", // Lime
+    "#FF007F", // Bright Pink
+    "#7F00FF", // Electric Purple
+    "#FFAA00", // Electric Orange
+    "#00FF7F", // Spring Green
+    "#FF007F"  // Hot Pink
+];
+
+let randomColor = electricColors[Math.floor(Math.random() * electricColors.length)];
+
+const sunSpeed = globalSpeed;
+const sunBaseRadius = 120;
+const sunGlowScale = 6;
+let sunYOffset = 0;
+const maxSunTravel = height - horizon + 250;
+const nightOffset = 400;
+
+const moonSpeed = 0.008;
+const moonAmplitude = 0.2; // Vertical movement
+let moonX = width - 160;
+let moonFloatPhase = 0;
+let moonAlpha = 0;
+
+let starsMoveLeft = false;
+
+// Logo conf
+let logoChars = [];
+const logoInitialY = horizon - 18; // Just below horizon
+const logoFinalY = 200;
+let logoSpeed = 0; // Current rise speed
+let logoY = logoInitialY; // below screen
+let logoX = width/2 - 248;
+let letterHoverStartTime = 0;
+let prevHoverState = null;
+let hoveredLetter = null;
+let logoColor = '#00FFFF';
+
+let particles = [];
+const particlesBaseY = logoFinalY;
+const particlesLength = 50;
+const particlesFadeOutDelay = 5;
+const particlesSpinSpeed = 0.05;
+
+const ufoFrequency = 120000; // 2 minutes
+
+// Cube logo
+const cubeSpeed = sunSpeed / 500;
+let cubeLettersGlueAnimationState = 'INCREASING';
+
+// Scene -------------------------------
+
+// Test tube
 
 function boil() {
     const container = document.querySelector('.liquid');
 
     function bubblePos() {
         return {
-            left: Math.floor(Math.random() * -32) + 67,
+            left: Math.floor(Math.random() * -26) + 55,
             // bottom: Math.floor(Math.random() * 71.01) + 70.006
-            bottom: 120
+            bottom: 130
         };
     }
 
     function bubbleSize() {
-        return Math.floor(Math.random() * 1 + 10);
+        return Math.floor(Math.random() * 10 + 15);
     }
 
     function bubbles() {
@@ -91,227 +170,6 @@ function shootBubbles() {
 
 shootBubbles();
 setInterval(shootBubbles, 1000);
-
-
-// Vars -----------------------------
-const globalSpeed = 0.4; // Pixels per frame
-
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-let width = canvas.width = window.innerWidth;
-let height = canvas.height = window.innerHeight;
-let horizon = height * 2 / 3;
-let isNight = false;
-let mouseX = 0, mouseY = 0;
-
-const letters = {
-    e: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
-    m: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
-    u: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
-    l: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
-    s: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
-    i: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
-    o: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
-    n: { color: 'rgb(255, 165, 0)', rgbValues: '255, 165, 0', bounds: null, particles: [] }
-};
-
-const popSounds = Array.from(document.querySelectorAll('.sound-pop'));
-
-const electricColors = [
-    "#00FFFF", // Cyan
-    "#FF00FF", // Magenta
-    "#00FF00", // Lime
-    "#FF007F", // Bright Pink
-    "#7F00FF", // Electric Purple
-    "#FFAA00", // Electric Orange
-    "#00FF7F", // Spring Green
-    "#FF007F"  // Hot Pink
-];
-
-let randomColor = electricColors[Math.floor(Math.random() * electricColors.length)];
-
-const sunSpeed = globalSpeed;
-const sunBaseRadius = 120;
-const sunGlowScale = 6;
-let sunYOffset = 0;
-const maxSunTravel = height - horizon + 250;
-const nightOffset = 400;
-
-const moonSpeed = 0.008;
-const moonAmplitude = 0.2; // Vertical movement
-let moonX = width - 160;
-let moonFloatPhase = 0;
-let moonAlpha = 0;
-
-let starsMoveLeft = false;
-
-// Logo conf
-let logoChars = [];
-const logoInitialY = horizon - 18; // Just below horizon
-const logoFinalY = 200;
-let logoSpeed = 0; // Current rise speed
-let logoY = logoInitialY; // below screen
-let logoX = width/2 - 248;
-let letterHoverStartTime = 0;
-let prevHoverState = null;
-let hoveredLetter = null;
-let logoColor = '#00FFFF';
-
-let particles = [];
-const particlesBaseY = logoFinalY;
-const particlesLength = 50;
-const particlesFadeOutDelay = 5;
-const particlesSpinSpeed = 0.05;
-
-const ufoFrequency = 120000; // 2 minutes
-
-// Cube logo
-const cubeSpeed = sunSpeed / 500;
-let cubeLettersGlueAnimationState = 'INCREASING';
-
-// Birds
-
-let flock;
-
-// Music -----------------------------
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-// Create main output gain node
-const masterGain = audioContext.createGain();
-masterGain.connect(audioContext.destination);
-masterGain.gain.value = 0.3;
-
-// Warm pad setup
-function createPad() {
-    const osc1 = audioContext.createOscillator();
-    const osc2 = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    const lfo = audioContext.createOscillator();
-    const filter = audioContext.createBiquadFilter();
-
-    // Oscillator settings
-    osc1.type = 'sawtooth';
-    osc2.type = 'sawtooth';
-    osc1.frequency.value = 110;
-    osc2.frequency.value = 164.8;
-    osc1.detune.value = 3;
-    osc2.detune.value = -3;
-
-    // Slow random detune evolution
-    setInterval(() => {
-        osc1.detune.linearRampToValueAtTime(Math.random() * 20 - 10, audioContext.currentTime + 15);
-        osc2.detune.linearRampToValueAtTime(Math.random() * 20 - 10, audioContext.currentTime + 15);
-    }, 15000);
-
-    // Filter setup
-    filter.type = 'lowpass';
-    filter.frequency.value = 800;
-    filter.Q.value = 2;
-
-    // LFO for filter modulation
-    lfo.type = 'sine';
-    lfo.frequency.value = 0.05;
-    lfo.connect(filter.frequency);
-    lfo.frequency.linearRampToValueAtTime(0.1, audioContext.currentTime + 120);
-
-    // Connections
-    osc1.connect(filter);
-    osc2.connect(filter);
-    filter.connect(gain);
-    gain.connect(masterGain);
-
-    // Slow fade-in
-    gain.gain.setValueAtTime(0, audioContext.currentTime);
-    gain.gain.linearRampToValueAtTime(0.8, audioContext.currentTime + 15);
-
-    // Start oscillators
-    osc1.start();
-    osc2.start();
-    lfo.start();
-
-    return { osc1, osc2, gain, lfo };
-}
-
-// Clave sound with reverb
-function createClave() {
-    const env = audioContext.createGain();
-    const osc = audioContext.createOscillator();
-    const reverb = audioContext.createConvolver();
-
-    // Clave sound
-    osc.type = 'square';
-    osc.frequency.value = 1200;
-    osc.connect(env);
-
-    // Envelope
-    env.gain.setValueAtTime(0.5, audioContext.currentTime);
-    env.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
-
-    // Reverb setup
-    const reverbTime = 3;
-    const impulse = audioContext.createBuffer(2, audioContext.sampleRate * reverbTime, audioContext.sampleRate);
-    const impulseL = impulse.getChannelData(0);
-    const impulseR = impulse.getChannelData(1);
-
-    for (let i = 0; i < impulse.length; i++) {
-        impulseL[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / impulse.length, 1);
-        impulseR[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / impulse.length, 1);
-    }
-
-    reverb.buffer = impulse;
-    env.connect(reverb);
-    reverb.connect(masterGain);
-
-    osc.start();
-    osc.stop(audioContext.currentTime + 1.5);
-}
-
-// Create initial pads
-const pad1 = createPad();
-const pad2 = createPad();
-
-// Random clave trigger (60-120 seconds)
-function scheduleClave() {
-    setTimeout(() => {
-        createClave();
-        scheduleClave();
-    }, 60000 + Math.random() * 60000);
-}
-
-scheduleClave();
-
-// Gradual harmonic evolution
-setInterval(() => {
-    const newFreq1 = [110, 130.8, 164.8, 220][Math.floor(Math.random() * 4)];
-    const newFreq2 = newFreq1 * 1.5;
-
-    pad1.osc1.frequency.linearRampToValueAtTime(newFreq1, audioContext.currentTime + 30);
-    pad2.osc2.frequency.linearRampToValueAtTime(newFreq2, audioContext.currentTime + 30);
-}, 45000);
-
-let isPlaying = false;
-
-async function toggleAudio() {
-    const audioControlIcon = document.getElementById('audio-control-icon');
-
-    if (isPlaying) {
-        await audioContext.suspend();
-        audioControlIcon.classList.add('fa-volume-mute');
-        audioControlIcon.classList.remove('fa-volume-up');
-    } else {
-        await audioContext.resume();
-        audioControlIcon.classList.remove('fa-volume-mute');
-        audioControlIcon.classList.add('fa-volume-up');
-    }
-    isPlaying = !isPlaying;
-}
-
-audioContext.suspend();
-
-// Start the audio context on first user interaction
-document.getElementById('audio-control').addEventListener('click', toggleAudio);
-
-// Scene -------------------------------
 
 class UFO {
     constructor(canvasWidth, canvasHeight) {
@@ -441,7 +299,7 @@ class UFO {
 
 let ufo = new UFO(canvas.width, canvas.height);
 
-// Geese
+// Birds
 class Goose {
     constructor(xOffset, yOffset, isLeader = false) {
         this.x = xOffset;
@@ -522,6 +380,8 @@ class Goose {
     }
 }
 
+let flock;
+
 function initFlock(canvasWidth, canvasHeight) {
     const flock = [];
     const baseY = canvasHeight / 4 + 300;
@@ -557,7 +417,6 @@ function updateFlock(flock) {
     flock.forEach(seagull => seagull.update());
 
     if (flock.every(seagull => seagull.hasPassed)) {
-        console.log("All birds have passed");
         return false; // The flock is done
     }
     return true; // The flock is still active
@@ -977,16 +836,14 @@ function drawCube() {
         console.log("Animation is about to start.");
     } else if (cubeAnimation.progress > startAnimation && cubeAnimation.progress < endAnimation) {
         // Actions during animation
-        console.log("Animation in progress.");
     } else if (cubeAnimation.progress >= endAnimation) {
         // Actions after animation ends
         isCubeAnimEnded = true;
-        console.log("Animation has completed.");
     }
 
     // E element animation (left to right)
     const startXE = -150;
-    const finalXE = width / 2 - 110;
+    const finalXE = width / 2 - 105;
     const currentXE = lerp(startXE, finalXE, easeOutQuad(cubeAnimation.progress));
     const yE = 16;
 
@@ -994,11 +851,11 @@ function drawCube() {
     const startYM = -350;
     const finalYM = -32;
     const currentYM = lerp(startYM, finalYM, easeOutQuad(cubeAnimation.progress));
-    const xM = width / 2 - 118;
+    const xM = width / 2 - 113;
 
     // U element animation (left to right)
     const startXU = width;
-    const finalXU = width / 2 - 118;
+    const finalXU = width / 2 - 113;
     const currentXU = lerp(startXU, finalXU, easeOutQuad(cubeAnimation.progress));
     const yU = -32;
 
@@ -1565,3 +1422,33 @@ window.addEventListener('resize', () => {
     initLogo();
 });
 
+
+// Music -----------------------------
+
+const playButton = document.getElementById('audio-control');
+
+let isPlaying = false;
+
+const sound = new Howl({
+  src: ['../../tmp/loop.ogg'],
+  html5: true,
+  loop: true // Add this if you want the sound to loop
+});
+
+playButton.addEventListener('click', function(event) {
+  if (isPlaying) {
+    sound.pause();
+    isPlaying = false;
+      playButton.textContent = 'Play'; // Optional: Update button text
+  } else {
+    sound.play();
+    isPlaying = true;
+    playButton.textContent = 'Pause'; // Optional: Update button text
+  }
+});
+
+// Optional: Update button state when sound ends naturally
+sound.on('end', function() {
+  isPlaying = false;
+  playButton.textContent = 'Play';
+});

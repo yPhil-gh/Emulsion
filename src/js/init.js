@@ -176,6 +176,7 @@ async function _loadUserData() {
         LB.userDataPath = preferences.userDataPath;
         LB.baseDir = path.resolve(preferences.appPath);
         window.versionNumber = preferences.versionNumber;
+        window.baseDir = LB.baseDir;
         console.log("LB.baseDir: ", LB.baseDir);
         delete preferences.userDataPath;
         delete preferences.appPath;
@@ -272,12 +273,26 @@ ipcRenderer.on('deliver-about-content', (event, aboutContent) => {
     const script = document.createElement('script');
     script.src = path.join(LB.baseDir, 'src', 'js', 'trackmo.js');
     script.onload = () => {
-        console.log('Script load.');
+        console.log('Script loaded.');
     };
     script.onerror = () => {
         console.error('Failed to load script');
     };
     document.body.appendChild(script);
+
+    // Dynamically load external script
+    const song = document.createElement('audio');
+    song.classList.add('test-audio');
+    song.src = '../../audio/ding.oga';
+    song.onload = () => {
+        console.log('Song loaded.');
+    };
+    song.onerror = () => {
+        console.error('Failed to load song');
+    };
+    document.body.appendChild(script);
+    document.body.appendChild(song);
+
 
     aboutContainer.style.display = 'block';
 });

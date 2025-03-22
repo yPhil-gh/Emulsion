@@ -1,4 +1,4 @@
-const container = document.querySelector('.liquid');
+const container = document.querySelector('.circle');
 
 function hslColors () {
   let colors = [];
@@ -19,7 +19,7 @@ function colors() {
   container.insertAdjacentHTML('beforeend', template);
 };
 
-for(i = 0; i < 30; i++) {
+for(i = 0; i < 10; i++) {
   colors();
 };
 

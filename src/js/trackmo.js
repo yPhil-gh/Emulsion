@@ -1,5 +1,5 @@
 // Vars -----------------------------
-const globalSpeed = 0.04; // Pixels per frame
+const globalSpeed = 0.8; // Pixels per frame
 
 const liquidColorRgb = '102, 0, 153';
 
@@ -1085,7 +1085,7 @@ function updateDrop() {
     }
 
     if (drop.style.display === "none") {
-        wave.style.setProperty('--wave-animation', 'animate 1s ease-in-out infinite alternate');
+        wave.style.setProperty('--wave-animation-name', 'animate');
     }
 
 }

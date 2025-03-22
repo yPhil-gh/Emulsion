@@ -843,7 +843,7 @@ function drawCube() {
 
     // E element animation (left to right)
     const startXE = -150;
-    const finalXE = width / 2 - 105;
+    const finalXE = width / 2 - 101;
     const currentXE = lerp(startXE, finalXE, easeOutQuad(cubeAnimation.progress));
     const yE = 16;
 
@@ -851,11 +851,11 @@ function drawCube() {
     const startYM = -350;
     const finalYM = -32;
     const currentYM = lerp(startYM, finalYM, easeOutQuad(cubeAnimation.progress));
-    const xM = width / 2 - 113;
+    const xM = width / 2 - 109;
 
     // U element animation (left to right)
     const startXU = width;
-    const finalXU = width / 2 - 113;
+    const finalXU = width / 2 - 109;
     const currentXU = lerp(startXU, finalXU, easeOutQuad(cubeAnimation.progress));
     const yU = -32;
 
@@ -1011,6 +1011,45 @@ function drawMoon() {
 
     ctx.restore();
 }
+
+
+// Initialize line positions
+let dropStartY = height - 10; // Initial top position
+let dropEndY = horizon - 250; // Initial bottom position
+
+// Function to draw the vertical line
+function drawVerticalLine() {
+  // Clear the canvas
+  // ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Set line properties
+  ctx.strokeStyle = 'white'; // Line color
+  ctx.lineWidth = 2; // Line width
+
+  // Calculate the x-coordinate for the center of the canvas
+  const centerX = canvas.width / 2;
+
+  // Draw the line
+  ctx.beginPath();
+  ctx.moveTo(centerX, dropStartY); // Start point (top of the line)
+  ctx.lineTo(centerX, dropEndY); // End point (bottom of the line)
+  ctx.stroke();
+}
+
+// Function to update the line's start and end positions
+function updateLine(newStartY, newEndY) {
+  dropStartY = newStartY; // Update the start position
+  dropEndY = newEndY; // Update the end position
+  drawVerticalLine(); // Redraw the line with the new positions
+}
+
+// Initialize the line with startY = 10 and endY = -50
+drawVerticalLine();
+
+// // Example: Update the line to start at y = 50 and end at y = -100
+// setTimeout(() => {
+//   updateLine(50, -100);
+// }, 2000); // Updates after 2 seconds
 
 const testTube = document.querySelector('.test-tube-container');
 
@@ -1270,7 +1309,7 @@ function updateCubeLettersGlueAlpha() {
     if (isCubeAnimEnded) {
         if (cubeLettersGlueAnimationState === 'INCREASING') {
             document.getElementById('bass-drop').play();
-            cubeLettersGlueAlpha += 0.09;
+            cubeLettersGlueAlpha += 0.005;
             if (cubeLettersGlueAlpha >= 1) {
                 cubeLettersGlueAlpha = 1; // Ensure it doesn't exceed 1
                 cubeLettersGlueAnimationState = 'DECREASING'; // Switch to decreasing

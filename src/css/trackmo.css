@@ -4,7 +4,8 @@
   --grey-light: #F5F6FA;
   --grey: #645c6b;
   --white: #ffffff;
-  --color-liquid: #a8c8e1ba;
+  --color-liquid: #FF00FF;
+  --color-liquid-grad: linear-gradient(#00E5FF, #0099CC, #004466);
   --color-liquid-down: #a8c8e100;
 }
 
@@ -99,7 +100,7 @@ canvas {
   animation-delay: 0.01s;
   transform-origin: center bottom;
   opacity: 0.2;
-  background: var(--color-liquid);
+  background: var(--color-liquid-grad);
   background: linear-gradient(var(--color-liquid), var(--color-liquid-down));
 }
 
@@ -185,9 +186,13 @@ canvas {
   margin-top: 65px;
   border-radius: 200%;
   border: 145px solid var(--color-liquid);
+  box-shadow:
+    0 0 20px #00FFFF,
+    0 0 40px #8A2BE2,
+    inset 0 0 10px var(--color-liquid);
   opacity: 0.9;
   /* background: rgba(255, 255, 255, 0.9); */
-  animation: animate 0.5s linear infinite;
+  animation: animate 0.5s ease-in-out infinite alternate;
 }
 
 /* 91ff77 */
@@ -196,8 +201,12 @@ canvas {
   margin-top: 65px;
   border-radius: 56%;
   border: 145px solid var(--color-liquid);
+    box-shadow:
+    0 0 20px #00FFFF,
+    0 0 40px #8A2BE2,
+    inset 0 0 10px var(--color-liquid);
   opacity: 1;
-  animation: animate 2s linear infinite;
+  animation: animate 2s ease-in-out infinite alternate;
 }
 
 @keyframes animate{

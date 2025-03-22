@@ -4,7 +4,10 @@
   --grey-light: #F5F6FA;
   --grey: #645c6b;
   --white: #ffffff;
-  --color-liquid: #FF00FF;
+  --color-liquid: #660099;
+  --color-liquid1: #FF00FF;
+  --color-liquid2: #AA00FF;
+  --color-liquid3: #660099;
   --color-liquid-grad: linear-gradient(#00E5FF, #0099CC, #004466);
   --color-liquid-down: #a8c8e100;
 }
@@ -84,10 +87,10 @@ canvas {
   width: 60px;
   height: 150px;
   border-radius: 0px 0px 40px 40px/0 0 50px 50px;
-  border: 5px solid #ccc;
-  border-top: 0.6rem solid rgba(0, 0, 0, 0);
+  border: 5px solid #B8E0E9;
   border-top: none;
   z-index: 200;
+  filter: drop-shadow(0 0 0.75rem #00CC66);
 }
 
 .boil-bubble {
@@ -188,11 +191,11 @@ canvas {
   border: 145px solid var(--color-liquid);
   box-shadow:
     0 0 20px #00FFFF,
-    0 0 40px #8A2BE2,
+    0 0 40px #004466,
     inset 0 0 10px var(--color-liquid);
-  opacity: 0.9;
+  opacity: 0.6;
   /* background: rgba(255, 255, 255, 0.9); */
-  animation: animate 0.5s ease-in-out infinite alternate;
+  animation: animate 0.7s ease-in-out infinite alternate;
 }
 
 /* 91ff77 */
@@ -202,11 +205,11 @@ canvas {
   border-radius: 56%;
   border: 145px solid var(--color-liquid);
     box-shadow:
-    0 0 20px #00FFFF,
+    0 0 20px #004466,
     0 0 40px #8A2BE2,
     inset 0 0 10px var(--color-liquid);
-  opacity: 1;
-  animation: animate 2s ease-in-out infinite alternate;
+  opacity: 0.8;
+  animation: animate 1s ease-in-out infinite alternate;
 }
 
 @keyframes animate{

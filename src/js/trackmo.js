@@ -118,8 +118,8 @@ function boil() {
     }
 }
 
-boil();
-setInterval(boil, 200);
+// boil();
+// setInterval(boil, 200);
 
 function shootBubbles() {
     const container = document.querySelector('.liquid');
@@ -133,7 +133,7 @@ function shootBubbles() {
 
     function bubblePos() {
         return {
-            left: Math.floor(Math.random() * -21) + 57,
+            left: Math.floor(Math.random() * -31) + 37,
             bottom: Math.floor(Math.random() * 2) + 60
         };
     }
@@ -1012,7 +1012,13 @@ function drawMoon() {
     ctx.restore();
 }
 
+const testTube = document.querySelector('.test-tube-container');
 
+function updateTestTube() {
+
+    testTube.style.opacity = moonAlpha;
+
+}
 
 function updateLogoPosition() {
     if (isNight && logoY > logoFinalY) {
@@ -1291,6 +1297,7 @@ function update() {
     updateMoon();
     updateSunPosition();
     updateLogoPosition();
+    updateTestTube();
     // ufo.update(width, height, isNight);
     ufo.update(mouseX, mouseY);
 

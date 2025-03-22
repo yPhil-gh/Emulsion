@@ -1,4 +1,47 @@
 
+function boil() {
+    const container = document.querySelector('.liquid');
+
+    function bubblePos() {
+        return {
+            left: Math.floor(Math.random() * -32) + 67,
+            // bottom: Math.floor(Math.random() * 71.01) + 70.006
+            bottom: 120
+        };
+    }
+
+    function bubbleSize() {
+        return Math.floor(Math.random() * 1 + 10);
+    }
+
+    function bubbles() {
+        let size = bubbleSize();
+        let animDuration = 2; // Between 3s and 5s
+
+        const bubble = document.createElement('div');
+        bubble.classList.add('boil-bubble');
+        bubble.style.left = `${bubblePos().left}px`;
+        bubble.style.bottom = `${bubblePos().bottom}px`;
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+        bubble.style.animationDuration = `${animDuration}s`;
+
+        container.appendChild(bubble);
+
+        // Remove the bubble after its animation ends
+        setTimeout(() => {
+            bubble.remove();
+        }, animDuration * 1000);
+    }
+
+    for (let i = 0; i < 6; i++) {
+        bubbles();
+    }
+}
+
+boil();
+setInterval(boil, 200);
+
 function shootBubbles() {
     const container = document.querySelector('.liquid');
 
@@ -12,7 +55,7 @@ function shootBubbles() {
     function bubblePos() {
         return {
             left: Math.floor(Math.random() * -21) + 57,
-            bottom: Math.floor(Math.random() * 30) + 70
+            bottom: Math.floor(Math.random() * 2) + 60
         };
     }
 

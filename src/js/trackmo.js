@@ -1,8 +1,7 @@
 // Vars -----------------------------
-const globalSpeed = 0.4; // Pixels per frame
+const globalSpeed = 0.04; // Pixels per frame
 
-const liquidColorStart = '#660099';
-const liquidColorEnd = '#EEEEFF';
+const liquidColorRgb = '102, 0, 153';
 
 const wave = document.querySelector('.wave');
 
@@ -861,7 +860,7 @@ function drawCube() {
     const currentXU = lerp(startXU, finalXU, easeOutQuad(cubeAnimation.progress));
     const yU = -32;
 
-    let glueColor = 'rgba(0, 255, 0,' + cubeLettersGlueAlpha + ')';
+    let glueColor = 'rgba('+ liquidColorRgb + ',' + cubeLettersGlueAlpha + ')';
 
     // Draw 'E'
     ctx.save();
@@ -1055,6 +1054,7 @@ drawVerticalLine();
 
 const testTube = document.querySelector('.test-tube-container');
 const drop = document.querySelector('.test-tube-drop');
+drop.style.backgroundColor = 'rgba('+ liquidColorRgb + ')';
 
 function updateTestTube() {
     // Update opacity of the test tube
@@ -1420,6 +1420,12 @@ function draw() {
 
     // Background elements
     const skyGradient = ctx.createLinearGradient(0, width, 0, 0);
+
+    // Day
+    // skyGradient.addColorStop(0, "#007ced"); // Light blue at the top (sky)
+    // skyGradient.addColorStop(1, "#cce7ff"); // Warm orange at the horizon
+
+    // Night
     skyGradient.addColorStop(1, "#000000"); // top
     skyGradient.addColorStop(0.5, "#111133"); // Dark blue midway
     skyGradient.addColorStop(0, "#220022"); // horizon

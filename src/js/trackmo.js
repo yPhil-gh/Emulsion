@@ -1,30 +1,54 @@
-const container = document.querySelector('.liquid');
 
-function hslColors () {
-    let bubbles = [];
-    let hue = Math.floor(Math.random() * (320 - 153) + 153);
-    let saturation = Math.floor(Math.random() * (100 - 90) + 90);
-    let lightness = Math.floor(Math.random() * (80 - 70) + 70);
+function shootBubbles() {
+    const container = document.querySelector('.liquid');
 
-    bubbles.push(`hsl(${hue},${saturation}%, ${lightness}%)`);
-    return bubbles;
-};
+    function hslColors() {
+        let hue = Math.floor(Math.random() * (320 - 153) + 153);
+        let saturation = Math.floor(Math.random() * (100 - 90) + 90);
+        let lightness = Math.floor(Math.random() * (80 - 70) + 70);
+        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    }
 
-function bubblePos() {
-    return Math.floor(Math.random() * 19) + 177;
+    function bubblePos() {
+        return {
+            left: Math.floor(Math.random() * -21) + 57,
+            bottom: Math.floor(Math.random() * 30) + 70
+        };
+    }
+
+    function bubbleSize() {
+        return Math.floor(Math.random() * (30 - 10) + 10);
+    }
+
+    function bubbles() {
+        let size = bubbleSize();
+        let animDuration = Math.random() * 2 + 3; // Between 3s and 5s
+
+        const bubble = document.createElement('div');
+        bubble.classList.add('bubble');
+        bubble.style.background = hslColors();
+        bubble.style.left = `${bubblePos().left}px`;
+        bubble.style.bottom = `${bubblePos().bottom}px`;
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+        bubble.style.animationDuration = `${animDuration}s`;
+
+        container.appendChild(bubble);
+
+        // Remove the bubble after its animation ends
+        setTimeout(() => {
+            bubble.remove();
+        }, animDuration * 1000);
+    }
+
+    for (let i = 0; i < 6; i++) {
+        bubbles();
+    }
 }
 
-function bubbles() {
-  let template = `
-  <div class="bubble" style="background: ${hslColors()}; left: ${bubblePos()}"></div>
-  `;
+shootBubbles();
+setInterval(shootBubbles, 1000);
 
-  container.insertAdjacentHTML('beforeend', template);
-};
-
-for(i = 0; i < 10; i++) {
-  bubbles();
-};
 
 // Vars -----------------------------
 const globalSpeed = 0.4; // Pixels per frame

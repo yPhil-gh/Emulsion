@@ -157,77 +157,93 @@ canvas {
   z-index: 200;
 }
 
-.bubble:nth-child(1) {
-  width: 29px;
-  height: 29px;
-  bottom: 54px;
-  /* left: 37px; */
+.bubble {
+  z-index: -1 !important;
   border-radius: 50%;
   position: absolute;
-  animation: move-1 5s infinite;
+  animation: bubbleMove 2s ease-in;
+  border: 1px solid #ccc;
+  opacity: 0.02;
   animation-delay: -0.2s;
-  z-index: 400;
+  transform-origin: center bottom;
 }
 
-@keyframes move-1 {
+@keyframes bubbleMove {
+  0% {
+    transform: translateY(0);
+    opacity: 0.2;
+  }
+  99.1% {
+    transform: translateY(-10rem) scale(0.8);
+    opacity: 0.2;
+  }
   100% {
-    transform: translateY(-17rem);
+    transform: translateY(-9.9rem) scale(1.5);
+    opacity: 0;
   }
 }
 
-.bubble:nth-child(2) {
-  width: 19px;
-  height: 19px;
-  bottom: 43px;
-  /* left: 43px; */
-  border-radius: 50%;
-  position: absolute;
-  animation: move-2 5s infinite;
-  animation-delay: -0.4s;
-  z-index: 400;
-}
 
-@keyframes move-2 {
-  100% {
-    transform: translateY(-12rem);
-  }
-}
+/* .bubble:nth-child(1) { */
+/*   width: 29px; */
+/*   height: 29px; */
+/*   bottom: 54px; */
+/*   /\* left: 37px; *\/ */
+/* } */
 
-.bubble:nth-child(3) {
-  width: 12px;
-  height: 12px;
-  bottom: 53px;
-  /* left: 30px; */
-  border-radius: 50%;
-  position: absolute;
-  animation: move-3 5s infinite;
-  animation-delay: -0.6s;
-  z-index: 400;
-}
+/* .bubble:nth-child(2) { */
+/*   width: 19px; */
+/*   height: 19px; */
+/*   bottom: 43px; */
+/*   /\* left: 43px; *\/ */
+/*   border-radius: 50%; */
+/*   position: absolute; */
+/*   animation: move-2 5s ease-in-out; */
+/*   animation-delay: -0.4s; */
+/*   z-index: 400; */
+/* } */
 
-@keyframes move-3 {
-  100% {
-    transform: translateY(-17rem);
-  }
-}
+/* @keyframes move-2 { */
+/*   100% { */
+/*     transform: translateY(-15rem); */
+/*   } */
+/* } */
 
-.bubble:nth-child(4) {
-  width: 12px;
-  height: 12px;
-  bottom: 69px;
-  /* left: 52px; */
-  border-radius: 50%;
-  position: absolute;
-  animation: move-4 5s infinite;
-  animation-delay: -0.01s;
-  z-index: 400;
-}
+/* .bubble:nth-child(3) { */
+/*   width: 12px; */
+/*   height: 12px; */
+/*   bottom: 53px; */
+/*   /\* left: 30px; *\/ */
+/*   border-radius: 50%; */
+/*   position: absolute; */
+/*   animation: move-3 5s ease-in-out; */
+/*   animation-delay: -0.6s; */
+/*   z-index: 400; */
+/* } */
 
-@keyframes move-4 {
-  100% {
-    transform: translateY(-11rem);
-  }
-}
+/* @keyframes move-3 { */
+/*   100% { */
+/*     transform: translateY(-12rem); */
+/*   } */
+/* } */
+
+/* .bubble:nth-child(4) { */
+/*   width: 12px; */
+/*   height: 12px; */
+/*   bottom: 69px; */
+/*   /\* left: 52px; *\/ */
+/*   border-radius: 50%; */
+/*   position: absolute; */
+/*   animation: move-4 5s ease-in-out; */
+/*   animation-delay: -0.01s; */
+/*   z-index: 400; */
+/* } */
+
+/* @keyframes move-4 { */
+/*   100% { */
+/*     transform: translateY(-11rem); */
+/*   } */
+/* } */
 
 /* .bubble:nth-child(5) { */
 /*   width: 10px; */
@@ -671,10 +687,6 @@ canvas {
 /*     transform: translateY(-4rem); */
 /*   } */
 /* } */
-
-.bubble {
-  z-index: -1 !important;
-}
 
 
 .liquid {

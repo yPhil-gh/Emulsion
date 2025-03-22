@@ -3,6 +3,8 @@ const globalSpeed = 0.4; // Pixels per frame
 
 const liquidColor = '#660099';
 
+const wave = document.querySelector('.wave');
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 let width = canvas.width = window.innerWidth;
@@ -169,9 +171,6 @@ function shootBubbles() {
         bubbles();
     }
 }
-
-shootBubbles();
-setInterval(shootBubbles, 1000);
 
 class UFO {
     constructor(canvasWidth, canvasHeight) {
@@ -1064,6 +1063,7 @@ function updateTestTube() {
 
 let dropHeight = 300;
 let dropY = 210;
+let isDropped = false;
 
 function updateDrop() {
     if (dropHeight > 0) {
@@ -1077,6 +1077,24 @@ function updateDrop() {
     if (dropHeight <= 0) {
         drop.style.display = "none";
     }
+
+    if (dropHeight <= 0) {
+        isDropped = true;
+        drop.style.display = "none";
+    }
+
+    if (drop.style.display === "none") {
+        wave.style.setProperty('--wave-animation', 'animate 1s ease-in-out infinite alternate');
+    }
+
+}
+
+const bubbles = document.querySelector('.bubble');
+
+function updateBoil() {
+
+    shootBubbles();
+
 }
 
 function updateLogoPosition() {
@@ -1346,7 +1364,13 @@ function updateCubeLettersGlueAlpha() {
     cubeLettersGlueAlpha = Math.max(0, Math.min(cubeLettersGlueAlpha, 1));
 }
 
+let lastBoilTime = 0;
+const boilInterval = 1000; // 1 second
+
 function update() {
+
+    const now = performance.now();
+
     gridOffset += gridSpeed;
     if(gridOffset > numGridLines) gridOffset = 0;
     updateStars();
@@ -1367,6 +1391,12 @@ function update() {
     if (isCubeAnimEnded) {
         drop.style.display = 'block';
         updateDrop();
+
+        if (now - lastBoilTime >= boilInterval) {
+            updateBoil();
+            lastBoilTime = now;
+        }
+
     }
 
     if (isNight && moonAlpha < 1) {

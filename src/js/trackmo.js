@@ -1,8 +1,6 @@
 // Vars -----------------------------
 const globalSpeed = 0.8; // Pixels per frame
 
-let sunStarted = false;
-
 const liquidColorRgb = '102, 0, 153';
 
 const wave = document.querySelector('.wave');
@@ -44,7 +42,7 @@ let randomColor = electricColors[Math.floor(Math.random() * electricColors.lengt
 const sunSpeed = globalSpeed;
 const sunBaseRadius = 120;
 const sunGlowScale = 6;
-let sunYOffset = - 400;
+let sunYOffset = -300;
 const maxSunTravel = height - horizon + 250;
 const nightOffset = 400;
 
@@ -58,11 +56,13 @@ let starsMoveLeft = false;
 
 // Logo conf
 let logoChars = [];
+
 const logoInitialY = horizon - 18; // Just below horizon
 const logoFinalY = 200;
 let logoSpeed = 0; // Current rise speed
 let logoY = logoInitialY; // below screen
 let logoX = width/2 - 248;
+
 let letterHoverStartTime = 0;
 let prevHoverState = null;
 let hoveredLetter = null;
@@ -77,7 +77,7 @@ const particlesSpinSpeed = 0.05;
 const ufoFrequency = 120000; // 2 minutes
 
 // Cube logo
-const cubeSpeed = sunSpeed / 1500;
+const cubeSpeed = sunSpeed / 500;
 let cubeLettersGlueAnimationState = 'INCREASING';
 
 // Scene -------------------------------
@@ -540,7 +540,6 @@ function spawnShootingStar() {
 }
 
 function updateShootingStars() {
-    if (!sunStarted) return;
     for (let i = shootingStars.length - 1; i >= 0; i--) {
         let s = shootingStars[i];
         s.x += s.speed * Math.cos(s.angle);
@@ -596,14 +595,14 @@ function drawShootingStars() {
     }
 }
 
-
+let sunStarted = true; // Sun doesn't move until the document is clicked
 
 document.addEventListener('click', () => {
-    sunStarted = true;
+    sunStarted = true; // Start sun movement on click
 });
 
 function updateSunPosition() {
-    if (!sunStarted) return;
+    if (!sunStarted) return; // Don't move the sun until the document is clicked
 
     if (sunYOffset > maxSunTravel - nightOffset) {
         isNight = true;
@@ -614,6 +613,14 @@ function updateSunPosition() {
     }
 }
 
+function updatePond() {
+    const pond = document.querySelector('.pond');
+    if (!isNight) {
+        pond.style.opacity = 1;
+    } else {
+        pond.style.opacity = 0;
+    }
+}
 
 function drawSun() {
     const sunX = width / 2;
@@ -663,7 +670,6 @@ function drawSun() {
         }
     }
 }
-
 
 
 // GRID
@@ -980,20 +986,11 @@ function drawLogo() {
         }
     });
 
-    // if (letters['u'].visible !== false) { // Only draw if visible
-    //     ctx.strokeStyle = '#FFA500';
-    //     const uPath = new Path2D(document.getElementById('u').getAttribute('d'));
-    //     ctx.stroke(uPath);
-    // }
-
     ctx.restore();
 
 }
 
 function updateMoon() {
-
-    if (!sunStarted) return;
-
     // Horizontal movement
     moonX -= moonSpeed;
     moonFloatPhase += 0.02;
@@ -1060,12 +1057,26 @@ function drawVerticalLine() {
   ctx.stroke();
 }
 
+// Function to update the line's start and end positions
+function updateLine(newStartY, newEndY) {
+  dropStartY = newStartY; // Update the start position
+  dropEndY = newEndY; // Update the end position
+  drawVerticalLine(); // Redraw the line with the new positions
+}
+
+// Initialize the line with startY = 10 and endY = -50
+drawVerticalLine();
+
+// // Example: Update the line to start at y = 50 and end at y = -100
+// setTimeout(() => {
+//   updateLine(50, -100);
+// }, 2000); // Updates after 2 seconds
+
 const testTube = document.querySelector('.test-tube-container');
 const drop = document.querySelector('.test-tube-drop');
 drop.style.backgroundColor = 'rgba('+ liquidColorRgb + ')';
 
 function updateTestTube() {
-    if (!sunStarted) return;
     // Update opacity of the test tube
     testTube.style.opacity = moonAlpha;
 
@@ -1076,8 +1087,6 @@ let dropY = 210;
 let isDropped = false;
 
 function updateDrop() {
-    if (!sunStarted) return;
-
     if (dropHeight > 0) {
         dropHeight -= 7.0;
         dropY += 7.0;
@@ -1105,8 +1114,6 @@ const bubbles = document.querySelector('.bubble');
 const tube = document.querySelector('.tube');
 
 function updateBoil() {
-
-    if (!sunStarted) return;
 
     wave.style.setProperty('--wave-after-radius', '56%');
     wave.style.setProperty('--wave-before-radius', '200%');
@@ -1157,9 +1164,6 @@ function playRandomPop() {
 // }
 
 function updateLogo() {
-
-    if (!sunStarted) return;
-
     const now = Date.now();
 
     Object.keys(letters).forEach(id => {
@@ -1392,95 +1396,102 @@ function updateCubeLettersGlueAlpha() {
 let lastBoilTime = 0;
 const boilInterval = 1000; // 1 second
 
-let skyTopStart = [180, 205, 255];
-let skyTopEnd = [0, 0, 0];
-
-let skyMidStart = [255, 170, 110];
-let skyMidEnd = [17, 17, 51];
-
-let skyHorizonStart = [255, 180, 120];
-let skyHorizonEnd = [34, 0, 34];
-
-function getRGBString(colorArray) {
-    return `rgb(${colorArray[0]}, ${colorArray[1]}, ${colorArray[2]})`;
-}
-
-let skyTopColor = getRGBString(skyTopStart);
-let skyMidColor = getRGBString(skyMidStart);
-let skyHorizonColor = getRGBString(skyHorizonStart);
-
-let transitionProgress = 0; // 0 (start) → 1 (fully dark)
-
-function updateSky() {
-
-    if (!sunStarted) return;
-
-    transitionProgress = Math.min(1, transitionProgress + sunSpeed * 0.001);
-
-    // Function to interpolate between start and end colors
-    function interpolate(start, end) {
-        return Math.round(start * (1 - transitionProgress) + end * transitionProgress);
-    }
-
-    // Update skyTopColor
-    skyTopColor = `rgb(${interpolate(skyTopStart[0], skyTopEnd[0])},
-                        ${interpolate(skyTopStart[1], skyTopEnd[1])},
-                        ${interpolate(skyTopStart[2], skyTopEnd[2])})`;
-
-    // Update skyMidColor
-    skyMidColor = `rgb(${interpolate(skyMidStart[0], skyMidEnd[0])},
-                        ${interpolate(skyMidStart[1], skyMidEnd[1])},
-                        ${interpolate(skyMidStart[2], skyMidEnd[2])})`;
-
-    // Update skyHorizonColor
-    skyHorizonColor = `rgb(${interpolate(skyHorizonStart[0], skyHorizonEnd[0])},
-                            ${interpolate(skyHorizonStart[1], skyHorizonEnd[1])},
-                            ${interpolate(skyHorizonStart[2], skyHorizonEnd[2])})`;
-}
-
-
 function update() {
 
     const now = performance.now();
-
-    updateSky();
 
     gridOffset += gridSpeed;
     if(gridOffset > numGridLines) gridOffset = 0;
     updateStars();
     updateShootingStars();
     spawnShootingStar();
-    updateLogo();
-    updateMoon();
-    updateSunPosition();
-    updateLogoPosition();
-    updateTestTube();
-    // ufo.update(width, height, isNight);
-    ufo.update(mouseX, mouseY);
 
-    if (cubeAnimation.isAnimating && cubeAnimation.progress < 1) {
-        cubeAnimation.progress = Math.min(cubeAnimation.progress + cubeAnimation.speed, 1);
-    }
+    if (sunStarted) {
+        updateSky();
 
-    if (isGlued) {
-        drop.style.display = 'block';
-        updateDrop();
+        updateLogo();
+        updateMoon();
+        updateSunPosition();
+        updatePond();
+        updateLogoPosition();
+        updateTestTube();
+        // ufo.update(width, height, isNight);
+        ufo.update(mouseX, mouseY);
 
-        if (now - lastBoilTime >= boilInterval) {
-            updateBoil();
-            lastBoilTime = now;
+        if (cubeAnimation.isAnimating && cubeAnimation.progress < 1) {
+            cubeAnimation.progress = Math.min(cubeAnimation.progress + cubeAnimation.speed, 1);
         }
 
-    }
+        if (isGlued) {
+            drop.style.display = 'block';
+            updateDrop();
 
-    if (isNight && moonAlpha < 1) {
-        moonAlpha += 0.001; // Increase opacity gradually
-    }
+            if (now - lastBoilTime >= boilInterval) {
+                updateBoil();
+                lastBoilTime = now;
+            }
 
-    updateCubeLettersGlueAlpha();
+        }
+
+        if (isNight && moonAlpha < 1) {
+            moonAlpha += 0.001; // Increase opacity gradually
+        }
+
+        updateCubeLettersGlueAlpha();
+
+    }
 }
 
-function drawSky() {
+// Cold afternoon
+let skyTopStart = [180, 205, 255];
+let skyTopEnd = [0, 0, 0];
+let skyTopColor = [...skyTopStart];
+
+let skyMidStart = [255, 170, 110];
+let skyMidEnd = [17, 17, 51];
+let skyMidColor = [...skyMidStart];
+
+let skyHorizonStart = [255, 180, 120];
+let skyHorizonEnd = [34, 0, 34];
+let skyHorizonColor = [...skyHorizonStart];
+
+let transitionProgress = 0; // 0 (start) → 1 (fully dark)
+
+function getRGBString(color) {
+    return `rgb(${color[0]}, ${color[1]}, ${color[2]})`; // Convert array → string
+}
+
+
+function updateSky() {
+    if (transitionProgress === 0) {
+        skyTopColor = getRGBString(skyTopStart);
+        skyMidColor = getRGBString(skyMidStart);
+        skyHorizonColor = getRGBString(skyHorizonStart);
+        return; // Prevent interpolation before transition starts
+    }
+
+    transitionProgress = Math.min(1, transitionProgress + sunSpeed * 0.001);
+
+    function interpolate(start, end) {
+        return Math.round(start * (1 - transitionProgress) + end * transitionProgress);
+    }
+
+    function interpolateColor(colorStart, colorEnd) {
+        return [
+            interpolate(colorStart[0], colorEnd[0]),
+            interpolate(colorStart[1], colorEnd[1]),
+            interpolate(colorStart[2], colorEnd[2])
+        ];
+    }
+
+    skyTopColor = getRGBString(interpolateColor(skyTopStart, skyTopEnd));
+    skyMidColor = getRGBString(interpolateColor(skyMidStart, skyMidEnd));
+    skyHorizonColor = getRGBString(interpolateColor(skyHorizonStart, skyHorizonEnd));
+}
+
+
+function draw() {
+    ctx.clearRect(0, 0, width, height);
 
     // Background elements
     const skyGradient = ctx.createLinearGradient(0, width, 0, 0);
@@ -1491,18 +1502,11 @@ function drawSky() {
 
     // Night
     skyGradient.addColorStop(1, skyTopColor); // top
-    skyGradient.addColorStop(0.5, skyMidColor); // Dark blue midway
-    skyGradient.addColorStop(0, skyHorizonColor); // horizon
+    // skyGradient.addColorStop(0.5, "#111133"); // Dark blue midway
+    // skyGradient.addColorStop(0, "#220022"); // horizon
 
-    ctx.fillStyle = skyGradient;
+    // ctx.fillStyle = skyGradient;
     ctx.fillRect(0, 0, width, horizon);
-
-}
-
-function draw() {
-    ctx.clearRect(0, 0, width, height);
-
-    drawSky();
 
     drawStars();
     drawShootingStars();
@@ -1533,7 +1537,11 @@ function draw() {
 
     ctx.fillStyle = floorGradient;
     ctx.fillRect(0, horizon, width, height - horizon);
-    drawGrid();
+
+    if (isNight) {
+        drawGrid();
+    }
+
     drawCredits();
     // drawVolumeControl();
     drawCube();

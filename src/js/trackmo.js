@@ -44,7 +44,7 @@ let randomColor = electricColors[Math.floor(Math.random() * electricColors.lengt
 const sunSpeed = globalSpeed;
 const sunBaseRadius = 120;
 const sunGlowScale = 6;
-let sunYOffset = - 250;
+let sunYOffset = - 400;
 const maxSunTravel = height - horizon + 250;
 const nightOffset = 400;
 

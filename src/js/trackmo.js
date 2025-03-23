@@ -1,7 +1,21 @@
 // Vars -----------------------------
 const globalSpeed = 0.8; // Pixels per frame
 
+const baseSpeed = 0.8; // Original globalSpeed value
+const baseDuration = 16; // Original animation duration (16s)
+
+const animationDuration = (baseSpeed / globalSpeed) * baseDuration;
+
+const sunReflection = document.querySelector('.sun-reflection');
+
 let isSunSetting = false;
+
+function updateReflection() {
+    sunReflection.style.setProperty('--reflect-animation-duration', `${animationDuration}s`);
+    if (isSunSetting) {
+        sunReflection.style.setProperty('--reflect-animation-name', 'rise');
+    }
+}
 
 const liquidColorRgb = '102, 0, 153';
 
@@ -1422,6 +1436,8 @@ function update() {
     const now = performance.now();
 
     updateSky();
+
+    updateReflection();
 
     gridOffset += gridSpeed;
     if(gridOffset > numGridLines) gridOffset = 0;

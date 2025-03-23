@@ -437,15 +437,18 @@ canvas {
   }
 }
 
-.sun {
+.sun-reflection {
   /* background: yellow; */
   border-radius: 50%;
   width: 20vmin;
   height: 20vmin;
   left: calc(51.3% - 10vmin);
   /* top: 50%; */
-  transform: translate3d(0, 0, 0);
-  animation: rise 12s forwards;
+  transform: translate3d(0, 14vh, 0);
+  animation: rise 16s forwards;
+  animation-name: var(--reflect-animation-name);
+  animation-fill-mode: forwards;
+  animation-duration: var(--reflect-animation-duration);
   box-shadow: 0 0 10px yellow;
 }
 
@@ -460,11 +463,11 @@ canvas {
   background: radial-gradient(circle at 60% 0%, var(--s2), transparent);
 }
 
-.sun-container-reflection .sun {
+.sun-container-reflection .sun-reflection {
   z-index: 1;
   background: linear-gradient(yellow, darkorange);
   box-shadow: none;
-  filter: blur(5px);
+  filter: blur(35px);
   opacity: 1;
   top: 0;
   /* transform: translate3d(0, 20vmin, 0); */
@@ -478,17 +481,6 @@ canvas {
   width: 100%;
   height: 30vh;
   top: 67vh;
-}
-
-@keyframes rise-reflection {
-  30% {
-    /* opacity: 0; */
-    transform: translate3d(0, 5vmin, 0);
-  }
-  100% {
-    /* opacity: 0; */
-    transform: translate3d(0, 80vmin, 0);
-  }
 }
 
 .light {

@@ -593,9 +593,15 @@ function drawShootingStars() {
     }
 }
 
+let sunStarted = false;
 
-// SUN
+document.addEventListener('click', () => {
+    sunStarted = true;
+});
+
 function updateSunPosition() {
+    if (!sunStarted) return; // Don't move the sun until the document is clicked
+
     if (sunYOffset > maxSunTravel - nightOffset) {
         isNight = true;
     }
@@ -604,7 +610,6 @@ function updateSunPosition() {
         sunYOffset += sunSpeed;
     }
 }
-
 
 function drawSun() {
     const sunX = width / 2;

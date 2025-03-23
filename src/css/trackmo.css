@@ -71,9 +71,9 @@ canvas {
 .test-tube-container {
   /* opacity: 0; */
   position: absolute; /* Now it can be placed over the canvas */
-  top: 50%;
+  top: 80%;
   left: 50%;
-  transform: translate(-50%, -50%) rotate(-35deg);
+  transform: translate(-50%, -70%);
   z-index: 10; /* Higher than canvas */
   padding: 20px;
   /* /\* min-height: 100vh; *\/ */
@@ -84,10 +84,19 @@ canvas {
   /* justify-content: center; */
   /* align-items: center; */
 
-  animation: rotateBack 4s ease-out forwards;
+  /* animation: rotateTube 4s ease-out forwards; */
 }
 
-@keyframes rotateBack {
+@keyframes riseTube {
+  from {
+    transform: translate(-50%, -70%);
+  }
+  to {
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes rotateTube {
   from {
     transform: translate(-50%, -50%) rotate(-35deg);
   }

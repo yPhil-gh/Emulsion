@@ -1480,6 +1480,7 @@ function update() {
         updateDrop();
 
         if (now - lastBoilTime >= boilInterval) {
+            tube.style.overflow = 'unset';
             updateBoil();
             lastBoilTime = now;
         }
@@ -1636,9 +1637,15 @@ const sound = new Howl({
 });
 
 const fakeLiquid = document.querySelector('.fake-liquid');
+const tubeAnimRotate = document.querySelector('.tube-anim-rise2');
 
 fakeLiquid.addEventListener('animationend', () => {
   fakeLiquid.style.display = 'none';
+});
+
+tubeAnimRotate.addEventListener('animationstart', () => {
+    console.log("yo: ");
+  fakeLiquid.style.opacity = 1;
 });
 
 playButton.addEventListener('click', function(event) {

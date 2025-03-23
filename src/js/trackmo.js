@@ -1451,6 +1451,8 @@ function update() {
 
     if (isSunSetting) {
         updateSky();
+        document.querySelector('.tube-anim-master').classList.add('start');
+        // document.querySelector('.tube-anim-rise1').style.animationName = 'rise1 1s ease-out forwards';
     }
 
     updateReflection();

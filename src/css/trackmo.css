@@ -82,7 +82,8 @@ canvas {
   left: 50%;
   /* Ensure relative positioning for transforms */
   /* position: relative; */
-  animation: rise1 1s ease-out forwards;
+  animation: rise1 1s ease-in-out forwards;
+  animation-play-state: paused;
 }
 
 @keyframes rise1 {
@@ -92,7 +93,8 @@ canvas {
 
 /* Step 2: Rotate left (tilt) after rise finishes */
 .tube-anim-rotate1 {
-  animation: rotate1 4s ease-out forwards 1s;
+  animation: rotate1 4s ease-in-out forwards 1s;
+  animation-play-state: paused;
 }
 
 @keyframes rotate1 {
@@ -102,7 +104,8 @@ canvas {
 
 /* Step 3: Additional rise (can occur concurrently with step 4) */
 .tube-anim-rise2 {
-  animation: rise2 3s ease-out forwards 4s;
+  animation: rise2 3s ease-in-out forwards 4s;
+  animation-play-state: paused;
 }
 
 @keyframes rise2 {
@@ -120,7 +123,8 @@ canvas {
   transform: rotate(35deg);
 
   margin: auto auto;
-  animation: rotate-liquid 3s ease-out forwards 4s;
+  animation: rotate-liquid 3s ease-in-out forwards 4s;
+  animation-play-state: paused;
 }
 
 
@@ -141,17 +145,13 @@ canvas {
 /*   } */
 /* } */
 
-
-/* Step 4: Rotate back (counteract the previous rotation) */
-.tube-anim-rotate2 {
-  /* animation: rotate2 1s ease-out forwards 5s; */
+.tube-anim-master.start .tube-anim-rise1,
+.tube-anim-master.start .tube-anim-rotate1,
+.tube-anim-master.start .tube-anim-rise2,
+.tube-anim-master.start .tube-anim-rotate2,
+.tube-anim-master.start .fake-liquid {
+  animation-play-state: running;
 }
-
-@keyframes rotate2 {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(35deg); }
-}
-
 
 /* @keyframes riseTube { */
 /*   from { */

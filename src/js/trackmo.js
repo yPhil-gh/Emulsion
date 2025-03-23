@@ -1376,9 +1376,50 @@ function updateCubeLettersGlueAlpha() {
 let lastBoilTime = 0;
 const boilInterval = 1000; // 1 second
 
+let skyTopStart = [255, 255, 255]; // White
+let skyTopEnd = [0, 0, 0]; // Black
+let skyTopColor = [...skyTopStart]; // Initialize
+
+let skyMidStart = [17, 17, 51]; // Dark Blue
+let skyMidEnd = [0, 0, 0]; // Black
+let skyMidColor = [...skyMidStart]; // Initialize
+
+let skyHorizonStart = [34, 0, 34]; // Purple
+let skyHorizonEnd = [0, 0, 0]; // Black
+let skyHorizonColor = [...skyHorizonStart]; // Initialize
+
+let transitionProgress = 0; // 0 (start) → 1 (fully dark)
+
+function updateSky() {
+    transitionProgress = Math.min(1, transitionProgress + sunSpeed * 0.001);
+
+    // Function to interpolate between start and end colors
+    function interpolate(start, end) {
+        return Math.round(start * (1 - transitionProgress) + end * transitionProgress);
+    }
+
+    // Update skyTopColor
+    skyTopColor = `rgb(${interpolate(skyTopStart[0], skyTopEnd[0])},
+                        ${interpolate(skyTopStart[1], skyTopEnd[1])},
+                        ${interpolate(skyTopStart[2], skyTopEnd[2])})`;
+
+    // Update skyMidColor
+    skyMidColor = `rgb(${interpolate(skyMidStart[0], skyMidEnd[0])},
+                        ${interpolate(skyMidStart[1], skyMidEnd[1])},
+                        ${interpolate(skyMidStart[2], skyMidEnd[2])})`;
+
+    // Update skyHorizonColor
+    skyHorizonColor = `rgb(${interpolate(skyHorizonStart[0], skyHorizonEnd[0])},
+                            ${interpolate(skyHorizonStart[1], skyHorizonEnd[1])},
+                            ${interpolate(skyHorizonStart[2], skyHorizonEnd[2])})`;
+}
+
+
 function update() {
 
     const now = performance.now();
+
+    updateSky();
 
     gridOffset += gridSpeed;
     if(gridOffset > numGridLines) gridOffset = 0;
@@ -1426,9 +1467,9 @@ function draw() {
     // skyGradient.addColorStop(1, "#cce7ff"); // Warm orange at the horizon
 
     // Night
-    skyGradient.addColorStop(1, "#000000"); // top
-    skyGradient.addColorStop(0.5, "#111133"); // Dark blue midway
-    skyGradient.addColorStop(0, "#220022"); // horizon
+    skyGradient.addColorStop(1, skyTopColor); // top
+    skyGradient.addColorStop(0.5, skyMidColor); // Dark blue midway
+    skyGradient.addColorStop(0, skyHorizonColor); // horizon
 
     ctx.fillStyle = skyGradient;
     ctx.fillRect(0, 0, width, horizon);

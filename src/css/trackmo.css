@@ -78,39 +78,51 @@ canvas {
 /* Step 1: Initial rise */
 .tube-anim-rise1 {
   position: absolute;
-  top: 80%;
-  left: 50%;
+  top: 50%;
+  left: -35px;
   /* Ensure relative positioning for transforms */
   /* position: relative; */
-  animation: rise1 1s ease-in-out forwards;
+  animation: rise1 3s ease-in-out forwards;
   animation-play-state: paused;
 }
+
+/* @keyframes rise1 { */
+/*   from { transform: translateY(0); } */
+/*   to   { transform: translateY(-47px); } /\* Adjust as needed *\/ */
+/* } */
 
 @keyframes rise1 {
-  from { transform: translateY(0); }
-  to   { transform: translateY(-47px); } /* Adjust as needed */
+  0% {
+    transform: translateX(0);
+  }
+  30% {
+    transform: translateX(52vw);
+  }
+  60% {
+    transform: translateX(52vw) rotate(-35deg) translateY(30vh);
+  }
+  70% {
+    transform: translateX(52vw) rotate(-35deg) translateY(30vh);
+  }
+  100% {
+    transform: translateX(45vw) rotate(-35deg) translateY(30vh);
+  }
 }
 
-/* Step 2: Rotate left (tilt) after rise finishes */
-.tube-anim-rotate1 {
-  animation: rotate1 4s ease-in-out forwards 1s;
-  animation-play-state: paused;
-}
-
-@keyframes rotate1 {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(-35deg); }
-}
 
 /* Step 3: Additional rise (can occur concurrently with step 4) */
 .tube-anim-rise2 {
-  animation: rise2 3s ease-in-out forwards 4s;
+  animation: rise2 2s linear forwards 4s;
   animation-play-state: paused;
 }
 
 @keyframes rise2 {
-  from { transform: translateX(0) rotate(0); }
-  to   { transform: rotate(35deg) translateY(-2px) translateY(-170px); } /* Adjust as needed */
+  0% {
+    transform: translateX(0) rotate(0);
+  }
+  100% {
+    transform: rotate(35deg) translateX(-6vh) translateY(-10vw);
+  }
 }
 
 .fake-liquid {
@@ -256,11 +268,11 @@ canvas {
     opacity: 0.2;
   }
   99.1% {
-    transform: translateY(-12rem) scale(0.8);
+    transform: translateY(-15rem) scale(0.8);
     opacity: 0.2;
   }
   100% {
-    transform: translateY(-10.9rem) scale(1.5);
+    transform: translateY(-13.9rem) scale(1.5);
     opacity: 0;
   }
 }

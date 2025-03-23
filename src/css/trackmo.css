@@ -65,26 +65,17 @@ canvas {
   color: #00FFFF;
   cursor:pointer;
 }
-
-/* Tube */
-
+/* Parent container: handles the rising */
 .test-tube-container {
-  /* opacity: 0; */
-  position: absolute; /* Now it can be placed over the canvas */
+  position: absolute;
   top: 80%;
   left: 50%;
   transform: translate(-50%, -70%);
   z-index: 10; /* Higher than canvas */
   padding: 20px;
-  /* /\* min-height: 100vh; *\/ */
-  /* display: flex; */
-  /* /\* position: absolute; *\/ */
-  /* /\* margin-top: 35%; *\/ */
-  /* margin: auto auto; */
-  /* justify-content: center; */
-  /* align-items: center; */
 
-  /* animation: rotateTube 4s ease-out forwards; */
+  /* Rise animation over 4 seconds */
+  animation: riseTube 4s ease-out forwards;
 }
 
 @keyframes riseTube {
@@ -92,24 +83,28 @@ canvas {
     transform: translate(-50%, -70%);
   }
   to {
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -90%);
   }
 }
 
-@keyframes rotateTube {
-  from {
-    transform: translate(-50%, -50%) rotate(-35deg);
-  }
-  to {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-}
-
+/* Child element: handles the rotation */
 .test-tube {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  /* Rotation animation delayed by 4s so it starts after riseTube finishes */
+  animation: rotateTube 4s ease-out forwards 4s;
+}
+
+@keyframes rotateTube {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-35deg);
+  }
 }
 
 .tube {

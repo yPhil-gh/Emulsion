@@ -60,6 +60,7 @@ canvas {
 /* Tube */
 
 .test-tube-container {
+  opacity: 0;
   position: absolute; /* Now it can be placed over the canvas */
   top: 50%;
   left: 50%;

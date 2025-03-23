@@ -1,6 +1,8 @@
 // Vars -----------------------------
 const globalSpeed = 0.8; // Pixels per frame
 
+let sunStarted = false;
+
 const liquidColorRgb = '102, 0, 153';
 
 const wave = document.querySelector('.wave');
@@ -538,6 +540,7 @@ function spawnShootingStar() {
 }
 
 function updateShootingStars() {
+    if (!sunStarted) return;
     for (let i = shootingStars.length - 1; i >= 0; i--) {
         let s = shootingStars[i];
         s.x += s.speed * Math.cos(s.angle);
@@ -594,8 +597,14 @@ function drawShootingStars() {
 }
 
 
-// SUN
+
+document.addEventListener('click', () => {
+    sunStarted = true;
+});
+
 function updateSunPosition() {
+    if (!sunStarted) return;
+
     if (sunYOffset > maxSunTravel - nightOffset) {
         isNight = true;
     }
@@ -982,6 +991,9 @@ function drawLogo() {
 }
 
 function updateMoon() {
+
+    if (!sunStarted) return;
+
     // Horizontal movement
     moonX -= moonSpeed;
     moonFloatPhase += 0.02;
@@ -1048,26 +1060,12 @@ function drawVerticalLine() {
   ctx.stroke();
 }
 
-// Function to update the line's start and end positions
-function updateLine(newStartY, newEndY) {
-  dropStartY = newStartY; // Update the start position
-  dropEndY = newEndY; // Update the end position
-  drawVerticalLine(); // Redraw the line with the new positions
-}
-
-// Initialize the line with startY = 10 and endY = -50
-drawVerticalLine();
-
-// // Example: Update the line to start at y = 50 and end at y = -100
-// setTimeout(() => {
-//   updateLine(50, -100);
-// }, 2000); // Updates after 2 seconds
-
 const testTube = document.querySelector('.test-tube-container');
 const drop = document.querySelector('.test-tube-drop');
 drop.style.backgroundColor = 'rgba('+ liquidColorRgb + ')';
 
 function updateTestTube() {
+    if (!sunStarted) return;
     // Update opacity of the test tube
     testTube.style.opacity = moonAlpha;
 
@@ -1078,6 +1076,8 @@ let dropY = 210;
 let isDropped = false;
 
 function updateDrop() {
+    if (!sunStarted) return;
+
     if (dropHeight > 0) {
         dropHeight -= 7.0;
         dropY += 7.0;
@@ -1105,6 +1105,8 @@ const bubbles = document.querySelector('.bubble');
 const tube = document.querySelector('.tube');
 
 function updateBoil() {
+
+    if (!sunStarted) return;
 
     wave.style.setProperty('--wave-after-radius', '56%');
     wave.style.setProperty('--wave-before-radius', '200%');
@@ -1155,6 +1157,9 @@ function playRandomPop() {
 // }
 
 function updateLogo() {
+
+    if (!sunStarted) return;
+
     const now = Date.now();
 
     Object.keys(letters).forEach(id => {
@@ -1407,6 +1412,9 @@ let skyHorizonColor = getRGBString(skyHorizonStart);
 let transitionProgress = 0; // 0 (start) → 1 (fully dark)
 
 function updateSky() {
+
+    if (!sunStarted) return;
+
     transitionProgress = Math.min(1, transitionProgress + sunSpeed * 0.001);
 
     // Function to interpolate between start and end colors

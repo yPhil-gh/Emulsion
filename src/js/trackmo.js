@@ -1112,10 +1112,11 @@ const drop = document.querySelector('.test-tube-drop');
 drop.style.backgroundColor = 'rgba('+ liquidColorRgb + ')';
 
 function updateTestTube() {
-    if (!isNight) return;
-    // Update opacity of the test tube
-    testTube.style.opacity = moonAlpha;
 
+
+
+    // if (!isNight) return;
+    // testTube.style.opacity = moonAlpha;
 }
 
 let dropHeight = 300;
@@ -1422,8 +1423,6 @@ let skyHorizonColor = getRGBString(skyHorizonStart);
 
 function updateSky() {
 
-    if (!isSunSetting) return;
-
     transitionProgress = Math.min(1, transitionProgress + sunSpeed * 0.001);
 
     // Interpolate between start and end colors
@@ -1452,7 +1451,9 @@ function update() {
 
     const now = performance.now();
 
-    updateSky();
+    if (isSunSetting) {
+        updateSky();
+    }
 
     updateReflection();
 

@@ -65,6 +65,7 @@ canvas {
   color: #00FFFF;
   cursor:pointer;
 }
+
 /* Parent container: handles the rising */
 .test-tube-container {
   position: absolute;
@@ -75,39 +76,132 @@ canvas {
   padding: 20px;
 
   /* Rise animation over 4 seconds */
-  animation: riseTube 4s ease-out forwards;
+  /* animation: riseTube 4s ease-out forwards; */
 }
 
-@keyframes riseTube {
-  from {
-    transform: translate(-50%, -70%);
-  }
-  to {
-    transform: translate(-50%, -90%);
-  }
+/* Step 1: Initial rise */
+.anim-rise1 {
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  /* Ensure relative positioning for transforms */
+  /* position: relative; */
+  animation: rise1 1s ease-out forwards;
 }
 
-/* Child element: handles the rotation */
-.test-tube {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  /* Rotation animation delayed by 4s so it starts after riseTube finishes */
-  animation: rotateTube 4s ease-out forwards 4s;
+@keyframes rise1 {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-45px); } /* Adjust as needed */
 }
 
-@keyframes rotateTube {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(-35deg);
-  }
+/* Step 2: Rotate left (tilt) after rise finishes */
+.anim-rotate1 {
+  animation: rotate1 4s ease-out forwards 1s;
+}
+
+@keyframes rotate1 {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-35deg); }
+}
+
+/* Step 3: Additional rise (can occur concurrently with step 4) */
+.anim-rise2 {
+  animation: rise2 3s ease-out forwards 4s;
+}
+
+@keyframes rise2 {
+  from { transform: translateX(0) rotate(0); }
+  to   { transform: rotate(35deg) translateY(-2px) translateY(-130px); } /* Adjust as needed */
+}
+
+.fake-liquid {
+  width: 142px;
+  height: 190px;
+  background-color: red;
+  transform-origin: top left;
+
+  transform: rotate(35deg);
+
+  margin: auto auto;
+  animation: rotate-liquid 3s ease-out forwards 4s;
+}
+
+
+@keyframes rotate-liquid {
+  from { rotate(0); }
+  to   { transform: rotate(0deg) translateY(50px); }
+}
+
+/* @keyframes rise2 { */
+/*   0% { */
+/*     transform: translateX(0); */
+/*   } */
+/*   50% { */
+/*     transform: translateX(20px); */
+/*   } */
+/*   100% { */
+/*     transform: translateY(-60px); */
+/*   } */
+/* } */
+
+
+/* Step 4: Rotate back (counteract the previous rotation) */
+.anim-rotate2 {
+  /* animation: rotate2 1s ease-out forwards 5s; */
+}
+
+@keyframes rotate2 {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(35deg); }
+}
+
+
+/* @keyframes riseTube { */
+/*   from { */
+/*     transform: translate(-50%, -70%); */
+/*   } */
+/*   to { */
+/*     transform: translate(-50%, -90%); */
+/*   } */
+/* } */
+
+/* /\* Child element: handles the rotation *\/ */
+/* .test-tube { */
+/*   display: flex; */
+/*   flex-direction: column; */
+/*   justify-content: center; */
+/*   align-items: center; */
+
+/*   /\* Rotation animation delayed by 4s so it starts after riseTube finishes *\/ */
+/*   animation: rotateTube 4s ease-out forwards 4s; */
+/* } */
+
+/* @keyframes rotateTube { */
+/*   from { */
+/*     transform: rotate(0deg); */
+/*   } */
+/*   to { */
+/*     transform: rotate(-35deg); */
+/*   } */
+/* } */
+
+.liquid {
+  /* position: relative; */
+  /* top:50%; */
+  /* left: 49.9%; */
+  /* transform: translate(-50%, -50%); */
+  width: 60px;
+  height: 150px;
+  /* background: #ccc; */
+  /* border: 5px solid #4973ff; */
+  border-radius: 0px 0px 40px 40px/0 0 50px 50px;
+
+  overflow: hidden;
+  z-index: 600;
 }
 
 .tube {
+  overflow: hidden;
   width: 60px;
   height: 150px;
   border-radius: 0px 0px 40px 40px/0 0 50px 50px;
@@ -174,22 +268,6 @@ canvas {
   }
 }
 
-
-.liquid {
-  /* position: relative; */
-  /* top:50%; */
-  /* left: 49.9%; */
-  /* transform: translate(-50%, -50%); */
-  width: 60px;
-  height: 150px;
-  /* background: #ccc; */
-  /* border: 5px solid #4973ff; */
-  border-radius: 0px 0px 40px 40px/0 0 50px 50px;
-
-  overflow: hidden;
-  z-index: 600;
-}
-
 .wave{
   position: relative;
   width: 100%;
@@ -213,7 +291,7 @@ canvas {
 .wave:before{
   margin-top: 65px;
   border-radius: var(--wave-before-radius);
-  border: 145px solid var(--color-liquid);
+  border: 118px solid var(--color-liquid);
   box-shadow:
     0 0 20px #00FFFF,
     0 0 40px #004466,
@@ -233,7 +311,7 @@ canvas {
 .wave:after{
   margin-top: 65px;
   border-radius: var(--wave-before-radius);
-  border: 145px solid var(--color-liquid);
+  border: 118px solid var(--color-liquid);
   box-shadow:
     0 0 20px #004466,
     0 0 40px #8A2BE2,
@@ -343,7 +421,7 @@ canvas {
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(#fea79855, var(--v2));
+  background: linear-gradient(#7FCDFF, var(--v2));
   overflow: hidden;
   box-shadow: inset 0 1px 4px -3px white;
 }

@@ -1113,8 +1113,6 @@ drop.style.backgroundColor = 'rgba('+ liquidColorRgb + ')';
 
 function updateTestTube() {
 
-
-
     // if (!isNight) return;
     // testTube.style.opacity = moonAlpha;
 }
@@ -1635,6 +1633,12 @@ const sound = new Howl({
   src: ['../../tmp/loop.ogg'],
   html5: true,
   loop: true // Add this if you want the sound to loop
+});
+
+const fakeLiquid = document.querySelector('.fake-liquid');
+
+fakeLiquid.addEventListener('animationend', () => {
+  fakeLiquid.style.display = 'none';
 });
 
 playButton.addEventListener('click', function(event) {

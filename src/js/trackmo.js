@@ -42,7 +42,7 @@ let randomColor = electricColors[Math.floor(Math.random() * electricColors.lengt
 const sunSpeed = globalSpeed;
 const sunBaseRadius = 120;
 const sunGlowScale = 6;
-let sunYOffset = 0;
+let sunYOffset = - 250;
 const maxSunTravel = height - horizon + 250;
 const nightOffset = 400;
 
@@ -605,46 +605,57 @@ function updateSunPosition() {
     }
 }
 
+
 function drawSun() {
     const sunX = width / 2;
     const sunY = horizon + sunYOffset;
 
+    // Glow control variables
+    const sunGlowOpacity = 0.5; // Adjust for stronger or weaker glow
+    const sunGlowSize = sunBaseRadius * 2; // Controls the glow spread
+    const showSunsetLines = true; // Toggle sunset lines on/off
+
+    // Sun glow gradient
     const gradient = ctx.createRadialGradient(
         sunX, sunY, sunBaseRadius * 0.3,
-        sunX, sunY, sunBaseRadius * sunGlowScale
+        sunX, sunY, sunGlowSize
     );
-    gradient.addColorStop(0, 'rgba(255, 69, 0, 0.5)');
-    gradient.addColorStop(0.5, 'rgba(255, 215, 0, 0.25)');
+    gradient.addColorStop(0, `rgba(255, 69, 0, ${sunGlowOpacity})`);
+    gradient.addColorStop(0.5, `rgba(255, 215, 0, ${sunGlowOpacity * 0.5})`);
     gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
     // Draw glow first
     ctx.fillStyle = gradient;
     ctx.beginPath();
-    ctx.rect(0, 0, width, height);
+    ctx.arc(sunX, sunY, sunGlowSize, 0, Math.PI * 2);
     ctx.fill();
 
-    // Main sun body (now larger)
+    // Sun body
     ctx.beginPath();
-    ctx.arc(sunX, sunY, sunBaseRadius, Math.PI, 2 * Math.PI);
-    let sunGradient = ctx.createLinearGradient(0, sunY - sunBaseRadius, 0, sunY);
+    ctx.arc(sunX, sunY, sunBaseRadius, 0, Math.PI * 2);
+    let sunGradient = ctx.createLinearGradient(0, sunY - sunBaseRadius, 0, sunY + sunBaseRadius);
     sunGradient.addColorStop(0, "#FF4500");
     sunGradient.addColorStop(1, "#FFD700");
     ctx.fillStyle = sunGradient;
     ctx.fill();
 
-    // Sun details (scaled appropriately)
-    const numLines = 8; // 🔥 Increased lines for bigger sun
-    for (let i = 0; i < numLines; i++) {
-        let lineY = sunY - sunBaseRadius + (i + 1) * (sunBaseRadius / (numLines + 1));
-        ctx.beginPath();
-        let dx = Math.sqrt(sunBaseRadius ** 2 - (sunY - lineY) ** 2);
-        ctx.moveTo(sunX - dx, lineY);
-        ctx.lineTo(sunX + dx, lineY);
-        ctx.lineWidth = 1 + (i / numLines) * 5; // 🔥 Thicker lines
-        ctx.strokeStyle = "rgba(0,0,0,0.3)";
-        ctx.stroke();
+    // Optional sunset lines
+    if (showSunsetLines) {
+        const numLines = 8;
+        for (let i = 0; i < numLines; i++) {
+            let lineY = sunY - sunBaseRadius + (i + 1) * (sunBaseRadius / (numLines + 1));
+            ctx.beginPath();
+            let dx = Math.sqrt(sunBaseRadius ** 2 - (sunY - lineY) ** 2);
+            ctx.moveTo(sunX - dx, lineY);
+            ctx.lineTo(sunX + dx, lineY);
+            ctx.lineWidth = 1 + (i / numLines) * 5;
+            ctx.strokeStyle = "rgba(0,0,0,0.3)";
+            ctx.stroke();
+        }
     }
 }
+
+
 
 // GRID
 const numGridLines = 40;
@@ -1456,8 +1467,7 @@ function update() {
     updateCubeLettersGlueAlpha();
 }
 
-function draw() {
-    ctx.clearRect(0, 0, width, height);
+function drawSky() {
 
     // Background elements
     const skyGradient = ctx.createLinearGradient(0, width, 0, 0);
@@ -1473,6 +1483,13 @@ function draw() {
 
     ctx.fillStyle = skyGradient;
     ctx.fillRect(0, 0, width, horizon);
+
+}
+
+function draw() {
+    ctx.clearRect(0, 0, width, height);
+
+    drawSky();
 
     drawStars();
     drawShootingStars();

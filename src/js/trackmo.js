@@ -10,6 +10,12 @@ const sunReflection = document.querySelector('.sun-reflection');
 
 let isSunSetting = false;
 
+let transitionProgress = 0;
+
+function getRGBString(colorArray) {
+    return `rgb(${colorArray[0]}, ${colorArray[1]}, ${colorArray[2]})`;
+}
+
 function updateReflection() {
     sunReflection.style.setProperty('--reflect-animation-duration', `${animationDuration}s`);
     if (isSunSetting) {
@@ -629,22 +635,39 @@ function updateSunPosition() {
 }
 
 
+let sunTopStart = [255, 180, 120];
+let sunTopEnd = [255, 62, 0];
+
+let sunTopColor = getRGBString(sunTopStart);
+
 function drawSun() {
     const sunX = width / 2;
     const sunY = horizon + sunYOffset;
+    transitionProgress = Math.min(1, transitionProgress + sunSpeed * 0.001);
+
+    // Interpolate between start and end colors
+    function interpolate(start, end) {
+        return Math.round(start * (1 - transitionProgress) + end * transitionProgress);
+    }
+
+    sunTopColor = `${interpolate(sunTopStart[0], sunTopEnd[0])},
+                        ${interpolate(sunTopStart[1], sunTopEnd[1])},
+                        ${interpolate(sunTopStart[2], sunTopEnd[2])}`;
 
     // Glow control variables
     const sunGlowOpacity = 0.5; // Adjust for stronger or weaker glow
     const sunGlowSize = sunBaseRadius * 2; // Controls the glow spread
     const showSunsetLines = true; // Toggle sunset lines on/off
 
+
+
     // Sun glow gradient
     const gradient = ctx.createRadialGradient(
         sunX, sunY, sunBaseRadius * 0.3,
         sunX, sunY, sunGlowSize
     );
-    gradient.addColorStop(0, `rgba(255, 69, 0, ${sunGlowOpacity})`);
-    gradient.addColorStop(0.5, `rgba(255, 215, 0, ${sunGlowOpacity * 0.5})`);
+    gradient.addColorStop(0, `rgba(${sunTopColor}, ${sunGlowOpacity})`);
+    // gradient.addColorStop(0.5, `rgba(255, 215, 0, ${sunGlowOpacity * 0.5})`);
     gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
     // Draw glow first
@@ -657,7 +680,7 @@ function drawSun() {
     ctx.beginPath();
     ctx.arc(sunX, sunY, sunBaseRadius, 0, Math.PI * 2);
     let sunGradient = ctx.createLinearGradient(0, sunY - sunBaseRadius, 0, sunY + sunBaseRadius);
-    sunGradient.addColorStop(0, "#FF4500");
+    sunGradient.addColorStop(0, `rgba(${sunTopColor})`);
     sunGradient.addColorStop(1, "#FFD700");
     ctx.fillStyle = sunGradient;
     ctx.fill();
@@ -1393,15 +1416,9 @@ let skyMidEnd = [17, 17, 51];
 let skyHorizonStart = [255, 180, 120];
 let skyHorizonEnd = [34, 0, 34];
 
-function getRGBString(colorArray) {
-    return `rgb(${colorArray[0]}, ${colorArray[1]}, ${colorArray[2]})`;
-}
-
 let skyTopColor = getRGBString(skyTopStart);
 let skyMidColor = getRGBString(skyMidStart);
 let skyHorizonColor = getRGBString(skyHorizonStart);
-
-let transitionProgress = 0; // 0 (start) → 1 (fully dark)
 
 function updateSky() {
 
@@ -1409,7 +1426,7 @@ function updateSky() {
 
     transitionProgress = Math.min(1, transitionProgress + sunSpeed * 0.001);
 
-    // Function to interpolate between start and end colors
+    // Interpolate between start and end colors
     function interpolate(start, end) {
         return Math.round(start * (1 - transitionProgress) + end * transitionProgress);
     }

@@ -480,78 +480,7 @@ canvas {
   overflow: hidden;
   width: 100%;
   height: 30vh;
-  top: 67vh;
-}
-
-.light {
-  height: 0.5vmin;
-  width: 20vmin;
-  background: red;
-  /* top: 10px; */
-  /* top: calc(50% + 1vmin); */
-  left: 42%;
-  /* right: 0; */
-  margin: auto;
-  animation: light 20s infinite;
-  opacity: 0;
-  transform: scaleX(0.1) translate3d(0%, 0, 0);
-  border-radius: 0.25vh;
-  filter: blur(1px);
-}
-
-@-webkit-keyframes light {
-  5% {
-    opacity: 1;
-    transform: scaleX(1);
-  }
-  10% {
-    opacity: 0.6;
-    transform: scaleX(1) translate3d(5%, 0, 0);
-  }
-  15% {
-    opacity: 0.6;
-    transform: scaleX(1) translate3d(-5%, 0, 0);
-  }
-  20% {
-    opacity: 0;
-    transform: scaleX(0.1) translate3d(0, 0, 0);
-  }
-}
-
-.light-1 {
-  top: calc(50% + 2vmin);
-  animation-delay: 0.5s;
-}
-
-.light-2 {
-  top: calc(50% + 3vmin);
-  width: 18vmin;
-  animation-delay: 1s;
-}
-.light-3 {
-  top: calc(50% + 4vmin);
-  width: 18vmin;
-  animation-delay: 1.5s;
-}
-.light-4 {
-  top: calc(50% + 5vmin);
-  width: 16vmin;
-  animation-delay: 2s;
-}
-.light-5 {
-  top: calc(50% + 8vmin);
-  width: 14vmin;
-  animation-delay: 2.5s;
-}
-.light-6 {
-  top: calc(50% + 9vmin);
-  width: 10vmin;
-  animation-delay: 3s;
-}
-.light-7 {
-  top: calc(50% + 7vmin);
-  width: 12vmin;
-  animation-delay: 3.5s;
+  top: 66.5vh;
 }
 
 .splash {

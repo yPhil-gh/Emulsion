@@ -600,7 +600,7 @@ document.addEventListener('click', () => {
 });
 
 function updateSunPosition() {
-    if (!sunStarted) return; // Don't move the sun until the document is clicked
+    if (!sunStarted) return;
 
     if (sunYOffset > maxSunTravel - nightOffset) {
         isNight = true;
@@ -1392,42 +1392,46 @@ function updateCubeLettersGlueAlpha() {
 let lastBoilTime = 0;
 const boilInterval = 1000; // 1 second
 
+function getRGBString(colorArray) {
+    return `rgb(${colorArray[0]}, ${colorArray[1]}, ${colorArray[2]})`;
+}
+
 let skyTopStart = [255, 255, 255]; // White
 let skyTopEnd = [0, 0, 0]; // Black
-let skyTopColor = [...skyTopStart]; // Initialize
 
 let skyMidStart = [17, 17, 51]; // Dark Blue
 let skyMidEnd = [0, 0, 0]; // Black
-let skyMidColor = [...skyMidStart]; // Initialize
 
 let skyHorizonStart = [34, 0, 34]; // Purple
 let skyHorizonEnd = [0, 0, 0]; // Black
-let skyHorizonColor = [...skyHorizonStart]; // Initialize
+
+let skyTopColor = getRGBString(skyTopStart);
+let skyMidColor = getRGBString(skyMidStart);
+let skyHorizonColor = getRGBString(skyHorizonStart);
 
 let transitionProgress = 0; // 0 (start) → 1 (fully dark)
 
+
 function updateSky() {
+    if (!sunStarted) return; // Prevents transition but keeps valid colors
+
     transitionProgress = Math.min(1, transitionProgress + sunSpeed * 0.001);
 
-    // Function to interpolate between start and end colors
     function interpolate(start, end) {
         return Math.round(start * (1 - transitionProgress) + end * transitionProgress);
     }
 
-    // Update skyTopColor
-    skyTopColor = `rgb(${interpolate(skyTopStart[0], skyTopEnd[0])},
-                        ${interpolate(skyTopStart[1], skyTopEnd[1])},
-                        ${interpolate(skyTopStart[2], skyTopEnd[2])})`;
+    function interpolateColor(start, end) {
+        return [
+            interpolate(start[0], end[0]),
+            interpolate(start[1], end[1]),
+            interpolate(start[2], end[2])
+        ];
+    }
 
-    // Update skyMidColor
-    skyMidColor = `rgb(${interpolate(skyMidStart[0], skyMidEnd[0])},
-                        ${interpolate(skyMidStart[1], skyMidEnd[1])},
-                        ${interpolate(skyMidStart[2], skyMidEnd[2])})`;
-
-    // Update skyHorizonColor
-    skyHorizonColor = `rgb(${interpolate(skyHorizonStart[0], skyHorizonEnd[0])},
-                            ${interpolate(skyHorizonStart[1], skyHorizonEnd[1])},
-                            ${interpolate(skyHorizonStart[2], skyHorizonEnd[2])})`;
+    skyTopColor = getRGBString(interpolateColor(skyTopStart, skyTopEnd));
+    skyMidColor = getRGBString(interpolateColor(skyMidStart, skyMidEnd));
+    skyHorizonColor = getRGBString(interpolateColor(skyHorizonStart, skyHorizonEnd));
 }
 
 

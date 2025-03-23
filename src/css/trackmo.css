@@ -69,6 +69,7 @@ canvas {
 /* Tube */
 
 .test-tube-container {
+  opacity: 0;
   position: absolute; /* Now it can be placed over the canvas */
   top: 50%;
   left: 50%;
@@ -383,17 +384,6 @@ canvas {
   transform: scaleX(-1);
 }
 
-.sun {
-  background: white;
-  border-radius: 50%;
-  width: 20vmin;
-  height: 20vmin;
-  left: calc(60% - 10vmin);
-  top: 100%;
-  transform: translate3d(0, 0, 0);
-  animation: rise 20s infinite;
-  box-shadow: 0 0 10px white;
-}
 .reed {
   height: 40vmin;
   width: 0.5vmin;
@@ -446,69 +436,70 @@ canvas {
     transform: rotate(0) translateY(-6vmin);
   }
 }
+
+.sun {
+  /* background: yellow; */
+  border-radius: 50%;
+  width: 20vmin;
+  height: 20vmin;
+  left: calc(51.3% - 10vmin);
+  /* top: 50%; */
+  transform: translate3d(0, 0, 0);
+  animation: rise 12s forwards;
+  box-shadow: 0 0 10px yellow;
+}
+
 @keyframes rise {
   100% {
-    transform: translate3d(0, -100vh, 20vmin);
+    transform: translate3d(0, -60vh, 20vmin);
   }
-}
-@keyframes rise-reflection {
-  30% {
-    opacity: 0;
-    transform: translate3d(0, 5vmin, 0);
-  }
-  100% {
-    opacity: 0;
-    transform: translate3d(0, 80vmin, 0);
-  }
-}
-.sun-container {
-  overflow: hidden;
-  width: 100%;
-  height: 50%;
 }
 
-.sun-container-1:after {
-  content: "";
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background: radial-gradient(circle at 60% 100%, var(--s2), transparent);
-  animation: fade 20s infinite;
-  mix-blend-mode: color-burn;
-}
-
-@keyframes fade {
-  10% {
-    opacity: 1;
-  }
-  30%,
-  70% {
-    opacity: 0;
-  }
-}
 .sun-container-reflection {
-  top: 50%;
+  top: 55%;
   background: radial-gradient(circle at 60% 0%, var(--s2), transparent);
 }
+
 .sun-container-reflection .sun {
-  background: linear-gradient(white, rgba(255, 255, 255, 0));
+  z-index: 1;
+  background: linear-gradient(yellow, darkorange);
   box-shadow: none;
   filter: blur(5px);
   opacity: 1;
   top: 0;
-  transform: translate3d(0, -20vmin, 0);
-  animation-name: rise-reflection;
+  /* transform: translate3d(0, 20vmin, 0); */
+  /* animation-duration: 30s; */
+  /* animation-iteration-count: forwards; */
+  /* animation-name: rise-reflection; */
+}
+
+.sun-container {
+  overflow: hidden;
+  width: 100%;
+  height: 30vh;
+  top: 67vh;
+}
+
+@keyframes rise-reflection {
+  30% {
+    /* opacity: 0; */
+    transform: translate3d(0, 5vmin, 0);
+  }
+  100% {
+    /* opacity: 0; */
+    transform: translate3d(0, 80vmin, 0);
+  }
 }
 
 .light {
   height: 0.5vmin;
   width: 20vmin;
-  background: white;
-  left: 20%;
-  right: 0;
+  background: red;
+  /* top: 10px; */
+  /* top: calc(50% + 1vmin); */
+  left: 42%;
+  /* right: 0; */
   margin: auto;
-  top: calc(50% + 1vmin);
   animation: light 20s infinite;
   opacity: 0;
   transform: scaleX(0.1) translate3d(0%, 0, 0);
@@ -534,24 +525,7 @@ canvas {
     transform: scaleX(0.1) translate3d(0, 0, 0);
   }
 }
-@keyframes light {
-  5% {
-    opacity: 1;
-    transform: scaleX(1);
-  }
-  10% {
-    opacity: 0.6;
-    transform: scaleX(1) translate3d(5%, 0, 0);
-  }
-  15% {
-    opacity: 0.6;
-    transform: scaleX(1) translate3d(-5%, 0, 0);
-  }
-  20% {
-    opacity: 0;
-    transform: scaleX(0.1) translate3d(0, 0, 0);
-  }
-}
+
 .light-1 {
   top: calc(50% + 2vmin);
   animation-delay: 0.5s;

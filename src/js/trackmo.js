@@ -42,7 +42,7 @@ let randomColor = electricColors[Math.floor(Math.random() * electricColors.lengt
 const sunSpeed = globalSpeed;
 const sunBaseRadius = 120;
 const sunGlowScale = 6;
-let sunYOffset = -300;
+let sunYOffset = 0;
 const maxSunTravel = height - horizon + 250;
 const nightOffset = 400;
 
@@ -56,13 +56,11 @@ let starsMoveLeft = false;
 
 // Logo conf
 let logoChars = [];
-
 const logoInitialY = horizon - 18; // Just below horizon
 const logoFinalY = 200;
 let logoSpeed = 0; // Current rise speed
 let logoY = logoInitialY; // below screen
 let logoX = width/2 - 248;
-
 let letterHoverStartTime = 0;
 let prevHoverState = null;
 let hoveredLetter = null;
@@ -595,15 +593,9 @@ function drawShootingStars() {
     }
 }
 
-let sunStarted = true; // Sun doesn't move until the document is clicked
 
-document.addEventListener('click', () => {
-    sunStarted = true; // Start sun movement on click
-});
-
+// SUN
 function updateSunPosition() {
-    if (!sunStarted) return; // Don't move the sun until the document is clicked
-
     if (sunYOffset > maxSunTravel - nightOffset) {
         isNight = true;
     }
@@ -613,64 +605,46 @@ function updateSunPosition() {
     }
 }
 
-function updatePond() {
-    const pond = document.querySelector('.pond');
-    if (!isNight) {
-        pond.style.opacity = 1;
-    } else {
-        pond.style.opacity = 0;
-    }
-}
-
 function drawSun() {
     const sunX = width / 2;
     const sunY = horizon + sunYOffset;
 
-    // Glow control variables
-    const sunGlowOpacity = 0.5; // Adjust for stronger or weaker glow
-    const sunGlowSize = sunBaseRadius * 2; // Controls the glow spread
-    const showSunsetLines = true; // Toggle sunset lines on/off
-
-    // Sun glow gradient
     const gradient = ctx.createRadialGradient(
         sunX, sunY, sunBaseRadius * 0.3,
-        sunX, sunY, sunGlowSize
+        sunX, sunY, sunBaseRadius * sunGlowScale
     );
-    gradient.addColorStop(0, `rgba(255, 69, 0, ${sunGlowOpacity})`);
-    gradient.addColorStop(0.5, `rgba(255, 215, 0, ${sunGlowOpacity * 0.5})`);
+    gradient.addColorStop(0, 'rgba(255, 69, 0, 0.5)');
+    gradient.addColorStop(0.5, 'rgba(255, 215, 0, 0.25)');
     gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
     // Draw glow first
     ctx.fillStyle = gradient;
     ctx.beginPath();
-    ctx.arc(sunX, sunY, sunGlowSize, 0, Math.PI * 2);
+    ctx.rect(0, 0, width, height);
     ctx.fill();
 
-    // Sun body
+    // Main sun body (now larger)
     ctx.beginPath();
-    ctx.arc(sunX, sunY, sunBaseRadius, 0, Math.PI * 2);
-    let sunGradient = ctx.createLinearGradient(0, sunY - sunBaseRadius, 0, sunY + sunBaseRadius);
+    ctx.arc(sunX, sunY, sunBaseRadius, Math.PI, 2 * Math.PI);
+    let sunGradient = ctx.createLinearGradient(0, sunY - sunBaseRadius, 0, sunY);
     sunGradient.addColorStop(0, "#FF4500");
     sunGradient.addColorStop(1, "#FFD700");
     ctx.fillStyle = sunGradient;
     ctx.fill();
 
-    // Optional sunset lines
-    if (showSunsetLines) {
-        const numLines = 8;
-        for (let i = 0; i < numLines; i++) {
-            let lineY = sunY - sunBaseRadius + (i + 1) * (sunBaseRadius / (numLines + 1));
-            ctx.beginPath();
-            let dx = Math.sqrt(sunBaseRadius ** 2 - (sunY - lineY) ** 2);
-            ctx.moveTo(sunX - dx, lineY);
-            ctx.lineTo(sunX + dx, lineY);
-            ctx.lineWidth = 1 + (i / numLines) * 5;
-            ctx.strokeStyle = "rgba(0,0,0,0.3)";
-            ctx.stroke();
-        }
+    // Sun details (scaled appropriately)
+    const numLines = 8; // 🔥 Increased lines for bigger sun
+    for (let i = 0; i < numLines; i++) {
+        let lineY = sunY - sunBaseRadius + (i + 1) * (sunBaseRadius / (numLines + 1));
+        ctx.beginPath();
+        let dx = Math.sqrt(sunBaseRadius ** 2 - (sunY - lineY) ** 2);
+        ctx.moveTo(sunX - dx, lineY);
+        ctx.lineTo(sunX + dx, lineY);
+        ctx.lineWidth = 1 + (i / numLines) * 5; // 🔥 Thicker lines
+        ctx.strokeStyle = "rgba(0,0,0,0.3)";
+        ctx.stroke();
     }
 }
-
 
 // GRID
 const numGridLines = 40;
@@ -985,6 +959,12 @@ function drawLogo() {
             ctx.stroke(path);
         }
     });
+
+    // if (letters['u'].visible !== false) { // Only draw if visible
+    //     ctx.strokeStyle = '#FFA500';
+    //     const uPath = new Path2D(document.getElementById('u').getAttribute('d'));
+    //     ctx.stroke(uPath);
+    // }
 
     ctx.restore();
 
@@ -1405,90 +1385,35 @@ function update() {
     updateStars();
     updateShootingStars();
     spawnShootingStar();
+    updateLogo();
+    updateMoon();
+    updateSunPosition();
+    updateLogoPosition();
+    updateTestTube();
+    // ufo.update(width, height, isNight);
+    ufo.update(mouseX, mouseY);
 
-    if (sunStarted) {
-        updateSky();
+    if (cubeAnimation.isAnimating && cubeAnimation.progress < 1) {
+        cubeAnimation.progress = Math.min(cubeAnimation.progress + cubeAnimation.speed, 1);
+    }
 
-        updateLogo();
-        updateMoon();
-        updateSunPosition();
-        updatePond();
-        updateLogoPosition();
-        updateTestTube();
-        // ufo.update(width, height, isNight);
-        ufo.update(mouseX, mouseY);
+    if (isGlued) {
+        drop.style.display = 'block';
+        updateDrop();
 
-        if (cubeAnimation.isAnimating && cubeAnimation.progress < 1) {
-            cubeAnimation.progress = Math.min(cubeAnimation.progress + cubeAnimation.speed, 1);
+        if (now - lastBoilTime >= boilInterval) {
+            updateBoil();
+            lastBoilTime = now;
         }
 
-        if (isGlued) {
-            drop.style.display = 'block';
-            updateDrop();
-
-            if (now - lastBoilTime >= boilInterval) {
-                updateBoil();
-                lastBoilTime = now;
-            }
-
-        }
-
-        if (isNight && moonAlpha < 1) {
-            moonAlpha += 0.001; // Increase opacity gradually
-        }
-
-        updateCubeLettersGlueAlpha();
-
     }
+
+    if (isNight && moonAlpha < 1) {
+        moonAlpha += 0.001; // Increase opacity gradually
+    }
+
+    updateCubeLettersGlueAlpha();
 }
-
-// Cold afternoon
-let skyTopStart = [180, 205, 255];
-let skyTopEnd = [0, 0, 0];
-let skyTopColor = [...skyTopStart];
-
-let skyMidStart = [255, 170, 110];
-let skyMidEnd = [17, 17, 51];
-let skyMidColor = [...skyMidStart];
-
-let skyHorizonStart = [255, 180, 120];
-let skyHorizonEnd = [34, 0, 34];
-let skyHorizonColor = [...skyHorizonStart];
-
-let transitionProgress = 0; // 0 (start) → 1 (fully dark)
-
-function getRGBString(color) {
-    return `rgb(${color[0]}, ${color[1]}, ${color[2]})`; // Convert array → string
-}
-
-
-function updateSky() {
-    if (transitionProgress === 0) {
-        skyTopColor = getRGBString(skyTopStart);
-        skyMidColor = getRGBString(skyMidStart);
-        skyHorizonColor = getRGBString(skyHorizonStart);
-        return; // Prevent interpolation before transition starts
-    }
-
-    transitionProgress = Math.min(1, transitionProgress + sunSpeed * 0.001);
-
-    function interpolate(start, end) {
-        return Math.round(start * (1 - transitionProgress) + end * transitionProgress);
-    }
-
-    function interpolateColor(colorStart, colorEnd) {
-        return [
-            interpolate(colorStart[0], colorEnd[0]),
-            interpolate(colorStart[1], colorEnd[1]),
-            interpolate(colorStart[2], colorEnd[2])
-        ];
-    }
-
-    skyTopColor = getRGBString(interpolateColor(skyTopStart, skyTopEnd));
-    skyMidColor = getRGBString(interpolateColor(skyMidStart, skyMidEnd));
-    skyHorizonColor = getRGBString(interpolateColor(skyHorizonStart, skyHorizonEnd));
-}
-
 
 function draw() {
     ctx.clearRect(0, 0, width, height);
@@ -1501,11 +1426,11 @@ function draw() {
     // skyGradient.addColorStop(1, "#cce7ff"); // Warm orange at the horizon
 
     // Night
-    skyGradient.addColorStop(1, skyTopColor); // top
-    // skyGradient.addColorStop(0.5, "#111133"); // Dark blue midway
-    // skyGradient.addColorStop(0, "#220022"); // horizon
+    skyGradient.addColorStop(1, "#000000"); // top
+    skyGradient.addColorStop(0.5, "#111133"); // Dark blue midway
+    skyGradient.addColorStop(0, "#220022"); // horizon
 
-    // ctx.fillStyle = skyGradient;
+    ctx.fillStyle = skyGradient;
     ctx.fillRect(0, 0, width, horizon);
 
     drawStars();
@@ -1537,11 +1462,7 @@ function draw() {
 
     ctx.fillStyle = floorGradient;
     ctx.fillRect(0, horizon, width, height - horizon);
-
-    if (isNight) {
-        drawGrid();
-    }
-
+    drawGrid();
     drawCredits();
     // drawVolumeControl();
     drawCube();

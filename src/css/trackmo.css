@@ -88,7 +88,7 @@ canvas {
 
 @keyframes rise1 {
   from { transform: translateY(0); }
-  to   { transform: translateY(-45px); } /* Adjust as needed */
+  to   { transform: translateY(-47px); } /* Adjust as needed */
 }
 
 /* Step 2: Rotate left (tilt) after rise finishes */
@@ -110,7 +110,7 @@ canvas {
 
 @keyframes rise2 {
   from { transform: translateX(0) rotate(0); }
-  to   { transform: rotate(35deg) translateY(-2px) translateY(-130px); } /* Adjust as needed */
+  to   { transform: rotate(35deg) translateY(-2px) translateY(-170px); } /* Adjust as needed */
 }
 
 .fake-liquid {
@@ -529,7 +529,6 @@ canvas {
 }
 
 .sun-reflection {
-  z-index: 2;
   /* background: yellow; */
   border-radius: 50%;
   width: 20vmin;
@@ -552,8 +551,10 @@ canvas {
 }
 
 .sun-container-reflection {
+  z-index: 2;
   top: 55%;
-  background: radial-gradient(circle at 60% 0%, var(--s2), transparent);
+  /* background: linear-gradient(circle at 60% 0%, var(--s2), transparent); */
+  background: linear-gradient(#7FCDFF, #004466);
 }
 
 .sun-container-reflection .sun-reflection {

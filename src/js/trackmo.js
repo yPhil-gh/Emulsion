@@ -616,12 +616,6 @@ function drawShootingStars() {
     }
 }
 
-
-
-document.addEventListener('click', () => {
-    isSunSetting = true;
-});
-
 function updateSunPosition() {
     if (!isSunSetting) return;
 
@@ -633,7 +627,6 @@ function updateSunPosition() {
         sunYOffset += sunSpeed;
     }
 }
-
 
 let sunTopStart = [255, 180, 120];
 let sunTopEnd = [255, 62, 0];
@@ -1419,40 +1412,51 @@ let skyTopColor = getRGBString(skyTopStart);
 let skyMidColor = getRGBString(skyMidStart);
 let skyHorizonColor = getRGBString(skyHorizonStart);
 
+let skyTransitionStartTime = null;  // timestamp when sun setting begins
+const transitionDuration = 10000;   // transition duration in milliseconds (e.g., 10 seconds)
+
 function updateSky() {
+    if (!isSunSetting) {
+        // Reset transition progress and set colors to the starting values.
+        skyTransitionStartTime = null;
+        skyTopColor = getRGBString(skyTopStart);
+        skyMidColor = getRGBString(skyMidStart);
+        skyHorizonColor = getRGBString(skyHorizonStart);
+        return;
+    }
 
-    transitionProgress = Math.min(1, transitionProgress + sunSpeed * 0.001);
+    // When isSunSetting is true, set the start time if it hasn’t been set.
+    if (!skyTransitionStartTime) {
+        skyTransitionStartTime = performance.now();
+    }
 
-    // Interpolate between start and end colors
+    // Calculate transition progress based on elapsed time.
+    const elapsed = performance.now() - skyTransitionStartTime;
+    const transitionProgress = Math.min(1, elapsed / transitionDuration);
+
+    // Function to interpolate between start and end colors.
     function interpolate(start, end) {
         return Math.round(start * (1 - transitionProgress) + end * transitionProgress);
     }
 
     // Update skyTopColor
-    skyTopColor = `rgb(${interpolate(skyTopStart[0], skyTopEnd[0])},
-                        ${interpolate(skyTopStart[1], skyTopEnd[1])},
-                        ${interpolate(skyTopStart[2], skyTopEnd[2])})`;
+    skyTopColor = `rgb(${interpolate(skyTopStart[0], skyTopEnd[0])}, ${interpolate(skyTopStart[1], skyTopEnd[1])}, ${interpolate(skyTopStart[2], skyTopEnd[2])})`;
 
     // Update skyMidColor
-    skyMidColor = `rgb(${interpolate(skyMidStart[0], skyMidEnd[0])},
-                        ${interpolate(skyMidStart[1], skyMidEnd[1])},
-                        ${interpolate(skyMidStart[2], skyMidEnd[2])})`;
+    skyMidColor = `rgb(${interpolate(skyMidStart[0], skyMidEnd[0])}, ${interpolate(skyMidStart[1], skyMidEnd[1])}, ${interpolate(skyMidStart[2], skyMidEnd[2])})`;
 
     // Update skyHorizonColor
-    skyHorizonColor = `rgb(${interpolate(skyHorizonStart[0], skyHorizonEnd[0])},
-                            ${interpolate(skyHorizonStart[1], skyHorizonEnd[1])},
-                            ${interpolate(skyHorizonStart[2], skyHorizonEnd[2])})`;
+    skyHorizonColor = `rgb(${interpolate(skyHorizonStart[0], skyHorizonEnd[0])}, ${interpolate(skyHorizonStart[1], skyHorizonEnd[1])}, ${interpolate(skyHorizonStart[2], skyHorizonEnd[2])})`;
 }
+
 
 
 function update() {
 
     const now = performance.now();
 
+    updateSky();
     if (isSunSetting) {
-        updateSky();
-        document.querySelector('.tube-anim-master').classList.add('start');
-        // document.querySelector('.tube-anim-rise1').style.animationName = 'rise1 1s ease-out forwards';
     }
 
     updateReflection();
@@ -1642,12 +1646,17 @@ const fakeLiquid = document.querySelector('.fake-liquid');
 const tubeAnimRotate = document.querySelector('.tube-anim-rise2');
 
 fakeLiquid.addEventListener('animationend', () => {
-  fakeLiquid.style.display = 'none';
+    fakeLiquid.style.display = 'none';
+    isSunSetting = true;
 });
 
 tubeAnimRotate.addEventListener('animationstart', () => {
     console.log("yo: ");
   fakeLiquid.style.opacity = 1;
+});
+
+document.addEventListener('click', () => {
+    document.querySelector('.tube-anim-master').classList.add('start');
 });
 
 playButton.addEventListener('click', function(event) {

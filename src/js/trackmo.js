@@ -8,6 +8,11 @@ const animationDuration = (baseSpeed / globalSpeed) * baseDuration;
 
 const sunReflection = document.querySelector('.sun-reflection');
 
+let colorSunTopStart = [255,210,112];
+let colorSunTopEnd = [255, 62, 0];
+
+let colorSunTop = getRGBString(colorSunTopStart);
+
 let isSunSetting = false;
 
 let transitionProgress = 0;
@@ -616,36 +621,46 @@ function drawShootingStars() {
     }
 }
 
-function updateSunPosition() {
+
+let colorWaterTopStart = [255,228,169];
+let colorWaterTopEnd = colorSunTopEnd;
+
+let colorWaterTop = getRGBString(colorWaterTopStart);
+
+const water = document.querySelector('.water');
+
+// Interpolate between start and end colors
+function interpolate(start, end) {
+    return Math.round(start * (1 - transitionProgress) + end * transitionProgress);
+}
+
+function updateSun() {
+
     if (!isSunSetting) return;
+
+
 
     if (sunYOffset > maxSunTravel - nightOffset) {
         isNight = true;
     }
 
+
     if (sunYOffset < maxSunTravel) {
+
         sunYOffset += sunSpeed;
     }
 }
 
-let sunTopStart = [255,210,112];
-let sunTopEnd = [255, 62, 0];
-
-let sunTopColor = getRGBString(sunTopStart);
-
 function drawSun() {
+
+
     const sunX = width / 2;
     const sunY = horizon + sunYOffset;
     transitionProgress = Math.min(1, transitionProgress + sunSpeed * 0.001);
 
-    // Interpolate between start and end colors
-    function interpolate(start, end) {
-        return Math.round(start * (1 - transitionProgress) + end * transitionProgress);
-    }
-
-    sunTopColor = `${interpolate(sunTopStart[0], sunTopEnd[0])},
-                        ${interpolate(sunTopStart[1], sunTopEnd[1])},
-                        ${interpolate(sunTopStart[2], sunTopEnd[2])}`;
+    colorSunTop = `${interpolate(colorSunTopStart[0], colorSunTopEnd[0])},
+                        ${interpolate(colorSunTopStart[1], colorSunTopEnd[1])},
+                        ${interpolate(colorSunTopStart[2], colorSunTopEnd[2])}`;
 
     // Glow control variables
     const sunGlowOpacity = 5.8; // Adjust for stronger or weaker glow
@@ -657,7 +672,7 @@ function drawSun() {
         sunX, sunY, sunBaseRadius * 0.3,
         sunX, sunY, sunGlowSize
     );
-    gradient.addColorStop(0, `rgba(${sunTopColor}, ${sunGlowOpacity})`);
+    gradient.addColorStop(0, `rgba(${colorSunTop}, ${sunGlowOpacity})`);
     // gradient.addColorStop(0.5, `rgba(255, 215, 0, ${sunGlowOpacity * 0.5})`);
     gradient.addColorStop(1, 'rgba(255,228,169, 0)');
 
@@ -671,7 +686,7 @@ function drawSun() {
     ctx.beginPath();
     ctx.arc(sunX, sunY, sunBaseRadius, 0, Math.PI * 2);
     let sunGradient = ctx.createLinearGradient(0, sunY - sunBaseRadius, 0, sunY + sunBaseRadius);
-    sunGradient.addColorStop(0, `rgba(${sunTopColor})`);
+    sunGradient.addColorStop(0, `rgba(${colorSunTop})`);
     sunGradient.addColorStop(1, "#FFD700");
     ctx.fillStyle = sunGradient;
     ctx.fill();
@@ -1064,12 +1079,10 @@ function drawMoon() {
     const circus = new Path2D(document.getElementById('circus').getAttribute('d'));
     ctx.fillStyle = '#FFEEEE';
     ctx.fill(circus);
-    ctx.stroke(circus);
 
     const crescent = new Path2D(document.getElementById('crescent').getAttribute('d'));
     ctx.fillStyle = '#111122';
     ctx.fill(crescent);
-    ctx.stroke(crescent);
 
     ctx.restore();
 }
@@ -1466,7 +1479,7 @@ function update() {
     spawnShootingStar();
     updateLogo();
     updateMoon();
-    updateSunPosition();
+    updateSun();
     updateLogoPosition();
     updateTestTube();
     // ufo.update(width, height, isNight);
@@ -1494,6 +1507,11 @@ function update() {
     if (isNight && moonAlpha < 1) {
         moonAlpha += 0.001; // Increase opacity gradually
     }
+
+    colorWaterTop = `${interpolate(colorWaterTopStart[0], colorWaterTopEnd[0])},
+                        ${interpolate(colorWaterTopStart[1], colorWaterTopEnd[1])},
+                        ${interpolate(colorWaterTopStart[2], colorWaterTopEnd[2])}`;
+    water.style.setProperty('--color-water-top', `rgb(${colorWaterTop})`);
 
     updateCubeLettersGlueAlpha();
 }

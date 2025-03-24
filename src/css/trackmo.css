@@ -11,6 +11,8 @@
   --color-liquid-grad: linear-gradient(#00E5FF, #0099CC, #004466);
   --color-liquid-down: #a8c8e100;
 
+  --color-water-top: rgb(255,228,169);
+
   --v1: #be91c6;
   --v2: #8a65cc;
   --v3: #5e30d9;
@@ -431,9 +433,10 @@ canvas {
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(#7FCDFF, var(--v2));
+  /* height: 100px; */
+  background: linear-gradient(var(--color-water-top), #7FCDFF);
   overflow: hidden;
-  box-shadow: inset 0 1px 4px -3px white;
+  /* box-shadow: inset 0 1px 4px -3px white; */
 }
 
 .stone {
@@ -565,8 +568,11 @@ canvas {
 .sun-container-reflection {
   z-index: 2;
   top: 55%;
-  /* background: linear-gradient(circle at 60% 0%, var(--s2), transparent); */
-  background: linear-gradient(#7FCDFF, #004466);
+  /* background: linear-gradient(var(--color-water-top), blue); */
+  /* background: radial-gradient(yellow,  #7FCDFF); */
+  /* background: */
+  /*   radial-gradient(ellipse at top, var(--color-water-top), transparent), */
+  /*   radial-gradient(ellipse at bottom, #7FCDFF, transparent); */
 }
 
 .sun-container-reflection .sun-reflection {

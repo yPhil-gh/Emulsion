@@ -28,7 +28,7 @@ function updateReflection() {
     }
 }
 
-const liquidColorRgb = '102, 0, 153';
+const liquidColorRgb = '127, 205, 255';
 
 const wave = document.querySelector('.wave');
 
@@ -638,12 +638,16 @@ function updateSun() {
 
     if (!isSunSetting) return;
 
+    transitionProgress = Math.min(1, transitionProgress + sunSpeed * 0.001);
+
+    colorSunTop = `${interpolate(colorSunTopStart[0], colorSunTopEnd[0])},
+                        ${interpolate(colorSunTopStart[1], colorSunTopEnd[1])},
+                        ${interpolate(colorSunTopStart[2], colorSunTopEnd[2])}`;
 
 
     if (sunYOffset > maxSunTravel - nightOffset) {
         isNight = true;
     }
-
 
     if (sunYOffset < maxSunTravel) {
 
@@ -653,31 +657,34 @@ function updateSun() {
 
 function drawSun() {
 
-
     const sunX = width / 2;
     const sunY = horizon + sunYOffset;
-    transitionProgress = Math.min(1, transitionProgress + sunSpeed * 0.001);
-
-    colorSunTop = `${interpolate(colorSunTopStart[0], colorSunTopEnd[0])},
-                        ${interpolate(colorSunTopStart[1], colorSunTopEnd[1])},
-                        ${interpolate(colorSunTopStart[2], colorSunTopEnd[2])}`;
 
     // Glow control variables
     const sunGlowOpacity = 5.8; // Adjust for stronger or weaker glow
     const sunGlowSize = sunBaseRadius * 6; // Controls the glow spread
     const showSunsetLines = false; // Toggle sunset lines on/off
 
+    // init
+    colorSunTop = `${interpolate(colorSunTopStart[0], colorSunTopEnd[0])},
+                        ${interpolate(colorSunTopStart[1], colorSunTopEnd[1])},
+                        ${interpolate(colorSunTopStart[2], colorSunTopEnd[2])}`;
+
+
     // Sun glow gradient
-    const gradient = ctx.createRadialGradient(
+    const sunGlowGradient = ctx.createRadialGradient(
         sunX, sunY, sunBaseRadius * 0.3,
         sunX, sunY, sunGlowSize
     );
-    gradient.addColorStop(0, `rgba(${colorSunTop}, ${sunGlowOpacity})`);
+
+    console.log("colorSunTop: ", colorSunTop);
+
+    sunGlowGradient.addColorStop(0, `rgba(${colorSunTop}, ${sunGlowOpacity})`);
     // gradient.addColorStop(0.5, `rgba(255, 215, 0, ${sunGlowOpacity * 0.5})`);
-    gradient.addColorStop(1, 'rgba(255,228,169, 0)');
+    sunGlowGradient.addColorStop(1, 'rgba(255,228,169, 0)');
 
     // Draw glow first
-    ctx.fillStyle = gradient;
+    ctx.fillStyle = sunGlowGradient;
     ctx.beginPath();
     ctx.arc(sunX, sunY, sunGlowSize, 0, Math.PI * 2);
     ctx.fill();
@@ -931,7 +938,7 @@ function drawCube() {
     const currentXU = lerp(startXU, finalXU, easeOutQuad(cubeAnimation.progress));
     const yU = -32;
 
-    let glueColor = 'rgba('+ liquidColorRgb + ',' + cubeLettersGlueAlpha + ')';
+    let glueColor = 'rgba(0, 250, 0,' + cubeLettersGlueAlpha + ')';
 
     // Draw 'E'
     ctx.save();
@@ -1088,32 +1095,9 @@ function drawMoon() {
 }
 
 
-// Initialize line positions
-let dropStartY = height - 10; // Initial top position
-let dropEndY = horizon - 250; // Initial bottom position
-
-// Function to draw the vertical line
-function drawVerticalLine() {
-  // Clear the canvas
-  // ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Set line properties
-  ctx.strokeStyle = 'white'; // Line color
-  ctx.lineWidth = 2; // Line width
-
-  // Calculate the x-coordinate for the center of the canvas
-  const centerX = canvas.width / 2;
-
-  // Draw the line
-  ctx.beginPath();
-  ctx.moveTo(centerX, dropStartY); // Start point (top of the line)
-  ctx.lineTo(centerX, dropEndY); // End point (bottom of the line)
-  ctx.stroke();
-}
-
 const testTube = document.querySelector('.test-tube-container');
-const drop = document.querySelector('.test-tube-drop');
-drop.style.backgroundColor = 'rgba('+ liquidColorRgb + ')';
+const testTubedrop = document.querySelector('.test-tube-drop');
+testTubedrop.style.backgroundColor = 'rgba(0, 255, 0)';
 
 function updateTestTube() {
 
@@ -1133,19 +1117,19 @@ function updateDrop() {
         dropY += 7.0;
     }
 
-    drop.style.height = `${dropHeight}px`;
-    drop.style.top = `${dropY}px`;
+    testTubedrop.style.height = `${dropHeight}px`;
+    testTubedrop.style.top = `${dropY}px`;
 
     if (dropHeight <= 0) {
-        drop.style.display = "none";
+        testTubedrop.style.display = "none";
     }
 
     if (dropHeight <= 0) {
         isDropped = true;
-        drop.style.display = "none";
+        testTubedrop.style.display = "none";
     }
 
-    if (drop.style.display === "none") {
+    if (testTubedrop.style.display === "none") {
         wave.style.setProperty('--wave-animation-name', 'animate');
     }
 
@@ -1389,7 +1373,7 @@ function updateCubeLettersGlueAlpha() {
     if (isCubeAnimEnded) {
         if (cubeLettersGlueAnimationState === 'INCREASING') {
             document.getElementById('bass-drop').play();
-            cubeLettersGlueAlpha += 0.005;
+            cubeLettersGlueAlpha += 0.05;
             if (cubeLettersGlueAlpha >= 1) {
                 cubeLettersGlueAlpha = 1; // Ensure it doesn't exceed 1
                 cubeLettersGlueAnimationState = 'DECREASING'; // Switch to decreasing
@@ -1482,7 +1466,6 @@ function update() {
     updateSun();
     updateLogoPosition();
     updateTestTube();
-    // ufo.update(width, height, isNight);
 
     if (isNight) {
         ufo.update(mouseX, mouseY);
@@ -1493,7 +1476,7 @@ function update() {
     }
 
     if (isGlued) {
-        drop.style.display = 'block';
+        testTubedrop.style.display = 'block';
         updateDrop();
 
         if (now - lastBoilTime >= boilInterval) {

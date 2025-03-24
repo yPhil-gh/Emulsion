@@ -353,10 +353,10 @@ canvas {
   margin-left: -2px;
   height: 130px;
   width: 2px;
-  background-color: rgba(0, 255, 0);
-  filter: drop-shadow(0 0 5px rgba(0, 255, 0, 0.8)) /* Glow effect */
-          drop-shadow(0 0 10px rgba(0, 255, 0, 0.6))
-          drop-shadow(0 0 15px rgba(0, 255, 0, 0.4));
+  background-color: rgba(0, 150, 0);
+  filter: drop-shadow(0 0 5px var(--color-liquid)) /* Glow effect */
+          drop-shadow(0 0 10px rgba(0, 100, 0, 0.6))
+          drop-shadow(0 0 15px rgba(0, 200, 0, 0.4));
 }
 
 .sky {

@@ -70,61 +70,47 @@ canvas {
 
 .test-tube-container {
   position: absolute;
-  top: 80%;
+  top: 75%;
   left: 50%;
-  transform: translate(-50%, -70%);
+  transform-origin: 50% 50%;
+  transform: translate(-50%, -50%);
+  margin: auto;
+  /* transform: translate(-50%, -70%); */
   z-index: 10; /* Higher than canvas */
   padding: 20px;
+  animation: rotate-tube 4s ease-in-out forwards;
 }
 
-/* Step 1: Initial rise */
-.tube-anim-rise1 {
-  position: absolute;
-  top: 50%;
-  left: -35px;
-  /* Ensure relative positioning for transforms */
-  /* position: relative; */
-  animation: rise1 3s ease-in-out forwards;
-  animation-play-state: paused;
-}
 
-/* @keyframes rise1 { */
-/*   from { transform: translateY(0); } */
-/*   to   { transform: translateY(-47px); } /\* Adjust as needed *\/ */
-/* } */
-
-@keyframes rise1 {
+@keyframes rotate-tube {
+  /* Initial centered position */
   0% {
-    transform: translateX(0);
+    transform: translate(-50%, -50%);
   }
-  30% {
-    transform: translateX(52vw);
+
+  /* Move up 30% (first lift) */
+  25% {
+    transform: translate(-50%, -70%);
   }
-  60% {
-    transform: translateX(52vw) rotate(-35deg) translateY(30vh);
+
+  /* Rotate -35deg (left) while lifted */
+  50% {
+    transform: translate(-50%, -70%) rotate(-35deg);
   }
-  70% {
-    transform: translateX(52vw) rotate(-35deg) translateY(30vh);
+
+  /* Rotate back to 0deg while lifted */
+  75% {
+    transform: translate(-50%, -70%) rotate(0deg);
   }
+  /* Final position: move up another 10% */
   100% {
-    transform: translateX(45vw) rotate(-35deg) translateY(30vh);
+    transform: translate(-50%, -150%);
   }
 }
 
 
-/* Step 3: Additional rise (can occur concurrently with step 4) */
-.tube-anim-rise2 {
-  animation: rise2 2s linear forwards 4s;
-  animation-play-state: paused;
-}
-
-@keyframes rise2 {
-  0% {
-    transform: translateX(0) rotate(0);
-  }
-  100% {
-    transform: rotate(35deg) translateX(-6vh) translateY(-10vw);
-  }
+.test-tube-container * {
+  transform-origin: 50% 50%;
 }
 
 .fake-liquid {
@@ -158,6 +144,15 @@ canvas {
 /*     transform: translateY(-60px); */
 /*   } */
 /* } */
+
+.tube-anim-master.start {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
 
 .tube-anim-master.start .tube-anim-rise1,
 .tube-anim-master.start .tube-anim-rotate1,
@@ -434,7 +429,7 @@ canvas {
   left: 0;
   right: 0;
   /* height: 100px; */
-  background: linear-gradient(var(--color-water-top), rgb(6,66,115));
+  background: linear-gradient(var(--color-water-top), #7FCDFF);
   overflow: hidden;
   /* box-shadow: inset 0 1px 4px -3px white; */
 }

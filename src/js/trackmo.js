@@ -14,6 +14,11 @@ let colorSunTopEnd = [255, 62, 0];
 let colorSunTop = getRGBString(colorSunTopStart);
 
 let isSunSetting = false;
+let isGlued = false;
+let isTouchPlayed = false;
+let isLazerPlayed = false;
+let isBoilPlayed = false;
+let isApproachPlayed = false;
 
 let transitionProgress = 0;
 
@@ -621,8 +626,7 @@ function drawShootingStars() {
     }
 }
 
-
-let colorWaterTopStart = [255,228,169];
+let colorWaterTopStart = [127,205,255];
 let colorWaterTopEnd = colorSunTopEnd;
 
 let colorWaterTop = getRGBString(colorWaterTopStart);
@@ -673,11 +677,9 @@ function drawSun() {
 
     // Sun glow gradient
     const sunGlowGradient = ctx.createRadialGradient(
-        sunX, sunY, sunBaseRadius * 0.3,
+        sunX, sunY, sunBaseRadius * 0.0003,
         sunX, sunY, sunGlowSize
     );
-
-    console.log("colorSunTop: ", colorSunTop);
 
     sunGlowGradient.addColorStop(0, `rgba(${colorSunTop}, ${sunGlowOpacity})`);
     // gradient.addColorStop(0.5, `rgba(255, 215, 0, ${sunGlowOpacity * 0.5})`);
@@ -891,34 +893,28 @@ const cubeAnimation = {
     isAnimating: true
 };
 
-function startCubeAnimation() {
-    cubeAnimation.progress = 0;
-    cubeAnimation.isAnimating = true;
-}
-
 let cubeLettersGlueAlpha = 0.0;
 let isCubeAnimEnded = false;
+let isCubeAnimStarted = false;
+
+// Function to start the cube animation
+function startCubeAnimation() {
+    if (!cubeAnimation.isAnimating) {
+        cubeAnimation.isAnimating = true;
+        cubeAnimation.progress = 0;
+        isCubeAnimEnded = false;
+        isCubeAnimStarted = true;
+        // requestAnimationFrame(updateCubeAnimation);
+    } else if (isCubeAnimStarted && !cubeAnimation.isAnimating) {
+        isCubeAnimEnded = true;
+    }
+}
 
 function drawCube() {
-    if (!isNight) return;
+    if (!isNight || !cubeAnimation.isAnimating) return;
 
     const scale = 1.0;
     ctx.globalAlpha = moonAlpha;
-
-    // Define animation progress thresholds
-    const startAnimation = 0.0;
-    const endAnimation = 1.0;
-
-    // Check animation progress to trigger actions
-    if (cubeAnimation.progress <= startAnimation) {
-        // Actions before animation starts
-        console.log("Animation is about to start.");
-    } else if (cubeAnimation.progress > startAnimation && cubeAnimation.progress < endAnimation) {
-        // Actions during animation
-    } else if (cubeAnimation.progress >= endAnimation) {
-        // Actions after animation ends
-        isCubeAnimEnded = true;
-    }
 
     // E element animation (left to right)
     const startXE = -150;
@@ -937,6 +933,10 @@ function drawCube() {
     const finalXU = width / 2 - 109;
     const currentXU = lerp(startXU, finalXU, easeOutQuad(cubeAnimation.progress));
     const yU = -32;
+
+    if (currentXU === finalXU) {
+        isCubeAnimEnded = true;
+    }
 
     let glueColor = 'rgba(0, 250, 0,' + cubeLettersGlueAlpha + ')';
 
@@ -1019,8 +1019,6 @@ function easeOutQuad(t) {
 
 
 function drawLogo() {
-
-
 
     const scale = 1.0;
     const baseX = width/2 - 135; // Center 500px wide logo
@@ -1367,12 +1365,17 @@ function init() {
     flock = initFlock(width, height);
 }
 
-let isGlued = false;
-
 function updateCubeLettersGlueAlpha() {
     if (isCubeAnimEnded) {
+        if (!isTouchPlayed) {
+            touch.play();
+            isTouchPlayed = true;
+        }
         if (cubeLettersGlueAnimationState === 'INCREASING') {
-            document.getElementById('bass-drop').play();
+            if (!isApproachPlayed) {
+                // approach.play();
+                isApproachPlayed = true;
+            }
             cubeLettersGlueAlpha += 0.05;
             if (cubeLettersGlueAlpha >= 1) {
                 cubeLettersGlueAlpha = 1; // Ensure it doesn't exceed 1
@@ -1383,6 +1386,15 @@ function updateCubeLettersGlueAlpha() {
             if (cubeLettersGlueAlpha <= 0) {
                 cubeLettersGlueAlpha = 0; // Ensure it doesn't go below 0
                 cubeLettersGlueAnimationState = 'COMPLETED'; // Mark the animation as completed
+                console.log("plop: ");
+                if (!isLazerPlayed) {
+                    lazer.play();
+                    isLazerPlayed = true;
+                }
+                if (!isBoilPlayed) {
+                    // boilBubbles.play();
+                    isBoilPlayed = true;
+                }
                 isGlued = true;
             }
         }
@@ -1445,13 +1457,13 @@ function updateSky() {
 }
 
 
-
 function update() {
 
     const now = performance.now();
 
     updateSky();
-    if (isSunSetting) {
+    if (isSunSetting && !isCubeAnimStarted) {
+        startCubeAnimation();
     }
 
     updateReflection();
@@ -1635,10 +1647,36 @@ const playButton = document.getElementById('audio-control');
 
 let isPlaying = false;
 
-const sound = new Howl({
-  src: ['../../tmp/loop.ogg'],
-  html5: true,
-  loop: true // Add this if you want the sound to loop
+const song = new Howl({
+    src: ['../../tmp/loop.ogg'],
+    html5: true,
+    loop: true
+});
+
+const touch = new Howl({
+    src: ['../../audio/touch.ogg'],
+    html5: true,
+});
+
+const drop = new Howl({
+    src: ['../../audio/drop.ogg'],
+    html5: true,
+});
+
+const lazer = new Howl({
+    src: ['../../audio/lazer.ogg'],
+    html5: true,
+});
+
+const approach = new Howl({
+    src: ['../../audio/approach.ogg'],
+    html5: true,
+});
+
+const boilBubbles = new Howl({
+    src: ['../../audio/boil.ogg'],
+    html5: true,
+    loop: true
 });
 
 const fakeLiquid = document.querySelector('.fake-liquid');
@@ -1666,18 +1704,18 @@ document.addEventListener('keydown', (event) => {
 
 playButton.addEventListener('click', function(event) {
   if (isPlaying) {
-    sound.pause();
+    song.pause();
     isPlaying = false;
       playButton.textContent = 'Play'; // Optional: Update button text
   } else {
-    sound.play();
+    song.play();
     isPlaying = true;
     playButton.textContent = 'Pause'; // Optional: Update button text
   }
 });
 
 // Optional: Update button state when sound ends naturally
-sound.on('end', function() {
+song.on('end', function() {
   isPlaying = false;
   playButton.textContent = 'Play';
 });

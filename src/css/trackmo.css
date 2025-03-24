@@ -434,7 +434,7 @@ canvas {
   left: 0;
   right: 0;
   /* height: 100px; */
-  background: linear-gradient(var(--color-water-top), #7FCDFF);
+  background: linear-gradient(var(--color-water-top), rgb(6,66,115));
   overflow: hidden;
   /* box-shadow: inset 0 1px 4px -3px white; */
 }

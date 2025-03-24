@@ -628,7 +628,7 @@ function updateSunPosition() {
     }
 }
 
-let sunTopStart = [255, 180, 120];
+let sunTopStart = [255,210,112];
 let sunTopEnd = [255, 62, 0];
 
 let sunTopColor = getRGBString(sunTopStart);
@@ -648,11 +648,9 @@ function drawSun() {
                         ${interpolate(sunTopStart[2], sunTopEnd[2])}`;
 
     // Glow control variables
-    const sunGlowOpacity = 0.5; // Adjust for stronger or weaker glow
-    const sunGlowSize = sunBaseRadius * 2; // Controls the glow spread
-    const showSunsetLines = true; // Toggle sunset lines on/off
-
-
+    const sunGlowOpacity = 5.8; // Adjust for stronger or weaker glow
+    const sunGlowSize = sunBaseRadius * 6; // Controls the glow spread
+    const showSunsetLines = false; // Toggle sunset lines on/off
 
     // Sun glow gradient
     const gradient = ctx.createRadialGradient(
@@ -661,7 +659,7 @@ function drawSun() {
     );
     gradient.addColorStop(0, `rgba(${sunTopColor}, ${sunGlowOpacity})`);
     // gradient.addColorStop(0.5, `rgba(255, 215, 0, ${sunGlowOpacity * 0.5})`);
-    gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    gradient.addColorStop(1, 'rgba(255,228,169, 0)');
 
     // Draw glow first
     ctx.fillStyle = gradient;
@@ -1399,13 +1397,13 @@ function updateCubeLettersGlueAlpha() {
 let lastBoilTime = 0;
 const boilInterval = 1000; // 1 second
 
-let skyTopStart = [180, 205, 255];
+let skyTopStart = [55,240,228];
 let skyTopEnd = [0, 0, 0];
 
-let skyMidStart = [255, 170, 110];
+let skyMidStart = [180, 205, 255];
 let skyMidEnd = [17, 17, 51];
 
-let skyHorizonStart = [255, 180, 120];
+let skyHorizonStart = [55,240,228];
 let skyHorizonEnd = [34, 0, 34];
 
 let skyTopColor = getRGBString(skyTopStart);

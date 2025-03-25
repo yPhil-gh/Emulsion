@@ -1020,8 +1020,10 @@ function easeOutQuad(t) {
 
 function drawLogo() {
 
-    const scale = 2.2;
-    const baseX = width/2 - 335; // Center 500px wide logo
+
+
+    const scale = 1.0;
+    const baseX = width/2 - 135; // Center 500px wide logo
 
     ctx.save();
     ctx.translate(baseX, logoY);

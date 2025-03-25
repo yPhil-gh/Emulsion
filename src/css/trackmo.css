@@ -98,32 +98,25 @@ canvas {
 
 
 @keyframes rotate-tube {
+  /* Initial centered position */
   0% {
     transform: translate(-50%, -50%);
   }
-  10% {
-    transform: translate(-50%, -90%);
+
+  25% {
+    transform: translate(-50%, -70%);
   }
-  20% {
-    transform: translate(-50%, -90%);
-  }
-  40% {
-    transform: translate(-50%, -90%) rotate(-35deg);
-  }
-  45% {
-    transform: translate(-50%, -90%) rotate(-35deg);
-  }
+
+  /* Rotate -35deg (left) while lifted */
   50% {
-    transform: translate(-158.2%, -90%) rotate(-35deg);
+    transform: translate(-50%, -70%) rotate(-35deg);
   }
-  60% {
-    transform: translate(-158.2%, -250%) rotate(0deg);
-  }
-  70% {
-    transform: translate(-158.2%, -250%) rotate(0deg);
+
+  75% {
+    transform: translate(-50%, -70%) rotate(0deg);
   }
   100% {
-    transform: translate(-158.2%, -250%);
+    transform: translate(-50%, -150%);
   }
 }
 
@@ -142,7 +135,7 @@ canvas {
   transform: rotate(35deg);
 
   margin: auto auto;
-  animation: rotate-liquid 1s ease-out forwards 3s;
+  animation: rotate-liquid 3s ease-in-out forwards 4s;
   animation-play-state: paused;
 }
 
@@ -212,11 +205,11 @@ canvas {
   /* top:50%; */
   /* left: 49.9%; */
   /* transform: translate(-50%, -50%); */
-  width: 80px;
-  height: 110px;
+  width: 60px;
+  height: 150px;
   /* background: #ccc; */
   /* border: 5px solid #4973ff; */
-  border-radius: 0px 0px 60px 60px/0 0 50px 50px;
+  border-radius: 0px 0px 40px 40px/0 0 50px 50px;
 
   overflow: hidden;
   z-index: 600;
@@ -224,8 +217,8 @@ canvas {
 
 .tube {
   overflow: hidden;
-  width: 80px;
-  height: 110px;
+  width: 60px;
+  height: 150px;
   border-radius: 0px 0px 40px 40px/0 0 50px 50px;
   border: 5px solid #B8E0E9;
   border-top: none;
@@ -440,7 +433,7 @@ canvas {
 
 .water {
   z-index: 1;
-  top: 66.6%;
+  top: 66.5%;
   bottom: 0;
   left: 0;
   right: 0;

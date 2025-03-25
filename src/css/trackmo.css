@@ -101,23 +101,27 @@ canvas {
   0% {
     transform: translate(-50%, -50%);
   }
-
-  25% {
+  20% {
     transform: translate(-50%, -68.5%);
   }
-  50% {
+  30% {
     transform: translate(-50%, -68.5%) rotate(-35deg);
   }
 
-  60% {
+  40% {
     transform: translate(-50%, -86.5%) rotate(-35deg);
   }
-
-  75% {
+  50% {
     transform: translate(-50%, -96.5%) rotate(0deg);
   }
+  60% {
+    transform: translate(-50%, -150%) rotate(0deg);
+  }
+  70% {
+    transform: translate(-158.2%, -250%) rotate(0deg);
+  }
   100% {
-    transform: translate(-50%, -150%);
+    transform: translate(-158.2%, -250%);
   }
 }
 

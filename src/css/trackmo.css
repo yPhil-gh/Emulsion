@@ -101,21 +101,23 @@ canvas {
   0% {
     transform: translate(-50%, -50%);
   }
+  10% {
+    transform: translate(-50%, -90%);
+  }
   20% {
-    transform: translate(-50%, -68.5%);
+    transform: translate(-50%, -90%);
   }
-  30% {
-    transform: translate(-50%, -68.5%) rotate(-35deg);
-  }
-
   40% {
-    transform: translate(-50%, -86.5%) rotate(-35deg);
+    transform: translate(-50%, -90%) rotate(-35deg);
+  }
+  45% {
+    transform: translate(-50%, -90%) rotate(-35deg);
   }
   50% {
-    transform: translate(-50%, -96.5%) rotate(0deg);
+    transform: translate(-158.2%, -90%) rotate(-35deg);
   }
   60% {
-    transform: translate(-50%, -150%) rotate(0deg);
+    transform: translate(-158.2%, -250%) rotate(0deg);
   }
   70% {
     transform: translate(-158.2%, -250%) rotate(0deg);
@@ -210,11 +212,11 @@ canvas {
   /* top:50%; */
   /* left: 49.9%; */
   /* transform: translate(-50%, -50%); */
-  width: 60px;
-  height: 150px;
+  width: 80px;
+  height: 110px;
   /* background: #ccc; */
   /* border: 5px solid #4973ff; */
-  border-radius: 0px 0px 40px 40px/0 0 50px 50px;
+  border-radius: 0px 0px 60px 60px/0 0 50px 50px;
 
   overflow: hidden;
   z-index: 600;
@@ -222,8 +224,8 @@ canvas {
 
 .tube {
   overflow: hidden;
-  width: 60px;
-  height: 150px;
+  width: 80px;
+  height: 110px;
   border-radius: 0px 0px 40px 40px/0 0 50px 50px;
   border: 5px solid #B8E0E9;
   border-top: none;

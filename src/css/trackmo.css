@@ -68,6 +68,20 @@ canvas {
   cursor:pointer;
 }
 
+/* .tube-anim { */
+/*   position: absolute; */
+/*   top: 75%; */
+/*   left: 50%; */
+/*   transform-origin: 50% 50%; */
+/*   transform: translate(-50%, -50%); */
+/*   margin: auto; */
+/*   /\* transform: translate(-50%, -70%); *\/ */
+/*   z-index: 10; /\* Higher than canvas *\/ */
+/*   padding: 20px; */
+/*   animation: rotate-tube 4s ease-in-out forwards; */
+/*   animation-play-state: paused; */
+/* } */
+
 .test-tube-container {
   position: absolute;
   top: 75%;
@@ -79,6 +93,7 @@ canvas {
   z-index: 10; /* Higher than canvas */
   padding: 20px;
   animation: rotate-tube 4s ease-in-out forwards;
+  animation-play-state: paused;
 }
 
 
@@ -94,14 +109,14 @@ canvas {
   }
 
   /* Rotate -35deg (left) while lifted */
-  50% {
-    transform: translate(-50%, -70%) rotate(-35deg);
-  }
+  /* 50% { */
+  /*   transform: translate(-50%, -70%) rotate(-35deg); */
+  /* } */
 
-  /* Rotate back to 0deg while lifted */
-  75% {
-    transform: translate(-50%, -70%) rotate(0deg);
-  }
+  /* /\* Rotate back to 0deg while lifted *\/ */
+  /* 75% { */
+  /*   transform: translate(-50%, -70%) rotate(0deg); */
+  /* } */
   /* Final position: move up another 10% */
   100% {
     transform: translate(-50%, -150%);
@@ -145,20 +160,17 @@ canvas {
 /*   } */
 /* } */
 
-.tube-anim-master.start {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
+/* .tube-anim.start { */
+/*   position: absolute; */
+/*   top: 0; */
+/*   left: 0; */
+/*   width: 100%; */
+/*   height: 100%; */
+/*   overflow: hidden; */
+/* } */
 
-.tube-anim-master.start .tube-anim-rise1,
-.tube-anim-master.start .tube-anim-rotate1,
-.tube-anim-master.start .tube-anim-rise2,
-.tube-anim-master.start .tube-anim-rotate2,
-.tube-anim-master.start .fake-liquid {
+.tube-anim.start .test-tube-container,
+.tube-anim.start .fake-liquid {
   animation-play-state: running;
 }
 

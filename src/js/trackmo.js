@@ -1642,25 +1642,25 @@ const sound = new Howl({
 });
 
 const fakeLiquid = document.querySelector('.fake-liquid');
-const tubeAnimRotate = document.querySelector('.test-tube-container');
+const tubeAnim = document.querySelector('.tube-anim');
 
 fakeLiquid.addEventListener('animationend', () => {
     fakeLiquid.style.display = 'none';
     isSunSetting = true;
 });
 
-tubeAnimRotate.addEventListener('animationstart', () => {
+tubeAnim.addEventListener('animationstart', () => {
     console.log("yo: ");
   fakeLiquid.style.opacity = 1;
 });
 
 document.addEventListener('click', () => {
-    document.querySelector('.tube-anim-master').classList.add('start');
+    document.querySelector('.tube-anim').classList.add('start');
 });
 
 document.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
-        document.querySelector('.tube-anim-master').classList.add('start');
+        document.querySelector('.tube-anim').classList.add('start');
     }
 });
 

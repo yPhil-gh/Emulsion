@@ -98,22 +98,23 @@ canvas {
 
 
 @keyframes rotate-tube {
-  /* Initial centered position */
   0% {
     transform: translate(-50%, -50%);
   }
 
   25% {
-    transform: translate(-50%, -70%);
+    transform: translate(-50%, -68.5%);
+  }
+  50% {
+    transform: translate(-50%, -68.5%) rotate(-35deg);
   }
 
-  /* Rotate -35deg (left) while lifted */
-  50% {
-    transform: translate(-50%, -70%) rotate(-35deg);
+  60% {
+    transform: translate(-50%, -86.5%) rotate(-35deg);
   }
 
   75% {
-    transform: translate(-50%, -70%) rotate(0deg);
+    transform: translate(-50%, -96.5%) rotate(0deg);
   }
   100% {
     transform: translate(-50%, -150%);
@@ -135,7 +136,7 @@ canvas {
   transform: rotate(35deg);
 
   margin: auto auto;
-  animation: rotate-liquid 3s ease-in-out forwards 4s;
+  animation: rotate-liquid 1s ease-out forwards 3s;
   animation-play-state: paused;
 }
 
@@ -433,7 +434,7 @@ canvas {
 
 .water {
   z-index: 1;
-  top: 66.5%;
+  top: 66.6%;
   bottom: 0;
   left: 0;
   right: 0;

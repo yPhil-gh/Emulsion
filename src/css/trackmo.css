@@ -84,7 +84,7 @@ canvas {
 
 .test-tube-container {
   position: absolute;
-  top: 75%;
+  top: 50%;
   left: 50%;
   transform-origin: 50% 50%;
   transform: translate(-50%, -50%);
@@ -92,7 +92,7 @@ canvas {
   /* transform: translate(-50%, -70%); */
   z-index: 1; /* Higher than canvas */
   padding: 20px;
-  animation: lift-tube 1s ease-in-out forwards;
+  animation: lift-tube 2s ease-in-out forwards;
   animation-play-state: paused;
 }
 
@@ -102,24 +102,28 @@ canvas {
     transform: translate(-50%, -50%);
   }
 
-  50% {
-    transform: translate(-50%, -69%);
+  30% {
+    transform: translate(-50%, 60%);
   }
 
   100% {
-    transform: translate(-50%, -69%) rotate(-35deg);
+    transform: translate(-50%, 60%) rotate(-35deg);
   }
 
 }
 
 .test-tube {
-  animation: rotate-tube 2s ease-in-out forwards 1s;
+  animation: rotate-tube 2s ease-in-out forwards 2s;
   animation-play-state: paused;
 }
 
 @keyframes rotate-tube {
   0% {
     transform: translate(0) rotate(0);
+  }
+
+  20% {
+    transform: rotate(35deg) translate(0);
   }
 
   100% {
@@ -141,7 +145,7 @@ canvas {
   transform: rotate(35deg);
 
   margin: auto auto;
-  animation: rotate-liquid 1s ease-in-out forwards 2s;
+  animation: rotate-liquid 1s ease-in-out forwards 2.1s;
   animation-play-state: paused;
 }
 
@@ -397,11 +401,24 @@ canvas {
 .pond {
   /* display: none; */
   transition: opacity 2s linear;
-  height: 40vh;
-  background-image: linear-gradient(var(--v1), var(--s1), var(--v1));
+  /* height: 40vh; */
+  /* background-image: linear-gradient(var(--v1), var(--s1), var(--v1)); */
   /* position: relative; */
-  z-index: 1;
-  overflow: hidden;
+  /* z-index: 1; */
+  /* overflow: hidden; */
+  /* animation-name: pond-lower; */
+  animation-duration: 5s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes pond-lower {
+  0%{
+    transform: translate(0) rotate(0deg);
+  }
+  100%{
+    transform: translate(0, 550px) rotate(0deg);
+    /* transform: translate(0, -75%); */
+  }
 }
 
 .lotus {
@@ -555,7 +572,7 @@ canvas {
 
 .sun-reflection-container {
   background: linear-gradient(rgb(var(--color-water-top-rgb-string)), rgb(29,162,216));
-  z-index: 3;
+  /* z-index: 3; */
   overflow: hidden;
   width: 100%;
   height: 40vh;

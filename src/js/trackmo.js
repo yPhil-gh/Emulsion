@@ -1,5 +1,14 @@
 // Vars -----------------------------
+
 const globalSpeed = 0.8; // Pixels per frame
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let width = canvas.width = window.innerWidth;
+let height = canvas.height = window.innerHeight;
+let mouseX = 0, mouseY = 0;
+
+let horizon = height * 2 / 3;
 
 const baseSpeed = 0.8; // Original globalSpeed value
 const baseDuration = 16; // Original animation duration (16s)
@@ -9,6 +18,8 @@ const animationDuration = (baseSpeed / globalSpeed) * baseDuration;
 const sunReflection = document.querySelector('.sun-reflection');
 
 let isSunSetting = false;
+let isNight = false;
+let isEmulsified = false;
 
 let transitionProgress = 0;
 
@@ -23,14 +34,6 @@ const liquidColorRgb = '127, 205, 255';
 
 const wave = document.querySelector('.wave');
 
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-let width = canvas.width = window.innerWidth;
-let height = canvas.height = window.innerHeight;
-let horizon = height * 2 / 3;
-let isNight = false;
-let mouseX = 0, mouseY = 0;
-
 const letters = {
     e: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
     m: { color: 'rgb(0, 255, 255)', rgbValues: '0, 255, 255', bounds: null, particles: [] },
@@ -42,7 +45,7 @@ const letters = {
     n: { color: 'rgb(255, 165, 0)', rgbValues: '255, 165, 0', bounds: null, particles: [] }
 };
 
-const popSounds = Array.from(document.querySelectorAll('.sound-pop'));
+const glassBreakSounds = Array.from(document.querySelectorAll('.sound-glass-break'));
 
 const electricColors = [
     "#00FFFF", // Cyan
@@ -83,6 +86,7 @@ let letterHoverStartTime = 0;
 let prevHoverState = null;
 let hoveredLetter = null;
 let logoColor = '#00FFFF';
+let isLogoAnimEnded = false;
 
 let particles = [];
 const particlesBaseY = logoFinalY;
@@ -93,7 +97,9 @@ const particlesSpinSpeed = 0.05;
 const ufoFrequency = 120000; // 2 minutes
 
 // Cube logo
-const cubeSpeed = sunSpeed / 1500;
+const cubeSpeed = sunSpeed / 500;
+let cubeLettersGlueAlpha = 0.0;
+let isCubeAnimEnded = false;
 
 // Scene -------------------------------
 
@@ -533,7 +539,7 @@ let shootingStars = [];
 for (let i = 0; i < starCount; i++) {
     stars.push({
         x: Math.random() * width,
-        y: Math.random() * horizon,
+        y: Math.random() * height,
         size: Math.random() * 1.5 + 0.5,
         speed: Math.random() * 0.0002 + 0.02,
         opacity: Math.random() * 0.5 + 0.5
@@ -715,11 +721,7 @@ const reliefMap = Array(numGridCols + 1).fill().map(() =>
 );
 
 function drawGrid() {
-    if (!isNight) return;
-
-    const pond = document.querySelector('.pond');
-
-    pond.style.opacity = 0;
+    if (!isEmulsified) return;
 
     // Define the color for special horizontal lines
     const specialLineColor = "#FF0000"; // Red color
@@ -876,9 +878,6 @@ const cubeAnimation = {
     isAnimating: false
 };
 
-let cubeLettersGlueAlpha = 0.0;
-let isCubeAnimEnded = false;
-
 function drawCube() {
     if (!isNight) return;
 
@@ -998,8 +997,6 @@ function easeOutQuad(t) {
 
 
 function drawLogo() {
-
-
 
     const scale = 1.0;
     const baseX = width/2 - 135; // Center 500px wide logo
@@ -1134,12 +1131,14 @@ function updateLogoPosition() {
         // Ease-out animation
         const remaining = logoY - logoFinalY;
         logoSpeed = Math.max(0.5, remaining * 0.001);
+        logoSpeed = sunSpeed;
         logoY -= logoSpeed;
 
         // Snap to final position when close
         if (remaining < 2) {
             logoY = logoFinalY;
             logoSpeed = 0;
+            isLogoAnimEnded = true;
         }
     }
 }
@@ -1148,9 +1147,9 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
 
-function playRandomPop() {
-    const randomIndex = getRandomInt(popSounds.length);
-    const audio = popSounds[randomIndex].cloneNode(true); // Clone the audio element
+function playRandomGlassBreakSound() {
+    const randomIndex = getRandomInt(glassBreakSounds.length);
+    const audio = glassBreakSounds[randomIndex].cloneNode(true); // Clone the audio element
 
     // Remove the element after playback ends
     audio.addEventListener('ended', () => {
@@ -1183,7 +1182,7 @@ function updateLogo() {
     // Sound triggers
     if (cubeLettersGlueAnimationState === 'COMPLETED' && hoveredLetter !== prevHoverState) {
         if (hoveredLetter) {
-            playRandomPop();
+            playRandomGlassBreakSound();
             letterHoverStartTime = now;
         }
         prevHoverState = hoveredLetter;
@@ -1352,7 +1351,7 @@ let isGlued = false;
 function updateCubeLettersGlueAlpha() {
     if (isCubeAnimEnded) {
         if (cubeLettersGlueAnimationState === 'INCREASING') {
-            // document.getElementById('bass-drop').play();
+            document.getElementById('cube-logo-touch').play();
             cubeLettersGlueAlpha += 0.05;
             if (cubeLettersGlueAlpha >= 1) {
                 cubeLettersGlueAlpha = 1; // Ensure it doesn't exceed 1
@@ -1363,6 +1362,7 @@ function updateCubeLettersGlueAlpha() {
             if (cubeLettersGlueAlpha <= 0) {
                 cubeLettersGlueAlpha = 0; // Ensure it doesn't go below 0
                 cubeLettersGlueAnimationState = 'COMPLETED'; // Mark the animation as completed
+                document.getElementById('cube-logo-liquid-drop').play();
                 isGlued = true;
             }
         }
@@ -1429,6 +1429,8 @@ function updateSky() {
 }
 
 
+const pond = document.querySelector('.pond');
+
 
 function update() {
 
@@ -1452,6 +1454,10 @@ function update() {
     updateTestTube();
 
     if (isNight) {
+
+        // pond.style.opacity = 0;
+        pond.style.animationName = 'pond-lower';
+
         ufo.update(mouseX, mouseY);
         cubeAnimation.isAnimating = true;
     }
@@ -1468,6 +1474,7 @@ function update() {
             tube.style.overflow = 'unset';
             updateBoil();
             lastBoilTime = now;
+            isEmulsified = true;
         }
 
     }
@@ -1496,7 +1503,7 @@ function drawSky() {
     skyGradient.addColorStop(0, `rgb(${colorSkyHorizon})`); // horizon
 
     ctx.fillStyle = skyGradient;
-    ctx.fillRect(0, 0, width, horizon);
+    ctx.fillRect(0, 0, width, height);
 
 }
 
@@ -1528,14 +1535,15 @@ function draw() {
     drawLogo();
     drawParticles();
     drawUrl();
+
     // Foreground elements
     const floorGradient = ctx.createLinearGradient(0, horizon, 0, height);
     floorGradient.addColorStop(0, "#220022"); // Black at the horizon
     floorGradient.addColorStop(0.5, "#111133"); // Dark blue midway
     floorGradient.addColorStop(1, "#000000"); // Deep purple at the bottom
 
-    ctx.fillStyle = floorGradient;
-    ctx.fillRect(0, horizon, width, height - horizon);
+    // ctx.fillStyle = floorGradient;
+    // ctx.fillRect(0, horizon, width, height - horizon);
     drawGrid();
     drawCredits();
     // drawVolumeControl();

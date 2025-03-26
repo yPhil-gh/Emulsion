@@ -77,7 +77,7 @@ let starsMoveLeft = false;
 
 // Logo conf
 let logoChars = [];
-const logoInitialY = horizon - 18; // Just below horizon
+const logoInitialY = horizon + 250; // Just below horizon
 const logoFinalY = 200;
 let logoSpeed = 0; // Current rise speed
 let logoY = logoInitialY; // below screen
@@ -628,6 +628,7 @@ let colorWaterTopEnd = [255,154,0];
 let colorWaterTop = colorWaterTopStart;
 
 const water = document.querySelector('.sun-reflection-container');
+const waterFront = document.querySelector('.front');
 
 // Interpolate between start and end colors
 function interpolate(start, end) {
@@ -1431,7 +1432,6 @@ function updateSky() {
 
 const pond = document.querySelector('.pond');
 
-
 function update() {
 
     const now = performance.now();
@@ -1456,7 +1456,9 @@ function update() {
     if (isNight) {
 
         // pond.style.opacity = 0;
-        pond.style.animationName = 'pond-lower';
+        water.style.animationName = 'water-lower';
+        waterFront.style.animationName = 'pond-lower';
+        // pond.style.animationName = 'pond-lower';
 
         ufo.update(mouseX, mouseY);
         cubeAnimation.isAnimating = true;

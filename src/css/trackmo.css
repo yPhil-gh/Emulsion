@@ -396,22 +396,27 @@ canvas {
   bottom: 0;
   left: 0;
   right: 0;
+  animation-duration: 5s;
+  animation-fill-mode: forwards;
+  /* animation-name: pond-lower; */
 }
 
 .pond {
-  /* display: none; */
-  transition: opacity 2s linear;
-  /* height: 40vh; */
-  /* background-image: linear-gradient(var(--v1), var(--s1), var(--v1)); */
-  /* position: relative; */
-  /* z-index: 1; */
-  /* overflow: hidden; */
-  /* animation-name: pond-lower; */
   animation-duration: 5s;
   animation-fill-mode: forwards;
+  /* animation-name: pond-lower; */
 }
 
 @keyframes pond-lower {
+  0% {
+    bottom: 0;
+  }
+  100% {
+    bottom: -550px;
+  }
+}
+
+@keyframes water-lower {
   0%{
     transform: translate(0) rotate(0deg);
   }
@@ -577,6 +582,10 @@ canvas {
   width: 100%;
   height: 40vh;
   top: 66.5vh;
+
+  animation-duration: 5.5s;
+  animation-fill-mode: forwards;
+
 }
 
 .sun-reflection {

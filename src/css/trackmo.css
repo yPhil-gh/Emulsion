@@ -11,7 +11,7 @@
   --color-liquid-grad: linear-gradient(#00E5FF, #0099CC, #004466);
   --color-liquid-down: #a8c8e100;
 
-  --color-water-top: rgb(255,228,169);
+  --color-water-top: rgb(127, 205, 255);
 
   --v1: #be91c6;
   --v2: #8a65cc;
@@ -90,36 +90,42 @@ canvas {
   transform: translate(-50%, -50%);
   margin: auto;
   /* transform: translate(-50%, -70%); */
-  z-index: 10; /* Higher than canvas */
+  z-index: 1; /* Higher than canvas */
   padding: 20px;
-  animation: rotate-tube 4s ease-in-out forwards;
+  animation: lift-tube 1s ease-in-out forwards;
   animation-play-state: paused;
 }
 
-
-@keyframes rotate-tube {
+@keyframes lift-tube {
   /* Initial centered position */
   0% {
     transform: translate(-50%, -50%);
   }
 
-  25% {
-    transform: translate(-50%, -70%);
-  }
-
-  /* Rotate -35deg (left) while lifted */
   50% {
-    transform: translate(-50%, -70%) rotate(-35deg);
+    transform: translate(-50%, -69%);
   }
 
-  75% {
-    transform: translate(-50%, -70%) rotate(0deg);
-  }
   100% {
-    transform: translate(-50%, -150%);
+    transform: translate(-50%, -69%) rotate(-35deg);
   }
+
 }
 
+.test-tube {
+  animation: rotate-tube 2s ease-in-out forwards 1s;
+  animation-play-state: paused;
+}
+
+@keyframes rotate-tube {
+  0% {
+    transform: translate(0) rotate(0);
+  }
+
+  100% {
+    transform: rotate(35deg) translate(0, -150%);
+  }
+}
 
 .test-tube-container * {
   transform-origin: 50% 50%;
@@ -135,7 +141,7 @@ canvas {
   transform: rotate(35deg);
 
   margin: auto auto;
-  animation: rotate-liquid 3s ease-in-out forwards 4s;
+  animation: rotate-liquid 1s ease-in-out forwards 2s;
   animation-play-state: paused;
 }
 
@@ -167,6 +173,7 @@ canvas {
 /* } */
 
 .tube-anim.start .test-tube-container,
+.tube-anim.start .test-tube,
 .tube-anim.start .fake-liquid {
   animation-play-state: running;
 }
@@ -432,15 +439,14 @@ canvas {
 }
 
 .water {
-  z-index: 1;
+  z-index: 2;
   top: 66.5%;
   bottom: 0;
   left: 0;
-  right: 0;
+  /* right: 0; */
   /* height: 100px; */
-  background: linear-gradient(var(--color-water-top), #7FCDFF);
   overflow: hidden;
-  /* box-shadow: inset 0 1px 4px -3px white; */
+  box-shadow: inset 0 1px 4px -3px white;
 }
 
 .stone {
@@ -547,12 +553,22 @@ canvas {
   }
 }
 
+.sun-reflection-container {
+  background: linear-gradient(rgb(var(--color-water-top-rgb-string)), rgb(29,162,216));
+  z-index: 3;
+  overflow: hidden;
+  width: 100%;
+  height: 40vh;
+  top: 66.5vh;
+}
+
 .sun-reflection {
+  transform-origin: -50% -50%;
   /* background: yellow; */
   border-radius: 50%;
   width: 20vmin;
   height: 20vmin;
-  left: calc(51% - 10vmin);
+  left: calc(50% - 10vmin);
   /* top: 50%; */
   transform: translate3d(0, 28vh, 0);
   animation: rise 16s forwards;
@@ -560,7 +576,9 @@ canvas {
   animation-timing-function: ease-out;
   animation-fill-mode: forwards;
   animation-duration: var(--reflect-animation-duration);
-  box-shadow: 0 0 10px yellow;
+  background: linear-gradient(rgb(255,250,112), rgb(255,210,112));
+  box-shadow: 0 0 20px red;
+  filter: blur(21px);
 }
 
 @keyframes rise {
@@ -569,35 +587,19 @@ canvas {
   }
 }
 
-.sun-container-reflection {
-  z-index: 2;
-  top: 55%;
-  /* background: linear-gradient(var(--color-water-top), blue); */
-  /* background: radial-gradient(yellow,  #7FCDFF); */
-  /* background: */
-  /*   radial-gradient(ellipse at top, var(--color-water-top), transparent), */
-  /*   radial-gradient(ellipse at bottom, #7FCDFF, transparent); */
-}
-
-.sun-container-reflection .sun-reflection {
-  z-index: 1;
-  background: linear-gradient(yellow, darkorange);
-  box-shadow: none;
-  filter: blur(25px);
-  opacity: 1;
-  top: 0;
-  /* transform: translate3d(0, 20vmin, 0); */
-  /* animation-duration: 30s; */
-  /* animation-iteration-count: forwards; */
-  /* animation-name: rise-reflection; */
-}
-
-.sun-container {
-  overflow: hidden;
-  width: 100%;
-  height: 40vh;
-  top: 66.5vh;
-}
+/* .sun-reflection { */
+/*   z-index: 1; */
+/*   transform-origin: -50% -50%; */
+/*   background: linear-gradient(yellow, darkorange); */
+/*   box-shadow: none; */
+/*   filter: blur(25px); */
+/*   opacity: 1; */
+/*   top: 0; */
+/*   /\* transform: translate3d(0, 20vmin, 0); *\/ */
+/*   /\* animation-duration: 30s; *\/ */
+/*   /\* animation-iteration-count: forwards; *\/ */
+/*   /\* animation-name: rise-reflection; *\/ */
+/* } */
 
 .splash {
   z-index: 2;

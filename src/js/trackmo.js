@@ -8,18 +8,9 @@ const animationDuration = (baseSpeed / globalSpeed) * baseDuration;
 
 const sunReflection = document.querySelector('.sun-reflection');
 
-let colorSunTopStart = [255,210,112];
-let colorSunTopEnd = [255, 62, 0];
-
-let colorSunTop = getRGBString(colorSunTopStart);
-
 let isSunSetting = false;
 
 let transitionProgress = 0;
-
-function getRGBString(colorArray) {
-    return `rgb(${colorArray[0]}, ${colorArray[1]}, ${colorArray[2]})`;
-}
 
 function updateReflection() {
     sunReflection.style.setProperty('--reflect-animation-duration', `${animationDuration}s`);
@@ -103,7 +94,6 @@ const ufoFrequency = 120000; // 2 minutes
 
 // Cube logo
 const cubeSpeed = sunSpeed / 1500;
-let cubeLettersGlueAnimationState = 'INCREASING';
 
 // Scene -------------------------------
 
@@ -621,13 +611,17 @@ function drawShootingStars() {
     }
 }
 
+let colorSunTopStart = [255,210,112];
+let colorSunTopEnd = [255, 62, 0];
 
-let colorWaterTopStart = [255,228,169];
-let colorWaterTopEnd = colorSunTopEnd;
+let colorSunTop = colorSunTopStart;
 
-let colorWaterTop = getRGBString(colorWaterTopStart);
+let colorWaterTopStart = [127,205,255];
+let colorWaterTopEnd = [255,154,0];
 
-const water = document.querySelector('.water');
+let colorWaterTop = colorWaterTopStart;
+
+const water = document.querySelector('.sun-reflection-container');
 
 // Interpolate between start and end colors
 function interpolate(start, end) {
@@ -635,76 +629,69 @@ function interpolate(start, end) {
 }
 
 function updateSun() {
-
     if (!isSunSetting) return;
 
     transitionProgress = Math.min(1, transitionProgress + sunSpeed * 0.001);
-
-    colorSunTop = `${interpolate(colorSunTopStart[0], colorSunTopEnd[0])},
-                        ${interpolate(colorSunTopStart[1], colorSunTopEnd[1])},
-                        ${interpolate(colorSunTopStart[2], colorSunTopEnd[2])}`;
-
 
     if (sunYOffset > maxSunTravel - nightOffset) {
         isNight = true;
     }
 
     if (sunYOffset < maxSunTravel) {
-
         sunYOffset += sunSpeed;
+
+        // Correctly interpolate and update colorSunTop
+        let r = interpolate(colorSunTopStart[0], colorSunTopEnd[0], transitionProgress);
+        let g = interpolate(colorSunTopStart[1], colorSunTopEnd[1], transitionProgress);
+        let b = interpolate(colorSunTopStart[2], colorSunTopEnd[2], transitionProgress);
+
+        colorSunTop = `${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}`;
     }
 }
 
 function drawSun() {
-
     const sunX = width / 2;
-    const sunY = horizon + sunYOffset;
+    const sunY = horizon + sunYOffset;  // If static, replace sunYOffset with fixed value
 
-    // Glow control variables
-    const sunGlowOpacity = 5.8; // Adjust for stronger or weaker glow
-    const sunGlowSize = sunBaseRadius * 6; // Controls the glow spread
-    const showSunsetLines = false; // Toggle sunset lines on/off
+    // Fixed appearance values
+    const sunGlowOpacity = 5.8;
+    const sunGlowSize = sunBaseRadius * 6;
+    const showSunsetLines = false;
 
-    // init
-    colorSunTop = `${interpolate(colorSunTopStart[0], colorSunTopEnd[0])},
-                        ${interpolate(colorSunTopStart[1], colorSunTopEnd[1])},
-                        ${interpolate(colorSunTopStart[2], colorSunTopEnd[2])}`;
+    // Static color definition
+    // colorSunTop = `${colorSunTopStart[0]}, ${colorSunTopStart[1]}, ${colorSunTopStart[2]}`;
 
-
-    // Sun glow gradient
+    // Sun glow gradient (static)
     const sunGlowGradient = ctx.createRadialGradient(
         sunX, sunY, sunBaseRadius * 0.3,
         sunX, sunY, sunGlowSize
     );
 
-    console.log("colorSunTop: ", colorSunTop);
-
     sunGlowGradient.addColorStop(0, `rgba(${colorSunTop}, ${sunGlowOpacity})`);
-    // gradient.addColorStop(0.5, `rgba(255, 215, 0, ${sunGlowOpacity * 0.5})`);
     sunGlowGradient.addColorStop(1, 'rgba(255,228,169, 0)');
 
-    // Draw glow first
+    // Draw glow
     ctx.fillStyle = sunGlowGradient;
     ctx.beginPath();
     ctx.arc(sunX, sunY, sunGlowSize, 0, Math.PI * 2);
     ctx.fill();
 
-    // Sun body
+    // Draw sun body (static)
     ctx.beginPath();
     ctx.arc(sunX, sunY, sunBaseRadius, 0, Math.PI * 2);
-    let sunGradient = ctx.createLinearGradient(0, sunY - sunBaseRadius, 0, sunY + sunBaseRadius);
+    const sunGradient = ctx.createLinearGradient(0, sunY - sunBaseRadius, 0, sunY + sunBaseRadius);
     sunGradient.addColorStop(0, `rgba(${colorSunTop})`);
     sunGradient.addColorStop(1, "#FFD700");
     ctx.fillStyle = sunGradient;
     ctx.fill();
 
-    // Optional sunset lines
+    // Static decorative lines
     if (showSunsetLines) {
         const numLines = 8;
         for (let i = 0; i < numLines; i++) {
-            let lineY = sunY - sunBaseRadius + (i + 1) * (sunBaseRadius / (numLines + 1));
+            const lineY = sunY - sunBaseRadius + (i + 1) * (sunBaseRadius / (numLines + 1));
             ctx.beginPath();
-            let dx = Math.sqrt(sunBaseRadius ** 2 - (sunY - lineY) ** 2);
+            const dx = Math.sqrt(sunBaseRadius ** 2 - (sunY - lineY) ** 2);
             ctx.moveTo(sunX - dx, lineY);
             ctx.lineTo(sunX + dx, lineY);
             ctx.lineWidth = 1 + (i / numLines) * 5;
@@ -713,8 +700,6 @@ function drawSun() {
         }
     }
 }
-
-
 
 // GRID
 const numGridLines = 40;
@@ -888,13 +873,8 @@ function drawParticles() {
 const cubeAnimation = {
     progress: 0,    // 0-1 (0 = left, 1 = final position)
     speed: cubeSpeed,     // Animation speed (adjust as needed)
-    isAnimating: true
+    isAnimating: false
 };
-
-function startCubeAnimation() {
-    cubeAnimation.progress = 0;
-    cubeAnimation.isAnimating = true;
-}
 
 let cubeLettersGlueAlpha = 0.0;
 let isCubeAnimEnded = false;
@@ -912,7 +892,6 @@ function drawCube() {
     // Check animation progress to trigger actions
     if (cubeAnimation.progress <= startAnimation) {
         // Actions before animation starts
-        console.log("Animation is about to start.");
     } else if (cubeAnimation.progress > startAnimation && cubeAnimation.progress < endAnimation) {
         // Actions during animation
     } else if (cubeAnimation.progress >= endAnimation) {
@@ -1189,6 +1168,7 @@ function playRandomPop() {
 //         audio.remove();
 //     });
 // }
+let cubeLettersGlueAnimationState = 'INCREASING';
 
 function updateLogo() {
 
@@ -1372,7 +1352,7 @@ let isGlued = false;
 function updateCubeLettersGlueAlpha() {
     if (isCubeAnimEnded) {
         if (cubeLettersGlueAnimationState === 'INCREASING') {
-            document.getElementById('bass-drop').play();
+            // document.getElementById('bass-drop').play();
             cubeLettersGlueAlpha += 0.05;
             if (cubeLettersGlueAlpha >= 1) {
                 cubeLettersGlueAlpha = 1; // Ensure it doesn't exceed 1
@@ -1394,18 +1374,18 @@ function updateCubeLettersGlueAlpha() {
 let lastBoilTime = 0;
 const boilInterval = 1000; // 1 second
 
-let skyTopStart = [55,240,228];
-let skyTopEnd = [0, 0, 0];
+let colorSkyTopStart = [55,240,228];
+let colorSkyTopEnd = [0, 0, 0];
 
-let skyMidStart = [180, 205, 255];
-let skyMidEnd = [17, 17, 51];
+let colorSkyMidStart = [180, 205, 255];
+let colorSkyMidEnd = [17, 17, 51];
 
-let skyHorizonStart = [55,240,228];
-let skyHorizonEnd = [34, 0, 34];
+let colorSkyHorizonStart = [55,240,228];
+let colorSkyHorizonEnd = [34, 0, 34];
 
-let skyTopColor = getRGBString(skyTopStart);
-let skyMidColor = getRGBString(skyMidStart);
-let skyHorizonColor = getRGBString(skyHorizonStart);
+let colorSkyTop = colorSkyTopStart;
+let colorSkyMid = colorSkyMidStart;
+let colorSkyHorizon = colorSkyHorizonStart;
 
 let skyTransitionStartTime = null;  // timestamp when sun setting begins
 const transitionDuration = 10000;   // transition duration in milliseconds (e.g., 10 seconds)
@@ -1414,9 +1394,9 @@ function updateSky() {
     if (!isSunSetting) {
         // Reset transition progress and set colors to the starting values.
         skyTransitionStartTime = null;
-        skyTopColor = getRGBString(skyTopStart);
-        skyMidColor = getRGBString(skyMidStart);
-        skyHorizonColor = getRGBString(skyHorizonStart);
+        colorSkyTop = colorSkyTopStart;
+        colorSkyMid = colorSkyMidStart;
+        colorSkyHorizon = colorSkyHorizonStart;
         return;
     }
 
@@ -1435,13 +1415,17 @@ function updateSky() {
     }
 
     // Update skyTopColor
-    skyTopColor = `rgb(${interpolate(skyTopStart[0], skyTopEnd[0])}, ${interpolate(skyTopStart[1], skyTopEnd[1])}, ${interpolate(skyTopStart[2], skyTopEnd[2])})`;
+    colorSkyTop = `${interpolate(colorSkyTopStart[0], colorSkyTopEnd[0])}, ${interpolate(colorSkyTopStart[1], colorSkyTopEnd[1])}, ${interpolate(colorSkyTopStart[2], colorSkyTopEnd[2])}`;
 
     // Update skyMidColor
-    skyMidColor = `rgb(${interpolate(skyMidStart[0], skyMidEnd[0])}, ${interpolate(skyMidStart[1], skyMidEnd[1])}, ${interpolate(skyMidStart[2], skyMidEnd[2])})`;
+    colorSkyMid = `${interpolate(colorSkyMidStart[0], colorSkyMidEnd[0])}, ${interpolate(colorSkyMidStart[1], colorSkyMidEnd[1])}, ${interpolate(colorSkyMidStart[2], colorSkyMidEnd[2])}`;
 
     // Update skyHorizonColor
-    skyHorizonColor = `rgb(${interpolate(skyHorizonStart[0], skyHorizonEnd[0])}, ${interpolate(skyHorizonStart[1], skyHorizonEnd[1])}, ${interpolate(skyHorizonStart[2], skyHorizonEnd[2])})`;
+    colorSkyHorizon = `${interpolate(colorSkyHorizonStart[0], colorSkyHorizonEnd[0])}, ${interpolate(colorSkyHorizonStart[1], colorSkyHorizonEnd[1])}, ${interpolate(colorSkyHorizonStart[2], colorSkyHorizonEnd[2])}`;
+
+    // Update colorWaterTop
+    colorWaterTop = `${interpolate(colorWaterTopStart[0], colorWaterTopEnd[0])}, ${interpolate(colorWaterTopStart[1], colorWaterTopEnd[1])}, ${interpolate(colorWaterTopStart[2], colorWaterTopEnd[2])}`;
+
 }
 
 
@@ -1450,8 +1434,9 @@ function update() {
 
     const now = performance.now();
 
-    updateSky();
     if (isSunSetting) {
+        updateSky();
+        updateSun();
     }
 
     updateReflection();
@@ -1463,12 +1448,12 @@ function update() {
     spawnShootingStar();
     updateLogo();
     updateMoon();
-    updateSun();
     updateLogoPosition();
     updateTestTube();
 
     if (isNight) {
         ufo.update(mouseX, mouseY);
+        cubeAnimation.isAnimating = true;
     }
 
     if (cubeAnimation.isAnimating && cubeAnimation.progress < 1) {
@@ -1491,10 +1476,7 @@ function update() {
         moonAlpha += 0.001; // Increase opacity gradually
     }
 
-    colorWaterTop = `${interpolate(colorWaterTopStart[0], colorWaterTopEnd[0])},
-                        ${interpolate(colorWaterTopStart[1], colorWaterTopEnd[1])},
-                        ${interpolate(colorWaterTopStart[2], colorWaterTopEnd[2])}`;
-    water.style.setProperty('--color-water-top', `rgb(${colorWaterTop})`);
+    water.style.setProperty('--color-water-top-rgb-string', `${colorWaterTop}`);
 
     updateCubeLettersGlueAlpha();
 }
@@ -1509,14 +1491,17 @@ function drawSky() {
     // skyGradient.addColorStop(1, "#cce7ff"); // Warm orange at the horizon
 
     // Night
-    skyGradient.addColorStop(1, skyTopColor); // top
-    skyGradient.addColorStop(0.5, skyMidColor); // Dark blue midway
-    skyGradient.addColorStop(0, skyHorizonColor); // horizon
+    skyGradient.addColorStop(1, `rgb(${colorSkyTop})`); // top
+    skyGradient.addColorStop(0.5, `rgb(${colorSkyMid})`); // Dark blue midway
+    skyGradient.addColorStop(0, `rgb(${colorSkyHorizon})`); // horizon
 
     ctx.fillStyle = skyGradient;
     ctx.fillRect(0, 0, width, horizon);
 
 }
+
+const flockRespawnTime = 2 * 60 * 1000; // 2 minutes in milliseconds
+let flockRespawnTimer = null;
 
 function draw() {
     ctx.clearRect(0, 0, width, height);
@@ -1532,11 +1517,10 @@ function draw() {
         const isFlockActive = updateFlock(flock);
         drawFlock(flock, ctx);
 
-        // Reinitialize the flock if it has passed
-        // if (!isFlockActive) {
-        //     console.log("Reinitializing flock...");
-        //     flock = initFlock(width, height);
-        // }
+        if (!isFlockActive) {
+            console.log("Reinitializing flock...");
+            flock = initFlock(width, height);
+        }
     }
 
     drawSun();
@@ -1642,15 +1626,15 @@ const sound = new Howl({
 });
 
 const fakeLiquid = document.querySelector('.fake-liquid');
-const tubeAnim = document.querySelector('.tube-anim');
+const tubeAnim = document.querySelector('.test-tube-container');
+const tubeCtnAnim = document.querySelector('.test-tube');
 
 fakeLiquid.addEventListener('animationend', () => {
     fakeLiquid.style.display = 'none';
     isSunSetting = true;
 });
 
-tubeAnim.addEventListener('animationstart', () => {
-    console.log("yo: ");
+tubeCtnAnim.addEventListener('animationstart', () => {
   fakeLiquid.style.opacity = 1;
 });
 

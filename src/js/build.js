@@ -44,226 +44,118 @@ async function buildGameMenu(gameName, image) {
     });
 }
 
-function createFormTableRow(labelText, inputId, inputDescription, buttonText, platformName, colSpan) {
+function _buildPrefsForm() {
 
-    const isInputIdSave = inputId === 'save';
+    const formContainer = document.createElement('div');
+    formContainer.classList.add('platform-menu-container');
 
-    async function _formBrowseButtonClick(event) {
-        // event.stopPropagation();
+    const platformMenuImageCtn = document.createElement('div');
+    platformMenuImageCtn.classList.add('platform-menu-image-ctn');
+    const platformMenuImage = document.createElement('img');
+    platformMenuImage.src = path.join(LB.baseDir, 'img', 'emulsion.png');
+    platformMenuImage.width = '250';
 
-        if (inputId === 'input-games-dir') {
-            const selectedPath = await ipcRenderer.invoke('select-file-or-directory', 'openDirectory');
-            if (selectedPath) {
-                document.getElementById(inputId).value = selectedPath;
-            }
-        }
+    platformMenuImageCtn.appendChild(platformMenuImage);
 
-        if (inputId === 'input-emulator') {
-            const selectedPath = await ipcRenderer.invoke('select-file-or-directory', 'openFile');
-            if (selectedPath) {
-                document.getElementById(inputId).value = selectedPath;
-            }
-        }
+    const gamesDirGroup = document.createElement('div');
 
-    }
+    const gamesDirInput = document.createElement('input');
+    gamesDirInput.type = 'text';
+    gamesDirInput.classList.add('input');
+    gamesDirInput.placeholder = 'Your games directory';
 
-    const row = document.createElement('tr');
+    const gamesDirLabel = document.createElement('label');
+    gamesDirLabel.textContent = 'Games directory';
 
-    // Label
-    const firstCol = document.createElement('td');
-    const label = document.createElement('label');
-    label.setAttribute('for', inputId);
-    label.textContent = labelText;
-    firstCol.appendChild(label);
-    firstCol.classList.add('col1');
+    const gamesDirSubLabel = document.createElement('label');
+    gamesDirSubLabel.id = 'games-dir-sub-label';
+    gamesDirSubLabel.classList.add('sub-label');
 
-    // Input
-    const secondCol = document.createElement('td');
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.classList.add('input-text');
-    input.id = inputId;
-    input.title = inputDescription;
-    input.placeholder = inputDescription;
+    const gamesDirButton = document.createElement('button');
+    gamesDirButton.classList.add('button', 'button-browse', 'info');
+    gamesDirButton.textContent = 'Browse';
 
-    if (inputId === 'input-games-dir') {
-        LB.prefs.getValue(platformName, 'gamesDir')
-            .then((value) => {
-                input.value = value;
-            })
-            .catch((error) => {
-                console.error('Failed to get platform preference:', error);
-            });
-    }
+    const gamesDirCtn = document.createElement('div');
+    gamesDirCtn.classList.add('dual-ctn');
 
-    if (inputId === 'input-emulator') {
-        LB.prefs.getValue(platformName, 'emulator')
-            .then((value) => {
-                input.value = value;
-            })
-            .catch((error) => {
-                console.error('Failed to get platform preference:', error);
-            });
-    }
+    const gamesDirIcon = document.createElement('div');
+    gamesDirIcon.classList.add('form-icon');
+    gamesDirIcon.innerHTML = '<i class="form-icon fa fa-2x fa-folder-open-o" aria-hidden="true"></i>';
 
-    if (inputId === 'input-emulator-args') {
-        LB.prefs.getValue(platformName, 'emulatorArgs')
-            .then((value) => {
-                input.value = value;
-            })
-            .catch((error) => {
-                console.error('Failed to get platform preference:', error);
-            });
-    }
+    gamesDirCtn.appendChild(gamesDirIcon);
+    gamesDirCtn.appendChild(gamesDirInput);
+    gamesDirCtn.appendChild(gamesDirButton);
 
-    secondCol.appendChild(input);
-    secondCol.classList.add('col2');
+    gamesDirGroup.appendChild(gamesDirLabel);
+    gamesDirGroup.appendChild(gamesDirCtn);
+    gamesDirGroup.appendChild(gamesDirSubLabel);
 
-    if (colSpan) {
-        secondCol.colSpan = colSpan;
-    }
+    const steamGridKeyGroup = document.createElement('div');
 
-    // Button (or nothing if 3rd col)
-    const thirdCol = document.createElement('td');
+    const steamGridKeyCtn = document.createElement('div');
+    steamGridKeyCtn.classList.add('dual-ctn');
 
-    if (inputId === 'input-games-dir' || inputId === 'input-emulator') {
+    const steamGridKeyIcon = document.createElement('div');
+    steamGridKeyIcon.classList.add('form-icon');
+    steamGridKeyIcon.innerHTML = '<i class="form-icon emulator-args-icon fa fa-2x fa-cog" aria-hidden="true"></i>';
 
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'button';
-        button.classList.add(isInputIdSave ? 'success' : 'info');
-        button.textContent = buttonText;
-        thirdCol.appendChild(button);
-        thirdCol.classList.add('col3');
-        button.addEventListener('click', _formBrowseButtonClick);
+    const steamGridKeyLabel = document.createElement('label');
+    steamGridKeyLabel.textContent = 'Steam Grid API Key';
 
-    }
+    const steamGridKeyInput = document.createElement('input');
+    steamGridKeyInput.classList.add('input');
+    steamGridKeyInput.type = 'text';
+    steamGridKeyInput.placeholder = 'Your Steam Grid API Key';
 
-    row.appendChild(firstCol);
-    row.appendChild(secondCol);
-    row.appendChild(thirdCol);
-
-    return row;
-}
-
-function buildPrefsForm() {
-
-    const formTable = document.createElement('table');
-
-    const form = document.createElement('form');
-    form.id = 'platform-form';
-    form.className = 'platform-form';
-
-    const menuImageContainer = document.createElement('div');
-    menuImageContainer.className = 'menu-image-container';
-    const menuImage = document.createElement('img');
-    menuImage.src = path.join(LB.baseDir, 'img', `emulsion.png`);
-    menuImage.width = '250';
-    menuImageContainer.appendChild(menuImage);
-
-    const row0 = document.createElement('tr');
-    const row0td1 = document.createElement('td');
-    row0td1.colSpan = 3;
-    row0td1.style.textAlign = 'center';
-
-    row0td1.appendChild(menuImage);
-    row0.appendChild(row0td1);
-
-    // Row 1: Toggle switch and Platform label
-    const row1 = document.createElement('tr');
-    const row1td1 = document.createElement('td');
-    row1td1.className = 'form-checkbox-container';
-
-    const row1td2 = document.createElement('td');
-    const row1td3 = document.createElement('td');
-
-    const statusCheckBox = document.createElement('input');
-    statusCheckBox.type = 'checkbox';
-    statusCheckBox.id = 'input-platform-toggle-checkbox';
-
-    const statusLabel = document.createElement('div');
-    statusLabel.id = 'form-status-label';
-    statusLabel.setAttribute('for', 'input-platform-toggle-checkbox');
-
-    const statusLabelPlatormName = document.createElement('span');
-    statusLabelPlatormName.id = 'form-status-label-platform-name';
-    statusLabelPlatormName.textContent = `Emulsion is Cool`;
-
-    const statusLabelPlatormStatus = document.createElement('span');
-    statusLabelPlatormStatus.id = 'form-status-label-platform-status';
-    statusLabelPlatormStatus.textContent = `On`;
-
-    statusLabel.appendChild(statusLabelPlatormName);
-    statusLabel.appendChild(statusLabelPlatormStatus);
-
-    row1td2.colSpan = 2;
-    row1td2.appendChild(statusLabel);
-
-    row1.appendChild(row1td1);
-    row1.appendChild(row1td2);
-    row1.appendChild(row1td3);
-    form.appendChild(row1);
-
-    // Row 2: Details text
-    const row2 = document.createElement('tr');
-    const platformText = document.createElement('div');
-    const row2td1 = document.createElement('td');
-    row2td1.colSpan = 3;
-    platformText.id = 'platform-text-div';
-    platformText.textContent = 'plop';
-    row2td1.appendChild(platformText);
-    row2.appendChild(row2td1);
-
-    formTable.appendChild(row0);
-    formTable.appendChild(row1);
-    formTable.appendChild(row2);
-
-    const buttons = document.createElement('div');
-    buttons.className = 'buttons';
+    steamGridKeyCtn.appendChild(steamGridKeyIcon);
+    steamGridKeyCtn.appendChild(steamGridKeyInput);
+    steamGridKeyGroup.appendChild(steamGridKeyLabel);
+    steamGridKeyGroup.appendChild(steamGridKeyCtn);
 
     const saveButton = document.createElement('button');
     saveButton.type = 'button';
-    saveButton.className = 'button';
-    saveButton.classList.add('success');
+    saveButton.classList.add('button');
     saveButton.textContent = 'Save';
-
-    const aboutButton = document.createElement('button');
-    aboutButton.type = 'button';
-    aboutButton.className = 'button';
-    aboutButton.classList.add('success');
-    aboutButton.textContent = 'About';
 
     const cancelButton = document.createElement('button');
     cancelButton.type = 'button';
-    cancelButton.className = 'button';
-    cancelButton.classList.add('info');
+    cancelButton.classList.add('is-info', 'button');
     cancelButton.textContent = 'Cancel';
 
-    buttons.appendChild(cancelButton);
-    buttons.appendChild(aboutButton);
-    buttons.appendChild(saveButton);
+    // LB.prefs.getValue(platformName, 'steamGridKey')
+    //     .then((value) => {
+    //         steamGridKeyInput.value = value;
+    //     })
+    //     .catch((error) => {
+    //         console.error('Failed to get platform preference:', error);
+    //     });
 
-    function _formAboutButtonClick(event) {
 
-        const canvas = document.getElementById('canvas');
+    // gamesDirButton.addEventListener('click', _gamesDirButtonClick);
 
-        if (!canvas) {
-
-            ipcRenderer.send('request-about-content');
-
-            document.getElementById('close-about').addEventListener('click', (event) => {
-                event.stopPropagation();
-                // window.audioContext.suspend();
-                document.getElementById('about-container').style.display = 'none';
-            });
-
-        } else {
-            document.getElementById('about-container').style.display = 'block';
+    async function _gamesDirButtonClick(event) {
+        event.stopPropagation();
+        const selectedPath = await ipcRenderer.invoke('select-file-or-directory', 'openDirectory');
+        if (selectedPath) {
+            gamesDirInput.value = selectedPath;
         }
-
     }
 
-    function _formCancelButtonClick(event) {
+    formContainer.appendChild(platformMenuImageCtn);
+    formContainer.appendChild(gamesDirGroup);
+    formContainer.appendChild(steamGridKeyGroup);
+    formContainer.appendChild(cancelButton);
+
+    const formContainerButtons = document.createElement('div');
+    formContainerButtons.classList.add('cancel-save-buttons');
+    formContainerButtons.appendChild(cancelButton);
+    formContainerButtons.appendChild(saveButton);
+
+    // cancelButton.addEventListener('click', _cancelButtonClick);
+    // saveButton.addEventListener('click', _saveButtonClick);
+
+
+    function _cancelButtonClick(event) {
 
         const escapeKeyEvent = new KeyboardEvent('keydown', {
             key: 'Escape',
@@ -276,37 +168,39 @@ function buildPrefsForm() {
         document.dispatchEvent(escapeKeyEvent);
     }
 
-    async function _formSaveButtonClick(event) {
+    async function _saveButtonClick(event) {
 
-        const isEnabled = document.getElementById('input-platform-toggle-checkbox').checked;
-        const gamesDir = document.getElementById('input-games-dir').value;
-        const emulator = document.getElementById('input-emulator').value;
-        const emulatorArgs = document.getElementById('input-emulator-args').value;
+        if (!gamesDirInput.value) {
+            gamesDirSubLabel.textContent = 'This field cannot be empty';
+            return;
+        }
+
+        gamesDirSubLabel.textContent = '';
+
+        if (!emulatorInput.value) {
+            emulatorSubLabel.textContent = 'This field cannot be empty';
+            return;
+        }
+
+        emulatorSubLabel.textContent = '';
 
         try {
-            await LB.prefs.save(platformName, 'isEnabled', isEnabled);
-            await LB.prefs.save(platformName, 'gamesDir', gamesDir);
-            await LB.prefs.save(platformName, 'emulator', emulator);
-            await LB.prefs.save(platformName, 'emulatorArgs', emulatorArgs);
+            await LB.prefs.save('emulsion', 'steamGridKey', steamGridKeyInput.value);
+            window.location.reload();
         } catch (error) {
             console.error('Failed to save preferences:', error);
         }
     }
 
-    cancelButton.addEventListener('click', _formCancelButtonClick);
-    aboutButton.addEventListener('click', _formAboutButtonClick);
-    saveButton.addEventListener('click', _formSaveButtonClick);
+    formContainer.appendChild(formContainerButtons);
 
-    form.appendChild(formTable);
-    form.appendChild(buttons);
-
-    return form;
+    return formContainer;
 }
 
 function buildPlatformForm(platformName) {
 
     if (platformName === 'settings') {
-        return buildPrefsForm();
+        return _buildPrefsForm();
     }
 
     const formContainer = document.createElement('div');
@@ -567,160 +461,6 @@ function buildPlatformForm(platformName) {
     }
 
     formContainer.appendChild(formContainerButtons);
-
-    // OLD
-
-
-    const formTable = document.createElement('table');
-
-    const form = document.createElement('form');
-    form.id = 'platform-form';
-    form.className = 'platform-form';
-
-    const menuImage = document.createElement('img');
-    menuImage.src = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
-    menuImage.width = '250';
-
-    const row0 = document.createElement('tr');
-    const row0td1 = document.createElement('td');
-    row0td1.colSpan = 3;
-    row0td1.style.textAlign = 'center';
-
-    row0td1.appendChild(menuImage);
-    row0.appendChild(row0td1);
-
-    // Row 1: Toggle switch and Platform label
-    const row1 = document.createElement('tr');
-    const row1td1 = document.createElement('td');
-    row1td1.className = 'form-checkbox-container';
-
-    const row1td2 = document.createElement('td');
-    const row1td3 = document.createElement('td');
-
-    // const statusCheckBox = document.createElement('input');
-    // statusCheckBox.type = 'checkbox';
-    // statusCheckBox.id = 'input-platform-toggle-checkbox';
-
-    // const statusLabel = document.createElement('div');
-    // statusLabel.id = 'form-status-label';
-    // statusLabel.setAttribute('for', 'input-platform-toggle-checkbox');
-
-    // const statusLabelPlatormName = document.createElement('span');
-    // statusLabelPlatormName.id = 'form-status-label-platform-name';
-    // statusLabelPlatormName.textContent = `${platformName} is `;
-
-    // const statusLabelPlatormStatus = document.createElement('span');
-    // statusLabelPlatormStatus.id = 'form-status-label-platform-status';
-
-    // statusLabel.appendChild(statusLabelPlatormName);
-    // statusLabel.appendChild(statusLabelPlatormStatus);
-
-    // row1td2.colSpan = 2;
-    // row1td1.appendChild(statusCheckBox);
-    // row1td2.appendChild(statusLabel);
-
-    // row1.appendChild(row1td1);
-    // row1.appendChild(row1td2);
-    // row1.appendChild(row1td3);
-    // form.appendChild(row1);
-
-    // // Row 2: Details text
-    // const row2 = document.createElement('tr');
-    // const platformText = document.createElement('div');
-    // const row2td1 = document.createElement('td');
-    // row2td1.colSpan = 3;
-    // platformText.id = 'platform-text-div';
-    // platformText.textContent = 'plop';
-    // row2td1.appendChild(platformText);
-    // row2.appendChild(row2td1);
-
-    // formTable.appendChild(row0);
-    // formTable.appendChild(row1);
-    // formTable.appendChild(row2);
-
-    // // Row 3: Games Directory
-    // const gamesDirRow = createFormTableRow('Games', 'input-games-dir', `Select your ${LB.utils.capitalizeWord(platformName)} games directory path`, 'Browse', platformName);
-    // formTable.appendChild(gamesDirRow);
-
-    // // Row 4: Emulator
-    // const emulatorRow = createFormTableRow('Emulator', 'input-emulator', `Select your ${LB.utils.capitalizeWord(platformName)} emulator (file path or name)`, 'Browse', platformName);
-    // formTable.appendChild(emulatorRow);
-
-    // // Row 5: Emulator Args
-    // const emulatorArgsRow = createFormTableRow('Args', 'input-emulator-args', `The arguments to your ${LB.utils.capitalizeWord(platformName)} emulator`, null, platformName, 2);
-    // formTable.appendChild(emulatorArgsRow);
-
-    // const buttons = document.createElement('div');
-    // buttons.className = 'buttons';
-
-    // // const saveButton = document.createElement('button');
-    // // saveButton.type = 'button';
-    // // saveButton.className = 'button';
-    // // saveButton.classList.add('success');
-    // // saveButton.textContent = 'Save';
-
-    // // const cancelButton = document.createElement('button');
-    // // cancelButton.type = 'button';
-    // // cancelButton.className = 'button';
-    // // cancelButton.classList.add('info');
-    // // cancelButton.textContent = 'Cancel';
-
-    // // buttons.appendChild(cancelButton);
-    // // buttons.appendChild(saveButton);
-
-    // function _formCancelButtonClick(event) {
-
-    //     const escapeKeyEvent = new KeyboardEvent('keydown', {
-    //         key: 'Escape',
-    //         keyCode: 27,
-    //         code: 'Escape', // The physical key on the keyboard
-    //         which: 27,     // Same as keyCode
-    //         bubbles: true
-    //     });
-
-    //     document.dispatchEvent(escapeKeyEvent);
-    // }
-
-    // async function _formSaveButtonClick(event) {
-
-    //     const isEnabled = document.getElementById('input-platform-toggle-checkbox').checked;
-    //     const gamesDir = document.getElementById('input-games-dir').value;
-    //     const emulator = document.getElementById('input-emulator').value;
-    //     const emulatorArgs = document.getElementById('input-emulator-args').value;
-
-    //     try {
-    //         await LB.prefs.save(platformName, 'isEnabled', isEnabled);
-    //         await LB.prefs.save(platformName, 'gamesDir', gamesDir);
-    //         await LB.prefs.save(platformName, 'emulator', emulator);
-    //         await LB.prefs.save(platformName, 'emulatorArgs', emulatorArgs);
-    //     } catch (error) {
-    //         console.error('Failed to save preferences:', error);
-    //     }
-    // }
-
-    // cancelButton.addEventListener('click', _formCancelButtonClick);
-    // saveButton.addEventListener('click', _formSaveButtonClick);
-
-    // form.appendChild(formTable);
-    // form.appendChild(buttons);
-
-    // LB.prefs.getValue(platformName, 'isEnabled')
-    //     .then((value) => {
-    //         console.log("value!", value);
-    //         statusCheckBox.checked = value;
-    //         statusLabelPlatormStatus.textContent = value ? 'On' : 'Off';
-    //     })
-    //     .catch((error) => {
-    //         console.error('Failed to get platform preference:', error);
-    //     });
-
-
-    // toggleInput.addEventListener('change', (event) => {
-    //     console.log("event.target.checked: ", event.target.checked);
-    //     const label = document.getElementById('form-status-label');
-    //     console.log("label: ", label);
-    //     document.getElementById('form-status-label').textContent = event.target.checked ? "Disabled" : "Enabled";
-    // });
 
     return formContainer;
 }

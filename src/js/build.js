@@ -117,6 +117,12 @@ function _buildPrefsForm() {
     saveButton.classList.add('button');
     saveButton.textContent = 'Save';
 
+    const aboutButton = document.createElement('button');
+    aboutButton.type = 'button';
+    aboutButton.className = 'button';
+    aboutButton.classList.add('success');
+    aboutButton.textContent = 'About';
+
     const cancelButton = document.createElement('button');
     cancelButton.type = 'button';
     cancelButton.classList.add('is-info', 'button');
@@ -149,9 +155,11 @@ function _buildPrefsForm() {
     const formContainerButtons = document.createElement('div');
     formContainerButtons.classList.add('cancel-save-buttons');
     formContainerButtons.appendChild(cancelButton);
+    formContainerButtons.appendChild(aboutButton);
     formContainerButtons.appendChild(saveButton);
 
     // cancelButton.addEventListener('click', _cancelButtonClick);
+    aboutButton.addEventListener('click', _formAboutButtonClick);
     // saveButton.addEventListener('click', _saveButtonClick);
 
 
@@ -166,6 +174,26 @@ function _buildPrefsForm() {
         });
 
         document.dispatchEvent(escapeKeyEvent);
+    }
+
+    function _formAboutButtonClick(event) {
+
+        const canvas = document.getElementById('canvas');
+
+        if (!canvas) {
+
+            ipcRenderer.send('request-about-content');
+
+            document.getElementById('close-about').addEventListener('click', (event) => {
+                event.stopPropagation();
+                // window.audioContext.suspend();
+                document.getElementById('about-container').style.display = 'none';
+            });
+
+        } else {
+            document.getElementById('about-container').style.display = 'block';
+        }
+
     }
 
     async function _saveButtonClick(event) {

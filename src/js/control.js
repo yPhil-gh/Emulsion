@@ -73,6 +73,9 @@ function initSlideShow(platformToDisplay) {
     window.addEventListener('keydown', homeKeyDown);
 
     function homeKeyDown (event) {
+
+        console.log("yaooo!: ", event);
+
         event.stopPropagation();
         event.stopImmediatePropagation(); // Stops other listeners on the same element
 
@@ -100,8 +103,10 @@ function initSlideShow(platformToDisplay) {
             });
 
             if (LB.enabledPlatforms.includes(activePlatformName)) {
+                console.log("one: ");
                 initGallery(activeGalleryIndex);
             } else {
+                console.log("two: ");
                 initGallery(0, activePlatformName);
             }
 
@@ -143,8 +148,6 @@ function setGalleryControls(currentIndex) {
 
 function initGallery(currentIndex, disabledPlatform) {
 
-    console.log("currentIndex init gal: ", currentIndex);
-
     setGalleryControls(currentIndex);
 
     const header = document.getElementById('header');
@@ -175,12 +178,6 @@ function initGallery(currentIndex, disabledPlatform) {
                     behavior: "smooth",
                     block: "start",
                 });
-
-                // if (currentIndex === 0) {
-                //     LB.utils.updateControls('square', 'same', 'Fetch cover', 'off');
-                // } else {
-                //     LB.utils.updateControls('square', 'same', 'Fetch<br>cover', 'on');
-                // }
 
                 setGalleryControls(currentIndex);
 
@@ -214,7 +211,8 @@ function initGallery(currentIndex, disabledPlatform) {
                 if (page.dataset.platform === 'settings') {
                     document.querySelector('header .platform-image').style.backgroundImage = `url('../../img/emulsion.png')`;
                 } else {
-                    platformImage.src = `../img/platforms/${page.dataset.platform}.png`;
+                    platformImage.src = path.join(LB.baseDir, 'img', 'platforms', `${page.dataset.platform}.png`);
+                    // platformImage.src = `../../img/platforms/${page.dataset.platform}.png`;
                     platformImage.classList.add(page.dataset.platform);
                     document.querySelector('header .platform-image').style.backgroundImage = `url('../../img/platforms/${page.dataset.platform}.png')`;
                 }
@@ -284,12 +282,11 @@ function initGallery(currentIndex, disabledPlatform) {
         const selectedGame = LB.utils.getSelectedGame(gameContainers, selectedIndex);
         const selectedGameImg = selectedGame.querySelector('.game-image');
 
-        function menuKeyDown(event) {
+        function onMenuKeyDown(event) {
 
             event.stopPropagation();
             event.stopImmediatePropagation(); // Stops other listeners on the same element
             const menuGameContainers = Array.from(menu.querySelectorAll('.menu-game-container'));
-            console.log("menuGameContainers len: ", menuGameContainers.length);
 
             switch (event.key) {
             case 'ArrowRight':
@@ -318,16 +315,19 @@ function initGallery(currentIndex, disabledPlatform) {
                 menuSelectedIndex = Math.min(menuSelectedIndex + LB.galleryNumOfCols, menuGameContainers.length);
                 break;
             case 'Enter':
-                const menuSelectedGame = LB.utils.getSelectedGame(menuGameContainers, menuSelectedIndex);
-                const menuSelectedGameImg = menuSelectedGame.querySelector('.game-image');
-                _closeMenu(menuSelectedGameImg.src);
+                if (event.target.type === 'button') {
+                    break;
+                } else {
+                    const menuSelectedGame = LB.utils.getSelectedGame(menuGameContainers, menuSelectedIndex);
+                    const menuSelectedGameImg = menuSelectedGame.querySelector('.game-image');
+                    _closeMenu(menuSelectedGameImg.src);
+                }
                 break;
             case 'F5':
                 window.location.reload();
                 break;
             case 'Escape':
-                window.location.reload();
-                // _closeMenu();
+                LB.control.goBackHome(onMenuKeyDown);
                 break;
             }
 
@@ -372,15 +372,15 @@ function initGallery(currentIndex, disabledPlatform) {
             menuContainer.innerHTML = '';
 
             window.removeEventListener('keydown', listener);
-            window.addEventListener('keydown', menuKeyDown);
-
+            window.addEventListener('keydown', onMenuKeyDown);
 
             gameContainers.forEach(async (container, index) => {
                 if (index === selectedIndex) {
 
                     if (container.classList.contains('settings')) {
 
-                        const platformForm = LB.build.platformForm(platformToOpen || container.dataset.platform);
+                        const platformForm = LB.build.platformForm(platformToOpen || container.dataset.platform, onMenuKeyDown);
+
                         menuContainer.appendChild(platformForm);
 
                         document.querySelector('header .item-number').textContent = gameContainers.length;
@@ -426,7 +426,7 @@ function initGallery(currentIndex, disabledPlatform) {
             menu.style.height = '0';
 
             // controls.style.display = 'flex';
-            window.removeEventListener('keydown', menuKeyDown);
+            window.removeEventListener('keydown', onMenuKeyDown);
             window.addEventListener('keydown', listener);
 
             if (imgSrc) {
@@ -731,8 +731,18 @@ function initGamepad () {
 
 }
 
+function goBackHome(eventListener) {
+    document.getElementById('slideshow').style.display = 'flex';
+    document.getElementById('galleries').style.display = 'none';
+    document.getElementById('menu').style.display = 'none';
+    window.removeEventListener('keydown', eventListener);
+    LB.control.initSlideShow(0);
+    document.querySelector('header .item-number').textContent = '';
+}
+
 LB.control = {
     initGallery: initGallery,
     initSlideShow: initSlideShow,
-    initGamepad: initGamepad
+    initGamepad: initGamepad,
+    goBackHome: goBackHome
 };

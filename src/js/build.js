@@ -1,4 +1,4 @@
-async function buildGameMenu(gameName, image) {
+async function gameMenu(gameName, image) {
     return new Promise((resolve, reject) => {
         const gameMenuContainer = document.createElement('div');
         gameMenuContainer.classList.add('page-content');
@@ -44,7 +44,7 @@ async function buildGameMenu(gameName, image) {
     });
 }
 
-function _buildPrefsForm() {
+function _buildPrefsForm(eventListener) {
 
     const formContainer = document.createElement('div');
     formContainer.classList.add('platform-menu-container');
@@ -158,22 +158,13 @@ function _buildPrefsForm() {
     formContainerButtons.appendChild(aboutButton);
     formContainerButtons.appendChild(saveButton);
 
-    // cancelButton.addEventListener('click', _cancelButtonClick);
+    cancelButton.addEventListener('click', _cancelButtonClick);
     aboutButton.addEventListener('click', _formAboutButtonClick);
     // saveButton.addEventListener('click', _saveButtonClick);
 
 
-    function _cancelButtonClick(event) {
-
-        const escapeKeyEvent = new KeyboardEvent('keydown', {
-            key: 'Escape',
-            keyCode: 27,
-            code: 'Escape', // The physical key on the keyboard
-            which: 27,     // Same as keyCode
-            bubbles: true
-        });
-
-        document.dispatchEvent(escapeKeyEvent);
+    function _cancelButtonClick() {
+        LB.control.goBackHome(eventListener);
     }
 
     function _formAboutButtonClick(event) {
@@ -225,10 +216,10 @@ function _buildPrefsForm() {
     return formContainer;
 }
 
-function buildPlatformForm(platformName) {
+function platformForm(platformName, eventListener) {
 
     if (platformName === 'settings') {
-        return _buildPrefsForm();
+        return _buildPrefsForm(eventListener);
     }
 
     const formContainer = document.createElement('div');
@@ -447,18 +438,8 @@ function buildPlatformForm(platformName) {
     cancelButton.addEventListener('click', _cancelButtonClick);
     saveButton.addEventListener('click', _saveButtonClick);
 
-
-    function _cancelButtonClick(event) {
-
-        const escapeKeyEvent = new KeyboardEvent('keydown', {
-            key: 'Escape',
-            keyCode: 27,
-            code: 'Escape', // The physical key on the keyboard
-            which: 27,     // Same as keyCode
-            bubbles: true
-        });
-
-        document.dispatchEvent(escapeKeyEvent);
+    function _cancelButtonClick() {
+        LB.control.goBackHome(eventListener);
     }
 
     async function _saveButtonClick(event) {
@@ -494,6 +475,6 @@ function buildPlatformForm(platformName) {
 }
 
 LB.build = {
-    gameMenu: buildGameMenu,
-    platformForm: buildPlatformForm
+    gameMenu: gameMenu,
+    platformForm: platformForm
 };

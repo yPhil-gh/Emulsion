@@ -142,7 +142,7 @@ function buildSettingsPageContent(platforms) {
         const platformImage = document.createElement('img');
 
         if (platformName === 'settings') {
-            platformImage.src = path.join(LB.baseDir, 'img', 'emume.png');
+            platformImage.src = path.join(LB.baseDir, 'img', 'emulsion.png');
         } else {
             platformImage.src = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
         }

@@ -180,6 +180,7 @@ async function _loadUserData() {
         console.log("LB.baseDir: ", LB.baseDir);
         delete preferences.userDataPath;
         delete preferences.appPath;
+        delete preferences.versionNumber;
         LB.preferences = preferences;
 
         return preferences;
@@ -269,29 +270,40 @@ ipcRenderer.on('deliver-about-content', (event, aboutContent) => {
     const aboutContentDiv = document.getElementById('about-content');
     aboutContentDiv.innerHTML = aboutContent;
 
-    // Dynamically load external script
-    const script = document.createElement('script');
-    script.src = path.join(LB.baseDir, 'src', 'js', 'trackmo.js');
-    script.onload = () => {
+    const trackmoScript = document.createElement('script');
+    trackmoScript.src = path.join(LB.baseDir, 'src', 'js', 'trackmo.js');
+    trackmoScript.onload = () => {
         console.log('Script loaded.');
     };
-    script.onerror = () => {
+    trackmoScript.onerror = () => {
         console.error('Failed to load script');
     };
-    document.body.appendChild(script);
 
-    // Dynamically load external script
-    const song = document.createElement('audio');
-    song.classList.add('test-audio');
-    song.src = '../../audio/ding.oga';
-    song.onload = () => {
-        console.log('Song loaded.');
-    };
-    song.onerror = () => {
-        console.error('Failed to load song');
-    };
-    document.body.appendChild(script);
-    document.body.appendChild(song);
+    // const howlScript = document.createElement('script');
+    // howlScript.src = path.join(LB.baseDir, 'node_modules', 'howler', 'howler.min.js');
+    // howlScript.onload = () => {
+    //     console.log('Script loaded.');
+    // };
+    // howlScript.onerror = (error) => {
+    //     console.error('Failed to load script');
+    // };
+    // // document.head.appendChild(howlScript);
+
+    // document.head.appendChild(howlScript);
+
+    document.head.appendChild(trackmoScript);
+
+    // const song = document.createElement('audio');
+    // song.classList.add('test-audio');
+    // song.src = '../../audio/ding.oga';
+    // song.onload = () => {
+    //     console.log('Song loaded.');
+    // };
+    // song.onerror = () => {
+    //     console.error('Failed to load song');
+    // };
+    // document.body.appendChild(script);
+    // document.body.appendChild(song);
 
 
     aboutContainer.style.display = 'block';

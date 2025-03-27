@@ -64,7 +64,7 @@ const sunSpeed = globalSpeed;
 const sunBaseRadius = 120;
 const sunGlowScale = 6;
 let sunYOffset = - 400;
-const maxSunTravel = height - horizon + 250;
+const sunFinalY = height - horizon + 300;
 const nightOffset = 400;
 
 const moonSpeed = 0.008;
@@ -97,7 +97,7 @@ const particlesSpinSpeed = 0.05;
 const ufoFrequency = 120000; // 2 minutes
 
 // Cube logo
-const cubeSpeed = sunSpeed / 500;
+const cubeSpeed = sunSpeed / 820;
 let cubeLettersGlueAlpha = 0.0;
 let isCubeAnimEnded = false;
 
@@ -328,7 +328,7 @@ class Goose {
     constructor(xOffset, yOffset, isLeader = false) {
         this.x = xOffset;
         this.y = yOffset;
-        this.speed = 0.0002 + Math.random() * 0.2;
+        this.speed = 0.0002 + Math.random() * 0.5;
         this.flapPhase = Math.random() * Math.PI * 2;
         this.flapSpeed = 6 + Math.random() * 2;
         this.scale = 0.2 + Math.random() * 0.1;
@@ -347,7 +347,7 @@ class Goose {
         }
 
         this.x -= this.speed;
-        this.flapPhase += this.flapSpeed * 0.04; // Now using flapSpeed
+        this.flapPhase += this.flapSpeed * 0.06; // Now using flapSpeed
         if (this.x < -50 && !this.hasPassed) {
             this.hasPassed = true;
         }
@@ -530,9 +530,6 @@ function initParticles(particlesPerLetter = 4) { // Add parameter to control cou
     });
 }
 
-// ============================
-// STARFIELD (top half)
-// ============================
 const starCount = 50;
 let stars = [];
 let shootingStars = [];
@@ -573,16 +570,37 @@ function updateShootingStars() {
     }
 }
 
+let isAltitudeReached = false;
+let isTakingOff = false;
+let takeOffSpeed = 2; // Default speed
+let takeOffFinalY = horizon - 250; // Default target
+
+function takeOffStars(speed, finalY) {
+    takeOffSpeed = speed;
+    takeOffFinalY = finalY;
+    isTakingOff = true;
+}
+
 function updateStars() {
-    for (let star of stars) {
-        if (starsMoveLeft) {
-            // Original left movement
-            star.x -= star.speed;
-            if (star.x < 0) star.x = width;
-        } else {
-            // Inverted right movement
-            star.x += star.speed;
-            if (star.x > width) star.x = 0;
+    if (isTakingOff) {
+        for (let star of stars) {
+            star.y += takeOffSpeed;
+        }
+
+        // Stop taking off when all stars reach the final position
+        if (stars.every(star => star.y >= takeOffFinalY)) {
+            isTakingOff = false;
+            isAltitudeReached = true;
+        }
+    } else {
+        for (let star of stars) {
+            if (starsMoveLeft) {
+                star.x -= star.speed;
+                if (star.x < 0) star.x = width;
+            } else {
+                star.x += star.speed;
+                if (star.x > width) star.x = 0;
+            }
         }
     }
 }
@@ -640,11 +658,11 @@ function updateSun() {
 
     transitionProgress = Math.min(1, transitionProgress + sunSpeed * 0.001);
 
-    if (sunYOffset > maxSunTravel - nightOffset) {
+    if (sunYOffset > sunFinalY - nightOffset) {
         isNight = true;
     }
 
-    if (sunYOffset < maxSunTravel) {
+    if (sunYOffset < sunFinalY) {
         sunYOffset += sunSpeed;
 
         // Correctly interpolate and update colorSunTop
@@ -1213,7 +1231,7 @@ function drawUrl() {
     ctx.globalAlpha = moonAlpha;
     ctx.font = "9pt Monospace";
     ctx.fillStyle = '#FFEEEE';
-    ctx.fillText("Version " + window.versionNumber + " - yphil.gitlab.io",width / 2 - 120 , height / 2 - 100);
+    ctx.fillText("Version " + window.versionNumber + " - yphil.gitlab.io",width / 2 - 120 , height / 2 - 130);
     ctx.globalAlpha = 1.0; // Reset opacity for other elements
 }
 
@@ -1342,7 +1360,10 @@ function toggleMute() {
 //     }
 // }
 
-function init() {
+let isFlockStarted = false;
+
+function startFlock() {
+    console.log("startFlock: ");
     // Initialize the flock once
     flock = initFlock(width, height);
 }
@@ -1352,17 +1373,21 @@ let isGlued = false;
 function updateCubeLettersGlueAlpha() {
     if (isCubeAnimEnded) {
         if (cubeLettersGlueAnimationState === 'INCREASING') {
+            document.getElementById('cube-logo-touch').volume = 0.3;
             document.getElementById('cube-logo-touch').play();
             cubeLettersGlueAlpha += 0.05;
             if (cubeLettersGlueAlpha >= 1) {
                 cubeLettersGlueAlpha = 1; // Ensure it doesn't exceed 1
                 cubeLettersGlueAnimationState = 'DECREASING'; // Switch to decreasing
             }
+            document.getElementById('cube-logo-liquid-squirt').play();
         } else if (cubeLettersGlueAnimationState === 'DECREASING') {
             cubeLettersGlueAlpha -= 0.03;
             if (cubeLettersGlueAlpha <= 0) {
                 cubeLettersGlueAlpha = 0; // Ensure it doesn't go below 0
                 cubeLettersGlueAnimationState = 'COMPLETED'; // Mark the animation as completed
+                // document.getElementById('cube-logo-liquid-squirt').pause();
+                document.getElementById('cube-logo-liquid-drop').volume = 0.5;
                 document.getElementById('cube-logo-liquid-drop').play();
                 isGlued = true;
             }
@@ -1431,6 +1456,7 @@ function updateSky() {
 
 
 const pond = document.querySelector('.pond');
+let hasFlockStarted = false;
 
 function update() {
 
@@ -1457,6 +1483,16 @@ function update() {
 
         // pond.style.opacity = 0;
         water.style.animationName = 'water-lower';
+
+        if (!isAltitudeReached) {
+            takeOffStars(takeOffSpeed, takeOffFinalY);
+        }
+
+        if (isAltitudeReached && !isFlockStarted) {
+            startFlock();
+            isFlockStarted = true;
+        }
+
         waterFront.style.animationName = 'pond-lower';
         // pond.style.animationName = 'pond-lower';
 
@@ -1546,13 +1582,11 @@ function draw() {
 
     // ctx.fillStyle = floorGradient;
     // ctx.fillRect(0, horizon, width, height - horizon);
-    drawGrid();
+    // drawGrid();
     drawCredits();
     // drawVolumeControl();
     drawCube();
 }
-
-init();
 
 function loop() {
     update();
@@ -1629,24 +1663,32 @@ const playButton = document.getElementById('audio-control');
 
 let isPlaying = false;
 
-const sound = new Howl({
-  src: ['../../tmp/loop.ogg'],
-  html5: true,
-  loop: true // Add this if you want the sound to loop
-});
+// const sound = new Howl({
+//   src: ['../../audio/loop0.wav'],
+//   loop: true
+// });
 
 const fakeLiquid = document.querySelector('.fake-liquid');
 const tubeAnim = document.querySelector('.test-tube-container');
 const tubeCtnAnim = document.querySelector('.test-tube');
+const dropSoundDelay = document.querySelector('.dummy');
 
 fakeLiquid.addEventListener('animationend', () => {
     fakeLiquid.style.display = 'none';
     isSunSetting = true;
 });
 
-tubeCtnAnim.addEventListener('animationstart', () => {
-  fakeLiquid.style.opacity = 1;
+dropSoundDelay.addEventListener('animationend', () => {
+    document.getElementById('cube-logo-liquid-drop').play();
 });
+
+tubeCtnAnim.addEventListener('animationstart', () => {
+    fakeLiquid.style.opacity = 1;
+});
+
+// tubeAnim.addEventListener('animationstart', () => {
+//     fakeLiquid.style.opacity = 1;
+// });
 
 document.addEventListener('click', () => {
     document.querySelector('.tube-anim').classList.add('start');
@@ -1658,20 +1700,20 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-playButton.addEventListener('click', function(event) {
-  if (isPlaying) {
-    sound.pause();
-    isPlaying = false;
-      playButton.textContent = 'Play'; // Optional: Update button text
-  } else {
-    sound.play();
-    isPlaying = true;
-    playButton.textContent = 'Pause'; // Optional: Update button text
-  }
-});
+// playButton.addEventListener('click', function(event) {
+//   if (isPlaying) {
+//     sound.pause();
+//     isPlaying = false;
+//       playButton.textContent = 'Play'; // Optional: Update button text
+//   } else {
+//     sound.play();
+//     isPlaying = true;
+//     playButton.textContent = 'Pause'; // Optional: Update button text
+//   }
+// });
 
 // Optional: Update button state when sound ends naturally
-sound.on('end', function() {
-  isPlaying = false;
-  playButton.textContent = 'Play';
-});
+// sound.on('end', function() {
+//   isPlaying = false;
+//   playButton.textContent = 'Play';
+// });

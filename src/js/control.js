@@ -212,8 +212,7 @@ function initGallery(currentIndex, disabledPlatform) {
 
                 const platformImage = document.createElement('img');
                 if (page.dataset.platform === 'settings') {
-                    // platformImage.src = '../img/emume.png';
-                    document.querySelector('header .platform-image').style.backgroundImage = `url('../../img/emume.png')`;
+                    document.querySelector('header .platform-image').style.backgroundImage = `url('../../img/emulsion.png')`;
                 } else {
                     platformImage.src = `../img/platforms/${page.dataset.platform}.png`;
                     platformImage.classList.add(page.dataset.platform);

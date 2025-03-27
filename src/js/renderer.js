@@ -44,9 +44,9 @@ function buildSlide(platformName, preferences) {
     slide.setAttribute('data-index', preferences[platformName].index);
     slide.id = platformName;
     const platformImgPath = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
-    const emumeImgPath = path.join(LB.baseDir, 'img', 'emume.png');
+    const emulsionImgPath = path.join(LB.baseDir, 'img', 'emulsion.png');
     slide.style.backgroundImage = platformName === "settings"
-        ? `url('${emumeImgPath}')`
+        ? `url('${emulsionImgPath}')`
         : `url('${platformImgPath}')`;
 
     const slideContent = document.createElement("div");

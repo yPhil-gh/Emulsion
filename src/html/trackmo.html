@@ -2,10 +2,9 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>80s Sunset Scene with Gradient</title>
+        <title>Emulsion</title>
         <link rel="stylesheet" href="../css/trackmo.css">
         <link rel="stylesheet" href="../../font/Fork-Awesome-1.2.0/css/fork-awesome.css">
-        <script src="../../node_modules/howler/dist/howler.min.js"></script>
     </head>
     <body>
         <audio class="sound-glass-break" src="../../audio/glass-break-1.ogg"></audio>
@@ -14,7 +13,9 @@
         <audio class="sound-glass-break" src="../../audio/glass-break-4.ogg"></audio>
         <audio class="sound-glass-break" src="../../audio/ding.oga"></audio>
         <audio id="cube-logo-touch" src="../../audio/touch.ogg"></audio>
-        <audio id="cube-logo-liquid-drop" src="../../audio/drop.ogg"></audio>
+        <audio id="cube-logo-liquid-drop" src="../../audio/water-drop.ogg"></audio>
+        <audio id="cube-logo-liquid-squirt" src="../../audio/squirt.ogg"></audio>
+        <audio id="loop" src="../../audio/loop0.wav"></audio>
 
         <svg style="display:none">
             <path
@@ -163,20 +164,20 @@
                 <div class="sun-reflection-container">
                     <div class="sun-reflection"></div>
                 </div>
-
-                <div class="splash"></div>
-                <div class="splash delay-1"></div>
-                <div class="splash delay-2"></div>
-                <div class="splash splash-4 delay-2"></div>
-                <div class="splash splash-4 delay-3"></div>
-                <div class="splash splash-4 delay-4"></div>
-                <div class="splash splash-stone delay-3"></div>
-                <div class="splash splash-stone splash-4"></div>
-                <div class="splash splash-stone splash-5"></div>
-                <div class="lotus lotus-1"></div>
-                <div class="lotus lotus-2"></div>
-                <div class="lotus lotus-3"></div>
                 <div class="front">
+                    <div class="fake-water"></div>
+                    <div class="splash"></div>
+                    <div class="splash delay-1"></div>
+                    <div class="splash delay-2"></div>
+                    <div class="splash splash-4 delay-2"></div>
+                    <div class="splash splash-4 delay-3"></div>
+                    <div class="splash splash-4 delay-4"></div>
+                    <div class="splash splash-stone delay-3"></div>
+                    <div class="splash splash-stone splash-4"></div>
+                    <div class="splash splash-stone splash-5"></div>
+                    <div class="lotus lotus-1"></div>
+                    <div class="lotus lotus-2"></div>
+                    <div class="lotus lotus-3"></div>
                     <div class="stone"></div>
                     <div class="grass"></div>
                     <div class="grass grass-1"></div>
@@ -190,7 +191,6 @@
             </div>
 
             <div class="tube-anim">
-
                 <div class="test-tube-container">
                     <div class="test-tube">
                         <div class="tube">
@@ -201,19 +201,13 @@
                         </div>
                     </div>
                 </div>
-
+                <div class="dummy"></div>
             </div>
         </div>
 
-        <div id="audio-control">
-            <i id="audio-control-icon" class="fa fa-volume-mute" aria-hidden="true"></i>
-        </div>
-        <script src="../js/trackmo.js"></script>
+        <!-- <div id="audio-control">
+             <i id="audio-control-icon" class="fa fa-volume-mute" aria-hidden="true"></i>
+             </div> -->
+        <!-- <script src="../js/trackmo.js"></script> -->
     </body>
 </html>
-
-<path
-    id="e2"
-    d="m 421.74019,80 h 30.03028 l 9.96972,-10.015714 V 20 m 0,30 -31.81705,0 m 31.81705,-30 h -40"
-    style="fill:none;stroke:#000000;stroke-width:1px"
-    sodipodi:nodetypes="cccccccc" />

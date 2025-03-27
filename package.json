@@ -1,6 +1,6 @@
 {
     "name": "emulsion",
-    "version": "1.0.15",
+    "version": "1.0.21",
     "context": "prod",
     "description": "Symmetrical launch break",
     "homepage": "https://gitlab.com/yphil/emulsion",
@@ -18,7 +18,7 @@
     "scripts": {
         "start": "electron . --no-sandbox",
         "prebuild": "rm -rf ./dist ./out ./node_modules ./repack ./tmp && npm install",
-        "build": "electron-builder --linux --x64 --publish never"
+        "build": "electron-builder --linux --win --x64 --publish never"
     },
     "build": {
         "files": [
@@ -36,11 +36,17 @@
         "linux": {
             "target": [
                 "AppImage",
-                "deb"
+                "deb",
+                "rpm"
             ],
-            "icon": "img/emume.png",
+            "icon": "img/emulsion.png",
+            "executableArgs":["--no-sandbox"],
             "category": "Utility",
             "artifactName": "${productName}-${version}.${ext}"
+        },
+        "win": {
+            "target": "nsis",
+            "executableName": "emulsion"
         },
         "asar": true,
         "compression": "store"

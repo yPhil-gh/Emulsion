@@ -157,7 +157,7 @@ function buildPrefsForm() {
     const menuImageContainer = document.createElement('div');
     menuImageContainer.className = 'menu-image-container';
     const menuImage = document.createElement('img');
-    menuImage.src = path.join(LB.baseDir, 'img', `emume.png`);
+    menuImage.src = path.join(LB.baseDir, 'img', `emulsion.png`);
     menuImage.width = '250';
     menuImageContainer.appendChild(menuImage);
 

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, dialog, globalShortcut, Menu } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog, globalShortcut, Menu, session } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -428,6 +428,18 @@ function killChildProcesses(childProcesses) {
 }
 
 app.whenReady().then(() => {
+
+    session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+        callback({
+            responseHeaders: {
+                ...details.responseHeaders,
+                "Access-Control-Allow-Origin": ["*"], // Allow all origins
+                "Access-Control-Allow-Methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+                "Access-Control-Allow-Headers": ["*"]
+            }
+        });
+    });
+
     createWindows();
 
     gamecontroller.on('controller-button-down', (event) => {

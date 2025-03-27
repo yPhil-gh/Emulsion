@@ -88,9 +88,10 @@ LB.prefs.load()
 
         const galleriesContainer = document.getElementById('galleries');
         galleriesContainer.style.display = 'none';
-        LB.control.initSlideShow();
 
         document.getElementById("main").style.display = 'flex';
+        LB.control.initSlideShow();
+        document.getElementById("splash").style.display = 'none';
         document.getElementById("footer").style.display = 'flex';
     })
     .catch(error => {

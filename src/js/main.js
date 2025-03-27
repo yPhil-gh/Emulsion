@@ -356,6 +356,17 @@ const defaultPreferences = {
             ".bin",
             ".iso"
         ]
+    },
+    "ps3": {
+        "isEnabled": false,
+        "gamesDir": "",
+        "emulator": "",
+        "emulatorArgs": "",
+        "index": 9,
+        "extensions": [
+            ".bin",
+            ".iso"
+        ]
     }
 };
 

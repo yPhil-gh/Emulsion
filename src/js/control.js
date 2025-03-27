@@ -190,7 +190,7 @@ function initGallery(currentIndex, disabledPlatform) {
                 gameContainers.forEach((container, index) => {
                     container.addEventListener('click', (event) => {
                         if (event.currentTarget.classList.contains('settings')) {
-                            _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), event.currentTarget.dataset.index / 1, galleryKeyDown, false, disabledPlatform);
+                            _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), event.currentTarget.dataset.index / 1, onGalleryKeyDown, false, disabledPlatform);
                         } else {
                             ipcRenderer.send('run-command', event.currentTarget.dataset.command);
                         }
@@ -266,7 +266,7 @@ function initGallery(currentIndex, disabledPlatform) {
     let selectedIndex = 0;
 
     if (disabledPlatform) {
-        _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), selectedIndex, galleryKeyDown, isMenuOpen, disabledPlatform);
+        _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), selectedIndex, onGalleryKeyDown, isMenuOpen, disabledPlatform);
     }
 
     function _toggleMenu(gameContainers, selectedIndex, listener, isMenuOpen, platformToOpen) {
@@ -471,7 +471,7 @@ function initGallery(currentIndex, disabledPlatform) {
         }
     }
 
-    function galleryKeyDown(event) {
+    function onGalleryKeyDown(event) {
         switch (event.key) {
         case 'ArrowRight':
             if (event.shiftKey) {
@@ -517,7 +517,7 @@ function initGallery(currentIndex, disabledPlatform) {
             break;
         case 'i':
             console.log("i: isMenuOpen: ", isMenuOpen);
-            _toggleMenu(gameContainers, selectedIndex, galleryKeyDown, isMenuOpen);
+            _toggleMenu(gameContainers, selectedIndex, onGalleryKeyDown, isMenuOpen);
             // window.removeEventListener('keydown', _handleKeyDown);
             break;
         case 'F5':
@@ -527,18 +527,19 @@ function initGallery(currentIndex, disabledPlatform) {
         case 'Enter':
             const selectedGameContainer = LB.utils.getSelectedGame(gameContainers, selectedIndex);
             if (currentPageIndex === 0) {
-                _toggleMenu(gameContainers, selectedIndex, galleryKeyDown, isMenuOpen);
+                _toggleMenu(gameContainers, selectedIndex, onGalleryKeyDown, isMenuOpen);
             } else {
                 selectedGameContainer.classList.add('launching');
+                ipcRenderer.send('run-command', selectedGameContainer.dataset.command);
                 setTimeout(() => {
-                    ipcRenderer.send('run-command', selectedGameContainer.dataset.command);
-                }, 600);
+                    selectedGameContainer.classList.remove('launching');
+                }, 1000);
             }
             break;
         case 'Escape':
             document.getElementById('slideshow').style.display = 'flex';
             document.getElementById('galleries').style.display = 'none';
-            window.removeEventListener('keydown', galleryKeyDown);
+            window.removeEventListener('keydown', onGalleryKeyDown);
             LB.control.initSlideShow(currentIndex);
             document.querySelector('header .item-number').textContent = '';
             break;
@@ -573,7 +574,7 @@ function initGallery(currentIndex, disabledPlatform) {
         }
     });
 
-    window.addEventListener('keydown', galleryKeyDown);
+    window.addEventListener('keydown', onGalleryKeyDown);
     updatePagesCarousel(); // Initialize the carousel
 }
 

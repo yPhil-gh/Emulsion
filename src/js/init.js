@@ -4,6 +4,8 @@ const path = require('path');
 const { ipcRenderer } = require('electron');
 const fsp = require('fs').promises; // Use the promise-based fs module
 const axios = require('axios');
+const { promisify } = require('util');
+const readFile = promisify(fs.readFile);
 
 const LB = {}; // Launch Break :)
 

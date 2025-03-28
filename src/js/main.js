@@ -7,6 +7,7 @@ import { spawn, exec } from 'child_process';
 import { getAllCoverImageUrls } from './steamgrid.js';
 import axios from 'axios';  // Import axios using ESM
 import gamecontroller from "sdl2-gamecontroller";
+import os from 'os';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -16,6 +17,25 @@ console.log("__dirname: ", __dirname);
 console.log("path.join(path.resolve(app.getAppPath()), 'src'): ", path.join(path.resolve(app.getAppPath()), 'src'));
 
 import { readFile } from 'fs/promises';
+
+function findProjectRoot(startDir) {
+    let dir = startDir;
+    while (!fs.existsSync(join(dir, 'package.json'))) {
+        const parentDir = dirname(dir);
+        if (parentDir === dir) return null;
+        dir = parentDir;
+    }
+    return dir;
+}
+
+const projectRoot = findProjectRoot(__dirname);
+
+function getExecutablePath() {
+    const basePath = path.join(projectRoot, 'bin');
+    return os.platform() === 'win32'
+        ? path.join(basePath, 'sfo.exe')
+        : path.join(basePath, 'sfo');
+}
 
 async function loadPackageJson() {
     const filePath = new URL('../../package.json', import.meta.url);
@@ -376,8 +396,6 @@ ipcMain.handle('load-preferences', () => {
     const appPath = app.getAppPath();
     const versionNumber = pjson.version;
 
-    console.log("appPath: ", appPath);
-
     if (preferences.error) {
 
         const result = dialog.showMessageBoxSync(mainWindow, {
@@ -437,6 +455,32 @@ function killChildProcesses(childProcesses) {
     });
     childProcesses.clear();
 }
+
+ipcMain.handle('parse-sfo', async (_event, filePath) => {
+    return new Promise((resolve, reject) => {
+        const exePath = getExecutablePath();
+        const args = ['-q', 'TITLE'];
+
+        const process = spawn(exePath, [filePath, ...args]);
+
+        let output = '';
+
+        process.stdout.on('data', (data) => {
+            output += data.toString();
+        });
+
+        process.stderr.on('data', (err) => console.error('SFO Error:', err.toString()));
+
+        process.on('close', (code) => {
+            if (code === 0) {
+                console.log("Final output: ", output);
+                resolve(output.trim());
+            } else {
+                reject(new Error(`SFO parser failed with code ${code}`));
+            }
+        });
+    });
+});
 
 app.whenReady().then(() => {
 

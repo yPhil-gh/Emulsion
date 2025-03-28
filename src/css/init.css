@@ -6,24 +6,22 @@
 
   --color-bg1: #0B192C;
   --color-bg2: #1E3E62;
-  --color-header-bg: #050c16;
 
   --color-text-1: #93FFD8;
   --color-text-2: #FFFFFF;
+  --color-text-3: rgb(234,0,0); /* big platform names */
 
+  --color-header-bg: #050c16;
   --color-header-border: #1E3E62;
   --color-footer-bg: #050c16;
   --color-footer-border: #1E3E62;
 
   --color-button-off: #FF4742;
   --color-button-on: #050c16;
-  --color-button-border: #FF4742;
 
   --color-border-on: #FF4742;
   --color-border-off: #1E3E62;
 
-  --color-fg1: #00FFF5;
-  --color-fg2: #A3F7BF;
   --slide-rotation-angle: 90deg;
   --slide-rotation-radius: 100px;
   --page-rotation-angle: 0;
@@ -51,6 +49,8 @@ body {
   align-items: center;
   min-height: 100vh; /* allow content to grow */
   overflow: hidden;
+  cursor: default;
+
   /* perspective: 600px; */
 }
 

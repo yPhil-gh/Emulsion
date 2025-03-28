@@ -192,6 +192,9 @@ function getPlatformName(name) {
     case 'gamecube':
         return "GameCube";
         break;
+    case 'n64':
+        return "Nintendo64";
+        break;
     default:
         break;
     }

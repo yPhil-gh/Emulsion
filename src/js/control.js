@@ -214,7 +214,7 @@ function initGallery(currentIndex, disabledPlatform) {
                 if (page.dataset.platform === 'settings') {
                     document.querySelector('header .platform-image').style.backgroundImage = `url('../../img/emulsion.png')`;
                 } else {
-                    platformImage.src = `../img/platforms/${page.dataset.platform}.png`;
+                    // platformImage.src = `../../img/platforms/${page.dataset.platform}.png`;
                     platformImage.classList.add(page.dataset.platform);
                     document.querySelector('header .platform-image').style.backgroundImage = `url('../../img/platforms/${page.dataset.platform}.png')`;
                 }
@@ -350,19 +350,23 @@ function initGallery(currentIndex, disabledPlatform) {
                 const result = await ipcRenderer.invoke('download-image', imgSrc, platform, gameName);
                 if (result.success) {
                     console.log(`Image saved at ${result.path}`);
+                    return result.path;  // Return the saved image path on success
                 } else {
                     console.error(`Error saving image: ${result.error}`);
+                    return null;
                 }
             } catch (error) {
                 console.error('Error communicating with main process:', error);
                 alert('Failed to save image');
+                return null;
             }
         };
 
         function _openMenu(platformToOpen) {
 
-            LB.utils.updateControls('square', 'same', 'Fetch cover', 'off');
-            LB.utils.updateControls('dpad', 'same', 'Fetch cover', 'off');
+            LB.utils.updateControls('square', 'same', '', 'off');
+            LB.utils.updateControls('dpad', 'same', '', 'off');
+            LB.utils.updateControls('shoulders', 'same', '', 'off');
 
             menu.style.height = '83vh';
 
@@ -433,31 +437,30 @@ function initGallery(currentIndex, disabledPlatform) {
                 const selectedGameImg = selectedGame.querySelector('.game-image');
                 if (!selectedGameImg) return;
 
-                // LB.utils.updateControls('circle', 'same', 'Back');
-
-                // Create a burst effect by rapidly scaling and fading out
-                // selectedGameImg.style.transform = "scale(1.3)";
-                // selectedGameImg.style.opacity = "0";
-
-                selectedGameImg.src = imgSrc + '?t=' + new Date().getTime();
-
                 const spinner = document.createElement('div');
-                spinner.classList.add(`spinner-${Math.floor(Math.random() * 20) + 1}`, 'spinner');
+                spinner.classList.add(`spinner-${Math.floor(Math.random() * 9) + 1}`, 'spinner');
                 spinner.classList.add('image-spinner');
 
-                selectedGame.appendChild(spinner);
+                // Optionally reset the image source before setting it to force refresh
+                // selectedGameImg.src = '';
 
-                selectedGameImg.onload = () => {
-                    // Zoom in with a punchy effect
-                    selectedGameImg.style.transform = "scale(1)";
-                    selectedGameImg.style.opacity = "1";
-                    spinner.remove();
-                };
+                // Call downloadImage first, and then update the image once it succeeds
+                const savedImagePath = await downloadImage(imgSrc, selectedGame.dataset.platform, selectedGame.dataset.gameName);
 
-                downloadImage(imgSrc, selectedGame.dataset.platform, selectedGame.dataset.gameName);
+                if (savedImagePath) {
 
+                    selectedGameImg.src = savedImagePath + '?t=' + new Date().getTime(); // Refresh with timestamp
+
+                    selectedGame.appendChild(spinner);
+
+                    // Apply the zoom effect after the image has been successfully set
+                    selectedGameImg.onload = () => {
+                        selectedGameImg.style.transform = "scale(1)";
+                        selectedGameImg.style.opacity = "1";
+                        spinner.remove();
+                    };
+                }
             }
-
 
             isMenuOpen = false;
         }

@@ -75,7 +75,7 @@ LB.gallery = {
 // Recursively scan a directory for files with specific extensions.
 // If recursive is false, only the top-level directory is scanned.
 // If gamesDir is invalid, it returns an empty array.
-async function scanDirectory(gamesDir, extensions, recursive = true) {
+async function scanDirectory(gamesDir, extensions, recursive = true, ignoredDirs = ['PS3_EXTRA', 'PKGDIR']) {
     let files = [];
 
     // Validate the gamesDir argument
@@ -88,9 +88,16 @@ async function scanDirectory(gamesDir, extensions, recursive = true) {
         const items = await fsp.readdir(gamesDir, { withFileTypes: true });
         for (const item of items) {
             const fullPath = path.join(gamesDir, item.name);
+
+            // Skip ignored directories
             if (item.isDirectory()) {
+                if (ignoredDirs.includes(item.name)) {
+                    console.log(`Skipping ignored directory: ${fullPath}`);
+                    continue;
+                }
+
                 if (recursive) {
-                    const subDirFiles = await scanDirectory(fullPath, extensions, recursive);
+                    const subDirFiles = await scanDirectory(fullPath, extensions, recursive, ignoredDirs);
                     files = files.concat(subDirFiles);
                 }
             } else if (extensions.includes(path.extname(item.name))) {
@@ -241,7 +248,7 @@ async function buildGallery(params) {
             return path.join(gameDir, 'USRDIR', 'EBOOT.BIN'); // Append the relative path
         }
 
-        async function getPs3GameName(filePath) {
+        async function getPs3GameTitle(filePath) {
             try {
                 return await ipcRenderer.invoke('parse-sfo', filePath);
             } catch (error) {
@@ -259,18 +266,19 @@ async function buildGallery(params) {
             let fileName = path.basename(gameFile);
             let fileNameWithoutExt = path.parse(fileName).name;
             let fileNameClean = LB.utils.cleanFileName(fileNameWithoutExt);
+
+            let dataCommand = `${emulator} ${emulatorArgs || ""} "${gameFile}"`;
+
+            if (platform === 'ps3') {
+                const ps3GameTitle = await getPs3GameTitle(gameFile);
+                fileNameWithoutExt = LB.utils.safeFileName(ps3GameTitle);
+                fileNameClean = ps3GameTitle;
+                dataCommand = `${emulator} ${emulatorArgs || ""} "${getEbootPath(gameFile)}"`;
+            }
+
             let coverImagePath = findImageFile(path.join(userDataPath, "covers", platform), fileNameWithoutExt);
 
             const isImgExists = fs.existsSync(coverImagePath);
-
-            let dataCommand;
-
-            if (platform === 'ps3') {
-                fileNameClean = await getPs3GameName(gameFile);
-                dataCommand = `${emulator} ${emulatorArgs || ""} "${getEbootPath(gameFile)}"`;
-            } else {
-                dataCommand = `${emulator} ${emulatorArgs || ""} "${gameFile}"`;
-            }
 
             const gameContainer = document.createElement('div');
             gameContainer.classList.add('game-container');
@@ -296,9 +304,6 @@ async function buildGallery(params) {
             const gameLabel = document.createElement('div');
             gameLabel.classList.add('game-label');
             gameLabel.textContent = fileNameClean;
-
-            // Set the label width to match the column width
-            gameLabel.style.width = `${columnWidth}px`;
 
             gameContainer.appendChild(gameLabel);
             gameContainer.appendChild(gameImage);

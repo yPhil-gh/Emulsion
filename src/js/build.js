@@ -12,10 +12,18 @@ async function buildGameMenu(gameName, image) {
         const currentImage = document.createElement('img');
         currentImage.src = image.src;
         currentImage.alt = 'Current game image';
+
+        const gameLabel = document.createElement('div');
+        gameLabel.classList.add('game-label');
+        gameLabel.textContent = 'Current Image';
+
+        currentImageContainer.appendChild(gameLabel);
         currentImageContainer.appendChild(currentImage);
 
+
+
         const spinner = document.createElement('div');
-        spinner.classList.add(`spinner-${Math.floor(Math.random() * 18) + 1}`, 'spinner');
+        spinner.classList.add(`spinner-${Math.floor(Math.random() * 9) + 1}`, 'spinner');
 
         document.body.appendChild(spinner);
 

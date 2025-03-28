@@ -206,7 +206,7 @@ function initGallery(currentIndex, disabledPlatform) {
                     block: "center"
                 });
 
-                document.querySelector('header .platform-name').textContent = LB.utils.capitalizeWord(page.dataset.platform);
+                document.querySelector('header .platform-name').textContent = LB.utils.getPlatformName(page.dataset.platform);
                 document.querySelector('header .item-type').textContent = currentIndex === 0 ? ' platforms' : ' games';
                 document.querySelector('header .item-number').textContent = gameContainers.length;
 

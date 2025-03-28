@@ -128,7 +128,6 @@ function _buildPrefsForm() {
     const aboutButton = document.createElement('button');
     aboutButton.type = 'button';
     aboutButton.className = 'button';
-    aboutButton.classList.add('success');
     aboutButton.textContent = 'About';
 
     const cancelButton = document.createElement('button');

@@ -22,7 +22,7 @@ const resolvedPath = path.resolve('.');
 
 // console.log("app.getAppPath(): ", app.getAppPath());
 
-LB.galleryNumOfCols = 7;
+LB.galleryNumOfCols = 5;
 
 LB.prefs = {
     load: getPrefs,
@@ -35,7 +35,7 @@ LB.enabledPlatforms = [];
 LB.isMenuOpen = false;
 
 LB.utils = {
-    capitalizeWord: capitalizeWord,
+    getPlatformName: getPlatformName,
     cleanFileName: cleanFileName,
     safeFileName: safeFileName,
     simulateKeyDown: simulateKeyDown,
@@ -172,19 +172,31 @@ function _moveTrailingArticleToFront(s) {
   return s;
 }
 
-function capitalizeWord(word) {
-    switch (word) {
+function getPlatformName(name) {
+    switch (name) {
     case 'snes':
         return "SNES";
         break;
     case 'pcengine':
         return "PCEngine";
         break;
+    case 'psx':
+        return "Playstation";
+        break;
+    case 'ps2':
+        return "Playstation 2";
+        break;
+    case 'ps3':
+        return "Playstation 3";
+        break;
+    case 'gamecube':
+        return "GameCube";
+        break;
     default:
         break;
     }
 
-    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
 }
 
 

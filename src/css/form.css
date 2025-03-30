@@ -101,12 +101,12 @@ label.checkbox {
   display: flex;
   flex-direction: row;
   gap: 1em;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-top: 1em;
 }
 
 .cancel-save-buttons .button {
-  min-width: 200px;
+  /* min-width: 200px; */
 }
 
 .button {

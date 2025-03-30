@@ -130,6 +130,10 @@ function _buildPrefsForm() {
     aboutButton.className = 'button';
     aboutButton.textContent = 'About';
 
+    aboutButton.addEventListener('click', () => {
+        ipcRenderer.invoke('go-to-url', 'https://yphil.gitlab.io/ext/emulsion.html?v=' + window.versionNumber);
+    });
+
     const cancelButton = document.createElement('button');
     cancelButton.type = 'button';
     cancelButton.classList.add('is-info', 'button');
@@ -142,7 +146,6 @@ function _buildPrefsForm() {
     //     .catch((error) => {
     //         console.error('Failed to get platform preference:', error);
     //     });
-
 
     // gamesDirButton.addEventListener('click', _gamesDirButtonClick);
 
@@ -166,7 +169,7 @@ function _buildPrefsForm() {
     formContainerButtons.appendChild(saveButton);
 
     // cancelButton.addEventListener('click', _cancelButtonClick);
-    aboutButton.addEventListener('click', _formAboutButtonClick);
+    // aboutButton.addEventListener('click', _formAboutButtonClick);
     // saveButton.addEventListener('click', _saveButtonClick);
 
 

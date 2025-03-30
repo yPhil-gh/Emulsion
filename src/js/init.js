@@ -1,7 +1,7 @@
 // All the libs used are required here
+const { ipcRenderer, shell } = require('electron');
 let fs = require('fs');
 const path = require('path');
-const { ipcRenderer } = require('electron');
 const fsp = require('fs').promises; // Use the promise-based fs module
 const axios = require('axios');
 const { promisify } = require('util');
@@ -24,24 +24,9 @@ const resolvedPath = path.resolve('.');
 
 LB.galleryNumOfCols = 5;
 
-LB.prefs = {
-    load: getPrefs,
-    save: updatePreference,
-    getValue: getPlatformPreference
-};
-
 LB.enabledPlatforms = [];
 
 LB.isMenuOpen = false;
-
-LB.utils = {
-    getPlatformName: getPlatformName,
-    cleanFileName: cleanFileName,
-    safeFileName: safeFileName,
-    simulateKeyDown: simulateKeyDown,
-    getSelectedGame: getSelectedGame,
-    updateControls: updateControls
-};
 
 function updateControls(section, newIcon, newText, display) {
     const sectionDiv = document.getElementById(section);
@@ -298,47 +283,17 @@ async function getPlatformPreference(platformName, key) {
     }
 }
 
+LB.prefs = {
+    load: getPrefs,
+    save: updatePreference,
+    getValue: getPlatformPreference
+};
 
-ipcRenderer.on('deliver-about-content', (event, aboutContent) => {
-    const aboutContainer = document.getElementById('about-container');
-    const aboutContentDiv = document.getElementById('about-content');
-    aboutContentDiv.innerHTML = aboutContent;
-
-    const trackmoScript = document.createElement('script');
-    trackmoScript.src = path.join(LB.baseDir, 'src', 'js', 'trackmo.js');
-    trackmoScript.onload = () => {
-        console.log('Script loaded.');
-    };
-    trackmoScript.onerror = () => {
-        console.error('Failed to load script');
-    };
-
-    // const howlScript = document.createElement('script');
-    // howlScript.src = path.join(LB.baseDir, 'node_modules', 'howler', 'howler.min.js');
-    // howlScript.onload = () => {
-    //     console.log('Script loaded.');
-    // };
-    // howlScript.onerror = (error) => {
-    //     console.error('Failed to load script');
-    // };
-    // // document.head.appendChild(howlScript);
-
-    // document.head.appendChild(howlScript);
-
-    document.head.appendChild(trackmoScript);
-
-    // const song = document.createElement('audio');
-    // song.classList.add('test-audio');
-    // song.src = '../../audio/ding.oga';
-    // song.onload = () => {
-    //     console.log('Song loaded.');
-    // };
-    // song.onerror = () => {
-    //     console.error('Failed to load song');
-    // };
-    // document.body.appendChild(script);
-    // document.body.appendChild(song);
-
-
-    aboutContainer.style.display = 'block';
-});
+LB.utils = {
+    getPlatformName: getPlatformName,
+    cleanFileName: cleanFileName,
+    safeFileName: safeFileName,
+    simulateKeyDown: simulateKeyDown,
+    getSelectedGame: getSelectedGame,
+    updateControls: updateControls
+};

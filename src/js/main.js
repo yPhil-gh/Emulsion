@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, dialog, globalShortcut, Menu, session } from 'electron';
+import { app, BrowserWindow, ipcMain, shell, dialog, globalShortcut, Menu, session } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -175,18 +175,6 @@ function createWindows() {
   });
     mainWindow.loadFile('src/html/index.html');
 }
-
-ipcMain.on('request-about-content', (event) => {
-    console.log("event: ", event);
-    const aboutPath = path.join(app.getAppPath(), 'src', 'html', 'trackmo.html');
-    fs.readFile(aboutPath, 'utf8', (err, data) => {
-        if (err) {
-            console.error('Failed to read about.html:', err);
-            return;
-        }
-        event.sender.send('deliver-about-content', data);
-    });
-});
 
 ipcMain.on('show-context-menu', (event, params) => {
     const template = [

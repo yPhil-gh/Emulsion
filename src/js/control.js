@@ -441,6 +441,7 @@ function initGallery(currentIndex, disabledPlatform) {
                 spinner.classList.add(`spinner-${Math.floor(Math.random() * 9) + 1}`, 'spinner');
                 spinner.classList.add('image-spinner');
 
+                selectedGame.appendChild(spinner);
                 // Optionally reset the image source before setting it to force refresh
                 // selectedGameImg.src = '';
 
@@ -451,7 +452,6 @@ function initGallery(currentIndex, disabledPlatform) {
 
                     selectedGameImg.src = savedImagePath + '?t=' + new Date().getTime(); // Refresh with timestamp
 
-                    selectedGame.appendChild(spinner);
 
                     // Apply the zoom effect after the image has been successfully set
                     selectedGameImg.onload = () => {

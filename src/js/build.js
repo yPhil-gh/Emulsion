@@ -20,8 +20,6 @@ async function buildGameMenu(gameName, image) {
         currentImageContainer.appendChild(gameLabel);
         currentImageContainer.appendChild(currentImage);
 
-
-
         const spinner = document.createElement('div');
         spinner.classList.add(`spinner-${Math.floor(Math.random() * 9) + 1}`, 'spinner');
 
@@ -192,7 +190,7 @@ function _buildPrefsForm() {
         }
 
         try {
-            await LB.prefs.save('settings', 'numberOfColumns', steamGridKeyInput.value);
+            await LB.prefs.save('settings', 'numberOfColumns', numberOfColumnsInput.value);
             await LB.prefs.save('settings', 'steamGridKey', steamGridKeyInput.value);
             window.location.reload();
         } catch (error) {

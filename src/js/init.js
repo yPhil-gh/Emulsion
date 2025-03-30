@@ -22,7 +22,6 @@ const resolvedPath = path.resolve('.');
 
 // console.log("app.getAppPath(): ", app.getAppPath());
 
-LB.galleryNumOfCols = 5;
 
 LB.enabledPlatforms = [];
 
@@ -194,12 +193,12 @@ async function _loadUserData() {
 
         LB.userDataPath = preferences.userDataPath;
         LB.baseDir = path.resolve(preferences.appPath);
-        window.versionNumber = preferences.versionNumber;
-        window.baseDir = LB.baseDir;
-        console.log("LB.baseDir: ", LB.baseDir);
+        LB.versionNumber = preferences.versionNumber;
+
         delete preferences.userDataPath;
         delete preferences.appPath;
         delete preferences.versionNumber;
+
         LB.preferences = preferences;
 
         return preferences;
@@ -263,7 +262,7 @@ async function getPlatformPreference(platformName, key) {
         // Step 1: Load the current preferences
         const preferences = await getPrefs();
 
-        // console.log("preferences[platformName]: ", preferences[platformName]);
+        console.log("preferences[platformName]: ", preferences[platformName]);
 
         // Step 2: Check if the platform exists
         if (!preferences[platformName]) {

@@ -227,8 +227,8 @@ ipcMain.handle('go-to-url', async (event, link) => {
     return true;
 });
 
-ipcMain.on('fetch-images', (event, gameName) => {
-    getAllCoverImageUrls(gameName)
+ipcMain.on('fetch-images', (event, gameName, steamGridAPIKey) => {
+    getAllCoverImageUrls(gameName, steamGridAPIKey)
         .then((urls) => {
             event.reply('image-urls', urls); // Send the URLs back to the renderer process
         })
@@ -461,7 +461,6 @@ ipcMain.handle('parse-sfo', async (_event, filePath) => {
 
         process.on('close', (code) => {
             if (code === 0) {
-                console.log("Final output: ", output);
                 resolve(output.trim());
             } else {
                 reject(new Error(`SFO parser failed with code ${code}`));

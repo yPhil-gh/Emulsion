@@ -1,15 +1,16 @@
 // /src/steamgrid.js
 import SGDB from 'steamgriddb';
 
-// Initialize the SteamGridDB client
-const client = new SGDB({
-    key: 'c7771ceeecd4d5e1e9c62b1e01e14de2', // Replace with your actual API key
-});
-
 /**
  * Fetches an array of cover image URLs for all games matching the given name.
  */
-export const getAllCoverImageUrls = async (gameName) => {
+export const getAllCoverImageUrls = async (gameName, APIKey) => {
+
+    // Initialize the SteamGridDB client
+    const client = new SGDB({
+        key: APIKey, // Replace with your actual API key
+    });
+
     try {
         // Search for the game by name
         const games = await client.searchGame(gameName);

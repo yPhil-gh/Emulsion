@@ -30,7 +30,7 @@ async function buildGameMenu(gameName, image) {
         gameMenuContainer.appendChild(currentImageContainer);
 
         // Send a request to fetch images
-        ipcRenderer.send('fetch-images', gameName);
+        ipcRenderer.send('fetch-images', gameName, LB.steamGridAPIKey);
 
         // Use 'once' to ensure the event handler runs only one time
         ipcRenderer.once('image-urls', (event, urls) => {
@@ -65,38 +65,41 @@ function _buildPrefsForm() {
 
     platformMenuImageCtn.appendChild(platformMenuImage);
 
-    const gamesDirGroup = document.createElement('div');
+    const numberOfColumnsGroup = document.createElement('div');
 
-    const gamesDirInput = document.createElement('input');
-    gamesDirInput.type = 'text';
-    gamesDirInput.classList.add('input');
-    gamesDirInput.placeholder = 'Your games directory';
+    const numberOfColumnsInput = document.createElement('input');
+    numberOfColumnsInput.type = 'number';
+    numberOfColumnsInput.id = 'numberOfColumns';
+    numberOfColumnsInput.name = 'numberOfColumns';
+    numberOfColumnsInput.min = '2';
+    numberOfColumnsInput.max = '12';
+    numberOfColumnsInput.placeholder = 'The number of columns in each platform gallery';
 
-    const gamesDirLabel = document.createElement('label');
-    gamesDirLabel.textContent = 'Games directory';
+    numberOfColumnsInput.classList.add('input');
 
-    const gamesDirSubLabel = document.createElement('label');
-    gamesDirSubLabel.id = 'games-dir-sub-label';
-    gamesDirSubLabel.classList.add('sub-label');
+    const numberOfColumnsIcon = document.createElement('div');
+    numberOfColumnsIcon.classList.add('form-icon');
+    numberOfColumnsIcon.innerHTML = '<i class="form-icon num-cols-icon fa fa-2x fa-columns" aria-hidden="true"></i>';
 
-    const gamesDirButton = document.createElement('button');
-    gamesDirButton.classList.add('button', 'button-browse', 'info');
-    gamesDirButton.textContent = 'Browse';
+    const numberOfColumnsLabel = document.createElement('label');
+    numberOfColumnsLabel.textContent = 'Number of columns';
 
-    const gamesDirCtn = document.createElement('div');
-    gamesDirCtn.classList.add('dual-ctn');
+    const numberOfColumnsSubLabel = document.createElement('label');
+    numberOfColumnsSubLabel.id = 'num-cols-sub-label';
+    numberOfColumnsSubLabel.classList.add('sub-label');
 
-    const gamesDirIcon = document.createElement('div');
-    gamesDirIcon.classList.add('form-icon');
-    gamesDirIcon.innerHTML = '<i class="form-icon fa fa-2x fa-folder-open-o" aria-hidden="true"></i>';
+    const numberOfColumnsCtn = document.createElement('div');
+    numberOfColumnsCtn.classList.add('dual-ctn');
 
-    gamesDirCtn.appendChild(gamesDirIcon);
-    gamesDirCtn.appendChild(gamesDirInput);
-    gamesDirCtn.appendChild(gamesDirButton);
+    numberOfColumnsCtn.appendChild(numberOfColumnsIcon);
+    numberOfColumnsCtn.appendChild(numberOfColumnsInput);
+    numberOfColumnsGroup.appendChild(numberOfColumnsLabel);
+    numberOfColumnsGroup.appendChild(numberOfColumnsCtn);
 
-    gamesDirGroup.appendChild(gamesDirLabel);
-    gamesDirGroup.appendChild(gamesDirCtn);
-    gamesDirGroup.appendChild(gamesDirSubLabel);
+    numberOfColumnsGroup.appendChild(numberOfColumnsLabel);
+    numberOfColumnsGroup.appendChild(numberOfColumnsCtn);
+
+    numberOfColumnsInput.value = LB.galleryNumOfCols;
 
     const steamGridKeyGroup = document.createElement('div');
 
@@ -130,16 +133,16 @@ function _buildPrefsForm() {
     aboutButton.className = 'button';
     aboutButton.textContent = 'About';
 
-    aboutButton.addEventListener('click', () => {
-        ipcRenderer.invoke('go-to-url', 'https://yphil.gitlab.io/ext/emulsion.html?v=' + window.versionNumber);
-    });
-
     const cancelButton = document.createElement('button');
     cancelButton.type = 'button';
     cancelButton.classList.add('is-info', 'button');
     cancelButton.textContent = 'Cancel';
 
-    // LB.prefs.getValue(platformName, 'steamGridKey')
+    if (LB.steamGridAPIKey) {
+        steamGridKeyInput.value = LB.steamGridAPIKey;
+    }
+
+    // LB.prefs.getValue('settings', 'steamGridAPIKey')
     //     .then((value) => {
     //         steamGridKeyInput.value = value;
     //     })
@@ -149,18 +152,10 @@ function _buildPrefsForm() {
 
     // gamesDirButton.addEventListener('click', _gamesDirButtonClick);
 
-    async function _gamesDirButtonClick(event) {
-        event.stopPropagation();
-        const selectedPath = await ipcRenderer.invoke('select-file-or-directory', 'openDirectory');
-        if (selectedPath) {
-            gamesDirInput.value = selectedPath;
-        }
-    }
-
     formContainer.appendChild(platformMenuImageCtn);
-    formContainer.appendChild(gamesDirGroup);
+    formContainer.appendChild(numberOfColumnsGroup);
     formContainer.appendChild(steamGridKeyGroup);
-    formContainer.appendChild(cancelButton);
+    // formContainer.appendChild(cancelButton);
 
     const formContainerButtons = document.createElement('div');
     formContainerButtons.classList.add('cancel-save-buttons');
@@ -168,10 +163,13 @@ function _buildPrefsForm() {
     formContainerButtons.appendChild(aboutButton);
     formContainerButtons.appendChild(saveButton);
 
-    // cancelButton.addEventListener('click', _cancelButtonClick);
-    // aboutButton.addEventListener('click', _formAboutButtonClick);
-    // saveButton.addEventListener('click', _saveButtonClick);
+    cancelButton.addEventListener('click', _cancelButtonClick);
 
+    aboutButton.addEventListener('click', () => {
+        ipcRenderer.invoke('go-to-url', 'https://yphil.gitlab.io/ext/emulsion.html?v=' + LB.versionNumber);
+    });
+
+    saveButton.addEventListener('click', _saveButtonClick);
 
     function _cancelButtonClick(event) {
 
@@ -186,44 +184,16 @@ function _buildPrefsForm() {
         document.dispatchEvent(escapeKeyEvent);
     }
 
-    function _formAboutButtonClick(event) {
-
-        const canvas = document.getElementById('canvas');
-
-        if (!canvas) {
-
-            ipcRenderer.send('request-about-content');
-
-            document.getElementById('close-about').addEventListener('click', (event) => {
-                event.stopPropagation();
-                // window.audioContext.suspend();
-                document.getElementById('about-container').style.display = 'none';
-            });
-
-        } else {
-            document.getElementById('about-container').style.display = 'block';
-        }
-
-    }
-
     async function _saveButtonClick(event) {
 
-        if (!gamesDirInput.value) {
-            gamesDirSubLabel.textContent = 'This field cannot be empty';
+        if (!numberOfColumnsInput.value) {
+            numberOfColumnsSubLabel.textContent = 'This field cannot be empty';
             return;
         }
-
-        gamesDirSubLabel.textContent = '';
-
-        if (!emulatorInput.value) {
-            emulatorSubLabel.textContent = 'This field cannot be empty';
-            return;
-        }
-
-        emulatorSubLabel.textContent = '';
 
         try {
-            await LB.prefs.save('emulsion', 'steamGridKey', steamGridKeyInput.value);
+            await LB.prefs.save('settings', 'numberOfColumns', steamGridKeyInput.value);
+            await LB.prefs.save('settings', 'steamGridKey', steamGridKeyInput.value);
             window.location.reload();
         } catch (error) {
             console.error('Failed to save preferences:', error);

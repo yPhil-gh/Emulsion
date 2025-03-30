@@ -67,6 +67,10 @@ LB.prefs.load()
         if (!preferences) {
             console.log("No preferences found, using default preferences");
         }
+
+        LB.galleryNumOfCols = preferences.settings.numberOfColumns;
+        LB.steamGridAPIKey = preferences.settings.steamGridAPIKey;
+
         return { preferences };
 
     })

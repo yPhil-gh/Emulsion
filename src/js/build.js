@@ -102,15 +102,6 @@ function _buildPrefsForm() {
 
     const footerSizeGroup = document.createElement('div');
 
-    // const footerSizeInput = document.createElement('input');
-    // footerSizeInput.type = 'number';
-    // footerSizeInput.id = 'footerSize';
-    // footerSizeInput.name = 'footerSize';
-    // footerSizeInput.min = '2';
-    // footerSizeInput.max = '12';
-    // footerSizeInput.placeholder = 'The number of columns in each platform gallery';
-    // footerSizeInput.classList.add('input');
-
     const footerSizeInputCtn = document.createElement('div');
     footerSizeInputCtn.classList.add('footer-size-input-ctn');
 
@@ -122,19 +113,23 @@ function _buildPrefsForm() {
     radioContainer.classList.add('radio-container');
 
     // Create radio buttons
+
+    const footerSizeRadios = []; // Store references to the radio buttons
+
     const sizes = ['small', 'medium', 'big'];
     sizes.forEach(size => {
         const label = document.createElement('label');
         label.style.display = 'flex';
         label.style.alignItems = 'center';
         label.style.gap = '6px';
-        // label.style.cursor = 'pointer';
 
         const radio = document.createElement('input');
         radio.type = 'radio';
         radio.name = 'footerSize';
         radio.value = size;
-        radio.checked = size === 'big'; // Default to big
+        radio.checked = size === LB.footerSize;
+
+        footerSizeRadios.push(radio);
 
         // Style radio button
         radio.style.margin = '0';
@@ -268,8 +263,11 @@ function _buildPrefsForm() {
             return;
         }
 
+        const selectedFooterSize = footerSizeRadios.find(radio => radio.checked)?.value;
+
         try {
-            await LB.prefs.save('settings', 'numberOfColumns', numberOfColumnsInput.value);
+            await LB.prefs.save('settings', 'numberOfColumns', parseInt(numberOfColumnsInput.value, 10));
+            await LB.prefs.save('settings', 'footerSize', selectedFooterSize);
             await LB.prefs.save('settings', 'steamGridKey', steamGridKeyInput.value);
             window.location.reload();
         } catch (error) {
@@ -410,7 +408,7 @@ function buildPlatformForm(platformName) {
 
     const emulatorArgsIcon = document.createElement('div');
     emulatorArgsIcon.classList.add('form-icon');
-    emulatorArgsIcon.innerHTML = '<i class="form-icon emulator-args-icon fa fa-2x fa-cog" aria-hidden="true"></i>';
+    emulatorArgsIcon.innerHTML = '<i class="form-icon emulator-args-icon fa fa-2x fa-rocket" aria-hidden="true"></i>';
 
     const emulatorArgsLabel = document.createElement('label');
     emulatorArgsLabel.textContent = 'Emulator Arguments';

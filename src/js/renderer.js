@@ -4,45 +4,12 @@ window.topMenuSlider = document.getElementById("top-menu-slider");
 
 LB.control.initGamepad();
 
-function isPlatformValid(platformName, preferences) {
-
-    if (typeof preferences !== 'object' || preferences === null) {
-        console.error("Preferences is not an object");
-        return false;
-    }
-
-    if (platformName === 'settings') {
-        return true;
-    }
-
-    const platformPrefs = preferences[platformName];
-    if (
-        typeof platformPrefs !== 'object' ||
-            platformPrefs === null ||
-            typeof platformPrefs.isEnabled !== 'boolean' ||
-            typeof platformPrefs.gamesDir !== 'string' ||
-            typeof platformPrefs.emulator !== 'string' ||
-            typeof platformPrefs.emulatorArgs !== 'string'
-    ) {
-        console.error(`Invalid preferences for platform: ${platformName}`);
-        return false;
-    }
-
-    return true;
-}
-
-function isPlatformEnablable(platform, preferences) {
-    if (!preferences[platform]) return false; // Platform doesn't exist in config
-    const { gamesDir, emulator } = preferences[platform];
-    return Boolean(gamesDir && emulator); // Both must be non-empty
-}
-
 function buildSlide(platformName, preferences) {
 
-    if (!isPlatformValid(platformName, preferences)) {
-        console.log("null: ", platformName);
-        return null;
-    }
+    // if (!isPlatformValid(platformName, preferences)) {
+    //     console.log("null: ", platformName);
+    //     return null;
+    // }
 
     const slide = document.createElement("div");
     slide.className = "slide";
@@ -75,6 +42,10 @@ LB.prefs.load()
 
         LB.galleryNumOfCols = preferences.settings.numberOfColumns;
         LB.steamGridAPIKey = preferences.settings.steamGridAPIKey;
+        LB.steamGridAPIKey = preferences.settings.steamGridAPIKey;
+        LB.footerSize = preferences.settings.footerSize;
+
+        LB.control.setFooterSize(LB.footerSize);
 
         return { preferences };
 

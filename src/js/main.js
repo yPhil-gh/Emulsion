@@ -96,11 +96,47 @@ if (process.argv.includes('--help')) {
 function loadPreferences() {
     try {
         if (fs.existsSync(preferencesFilePath)) {
-            const data = fs.readFileSync(preferencesFilePath, 'utf8');
+            const preferencesFileContent = fs.readFileSync(preferencesFilePath, 'utf8');
 
             // Attempt to parse the JSON
             try {
-                return JSON.parse(data);
+                // console.log("data: ", preferencesFileContent);
+                const preferences = JSON.parse(preferencesFileContent);;
+
+                for (const [platform, platformPreferences] of Object.entries(preferences)) {
+
+                    if (platform === 'settings') {
+
+                        if (
+                            typeof platformPreferences !== 'object' ||
+                                platformPreferences === null ||
+                                typeof platformPreferences.numberOfColumns !== 'number' ||
+                                typeof platformPreferences.steamGridKey !== 'string'
+                        ) {
+                            console.error(`Invalid preferences`);
+                            return { error: 'INVALID_JSON', message: 'The preferences file contains invalid JSON. It will now be reset.' };
+                        }
+
+                    } else {
+
+                        if (
+                            typeof platformPreferences !== 'object' ||
+                                platformPreferences === null ||
+                                typeof platformPreferences.isEnabled !== 'boolean' ||
+                                typeof platformPreferences.gamesDir !== 'string' ||
+                                typeof platformPreferences.index !== 'number' ||
+                                typeof platformPreferences.emulator !== 'string' ||
+                                typeof platformPreferences.emulatorArgs !== 'string'
+                        ) {
+                            console.error(`Invalid preferences for platform: ${platform}`);
+                            return { error: 'INVALID_JSON', message: 'The preferences file contains invalid JSON. It will now be reset.' };
+                        }
+
+                    }
+
+                }
+
+                return preferences;
             } catch (parseError) {
                 console.error('Invalid JSON in preferences file:', parseError);
                 return { error: 'INVALID_JSON', message: 'The preferences file contains invalid JSON. It will now be reset.' };

@@ -31,15 +31,45 @@ function initSlideShow(platformToDisplay) {
 
             // Remove all state classes before reassigning
             slide.classList.remove('active', 'prev-slide', 'next-slide', 'adjacent');
+            slide.style.opacity = 1;
+
+            let is3D = false;
 
             if (index === currentIndex) {
                 slide.classList.add('active');
             } else if (index === (currentIndex - 1 + totalSlides) % totalSlides) {
                 slide.classList.add('prev-slide');
+
+                if (!is3D) {
+                    slide.style.opacity = 0;
+                }
+
+                if (is3D) {
+                    slide.style.opacity = 0.2;
+                    slide.style.transform = 'rotateY(calc(' + angle + ' * 1deg)) translateZ(calc(' + radius + ' * 1px)) translateX(-20px);';
+                }
+
             } else if (index === (currentIndex + 1) % totalSlides) {
                 slide.classList.add('next-slide');
+
+                if (!is3D) {
+                    slide.style.opacity = 0;
+                }
+
+                if (is3D) {
+                    slide.style.opacity = 0.2;
+                    slide.style.transform = 'rotateY(calc(' + angle + ' * 1deg)) translateZ(calc(' + radius + ' * 1px)) translateX(20px);';
+                }
+
             } else {
                 slide.classList.add('adjacent');
+
+                if (is3D) {
+                    slide.style.opacity = 0.2;
+                } else {
+                    slide.style.opacity = 0;
+                }
+
             }
         });
     }
@@ -214,7 +244,7 @@ function initGallery(currentIndex, disabledPlatform) {
 
                 document.querySelector('header .platform-name').textContent = LB.utils.getPlatformName(page.dataset.platform);
                 document.querySelector('header .item-type').textContent = currentIndex === 0 ? ' platforms' : ' games';
-                document.querySelector('header .item-number').textContent = gameContainers.length;
+                document.querySelector('header .item-number').textContent = gameContainers.length - 1;
 
                 const platformImage = document.createElement('img');
                 if (page.dataset.platform === 'settings') {
@@ -393,8 +423,10 @@ function initGallery(currentIndex, disabledPlatform) {
                         const platformForm = LB.build.platformForm(platformToOpen || container.dataset.platform);
                         menuContainer.appendChild(platformForm);
 
-                        document.querySelector('header .item-number').textContent = gameContainers.length;
-                        document.querySelector('header .item-type').textContent = ' platforms';
+                        // document.querySelectorAll('platform-container');
+
+                        // document.querySelector('header .item-number').textContent = document.querySelectorAll('platform-container').length - 1;
+                        // document.querySelector('header .item-type').textContent = ' platforms';
 
                     } else {
                         const gameImage = container.querySelector('img');

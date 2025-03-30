@@ -77,7 +77,7 @@ function _buildPrefsForm() {
 
     const numberOfColumnsIcon = document.createElement('div');
     numberOfColumnsIcon.classList.add('form-icon');
-    numberOfColumnsIcon.innerHTML = '<i class="form-icon num-cols-icon fa fa-2x fa-columns" aria-hidden="true"></i>';
+    numberOfColumnsIcon.innerHTML = '<i class="form-icon num-cols-icon fa fa-2x fa-th" aria-hidden="true"></i>';
 
     const numberOfColumnsLabel = document.createElement('label');
     numberOfColumnsLabel.textContent = 'Number of columns';
@@ -98,6 +98,84 @@ function _buildPrefsForm() {
     numberOfColumnsGroup.appendChild(numberOfColumnsCtn);
 
     numberOfColumnsInput.value = LB.galleryNumOfCols;
+
+
+    const footerSizeGroup = document.createElement('div');
+
+    // const footerSizeInput = document.createElement('input');
+    // footerSizeInput.type = 'number';
+    // footerSizeInput.id = 'footerSize';
+    // footerSizeInput.name = 'footerSize';
+    // footerSizeInput.min = '2';
+    // footerSizeInput.max = '12';
+    // footerSizeInput.placeholder = 'The number of columns in each platform gallery';
+    // footerSizeInput.classList.add('input');
+
+    const footerSizeInputCtn = document.createElement('div');
+    footerSizeInputCtn.classList.add('footer-size-input-ctn');
+
+    // Create container for radio buttons
+    const radioContainer = document.createElement('div');
+    radioContainer.style.display = 'flex';
+    radioContainer.style.gap = '20px';
+    radioContainer.style.alignItems = 'center';
+    radioContainer.classList.add('radio-container');
+
+    // Create radio buttons
+    const sizes = ['small', 'medium', 'big'];
+    sizes.forEach(size => {
+        const label = document.createElement('label');
+        label.style.display = 'flex';
+        label.style.alignItems = 'center';
+        label.style.gap = '6px';
+        // label.style.cursor = 'pointer';
+
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'footerSize';
+        radio.value = size;
+        radio.checked = size === 'big'; // Default to big
+
+        // Style radio button
+        radio.style.margin = '0';
+        radio.style.accentColor = 'var(--color-accent)';
+
+        const text = document.createTextNode(size.charAt(0).toUpperCase() + size.slice(1));
+
+        radio.addEventListener('change', () => {
+            if (radio.checked) LB.control.setFooterSize(size);
+        });
+
+        label.appendChild(radio);
+        label.appendChild(text);
+        radioContainer.appendChild(label);
+    });
+
+    footerSizeInputCtn.appendChild(radioContainer);
+
+    const footerSizeIcon = document.createElement('div');
+    footerSizeIcon.classList.add('form-icon');
+    footerSizeIcon.innerHTML = '<i class="form-icon num-cols-icon fa fa-2x fa-arrows" aria-hidden="true"></i>';
+
+    const footerSizeLabel = document.createElement('label');
+    footerSizeLabel.textContent = 'Footer menu size';
+
+    const footerSizeSubLabel = document.createElement('label');
+    footerSizeSubLabel.id = 'num-cols-sub-label';
+    footerSizeSubLabel.classList.add('sub-label');
+
+    const footerSizeCtn = document.createElement('div');
+    footerSizeCtn.classList.add('dual-ctn');
+
+    footerSizeCtn.appendChild(footerSizeIcon);
+    footerSizeCtn.appendChild(footerSizeInputCtn);
+    footerSizeGroup.appendChild(footerSizeLabel);
+    footerSizeGroup.appendChild(footerSizeCtn);
+
+    footerSizeGroup.appendChild(footerSizeLabel);
+    footerSizeGroup.appendChild(footerSizeCtn);
+
+    // footerSizeInput.value = LB.galleryNumOfCols;
 
     const steamGridKeyGroup = document.createElement('div');
 
@@ -152,6 +230,7 @@ function _buildPrefsForm() {
 
     formContainer.appendChild(platformMenuImageCtn);
     formContainer.appendChild(numberOfColumnsGroup);
+    formContainer.appendChild(footerSizeGroup);
     formContainer.appendChild(steamGridKeyGroup);
     // formContainer.appendChild(cancelButton);
 

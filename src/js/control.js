@@ -738,5 +738,6 @@ function initGamepad () {
 LB.control = {
     initGallery: initGallery,
     initSlideShow: initSlideShow,
-    initGamepad: initGamepad
+    initGamepad: initGamepad,
+    setFooterSize: setFooterSize
 };

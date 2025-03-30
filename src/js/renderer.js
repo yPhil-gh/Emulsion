@@ -5,9 +5,14 @@ window.topMenuSlider = document.getElementById("top-menu-slider");
 LB.control.initGamepad();
 
 function isPlatformValid(platformName, preferences) {
+
     if (typeof preferences !== 'object' || preferences === null) {
         console.error("Preferences is not an object");
         return false;
+    }
+
+    if (platformName === 'settings') {
+        return true;
     }
 
     const platformPrefs = preferences[platformName];

@@ -474,6 +474,13 @@ function initGallery(currentIndex, disabledPlatform) {
         }
     }
 
+    const moveRows = (selectedIndex, rowsToMove) => {
+        const col = selectedIndex % LB.galleryNumOfCols;
+        const currentRow = Math.floor(selectedIndex / LB.galleryNumOfCols);
+        const newIndex = (currentRow + rowsToMove) * LB.galleryNumOfCols + col;
+        return Math.min(Math.max(newIndex, 0), gameContainers.length - 1);
+    };
+
     function onGalleryKeyDown(event) {
         switch (event.key) {
         case 'ArrowRight':
@@ -494,7 +501,16 @@ function initGallery(currentIndex, disabledPlatform) {
             selectedIndex = Math.max(selectedIndex - LB.galleryNumOfCols, 0);
             break;
         case 'ArrowDown':
-            selectedIndex = Math.min(selectedIndex + LB.galleryNumOfCols, gameContainers.length);
+            // Calculate current column and row
+            const colX = selectedIndex % LB.galleryNumOfCols;
+            const currentRowX = Math.floor(selectedIndex / LB.galleryNumOfCols);
+            const newRowX = currentRowX + 1; // Move ONE row down
+
+            // Calculate new index in the same column
+            let newIndexX = newRowX * LB.galleryNumOfCols + colX;
+
+            // Clamp to valid range
+            selectedIndex = Math.min(newIndexX, gameContainers.length - 1);
             break;
         case 'PageUp':
             selectedIndex = Math.max(selectedIndex - LB.galleryNumOfCols * 10, 0);

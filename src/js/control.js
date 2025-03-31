@@ -204,11 +204,13 @@ function initGallery(currentIndex, disabledPlatform) {
         pages.forEach((page, pageIndex) => {
             const pageIndexNumber = Number(page.dataset.index);
 
+            page.classList.remove('active', 'next', 'prev');
+
             if (page.dataset.status === 'disabled') {
-                // Skip disabled pages
-                page.classList.remove('active', 'next', 'prev');
                 return;
             }
+
+            const totalPages = pages.length;
 
             if (pageIndexNumber === currentIndex) {
 
@@ -216,12 +218,6 @@ function initGallery(currentIndex, disabledPlatform) {
                     behavior: "smooth",
                     block: "start",
                 });
-
-                // if (currentIndex === 0) {
-                //     LB.utils.updateControls('square', 'same', 'Fetch cover', 'off');
-                // } else {
-                //     LB.utils.updateControls('square', 'same', 'Fetch<br>cover', 'on');
-                // }
 
                 setGalleryControls(currentIndex);
 
@@ -255,37 +251,42 @@ function initGallery(currentIndex, disabledPlatform) {
                 if (page.dataset.platform === 'settings') {
                     document.querySelector('header .platform-image').style.backgroundImage = `url('../../img/emulsion.png')`;
                 } else {
-                    // platformImage.src = `../../img/platforms/${page.dataset.platform}.png`;
                     platformImage.classList.add(page.dataset.platform);
                     document.querySelector('header .platform-image').style.backgroundImage = `url('../../img/platforms/${page.dataset.platform}.png')`;
                 }
 
-                // document.querySelector('header .platform-image').appendChild(platformImage);
-
                 document.querySelector('header .prev-link').onclick = function() {
-                    prevPage();
+                    goToPrevPage();
                 };
 
                 document.querySelector('header .next-link').onclick = function() {
-                    nextPage();
+                    goToNextPage();
                 };
 
-                // Active page
                 page.classList.add('active');
-                page.classList.remove('next', 'prev');
+                // (index === (currentIndex - 1 + totalSlides) % totalSlides) prev
+                // (index === (currentIndex + 1) % totalSlides) next
             } else if (pageIndexNumber < currentIndex) {
-                // Previous page
-                page.classList.remove('active', 'next');
                 page.classList.add('prev');
             } else if (pageIndexNumber > currentIndex) {
-                // Next page
-                page.classList.remove('active', 'prev');
                 page.classList.add('next');
+            } else {
+                page.classList.add('adjacent');
             }
+
+
+            // } else if (pageIndexNumber === (currentIndex - 1 + totalPages) % totalPages) {
+            //     page.classList.add('prev');
+            // } else if (pageIndexNumber === (currentIndex + 1 % totalPages)) {
+            //     page.classList.add('next');
+            // } else {
+            //     page.classList.add('adjacent');
+            // }
+
         });
     }
 
-    function nextPage() {
+    function goToNextPage() {
         // Find the index of the current page in the enabledPages array
         const currentEnabledIndex = enabledPages.findIndex(page => Number(page.dataset.index) === currentIndex);
         const nextEnabledIndex = (currentEnabledIndex + 1) % enabledPages.length;
@@ -296,7 +297,7 @@ function initGallery(currentIndex, disabledPlatform) {
         updatePagesCarousel();
     }
 
-    function prevPage() {
+    function goToPrevPage() {
         const currentEnabledIndex = enabledPages.findIndex(page => Number(page.dataset.index) === currentIndex);
         const prevEnabledIndex = (currentEnabledIndex - 1 + enabledPages.length) % enabledPages.length;
         currentIndex = Number(enabledPages[prevEnabledIndex].dataset.index);
@@ -528,14 +529,14 @@ function initGallery(currentIndex, disabledPlatform) {
         switch (event.key) {
         case 'ArrowRight':
             if (event.shiftKey) {
-                nextPage();
+                goToNextPage();
             } else {
                 selectedIndex = (selectedIndex + 1) % gameContainers.length;
             }
             break;
         case 'ArrowLeft':
             if (event.shiftKey) {
-                prevPage();
+                goToPrevPage();
             } else {
                 selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
             }
@@ -601,9 +602,9 @@ function initGallery(currentIndex, disabledPlatform) {
         event.preventDefault();
         if (event.shiftKey) {
             if (event.deltaY > 0) {
-                nextPage();
+                goToNextPage();
             } else if (event.deltaY < 0) {
-                prevPage();
+                goToPrevPage();
             }
         } else {
             if (event.deltaY > 0) {

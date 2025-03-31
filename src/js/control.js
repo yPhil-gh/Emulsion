@@ -254,28 +254,44 @@ function initGallery(currentIndex, disabledPlatform) {
     }
 
     function updatePagesCarousel() {
-        pages.forEach((page, pageIndex) => {
-            const pageIndexNumber = Number(page.dataset.index);
+        // Filter out disabled pages and sort by dataset.index
+        const enabledPages = pages
+              .filter(page => page.dataset.status !== 'disabled')
+              .sort((a, b) => Number(a.dataset.index) - Number(b.dataset.index));
 
-            page.classList.remove('active', 'next', 'prev');
+        // Find the active page's position in the enabled array
+        const activePos = enabledPages.findIndex(page => Number(page.dataset.index) === currentIndex);
+
+        // Determine immediate neighbors
+        const prevPage = enabledPages[activePos - 1] || null;
+        const nextPage = enabledPages[activePos + 1] || null;
+
+        pages.forEach(page => {
+            const pageIndexNumber = Number(page.dataset.index);
+            // Remove any previous classes
+            page.classList.remove('active', 'prev', 'next', 'adjacent');
 
             if (page.dataset.status === 'disabled') {
                 return;
             }
 
             if (pageIndexNumber === currentIndex) {
-
+                // Active page
                 initCurrentGallery(page, currentIndex);
-
                 page.classList.add('active');
-            } else if (pageIndexNumber < currentIndex) {
+            } else if (prevPage && Number(prevPage.dataset.index) === pageIndexNumber) {
+                // The immediate previous enabled page
                 page.classList.add('prev');
-            } else if (pageIndexNumber > currentIndex) {
+            } else if (nextPage && Number(nextPage.dataset.index) === pageIndexNumber) {
+                // The immediate next enabled page
                 page.classList.add('next');
+            } else {
+                // Any other enabled page is adjacent
+                page.classList.add('adjacent');
             }
-
         });
     }
+
 
     function goToNextPage() {
         // Find the index of the current page in the enabledPages array

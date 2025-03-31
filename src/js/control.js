@@ -200,28 +200,16 @@ function initGallery(currentIndex, disabledPlatform) {
 
     const enabledPages = pages.filter(page => page.dataset.status !== 'disabled');
 
-    function updatePagesCarousel() {
-        pages.forEach((page, pageIndex) => {
-            const pageIndexNumber = Number(page.dataset.index);
-
-            page.classList.remove('active', 'next', 'prev');
-
-            if (page.dataset.status === 'disabled') {
-                return;
-            }
-
-            const totalPages = pages.length;
-
-            if (pageIndexNumber === currentIndex) {
+    function initCurrentGallery(page, index) {
 
                 page.scrollIntoView({
                     behavior: "smooth",
                     block: "start",
                 });
 
-                setGalleryControls(currentIndex);
+                setGalleryControls(index);
 
-                currentPageIndex = currentIndex;
+                currentPageIndex = index;
                 gameContainers = Array.from(page.querySelectorAll('.game-container') || []);
 
                 gameContainers.forEach((container, index) => {
@@ -244,7 +232,7 @@ function initGallery(currentIndex, disabledPlatform) {
                 });
 
                 document.querySelector('header .platform-name').textContent = LB.utils.getPlatformName(page.dataset.platform);
-                document.querySelector('header .item-type').textContent = currentIndex === 0 ? ' platforms' : ' games';
+                document.querySelector('header .item-type').textContent = index === 0 ? ' platforms' : ' games';
                 document.querySelector('header .item-number').textContent = gameContainers.length - 1;
 
                 const platformImage = document.createElement('img');
@@ -263,9 +251,25 @@ function initGallery(currentIndex, disabledPlatform) {
                     goToNextPage();
                 };
 
+    }
+
+    function updatePagesCarousel() {
+        pages.forEach((page, pageIndex) => {
+            const pageIndexNumber = Number(page.dataset.index);
+
+            page.classList.remove('active', 'next', 'prev');
+
+            if (page.dataset.status === 'disabled') {
+                return;
+            }
+
+            const totalPages = pages.length;
+
+            if (pageIndexNumber === currentIndex) {
+
+                initCurrentGallery(page, currentIndex);
+
                 page.classList.add('active');
-                // (index === (currentIndex - 1 + totalSlides) % totalSlides) prev
-                // (index === (currentIndex + 1) % totalSlides) next
             } else if (pageIndexNumber < currentIndex) {
                 page.classList.add('prev');
             } else if (pageIndexNumber > currentIndex) {

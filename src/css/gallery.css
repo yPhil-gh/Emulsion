@@ -16,7 +16,6 @@
   background-color: var(--color-bg1);
   opacity: 1;
 
-  /* transition: transform 0.5s linear; */
   transition: transform 0.5s ease, opacity 0.5s ease, box-shadow 0.5s ease;
 
   left: 0;
@@ -27,37 +26,24 @@
 }
 
 
-/* .page[data-status="disabled"] { */
-/*   width: 0; */
-/*   opacity: 0; */
-/* } */
-
 .page.active {
   opacity: 1;
-  /* transition: opacity 0.2s ease-out; */
-  /* transform: translateZ(0) rotateY(0deg) scale(1); */
   transform: translateX(0);
   z-index: 2;
 }
 
 .page.prev {
-  /* transition: opacity 1.5s ease-out; */
-  /* transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px)) translateX(-20px); */
   transform: translateX(-50vw);
   opacity: 1;
 }
 
 .page.next {
-  /* transition: opacity 1.5s ease-out; */
-  /* transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px)) translateX(20px); */
   transform: translateX(50vw);
   opacity: 1;
 }
 
 .page.adjacent {
   opacity: 0;
-  /* transform: translate(-50%, -50%) rotateY(calc(var(--page-rotation-angle) * 1deg)) translateZ(calc(var(--page-rotation-radius) * 1px)); */
-  /* z-index: 1; */
 }
 
 .page-content {

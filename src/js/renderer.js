@@ -42,8 +42,8 @@ LB.prefs.load()
 
         LB.galleryNumOfCols = preferences.settings.numberOfColumns;
         LB.steamGridAPIKey = preferences.settings.steamGridAPIKey;
-        LB.steamGridAPIKey = preferences.settings.steamGridAPIKey;
         LB.footerSize = preferences.settings.footerSize;
+        LB.homeMenuTheme = preferences.settings.homeMenuTheme;
 
         LB.control.setFooterSize(LB.footerSize);
 

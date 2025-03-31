@@ -74,6 +74,7 @@ function _buildPrefsForm() {
     numberOfColumnsInput.placeholder = 'The number of columns in each platform gallery';
 
     numberOfColumnsInput.classList.add('input');
+    numberOfColumnsInput.value = LB.galleryNumOfCols;
 
     const numberOfColumnsIcon = document.createElement('div');
     numberOfColumnsIcon.classList.add('form-icon');
@@ -97,56 +98,50 @@ function _buildPrefsForm() {
     numberOfColumnsGroup.appendChild(numberOfColumnsLabel);
     numberOfColumnsGroup.appendChild(numberOfColumnsCtn);
 
-    numberOfColumnsInput.value = LB.galleryNumOfCols;
-
-
     const footerSizeGroup = document.createElement('div');
 
     const footerSizeInputCtn = document.createElement('div');
     footerSizeInputCtn.classList.add('footer-size-input-ctn');
 
-    // Create container for radio buttons
-    const radioContainer = document.createElement('div');
-    radioContainer.style.display = 'flex';
-    radioContainer.style.gap = '20px';
-    radioContainer.style.alignItems = 'center';
-    radioContainer.classList.add('radio-container');
-
-    // Create radio buttons
+    const footerSizeRadioContainer = document.createElement('div');
+    footerSizeRadioContainer.style.display = 'flex';
+    footerSizeRadioContainer.style.gap = '20px';
+    footerSizeRadioContainer.style.alignItems = 'center';
+    footerSizeRadioContainer.classList.add('radio-container');
 
     const footerSizeRadios = []; // Store references to the radio buttons
 
-    const sizes = ['small', 'medium', 'big'];
-    sizes.forEach(size => {
-        const label = document.createElement('label');
-        label.style.display = 'flex';
-        label.style.alignItems = 'center';
-        label.style.gap = '6px';
+    const footerSizes = ['small', 'medium', 'big'];
+    footerSizes.forEach(size => {
+        const footerSizesLabel = document.createElement('label');
+        footerSizesLabel.style.display = 'flex';
+        footerSizesLabel.style.alignItems = 'center';
+        footerSizesLabel.style.gap = '6px';
 
-        const radio = document.createElement('input');
-        radio.type = 'radio';
-        radio.name = 'footerSize';
-        radio.value = size;
-        radio.checked = size === LB.footerSize;
+        const footerSizesRadio = document.createElement('input');
+        footerSizesRadio.type = 'radio';
+        footerSizesRadio.name = 'footerSize';
+        footerSizesRadio.value = size;
+        footerSizesRadio.checked = size === LB.footerSize;
 
-        footerSizeRadios.push(radio);
+        footerSizeRadios.push(footerSizesRadio);
 
         // Style radio button
-        radio.style.margin = '0';
-        radio.style.accentColor = 'var(--color-accent)';
+        footerSizesRadio.style.margin = '0';
+        footerSizesRadio.style.accentColor = 'var(--color-accent)';
 
-        const text = document.createTextNode(size.charAt(0).toUpperCase() + size.slice(1));
+        const FooterSizesText = document.createTextNode(size.charAt(0).toUpperCase() + size.slice(1));
 
-        radio.addEventListener('change', () => {
-            if (radio.checked) LB.control.setFooterSize(size);
+        footerSizesRadio.addEventListener('change', () => {
+            if (footerSizesRadio.checked) LB.control.setFooterSize(size);
         });
 
-        label.appendChild(radio);
-        label.appendChild(text);
-        radioContainer.appendChild(label);
+        footerSizesLabel.appendChild(footerSizesRadio);
+        footerSizesLabel.appendChild(FooterSizesText);
+        footerSizeRadioContainer.appendChild(footerSizesLabel);
     });
 
-    footerSizeInputCtn.appendChild(radioContainer);
+    footerSizeInputCtn.appendChild(footerSizeRadioContainer);
 
     const footerSizeIcon = document.createElement('div');
     footerSizeIcon.classList.add('form-icon');
@@ -170,7 +165,69 @@ function _buildPrefsForm() {
     footerSizeGroup.appendChild(footerSizeLabel);
     footerSizeGroup.appendChild(footerSizeCtn);
 
-    // footerSizeInput.value = LB.galleryNumOfCols;
+
+    const homeMenuThemeGroup = document.createElement('div');
+
+    const homeMenuThemeInputCtn = document.createElement('div');
+    homeMenuThemeInputCtn.classList.add('footer-size-input-ctn');
+
+    const homeMenuThemeRadioContainer = document.createElement('div');
+    homeMenuThemeRadioContainer.style.display = 'flex';
+    homeMenuThemeRadioContainer.style.gap = '20px';
+    homeMenuThemeRadioContainer.style.alignItems = 'center';
+    homeMenuThemeRadioContainer.classList.add('radio-container');
+
+    const homeMenuThemeRadios = []; // Store references to the radio buttons
+
+    const homeMenuThemes = ['flat', '3D'];
+    homeMenuThemes.forEach(theme => {
+        const homeMenuThemesLabel = document.createElement('label');
+        homeMenuThemesLabel.style.display = 'flex';
+        homeMenuThemesLabel.style.alignItems = 'center';
+        homeMenuThemesLabel.style.gap = '6px';
+
+        const homeMenuThemesRadio = document.createElement('input');
+        homeMenuThemesRadio.type = 'radio';
+        homeMenuThemesRadio.name = 'homeMenuTheme';
+        homeMenuThemesRadio.value = theme;
+        homeMenuThemesRadio.checked = theme === LB.homeMenuTheme;
+
+        homeMenuThemeRadios.push(homeMenuThemesRadio);
+
+        // Style radio button
+        homeMenuThemesRadio.style.margin = '0';
+        homeMenuThemesRadio.style.accentColor = 'var(--color-accent)';
+
+        const FooterSizesText = document.createTextNode(theme.charAt(0).toUpperCase() + theme.slice(1));
+
+        homeMenuThemesLabel.appendChild(homeMenuThemesRadio);
+        homeMenuThemesLabel.appendChild(FooterSizesText);
+        homeMenuThemeRadioContainer.appendChild(homeMenuThemesLabel);
+    });
+
+    homeMenuThemeInputCtn.appendChild(homeMenuThemeRadioContainer);
+
+    const homeMenuThemeIcon = document.createElement('div');
+    homeMenuThemeIcon.classList.add('form-icon');
+    homeMenuThemeIcon.innerHTML = '<i class="form-icon num-cols-icon fa fa-2x fa-home" aria-hidden="true"></i>';
+
+    const homeMenuThemeLabel = document.createElement('label');
+    homeMenuThemeLabel.textContent = 'Footer menu size';
+
+    const homeMenuThemeSubLabel = document.createElement('label');
+    homeMenuThemeSubLabel.id = 'num-cols-sub-label';
+    homeMenuThemeSubLabel.classList.add('sub-label');
+
+    const homeMenuThemeCtn = document.createElement('div');
+    homeMenuThemeCtn.classList.add('dual-ctn');
+
+    homeMenuThemeCtn.appendChild(homeMenuThemeIcon);
+    homeMenuThemeCtn.appendChild(homeMenuThemeInputCtn);
+    homeMenuThemeGroup.appendChild(homeMenuThemeLabel);
+    homeMenuThemeGroup.appendChild(homeMenuThemeCtn);
+
+    homeMenuThemeGroup.appendChild(homeMenuThemeLabel);
+    homeMenuThemeGroup.appendChild(homeMenuThemeCtn);
 
     const steamGridKeyGroup = document.createElement('div');
 
@@ -183,6 +240,9 @@ function _buildPrefsForm() {
 
     const steamGridKeyLabel = document.createElement('label');
     steamGridKeyLabel.textContent = 'Steam Grid API Key';
+
+    const steamGridKeyLink = document.createElement('a');
+    steamGridKeyLink.href = 'https://www.steamgriddb.com/profile/preferences';
 
     const steamGridKeyInput = document.createElement('input');
     steamGridKeyInput.classList.add('input');
@@ -225,6 +285,7 @@ function _buildPrefsForm() {
 
     formContainer.appendChild(platformMenuImageCtn);
     formContainer.appendChild(numberOfColumnsGroup);
+    formContainer.appendChild(homeMenuThemeGroup);
     formContainer.appendChild(footerSizeGroup);
     formContainer.appendChild(steamGridKeyGroup);
     // formContainer.appendChild(cancelButton);
@@ -256,18 +317,11 @@ function _buildPrefsForm() {
         document.dispatchEvent(escapeKeyEvent);
     }
 
-    async function _saveButtonClick(event) {
-
-        if (!numberOfColumnsInput.value) {
-            numberOfColumnsSubLabel.textContent = 'This field cannot be empty';
-            return;
-        }
-
-        const selectedFooterSize = footerSizeRadios.find(radio => radio.checked)?.value;
-
+    async function _saveButtonClick() {
         try {
             await LB.prefs.save('settings', 'numberOfColumns', parseInt(numberOfColumnsInput.value, 10));
-            await LB.prefs.save('settings', 'footerSize', selectedFooterSize);
+            await LB.prefs.save('settings', 'footerSize', footerSizeRadios.find(radio => radio.checked)?.value);
+            await LB.prefs.save('settings', 'homeMenuTheme', homeMenuThemeRadios.find(radio => radio.checked)?.value);
             await LB.prefs.save('settings', 'steamGridKey', steamGridKeyInput.value);
             window.location.reload();
         } catch (error) {

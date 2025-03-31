@@ -35,13 +35,17 @@ function initSlideShow(platformToDisplay) {
 
             let is3D = false;
 
+            if (LB.homeMenuTheme === '3D') {
+                is3D = true;
+            }
+
             if (index === currentIndex) {
                 slide.classList.add('active');
             } else if (index === (currentIndex - 1 + totalSlides) % totalSlides) {
                 slide.classList.add('prev-slide');
 
                 if (!is3D) {
-                    slide.style.opacity = 0;
+                    slide.style.opacity = 0.1;
                 }
 
                 if (is3D) {
@@ -53,7 +57,7 @@ function initSlideShow(platformToDisplay) {
                 slide.classList.add('next-slide');
 
                 if (!is3D) {
-                    slide.style.opacity = 0;
+                    slide.style.opacity = 0.1;
                 }
 
                 if (is3D) {
@@ -66,6 +70,7 @@ function initSlideShow(platformToDisplay) {
 
                 if (is3D) {
                     slide.style.opacity = 0.2;
+                    slide.style.transform = 'rotateY(calc(' + angle + ' * 1deg)) translateZ(calc(' + radius + ' * 1px)));';
                 } else {
                     slide.style.opacity = 0;
                 }

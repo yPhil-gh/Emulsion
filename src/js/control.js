@@ -263,8 +263,6 @@ function initGallery(currentIndex, disabledPlatform) {
                 return;
             }
 
-            const totalPages = pages.length;
-
             if (pageIndexNumber === currentIndex) {
 
                 initCurrentGallery(page, currentIndex);
@@ -274,18 +272,7 @@ function initGallery(currentIndex, disabledPlatform) {
                 page.classList.add('prev');
             } else if (pageIndexNumber > currentIndex) {
                 page.classList.add('next');
-            } else {
-                page.classList.add('adjacent');
             }
-
-
-            // } else if (pageIndexNumber === (currentIndex - 1 + totalPages) % totalPages) {
-            //     page.classList.add('prev');
-            // } else if (pageIndexNumber === (currentIndex + 1 % totalPages)) {
-            //     page.classList.add('next');
-            // } else {
-            //     page.classList.add('adjacent');
-            // }
 
         });
     }

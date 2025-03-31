@@ -276,17 +276,13 @@ function initGallery(currentIndex, disabledPlatform) {
             }
 
             if (pageIndexNumber === currentIndex) {
-                // Active page
                 initCurrentGallery(page, currentIndex);
                 page.classList.add('active');
             } else if (prevPage && Number(prevPage.dataset.index) === pageIndexNumber) {
-                // The immediate previous enabled page
                 page.classList.add('prev');
             } else if (nextPage && Number(nextPage.dataset.index) === pageIndexNumber) {
-                // The immediate next enabled page
                 page.classList.add('next');
             } else {
-                // Any other enabled page is adjacent
                 page.classList.add('adjacent');
             }
         });

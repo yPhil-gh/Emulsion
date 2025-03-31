@@ -37,12 +37,12 @@
 
 .page.prev {
   transform: translateX(-50vw);
-  opacity: 0.5;
+  opacity: 0;
 }
 
 .page.next {
   transform: translateX(50vw);
-  opacity: 0.5;
+  opacity: 0;
 }
 
 .page.adjacent {

@@ -10,6 +10,10 @@ function buildSlide(platformName, preferences) {
         return null;
     }
 
+    if (LB.kidsMode && platformName === 'settings') {
+        return null;
+    }
+
     const slide = document.createElement("div");
     slide.className = "slide";
     slide.setAttribute('data-index', preferences[platformName].index);
@@ -33,19 +37,11 @@ function buildSlide(platformName, preferences) {
 LB.prefs.load()
     .then((preferences) => {
 
-        console.log("preferences: ", preferences);
-
-        if (!preferences) {
-            console.log("No preferences found, using default preferences");
-        }
-
         LB.galleryNumOfCols = preferences.settings.numberOfColumns;
         LB.steamGridKey = preferences.settings.steamGridKey;
         LB.footerSize = preferences.settings.footerSize;
         LB.homeMenuTheme = preferences.settings.homeMenuTheme;
         LB.disabledPlatformsPolicy = preferences.settings.disabledPlatformsPolicy;
-
-        console.log("LB.disabledPlatformsPolicy: ", LB.disabledPlatformsPolicy);
 
         LB.control.setFooterSize(LB.footerSize);
 

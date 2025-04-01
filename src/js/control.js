@@ -21,7 +21,11 @@ function initSlideShow(platformToDisplay) {
     const radius = 500;
     let currentIndex = platformToDisplay ? platformToDisplay : 0;
 
-    function updateHomeCarousel() {
+
+    console.log("platformToDisplay: ", platformToDisplay);
+
+
+    function updateHomeCarousel(platformIndex) {
         const angleIncrement = 360 / totalSlides;
 
         slides.forEach((slide, index) => {
@@ -37,6 +41,11 @@ function initSlideShow(platformToDisplay) {
 
             if (LB.homeMenuTheme === '3D') {
                 is3D = true;
+            }
+
+            if (platformIndex && slide.dataset.index === platformIndex) {
+                console.log("YOO: ");
+                slide.classList.add('active');
             }
 
             if (index === currentIndex) {
@@ -133,14 +142,10 @@ function initSlideShow(platformToDisplay) {
             let activePlatformName;
 
             slides.forEach((slide, index) => {
-                // console.log("slide, index: ", slide, index);
-                // console.log("slide.dataset.index: ", slide.dataset.index);
                 if (slide.classList.contains('active')) {
                     activePlatformName = slide.dataset.platform;
                     activeGalleryIndex = Number(slide.dataset.index);
                     // console.assert(index === Number(slide.dataset.index));
-                    // console.log("indices: ", index, slide.dataset.index);
-                    // console.log("slide.dataset.index: ", slide.dataset.index);
                 }
             });
 
@@ -159,18 +164,12 @@ function initSlideShow(platformToDisplay) {
         }
     }
 
-    // function onKeyUp (event) {
-    //     document.getElementById('dpad-icon').src = '../img/controls/key-arrows-horiz.png';
-    // }
-
-    // window.addEventListener('keyup', onKeyUp);
-
     LB.utils.updateControls('dpad', 'button-dpad-ew', 'Browse<br>Platforms', 'on');
     LB.utils.updateControls('shoulders', 'same', 'Browse<br>Platforms', 'off');
     LB.utils.updateControls('square', 'same', 'same', 'off');
     LB.utils.updateControls('circle', 'same', 'Exit');
 
-    updateHomeCarousel();
+    updateHomeCarousel(platformToDisplay);
 }
 
 function setGalleryControls(currentIndex) {
@@ -199,10 +198,12 @@ function initGallery(currentIndex, disabledPlatform) {
     const pages = Array.from(galleries.querySelectorAll('.page'));
     const totalPages = pages.length;
 
-    let currentPageIndex = currentIndex; // Initialize currentPageIndex
-    let gameContainers = []; // Initialize gameContainers
+    let currentPageIndex = currentIndex;
+    let gameContainers = [];
 
     const enabledPages = pages.filter(page => page.dataset.status !== 'disabled');
+
+    let activePlatformIndex;
 
     function initCurrentGallery(page, index) {
 
@@ -265,6 +266,8 @@ function initGallery(currentIndex, disabledPlatform) {
 
         // Find the active page's position in the enabled array
         const activePos = enabledPages.findIndex(page => Number(page.dataset.index) === currentIndex);
+
+        activePlatformIndex = activePos;
 
         // Determine immediate neighbors
         const prevPage = enabledPages[activePos - 1] || null;
@@ -590,7 +593,11 @@ function initGallery(currentIndex, disabledPlatform) {
             document.getElementById('slideshow').style.display = 'flex';
             document.getElementById('galleries').style.display = 'none';
             window.removeEventListener('keydown', onGalleryKeyDown);
-            LB.control.initSlideShow(currentIndex);
+
+            console.log("activePlatformIndex: ", activePlatformIndex);
+
+            LB.control.initSlideShow(activePlatformIndex);
+            // LB.control.initSlideShow(LB.kidsMode ? currentIndex - 1 : currentIndex);
             document.querySelector('header .item-number').textContent = '';
             break;
         }

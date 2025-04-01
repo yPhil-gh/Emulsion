@@ -12,10 +12,6 @@ import os from 'os';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-console.log("__dirname: ", __dirname);
-
-console.log("path.join(path.resolve(app.getAppPath()), 'src'): ", path.join(path.resolve(app.getAppPath()), 'src'));
-
 import { readFile } from 'fs/promises';
 
 function findProjectRoot(startDir) {
@@ -71,18 +67,15 @@ gamecontroller.on('controller-button-up', (event) => {
   }
 });
 
-// gamecontroller.on("controller-button-down", (data) => {
-//     console.log("button pressed", data);
-// });
-
 const preferencesFilePath = path.join(app.getPath('userData'), "preferences.json");
-
 
 function showHelp() {
     console.log(`
+Emulsion ${pjson.version}
 Usage: ${pjson.name.toLowerCase()} [options]
 
 Options:
+  --kids-mode   Read-only mode: No config / settings, disabled platforms hidden.
   --fullscreen  Start the app in full screen mode.
   --help        Show this help message.
     `);
@@ -451,6 +444,7 @@ ipcMain.handle('load-preferences', () => {
         preferences.userDataPath = userDataPath;
         preferences.appPath = appPath;
         preferences.versionNumber = versionNumber;
+        preferences.kidsMode = process.argv.includes('--kids-mode');
         return preferences;
     }
 });

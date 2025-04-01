@@ -155,6 +155,11 @@ label.checkbox {
 
 }
 
+.input-ctn {
+  display: flex;
+  flex-direction: row;
+}
+
 .footer-size-input-ctn {
   display: flex;
   flex-direction: row;

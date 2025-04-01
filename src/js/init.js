@@ -206,6 +206,8 @@ async function _loadUserData() {
         return preferences;
     } catch (error) {
         console.error("Failed to load preferences:", error);
+        window.location.reload();
+
         throw error; // Re-throw the error if needed
     }
 }

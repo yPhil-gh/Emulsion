@@ -6,8 +6,10 @@ LB.control.initGamepad();
 
 function buildSlide(platformName, preferences) {
 
-    if (LB.disabledPlatformsPolicy === 'hide' && !preferences[platformName].isEnabled) {
-        return null;
+    if (platformName !== 'settings') {
+        if (LB.disabledPlatformsPolicy === 'hide' && !preferences[platformName].isEnabled) {
+            return null;
+        }
     }
 
     if (LB.kidsMode && platformName === 'settings') {

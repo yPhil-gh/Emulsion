@@ -6,12 +6,7 @@ LB.control.initGamepad();
 
 function buildSlide(platformName, preferences) {
 
-    // if (!isPlatformValid(platformName, preferences)) {
-    //     console.log("null: ", platformName);
-    //     return null;
-    // }
-
-    if (!preferences[platformName].isEnabled) {
+    if (LB.disabledPlatformsPolicy === 'hide' && !preferences[platformName].isEnabled) {
         return null;
     }
 
@@ -45,9 +40,12 @@ LB.prefs.load()
         }
 
         LB.galleryNumOfCols = preferences.settings.numberOfColumns;
-        LB.steamGridAPIKey = preferences.settings.steamGridAPIKey;
+        LB.steamGridKey = preferences.settings.steamGridKey;
         LB.footerSize = preferences.settings.footerSize;
         LB.homeMenuTheme = preferences.settings.homeMenuTheme;
+        LB.disabledPlatformsPolicy = preferences.settings.disabledPlatformsPolicy;
+
+        console.log("LB.disabledPlatformsPolicy: ", LB.disabledPlatformsPolicy);
 
         LB.control.setFooterSize(LB.footerSize);
 

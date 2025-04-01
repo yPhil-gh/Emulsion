@@ -211,6 +211,7 @@ async function _loadUserData() {
 async function getPrefs() {
     try {
         const preferences = await _loadUserData();
+        console.log("getPrefs: ", preferences);
         return preferences;
     } catch (error) {
         console.error("Error loading preferences:", error);

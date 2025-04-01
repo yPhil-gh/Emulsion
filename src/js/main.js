@@ -111,6 +111,9 @@ function loadPreferences() {
                             typeof platformPreferences !== 'object' ||
                                 platformPreferences === null ||
                                 typeof platformPreferences.numberOfColumns !== 'number' ||
+                                typeof platformPreferences.footerSize !== 'string' ||
+                                typeof platformPreferences.homeMenuTheme !== 'string' ||
+                                typeof platformPreferences.disabledPlatformsPolicy !== 'string' ||
                                 typeof platformPreferences.steamGridKey !== 'string'
                         ) {
                             console.error(`Invalid preferences`);
@@ -263,8 +266,8 @@ ipcMain.handle('go-to-url', async (event, link) => {
     return true;
 });
 
-ipcMain.on('fetch-images', (event, gameName, steamGridAPIKey) => {
-    getAllCoverImageUrls(gameName, steamGridAPIKey)
+ipcMain.on('fetch-images', (event, gameName, steamGridKey) => {
+    getAllCoverImageUrls(gameName, steamGridKey)
         .then((urls) => {
             event.reply('image-urls', urls); // Send the URLs back to the renderer process
         })

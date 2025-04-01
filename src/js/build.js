@@ -52,18 +52,73 @@ async function buildGameMenu(gameName, image) {
 
 function _buildPrefsFormItem(name, type, description, shortDescription, value) {
 
+    let input;
     const group = document.createElement('div');
 
-    const input = document.createElement('input');
-    input.type = type;
-    input.id = '';
-    input.name = '';
-    input.min = '2';
-    input.max = '12';
-    input.placeholder = description;
+    const radios = [];
 
-    input.classList.add('input');
-    input.value = value;
+    if (typeof type === 'object') {
+        const types = type;
+
+        const inputCtn = document.createElement('div');
+        inputCtn.classList.add('footer-size-input-ctn');
+
+        const radiosContainer = document.createElement('div');
+        radiosContainer.style.display = 'flex';
+        radiosContainer.style.gap = '20px';
+        radiosContainer.style.alignItems = 'center';
+        radiosContainer.classList.add('radio-container');
+
+        types.forEach(type => {
+
+            const label = document.createElement('label');
+            label.style.display = 'flex';
+            label.style.alignItems = 'center';
+            label.style.gap = '6px';
+
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = 'footerSize';
+            radio.value = type;
+            radio.checked = type === LB.footerSize;
+
+            radios.push(radio);
+
+            // Style radio button
+            radio.style.margin = '0';
+            radio.style.accentColor = 'var(--color-accent)';
+
+            const text = document.createTextNode(type.charAt(0).toUpperCase() + type.slice(1));
+
+            radio.addEventListener('change', () => {
+                console.log("change!: ");
+                // if (radio.checked) LB.control.setFooterSize(type);
+            });
+
+            label.appendChild(radio);
+            label.appendChild(text);
+            radiosContainer.appendChild(label);
+
+        });
+
+        inputCtn.appendChild(radiosContainer);
+
+        input = inputCtn;
+
+    } else {
+
+        input = document.createElement('input');
+        input.type = type;
+        input.id = name;
+        input.name = name;
+        input.min = '2';
+        input.max = '12';
+        input.placeholder = description;
+
+        input.classList.add('input');
+        input.value = value;
+
+    }
 
     const icon = document.createElement('div');
     icon.classList.add('form-icon');
@@ -81,13 +136,11 @@ function _buildPrefsFormItem(name, type, description, shortDescription, value) {
 
     ctn.appendChild(icon);
     ctn.appendChild(input);
-    group.appendChild(label);
-    group.appendChild(ctn);
 
     group.appendChild(label);
     group.appendChild(ctn);
 
-    return group;
+    return { group, input, radios };
 }
 
 function _buildPrefsForm() {
@@ -101,109 +154,80 @@ function _buildPrefsForm() {
     platformMenuImage.width = '250';
     platformMenuImageCtn.appendChild(platformMenuImage);
 
-    const numberOfColumnsGroup = _buildPrefsFormItem('numberOfColumns', 'number', 'The number of columns in each platform gallery', 'Number of columns', LB.galleryNumOfCols);
+    const numberOfColumns = _buildPrefsFormItem('numberOfColumns', 'number', 'The number of columns in each platform gallery', 'Number of columns', LB.galleryNumOfCols);
 
-    // const numberOfColumnsGroup = document.createElement('div');
+    const numberOfColumnsGroup = numberOfColumns.group;
+    const numberOfColumnsInput = numberOfColumns.input;
 
-    // const numberOfColumnsInput = document.createElement('input');
-    // numberOfColumnsInput.type = 'number';
-    // numberOfColumnsInput.id = 'numberOfColumns';
-    // numberOfColumnsInput.name = 'numberOfColumns';
-    // numberOfColumnsInput.min = '2';
-    // numberOfColumnsInput.max = '12';
-    // numberOfColumnsInput.placeholder = 'The number of columns in each platform gallery';
+    const footerSize = _buildPrefsFormItem('footerSize', ['small', 'medium', 'big'], '', 'Footer menu size', LB.footerSize);
 
-    // numberOfColumnsInput.classList.add('input');
-    // numberOfColumnsInput.value = LB.galleryNumOfCols;
+    const footerSizeGroup = footerSize.group;
+    const footerSizeRadios = footerSize.radios;
 
-    // const numberOfColumnsIcon = document.createElement('div');
-    // numberOfColumnsIcon.classList.add('form-icon');
-    // numberOfColumnsIcon.innerHTML = '<i class="form-icon num-cols-icon fa fa-2x fa-th" aria-hidden="true"></i>';
+    // const footerSizeInputCtn = document.createElement('div');
+    // footerSizeInputCtn.classList.add('footer-size-input-ctn');
 
-    // const numberOfColumnsLabel = document.createElement('label');
-    // numberOfColumnsLabel.textContent = 'Number of columns';
+    // const footerSizeRadioContainer = document.createElement('div');
+    // footerSizeRadioContainer.style.display = 'flex';
+    // footerSizeRadioContainer.style.gap = '20px';
+    // footerSizeRadioContainer.style.alignItems = 'center';
+    // footerSizeRadioContainer.classList.add('radio-container');
 
-    // const numberOfColumnsSubLabel = document.createElement('label');
-    // numberOfColumnsSubLabel.id = 'num-cols-sub-label';
-    // numberOfColumnsSubLabel.classList.add('sub-label');
+    // const footerSizeRadios = []; // Store references to the radio buttons
 
-    // const numberOfColumnsCtn = document.createElement('div');
-    // numberOfColumnsCtn.classList.add('dual-ctn');
+    // const footerSizes = ['small', 'medium', 'big'];
+    // footerSizes.forEach(size => {
+    //     const footerSizesLabel = document.createElement('label');
+    //     footerSizesLabel.style.display = 'flex';
+    //     footerSizesLabel.style.alignItems = 'center';
+    //     footerSizesLabel.style.gap = '6px';
 
-    // numberOfColumnsCtn.appendChild(numberOfColumnsIcon);
-    // numberOfColumnsCtn.appendChild(numberOfColumnsInput);
-    // numberOfColumnsGroup.appendChild(numberOfColumnsLabel);
-    // numberOfColumnsGroup.appendChild(numberOfColumnsCtn);
+    //     const footerSizesRadio = document.createElement('input');
+    //     footerSizesRadio.type = 'radio';
+    //     footerSizesRadio.name = 'footerSize';
+    //     footerSizesRadio.value = size;
+    //     footerSizesRadio.checked = size === LB.footerSize;
 
-    // numberOfColumnsGroup.appendChild(numberOfColumnsLabel);
-    // numberOfColumnsGroup.appendChild(numberOfColumnsCtn);
+    //     footerSizeRadios.push(footerSizesRadio);
 
-    const footerSizeGroup = document.createElement('div');
+    //     // Style radio button
+    //     footerSizesRadio.style.margin = '0';
+    //     footerSizesRadio.style.accentColor = 'var(--color-accent)';
 
-    const footerSizeInputCtn = document.createElement('div');
-    footerSizeInputCtn.classList.add('footer-size-input-ctn');
+    //     const FooterSizesText = document.createTextNode(size.charAt(0).toUpperCase() + size.slice(1));
 
-    const footerSizeRadioContainer = document.createElement('div');
-    footerSizeRadioContainer.style.display = 'flex';
-    footerSizeRadioContainer.style.gap = '20px';
-    footerSizeRadioContainer.style.alignItems = 'center';
-    footerSizeRadioContainer.classList.add('radio-container');
+    //     footerSizesRadio.addEventListener('change', () => {
+    //         if (footerSizesRadio.checked) LB.control.setFooterSize(size);
+    //     });
 
-    const footerSizeRadios = []; // Store references to the radio buttons
+    //     footerSizesLabel.appendChild(footerSizesRadio);
+    //     footerSizesLabel.appendChild(FooterSizesText);
+    //     footerSizeRadioContainer.appendChild(footerSizesLabel);
+    // });
 
-    const footerSizes = ['small', 'medium', 'big'];
-    footerSizes.forEach(size => {
-        const footerSizesLabel = document.createElement('label');
-        footerSizesLabel.style.display = 'flex';
-        footerSizesLabel.style.alignItems = 'center';
-        footerSizesLabel.style.gap = '6px';
+    // footerSizeInputCtn.appendChild(footerSizeRadioContainer);
 
-        const footerSizesRadio = document.createElement('input');
-        footerSizesRadio.type = 'radio';
-        footerSizesRadio.name = 'footerSize';
-        footerSizesRadio.value = size;
-        footerSizesRadio.checked = size === LB.footerSize;
+    // const footerSizeIcon = document.createElement('div');
+    // footerSizeIcon.classList.add('form-icon');
+    // footerSizeIcon.innerHTML = '<i class="form-icon num-cols-icon fa fa-2x fa-arrows" aria-hidden="true"></i>';
 
-        footerSizeRadios.push(footerSizesRadio);
+    // const footerSizeLabel = document.createElement('label');
+    // footerSizeLabel.textContent = 'Footer menu size';
 
-        // Style radio button
-        footerSizesRadio.style.margin = '0';
-        footerSizesRadio.style.accentColor = 'var(--color-accent)';
+    // const footerSizeSubLabel = document.createElement('label');
+    // footerSizeSubLabel.id = 'num-cols-sub-label';
+    // footerSizeSubLabel.classList.add('sub-label');
 
-        const FooterSizesText = document.createTextNode(size.charAt(0).toUpperCase() + size.slice(1));
+    // const footerSizeCtn = document.createElement('div');
+    // footerSizeCtn.classList.add('dual-ctn');
 
-        footerSizesRadio.addEventListener('change', () => {
-            if (footerSizesRadio.checked) LB.control.setFooterSize(size);
-        });
+    // footerSizeCtn.appendChild(footerSizeIcon);
+    // footerSizeCtn.appendChild(footerSizeInputCtn);
+    // footerSizeGroup.appendChild(footerSizeLabel);
+    // footerSizeGroup.appendChild(footerSizeCtn);
 
-        footerSizesLabel.appendChild(footerSizesRadio);
-        footerSizesLabel.appendChild(FooterSizesText);
-        footerSizeRadioContainer.appendChild(footerSizesLabel);
-    });
-
-    footerSizeInputCtn.appendChild(footerSizeRadioContainer);
-
-    const footerSizeIcon = document.createElement('div');
-    footerSizeIcon.classList.add('form-icon');
-    footerSizeIcon.innerHTML = '<i class="form-icon num-cols-icon fa fa-2x fa-arrows" aria-hidden="true"></i>';
-
-    const footerSizeLabel = document.createElement('label');
-    footerSizeLabel.textContent = 'Footer menu size';
-
-    const footerSizeSubLabel = document.createElement('label');
-    footerSizeSubLabel.id = 'num-cols-sub-label';
-    footerSizeSubLabel.classList.add('sub-label');
-
-    const footerSizeCtn = document.createElement('div');
-    footerSizeCtn.classList.add('dual-ctn');
-
-    footerSizeCtn.appendChild(footerSizeIcon);
-    footerSizeCtn.appendChild(footerSizeInputCtn);
-    footerSizeGroup.appendChild(footerSizeLabel);
-    footerSizeGroup.appendChild(footerSizeCtn);
-
-    footerSizeGroup.appendChild(footerSizeLabel);
-    footerSizeGroup.appendChild(footerSizeCtn);
+    // footerSizeGroup.appendChild(footerSizeLabel);
+    // footerSizeGroup.appendChild(footerSizeCtn);
 
     const homeMenuThemeGroup = document.createElement('div');
 

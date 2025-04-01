@@ -50,53 +50,93 @@ async function buildGameMenu(gameName, image) {
     });
 }
 
+function _buildPrefsFormItem(name, type, description, shortDescription, value) {
+
+    const group = document.createElement('div');
+
+    const input = document.createElement('input');
+    input.type = type;
+    input.id = '';
+    input.name = '';
+    input.min = '2';
+    input.max = '12';
+    input.placeholder = description;
+
+    input.classList.add('input');
+    input.value = value;
+
+    const icon = document.createElement('div');
+    icon.classList.add('form-icon');
+    icon.innerHTML = '<i class="form-icon num-cols-icon fa fa-2x fa-th" aria-hidden="true"></i>';
+
+    const label = document.createElement('label');
+    label.textContent = shortDescription;
+
+    const SubLabel = document.createElement('label');
+    SubLabel.id = 'num-cols-sub-label';
+    SubLabel.classList.add('sub-label');
+
+    const ctn = document.createElement('div');
+    ctn.classList.add('dual-ctn');
+
+    ctn.appendChild(icon);
+    ctn.appendChild(input);
+    group.appendChild(label);
+    group.appendChild(ctn);
+
+    group.appendChild(label);
+    group.appendChild(ctn);
+
+    return group;
+}
+
 function _buildPrefsForm() {
 
     const formContainer = document.createElement('div');
     formContainer.classList.add('platform-menu-container');
-
     const platformMenuImageCtn = document.createElement('div');
     platformMenuImageCtn.classList.add('platform-menu-image-ctn');
     const platformMenuImage = document.createElement('img');
     platformMenuImage.src = path.join(LB.baseDir, 'img', 'emulsion.png');
     platformMenuImage.width = '250';
-
     platformMenuImageCtn.appendChild(platformMenuImage);
 
-    const numberOfColumnsGroup = document.createElement('div');
+    const numberOfColumnsGroup = _buildPrefsFormItem('numberOfColumns', 'number', 'The number of columns in each platform gallery', 'Number of columns', LB.galleryNumOfCols);
 
-    const numberOfColumnsInput = document.createElement('input');
-    numberOfColumnsInput.type = 'number';
-    numberOfColumnsInput.id = 'numberOfColumns';
-    numberOfColumnsInput.name = 'numberOfColumns';
-    numberOfColumnsInput.min = '2';
-    numberOfColumnsInput.max = '12';
-    numberOfColumnsInput.placeholder = 'The number of columns in each platform gallery';
+    // const numberOfColumnsGroup = document.createElement('div');
 
-    numberOfColumnsInput.classList.add('input');
-    numberOfColumnsInput.value = LB.galleryNumOfCols;
+    // const numberOfColumnsInput = document.createElement('input');
+    // numberOfColumnsInput.type = 'number';
+    // numberOfColumnsInput.id = 'numberOfColumns';
+    // numberOfColumnsInput.name = 'numberOfColumns';
+    // numberOfColumnsInput.min = '2';
+    // numberOfColumnsInput.max = '12';
+    // numberOfColumnsInput.placeholder = 'The number of columns in each platform gallery';
 
-    const numberOfColumnsIcon = document.createElement('div');
-    numberOfColumnsIcon.classList.add('form-icon');
-    numberOfColumnsIcon.innerHTML = '<i class="form-icon num-cols-icon fa fa-2x fa-th" aria-hidden="true"></i>';
+    // numberOfColumnsInput.classList.add('input');
+    // numberOfColumnsInput.value = LB.galleryNumOfCols;
 
-    const numberOfColumnsLabel = document.createElement('label');
-    numberOfColumnsLabel.textContent = 'Number of columns';
+    // const numberOfColumnsIcon = document.createElement('div');
+    // numberOfColumnsIcon.classList.add('form-icon');
+    // numberOfColumnsIcon.innerHTML = '<i class="form-icon num-cols-icon fa fa-2x fa-th" aria-hidden="true"></i>';
 
-    const numberOfColumnsSubLabel = document.createElement('label');
-    numberOfColumnsSubLabel.id = 'num-cols-sub-label';
-    numberOfColumnsSubLabel.classList.add('sub-label');
+    // const numberOfColumnsLabel = document.createElement('label');
+    // numberOfColumnsLabel.textContent = 'Number of columns';
 
-    const numberOfColumnsCtn = document.createElement('div');
-    numberOfColumnsCtn.classList.add('dual-ctn');
+    // const numberOfColumnsSubLabel = document.createElement('label');
+    // numberOfColumnsSubLabel.id = 'num-cols-sub-label';
+    // numberOfColumnsSubLabel.classList.add('sub-label');
 
-    numberOfColumnsCtn.appendChild(numberOfColumnsIcon);
-    numberOfColumnsCtn.appendChild(numberOfColumnsInput);
-    numberOfColumnsGroup.appendChild(numberOfColumnsLabel);
-    numberOfColumnsGroup.appendChild(numberOfColumnsCtn);
+    // const numberOfColumnsCtn = document.createElement('div');
+    // numberOfColumnsCtn.classList.add('dual-ctn');
 
-    numberOfColumnsGroup.appendChild(numberOfColumnsLabel);
-    numberOfColumnsGroup.appendChild(numberOfColumnsCtn);
+    // numberOfColumnsCtn.appendChild(numberOfColumnsIcon);
+    // numberOfColumnsCtn.appendChild(numberOfColumnsInput);
+    // numberOfColumnsGroup.appendChild(numberOfColumnsLabel);
+    // numberOfColumnsGroup.appendChild(numberOfColumnsCtn);
+
+    // numberOfColumnsGroup.appendChild(numberOfColumnsLabel);
+    // numberOfColumnsGroup.appendChild(numberOfColumnsCtn);
 
     const footerSizeGroup = document.createElement('div');
 
@@ -164,7 +204,6 @@ function _buildPrefsForm() {
 
     footerSizeGroup.appendChild(footerSizeLabel);
     footerSizeGroup.appendChild(footerSizeCtn);
-
 
     const homeMenuThemeGroup = document.createElement('div');
 

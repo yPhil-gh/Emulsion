@@ -11,6 +11,10 @@ function buildSlide(platformName, preferences) {
     //     return null;
     // }
 
+    if (!preferences[platformName].isEnabled) {
+        return null;
+    }
+
     const slide = document.createElement("div");
     slide.className = "slide";
     slide.setAttribute('data-index', preferences[platformName].index);

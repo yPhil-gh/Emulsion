@@ -134,9 +134,13 @@ function initSlideShow(platformToDisplay) {
 
             slides.forEach((slide, index) => {
                 // console.log("slide, index: ", slide, index);
+                // console.log("slide.dataset.index: ", slide.dataset.index);
                 if (slide.classList.contains('active')) {
                     activePlatformName = slide.dataset.platform;
-                    activeGalleryIndex = index;
+                    activeGalleryIndex = Number(slide.dataset.index);
+                    // console.assert(index === Number(slide.dataset.index));
+                    // console.log("indices: ", index, slide.dataset.index);
+                    // console.log("slide.dataset.index: ", slide.dataset.index);
                 }
             });
 
@@ -266,9 +270,11 @@ function initGallery(currentIndex, disabledPlatform) {
         const prevPage = enabledPages[activePos - 1] || null;
         const nextPage = enabledPages[activePos + 1] || null;
 
+        const isAnim = true;
+
         pages.forEach(page => {
             const pageIndexNumber = Number(page.dataset.index);
-            // Remove any previous classes
+
             page.classList.remove('active', 'prev', 'next', 'adjacent');
 
             if (page.dataset.status === 'disabled') {

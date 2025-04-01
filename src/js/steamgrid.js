@@ -8,7 +8,7 @@ export const getAllCoverImageUrls = async (gameName, APIKey) => {
 
     // Initialize the SteamGridDB client
     const client = new SGDB({
-        key: APIKey, // Replace with your actual API key
+        key: APIKey,
     });
 
     try {

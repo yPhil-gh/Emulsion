@@ -51,12 +51,8 @@
 
 .page-content {
   display: grid;
-  /* grid-template-columns: repeat(6, 1fr); */
   gap: 10px;
   padding: 10px;
-  /* overflow-y: auto; /\* Allow vertical scrolling *\/ */
-  /* width: 100%; */
-  /* margin-top: 200px; */
 }
 
 .prefs-platform-img {

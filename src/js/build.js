@@ -71,17 +71,17 @@ function _buildPrefsFormItem(name, iconName, type, description, shortDescription
         inputCtn.classList.add('input-ctn');
 
         const radiosContainer = document.createElement('div');
-        radiosContainer.style.display = 'flex';
-        radiosContainer.style.gap = '20px';
-        radiosContainer.style.alignItems = 'center';
         radiosContainer.classList.add('radio-container');
+        // radiosContainer.style.display = 'flex';
+        // radiosContainer.style.gap = '20px';
+        // radiosContainer.style.alignItems = 'center';
 
         types.forEach(type => {
 
             const label = document.createElement('label');
-            label.style.display = 'flex';
-            label.style.alignItems = 'center';
-            label.style.gap = '6px';
+            // label.style.display = 'flex';
+            // label.style.alignItems = 'center';
+            // label.style.gap = '6px';
 
             const radio = document.createElement('input');
             radio.type = 'radio';
@@ -89,10 +89,14 @@ function _buildPrefsFormItem(name, iconName, type, description, shortDescription
             radio.value = type;
             radio.checked = type === value;
 
+            const radioBox = document.createElement('div');
+            radioBox.classList.add('radio-box');
+            radioBox.textContent = type;
+
             radios.push(radio);
 
-            radio.style.margin = '0';
-            radio.style.accentColor = 'var(--color-accent)';
+            // radio.style.margin = '0';
+            // radio.style.accentColor = 'var(--color-accent)';
 
             const text = document.createTextNode(type.charAt(0).toUpperCase() + type.slice(1));
 
@@ -102,7 +106,8 @@ function _buildPrefsFormItem(name, iconName, type, description, shortDescription
             });
 
             label.appendChild(radio);
-            label.appendChild(text);
+            label.appendChild(radioBox);
+            // label.appendChild(text);
             radiosContainer.appendChild(label);
 
         });
@@ -274,30 +279,13 @@ function buildPlatformForm(platformName) {
     statusCheckBox.id = 'input-platform-toggle-checkbox';
     statusCheckBox.classList.add('checkbox');
 
-    statusCheckBox.addEventListener('change', (event) => {
-        console.log("event: ", event);
-        const gamesDir = gamesDirInput.value;
-        const emulator = emulatorInput.value;
-        const isNotEnablable = !gamesDir || !emulator;
-
-        if (isNotEnablable) {
-            event.preventDefault(); // Prevent the default behavior
-            statusCheckBox.checked = !statusCheckBox.checked; // Revert the checkbox state
-            console.log("Checkbox state change prevented.");
-            platformText.textContent = 'Please provide both a games directory and an emulator.';
-        } else {
-            // Update the label text after the state changes
-            document.getElementById('form-status-label-platform-status').textContent = statusCheckBox.checked ? 'On' : 'Off';
-        }
-    });
-
     const statusLabel = document.createElement('label');
     statusLabel.classList.add('checkbox');
     statusLabel.id = 'form-status-label';
 
     const statusLabelPlatormName = document.createElement('span');
     statusLabelPlatormName.id = 'form-status-label-platform-name';
-    statusLabelPlatormName.textContent = `${platformName} is `;
+    statusLabelPlatormName.innerHTML = `${LB.utils.getPlatformName(platformName)} is&nbsp;`;
 
     const statusLabelPlatormStatus = document.createElement('span');
     statusLabelPlatormStatus.id = 'form-status-label-platform-status';
@@ -464,10 +452,43 @@ function buildPlatformForm(platformName) {
         .then((value) => {
             statusCheckBox.checked = value;
             statusLabelPlatormStatus.textContent = value ? 'On' : 'Off';
+            statusLabelPlatormStatus.classList.add(value ? 'on' : 'off');
         })
         .catch((error) => {
             console.error('Failed to get platform preference:', error);
         });
+
+
+    statusCheckBox.addEventListener('change', (event) => {
+        console.log("event: ", event);
+        const isNotEnablable = !gamesDirInput.value || !emulatorInput.value;
+
+        statusLabelPlatormStatus.classList.remove('on', 'off');
+
+        gamesDirSubLabel.textContent = '';
+        emulatorSubLabel.textContent = '';
+
+        if (!gamesDirInput.value) {
+            gamesDirSubLabel.textContent = 'This field cannot be empty';
+        }
+
+
+        if (!emulatorInput.value) {
+            emulatorSubLabel.textContent = 'This field cannot be empty';
+        }
+
+        if (isNotEnablable) {
+            event.preventDefault(); // Prevent the default behavior
+            statusCheckBox.checked = !statusCheckBox.checked; // Revert the checkbox state
+            console.log("Checkbox state change prevented.");
+            // platformText.textContent = 'Please provide both a games directory and an emulator.';
+        } else {
+            statusLabelPlatormStatus.textContent = statusCheckBox.checked ? 'On' : 'Off';
+            statusLabelPlatormStatus.classList.add(statusCheckBox.checked ? 'on' : 'off');
+
+        }
+    });
+
 
     cancelButton.addEventListener('click', _cancelButtonClick);
     saveButton.addEventListener('click', _saveButtonClick);

@@ -41,12 +41,14 @@ button {
 }
 
 label {
+  display: flex !important;
+  flex-direction: row;
+  align-items: center;
+
   font-family: 'sans-serif';
   font-weight: normal;
   font-style: normal;
   font-size: 12pt;
-  display: flex !important;
-  flex-direction: row;
   margin-left: 60px;
 }
 
@@ -57,8 +59,52 @@ label.checkbox {
   /* font-style: normal; */
 }
 
-#form-status-label-platform-name {
+#form-status-label-platform-status.on {
+  color: rgb(0, 255, 0);
+}
 
+.sub-label {
+  color: red;
+  font-size: 0.6em
+}
+
+.radio-container {
+    display: flex;
+    /* gap: 10px; */
+    width: -webkit-fill-available;
+}
+
+.radio-container label {
+    flex: 1; /* Make each label take up equal space */
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin: 0;
+}
+
+/* Hide actual radio inputs */
+.radio-container input[type="radio"] {
+    display: none;
+}
+
+/* Style the radio buttons as rectangles */
+.radio-box {
+      flex: 1; /* Make the box fill the available space */
+  background-color: blue;
+  height: 100%;
+    color: white;
+    text-align: center;
+    transition: background 0.3s;
+}
+
+/* Change color when selected */
+.radio-container input[type="radio"]:checked + .radio-box {
+    background-color: red;
+}
+
+
+#form-status-label-platform-status.off {
+  color: red;
 }
 
 .field {
@@ -159,6 +205,7 @@ label.checkbox {
 .input-ctn {
   display: flex;
   flex-direction: row;
+  overflow: hidden;
 }
 
 .footer-size-input-ctn {
@@ -183,7 +230,7 @@ input[type="checkbox"] {
 }
 
 input[type="radio"] {
-  accent-color: red;
+  accent-color: green;
   /* accent-color: var(--color-button-off); */
   height: 30px;
   width: 30px;

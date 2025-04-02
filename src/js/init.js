@@ -2,7 +2,7 @@
 const { ipcRenderer, shell } = require('electron');
 let fs = require('fs');
 const path = require('path');
-const fsp = require('fs').promises; // Use the promise-based fs module
+const fsp = require('fs').promises;
 const axios = require('axios');
 const { promisify } = require('util');
 const readFile = promisify(fs.readFile);
@@ -11,19 +11,7 @@ const LB = {}; // Launch Break :)
 
 window.ipcRenderer = ipcRenderer;
 
-const resolvedPath = path.resolve('.');
-
-// LB.baseDir = resolvedPath;
-// console.log("resolvedPath init: ", LB.baseDir);
-
-// LB.baseDir = path.join(path.resolve(app.getAppPath()), 'src');
-
-// console.log("path.join(path.resolve(app.getAppPath()), 'src'): ", path.join(path.resolve(app.getAppPath()), 'src'));
-
-// console.log("app.getAppPath(): ", app.getAppPath());
-
-
-LB.enabledPlatforms = [];
+LB.enabledPlatforms = ['settings'];
 
 LB.isMenuOpen = false;
 

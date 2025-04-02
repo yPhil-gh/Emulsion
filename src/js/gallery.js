@@ -170,8 +170,6 @@ function buildSettingsPageContent(platforms) {
 // Build the gallery for a specific platform
 async function buildGallery(params) {
 
-    console.log("LB.kidsMode: ", LB.kidsMode);
-
     if (LB.kidsMode && params.platform === 'settings') {
         return null;
     }
@@ -265,71 +263,71 @@ async function buildGallery(params) {
             }
         }
 
-        // Load all items at once
-        for (let i = 0; i < gameFiles.length; i++) {
-            const gameFile = gameFiles[i];
-            // console.log("gameFile: ", gameFile);
-            const missingImagePath = path.join(LB.baseDir, 'img', 'missing.png');
+        if (gameFiles.length > 0) {
+            for (let i = 0; i < gameFiles.length; i++) {
+                const gameFile = gameFiles[i];
+                // console.log("gameFile: ", gameFile);
+                const missingImagePath = path.join(LB.baseDir, 'img', 'missing.png');
 
-            let fileName = path.basename(gameFile);
-            let fileNameWithoutExt = path.parse(fileName).name;
-            let fileNameClean = LB.utils.cleanFileName(fileNameWithoutExt);
+                let fileName = path.basename(gameFile);
+                let fileNameWithoutExt = path.parse(fileName).name;
+                let fileNameClean = LB.utils.cleanFileName(fileNameWithoutExt);
 
-            let dataCommand = `${emulator} ${emulatorArgs || ""} "${gameFile}"`;
+                let dataCommand = `${emulator} ${emulatorArgs || ""} "${gameFile}"`;
 
-            if (platform === 'ps3') {
-                const ps3GameTitle = await getPs3GameTitle(gameFile);
-                fileNameWithoutExt = LB.utils.safeFileName(ps3GameTitle);
-                fileNameClean = ps3GameTitle;
-                dataCommand = `${emulator} ${emulatorArgs || ""} "${getEbootPath(gameFile)}"`;
+                if (platform === 'ps3') {
+                    const ps3GameTitle = await getPs3GameTitle(gameFile);
+                    fileNameWithoutExt = LB.utils.safeFileName(ps3GameTitle);
+                    fileNameClean = ps3GameTitle;
+                    dataCommand = `${emulator} ${emulatorArgs || ""} "${getEbootPath(gameFile)}"`;
+                }
+
+                let coverImagePath = findImageFile(path.join(userDataPath, "covers", platform), fileNameWithoutExt);
+
+                const isImgExists = fs.existsSync(coverImagePath);
+
+                const gameContainer = document.createElement('div');
+                gameContainer.classList.add('game-container');
+                gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+                gameContainer.title = fileNameClean;
+                gameContainer.setAttribute('data-game-name', fileNameWithoutExt);
+                gameContainer.setAttribute('data-platform', platform);
+                gameContainer.setAttribute('data-command', dataCommand);
+                gameContainer.setAttribute('data-index', i);
+
+                const gameImage = document.createElement('img');
+                gameImage.src = isImgExists ? coverImagePath : missingImagePath;
+                gameImage.classList.add('game-image');
+
+                if (!isImgExists) {
+                    gameImage.classList.add('missing-image');
+                }
+
+                // Set explicit width and height attributes
+                gameImage.width = columnWidth; // Set width attribute
+                // gameImage.height = columnWidth; // Set height attribute (placeholder)
+
+                const gameLabel = document.createElement('div');
+                gameLabel.classList.add('game-label');
+                gameLabel.textContent = fileNameClean;
+
+                gameContainer.appendChild(gameLabel);
+                gameContainer.appendChild(gameImage);
+                pageContent.appendChild(gameContainer);
             }
-
-            let coverImagePath = findImageFile(path.join(userDataPath, "covers", platform), fileNameWithoutExt);
-
-            const isImgExists = fs.existsSync(coverImagePath);
+        } else {
 
             const gameContainer = document.createElement('div');
-            gameContainer.classList.add('game-container');
+            gameContainer.classList.add('game-container', 'empty-platform-game-container');
             gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
-            gameContainer.title = fileNameClean;
-            gameContainer.setAttribute('data-game-name', fileNameWithoutExt);
-            gameContainer.setAttribute('data-platform', platform);
-            gameContainer.setAttribute('data-command', dataCommand);
-            gameContainer.setAttribute('data-index', i);
+            // gameContainer.style.gridColumn = `span 1 / ${LB.galleryNumOfCols}`;
+            gameContainer.style.gridColumn = `1 / calc(${LB.galleryNumOfCols} + 1)`;
 
-            const gameImage = document.createElement('img');
-            gameImage.src = isImgExists ? coverImagePath : missingImagePath;
-            gameImage.classList.add('game-image');
-
-            if (!isImgExists) {
-                gameImage.classList.add('missing-image');
-            }
-
-            // Set explicit width and height attributes
-            gameImage.width = columnWidth; // Set width attribute
-            // gameImage.height = columnWidth; // Set height attribute (placeholder)
-
-            const gameLabel = document.createElement('div');
-            gameLabel.classList.add('game-label');
-            gameLabel.textContent = fileNameClean;
-
-            gameContainer.appendChild(gameLabel);
-            gameContainer.appendChild(gameImage);
+            gameContainer.innerHTML = `No game files found in<p><code>${gamesDir}</code></p>`;
             pageContent.appendChild(gameContainer);
 
-            // Calculate the image height after it loads
-            // gameImage.onload = () => {
-            //     const aspectRatio = gameImage.naturalWidth / gameImage.naturalHeight; // Calculate aspect ratio
-            //     const height = columnWidth / aspectRatio; // Calculate height based on aspect ratio
-
-            //     // Update the image dimensions
-            //     gameImage.width = columnWidth;
-            //     gameImage.height = height;
-
-            //     // Adjust the container height to match the image height
-            //     gameContainer.style.height = `${height}px`;
-            // };
         }
+
     }
 
     page.appendChild(pageContent);

@@ -305,7 +305,7 @@ const platforms = [
     { name: "n64", extensions: [".z64"] },
     { name: "psx", extensions: [".srm"] },
     { name: "ps2", extensions: [".bin", ".iso"] },
-    { name: "ps3", extensions: [".bin", ".iso"] }
+    { name: "ps3", extensions: [".SFO"] }
 ];
 
 platforms.forEach((platform, index) => {

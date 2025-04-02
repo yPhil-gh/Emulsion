@@ -103,6 +103,10 @@ div.menu-game-container {
   animation: pulse-glow 2s infinite ease-in-out;
 }
 
+.empty-platform-game-container {
+  justify-content: center !important;
+}
+
 @keyframes pulse-glow {
   0% {
     border-color: var(--color-border-off);

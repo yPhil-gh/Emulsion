@@ -1,58 +1,63 @@
-async function buildGameMenu(gameName, image) {
-    return new Promise((resolve, reject) => {
-        const gameMenuContainer = document.createElement('div');
-        gameMenuContainer.classList.add('page-content');
+function buildGameMenu(gameName, image) {
+    const gameMenuContainer = document.createElement('div');
+    gameMenuContainer.classList.add('page-content');
+    gameMenuContainer.style.gridTemplateColumns = `repeat(${LB.galleryNumOfCols}, 1fr)`;
 
-        gameMenuContainer.style.gridTemplateColumns = `repeat(${LB.galleryNumOfCols}, 1fr)`;
+    const currentImageContainer = document.createElement('div');
+    currentImageContainer.classList.add('menu-game-container', 'current-image');
+    currentImageContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
 
-        const currentImageContainer = document.createElement('div');
-        currentImageContainer.classList.add('menu-game-container', 'current-image');
-        currentImageContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+    const currentImage = document.createElement('img');
+    currentImage.src = image.src;
+    currentImage.alt = 'Current game image';
 
-        const currentImage = document.createElement('img');
-        currentImage.src = image.src;
-        currentImage.alt = 'Current game image';
+    const gameLabel = document.createElement('div');
+    gameLabel.classList.add('game-label');
+    gameLabel.textContent = 'Current Image';
 
-        const gameLabel = document.createElement('div');
-        gameLabel.classList.add('game-label');
-        gameLabel.textContent = 'Current Image';
+    currentImageContainer.appendChild(gameLabel);
+    currentImageContainer.appendChild(currentImage);
+    gameMenuContainer.appendChild(currentImageContainer);
 
-        currentImageContainer.appendChild(gameLabel);
-        currentImageContainer.appendChild(currentImage);
+    const dummyGameContainer = document.createElement('div');
+    dummyGameContainer.classList.add('menu-game-container', 'dummy-game-container');
+    dummyGameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+    dummyGameContainer.textContent = 'Searching...';
 
-        const spinner = document.createElement('div');
-        spinner.classList.add(`spinner-${Math.floor(Math.random() * 9) + 1}`, 'spinner');
+    gameMenuContainer.appendChild(dummyGameContainer);
 
-        document.body.appendChild(spinner);
+    return gameMenuContainer;
+}
 
-        gameMenuContainer.appendChild(currentImageContainer);
+async function populateGameMenu(gameMenuContainer, gameName) {
+    const dummyGameContainer = gameMenuContainer.querySelector('.dummy-game-container');
 
-        // Send a request to fetch images
-        ipcRenderer.send('fetch-images', gameName, LB.steamGridKey);
+    ipcRenderer.send('fetch-images', gameName, LB.steamGridKey);
 
-        // Use 'once' to ensure the event handler runs only one time
-        ipcRenderer.once('image-urls', (event, urls) => {
-            urls.forEach((url) => {
-                const gameContainer = document.createElement('div');
-                gameContainer.classList.add('menu-game-container');
-                gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+    ipcRenderer.once('image-urls', (event, urls) => {
+        if (urls.length === 0) {
+            dummyGameContainer.innerHTML = `No cover art found for <br><strong>${gameName}</strong>.`;
+        } else {
+            gameMenuContainer.removeChild(dummyGameContainer);
+        }
 
-                const img = document.createElement('img');
-                img.src = url;
-                img.alt = 'Game image from SteamGrid';
-                img.classList.add('game-image');
-                gameContainer.appendChild(img);
-                gameMenuContainer.appendChild(gameContainer);
-            });
-            // At this point, all images have been added.
-            resolve(gameMenuContainer);
+        urls.forEach((url) => {
+            const gameContainer = document.createElement('div');
+            gameContainer.classList.add('menu-game-container');
+            gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+
+            const img = document.createElement('img');
+            img.src = url;
+            img.title = 'Click to save';
+            img.classList.add('game-image');
+            gameContainer.appendChild(img);
+            gameMenuContainer.appendChild(gameContainer);
         });
     });
 }
 
-function _buildPrefsFormItem(name, iconName, type, description, shortDescription, value, onChangeFct) {
 
-    // console.log("name, iconName, type, description, shortDescription, value, onChangeFct: ", name, iconName, type, description, shortDescription, value, onChangeFct);
+function _buildPrefsFormItem(name, iconName, type, description, shortDescription, value, onChangeFct) {
 
     let input;
     const group = document.createElement('div');
@@ -464,10 +469,8 @@ function buildPlatformForm(platformName) {
             console.error('Failed to get platform preference:', error);
         });
 
-
     cancelButton.addEventListener('click', _cancelButtonClick);
     saveButton.addEventListener('click', _saveButtonClick);
-
 
     function _cancelButtonClick(event) {
 
@@ -515,6 +518,7 @@ function buildPlatformForm(platformName) {
 }
 
 LB.build = {
+    populateGameMenu: populateGameMenu,
     gameMenu: buildGameMenu,
     platformForm: buildPlatformForm
 };

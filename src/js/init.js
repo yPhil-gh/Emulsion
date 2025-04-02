@@ -23,7 +23,7 @@ const resolvedPath = path.resolve('.');
 // console.log("app.getAppPath(): ", app.getAppPath());
 
 
-LB.enabledPlatforms = ['settings'];
+LB.enabledPlatforms = [];
 
 LB.isMenuOpen = false;
 
@@ -108,8 +108,10 @@ function cleanFileName(fileName) {
   // Step 4: Split acronyms from following capitalized words (e.g., "XMLHttp" → "XML Http")
   let withAcronymSplit = _splitAcronym(withCamelSplit);
 
-  // Step 5: Remove extra spaces and trim.
-  let normalized = _normalizeSpaces(withAcronymSplit);
+  let withNumberSplit = _splitNumberWord(withAcronymSplit);
+
+  // // Step 5: Remove extra spaces and trim.
+  // let normalized = _normalizeSpaces(withNumberSplit);
 
   let articleToFront = _moveTrailingArticleToFront(withAcronymSplit);
 
@@ -139,9 +141,13 @@ function _splitAcronym(s) {
   return s.replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2');
 }
 
-// Normalizes spacing by trimming and replacing multiple spaces with a single space.
-function _normalizeSpaces(s) {
-  return s.trim().replace(/\s+/g, ' ');
+// // Normalizes spacing by trimming and replacing multiple spaces with a single space.
+// function _normalizeSpaces(s) {
+//   return s.trim().replace(/\s+/g, ' ');
+// }
+
+function _splitNumberWord(s) {
+    s.replace(/(?<!\b[234])(\d+)([A-Za-z])/g, '$1 $2');
 }
 
 // Final function: If the string ends with ", The", move "The" to the beginning.

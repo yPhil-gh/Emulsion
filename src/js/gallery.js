@@ -75,7 +75,7 @@ LB.gallery = {
 // Recursively scan a directory for files with specific extensions.
 // If recursive is false, only the top-level directory is scanned.
 // If gamesDir is invalid, it returns an empty array.
-async function scanDirectory(gamesDir, extensions, recursive = true, ignoredDirs = ['PS3_EXTRA', 'PKGDIR']) {
+async function scanDirectory(gamesDir, extensions, recursive = true, ignoredDirs = ['PS3_EXTRA', 'PKGDIR', 'freezer', 'tmp']) {
     let files = [];
 
     // Validate the gamesDir argument
@@ -186,8 +186,6 @@ async function buildGallery(params) {
     const extensions = params.extensions;
     const isEnabled = params.isEnabled;
 
-    console.log("platform: ", platform);
-
     const galleryContainer = document.createElement('div');
     galleryContainer.id = `page-${platform}`;
     galleryContainer.classList.add('gallery');
@@ -240,10 +238,6 @@ async function buildGallery(params) {
 
         const gameFiles = await scanDirectory(gamesDir, extensions, true);
 
-
-        console.log("platform: ", platform);
-        console.log("gameFiles: ", gameFiles);
-
         function formatTitle(title) {
             if (title.toLowerCase().endsWith(", the")) {
                 const prefix = title.slice(0, -5).trim();
@@ -255,13 +249,14 @@ async function buildGallery(params) {
         const viewportWidth = window.innerWidth;
         const columnWidth = viewportWidth / LB.galleryNumOfCols; // Width per column
 
+        console.log("platform: ", platform);
+
         function getEbootPath(gameFile) {
             const gameDir = path.dirname(gameFile); // Get the directory of the game file
             return path.join(gameDir, 'USRDIR', 'EBOOT.BIN'); // Append the relative path
         }
 
         async function getPs3GameTitle(filePath) {
-            console.log("filePath: ", filePath);
             try {
                 return await ipcRenderer.invoke('parse-sfo', filePath);
             } catch (error) {

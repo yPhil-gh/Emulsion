@@ -84,7 +84,7 @@ div.game-container.launching {
 div.game-container,
 div.menu-game-container {
   /* height: 22vw; */
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-off);
   display: flex;
 
   flex-direction: column;
@@ -97,10 +97,19 @@ div.menu-game-container {
   overflow: hidden;
   /* white-space: nowrap; */
   position: relative; /* Needed for absolute positioning of the label */
+}
 
-  /* width: calc(100vw / 6); /\* Ensure stable width *\/ */
-  /* height: calc(120vw / 6); /\* Placeholder height using an aspect ratio *\/ */
+.dummy-game-container {
+  animation: pulse-glow 2s infinite ease-in-out;
+}
 
+@keyframes pulse-glow {
+  0% {
+    border-color: var(--color-border-off);
+  }
+  100% {
+    border-color: var(--color-border-on);
+  }
 }
 
 div.platform-container {

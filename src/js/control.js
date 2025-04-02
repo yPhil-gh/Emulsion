@@ -21,7 +21,9 @@ function initSlideShow(platformToDisplay) {
     const radius = 500;
     let currentIndex = platformToDisplay ? platformToDisplay : 0;
 
+
     console.log("platformToDisplay: ", platformToDisplay);
+
 
     function updateHomeCarousel(platformIndex) {
         const angleIncrement = 360 / totalSlides;
@@ -321,7 +323,7 @@ function initGallery(currentIndex, disabledPlatform) {
         _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), selectedIndex, onGalleryKeyDown, isMenuOpen, disabledPlatform);
     }
 
-    function _toggleMenu(gameContainers, selectedIndex, listener, isMenuOpen, platformToOpen) {
+    function _toggleMenu(gameContainers, selectedIndex, keyDownListener, isMenuOpen, platformToOpen) {
 
         const menu = document.getElementById('menu');
         const menuContainer = document.getElementById('menu-container');
@@ -336,7 +338,7 @@ function initGallery(currentIndex, disabledPlatform) {
         const selectedGame = LB.utils.getSelectedGame(gameContainers, selectedIndex);
         const selectedGameImg = selectedGame.querySelector('.game-image');
 
-        function menuKeyDown(event) {
+        function onMenuKeyDown(event) {
 
             event.stopPropagation();
             event.stopImmediatePropagation(); // Stops other listeners on the same element
@@ -387,12 +389,26 @@ function initGallery(currentIndex, disabledPlatform) {
                 container.classList.toggle('selected', index === menuSelectedIndex);
             });
 
-            if (!event.shiftKey) {
-                if (menuSelectedIndex < menuGameContainers.length && menuSelectedIndex > 0) {
-                    menuGameContainers[menuSelectedIndex].scrollIntoView({
-                        behavior: "smooth",
-                        block: "center"
-                    });
+            menuGameContainers[menuSelectedIndex].scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
+        }
+
+        function onMenuWheel(event) {
+            event.preventDefault();
+            if (event.shiftKey) {
+                if (event.deltaY > 0) {
+                    goToNextPage();
+                } else if (event.deltaY < 0) {
+                    goToPrevPage();
+                }
+            } else {
+                if (event.deltaY > 0) {
+                    simulateKeyDown('ArrowDown');
+                } else if (event.deltaY < 0) {
+                    simulateKeyDown('ArrowUp');
                 }
             }
         }
@@ -420,44 +436,31 @@ function initGallery(currentIndex, disabledPlatform) {
             LB.utils.updateControls('dpad', 'same', '', 'off');
             LB.utils.updateControls('shoulders', 'same', '', 'off');
 
-            menu.style.height = '83vh';
+            menu.style.height = '100vh';
 
             document.querySelector('#header .prev-link').style.opacity = 0;
             document.querySelector('#header .next-link').style.opacity = 0;
 
             menuContainer.innerHTML = '';
 
-            window.removeEventListener('keydown', listener);
-            window.addEventListener('keydown', menuKeyDown);
-
+            window.removeEventListener('keydown', keyDownListener);
+            window.addEventListener('keydown', onMenuKeyDown);
+            menuContainer.addEventListener('wheel', onMenuWheel);
 
             gameContainers.forEach(async (container, index) => {
                 if (index === selectedIndex) {
 
                     if (container.classList.contains('settings')) {
-
                         const platformForm = LB.build.platformForm(platformToOpen || container.dataset.platform);
                         menuContainer.appendChild(platformForm);
-
-                        // document.querySelectorAll('platform-container');
-
-                        // document.querySelector('header .item-number').textContent = document.querySelectorAll('platform-container').length - 1;
-                        // document.querySelector('header .item-type').textContent = ' platforms';
-
                     } else {
                         const gameImage = container.querySelector('img');
-                        await LB.build.gameMenu(container.title, gameImage)
-                            .then((gameMenu) => {
+                        const gameMenuContainer = LB.build.gameMenu(container.title, gameImage);
+                        menuContainer.appendChild(gameMenuContainer);
+                        await LB.build.populateGameMenu(gameMenuContainer, container.title);
 
-                                menuContainer.appendChild(gameMenu);
-
-                                const spinner = document.body.querySelector('.spinner');
-                                setTimeout(() => spinner.remove(), 500);
-
-                                const menuGameContainers = Array.from(gameMenu.querySelectorAll('.menu-game-container'));
-                                console.log("menuGameContainers len: ", menuGameContainers.length);
-
-                            });
+                        const spinner = document.body.querySelector('.spinner');
+                        setTimeout(() => spinner.remove(), 500);
 
                     }
 
@@ -484,15 +487,15 @@ function initGallery(currentIndex, disabledPlatform) {
             menu.style.height = '0';
 
             // controls.style.display = 'flex';
-            window.removeEventListener('keydown', menuKeyDown);
-            window.addEventListener('keydown', listener);
+            window.removeEventListener('keydown', onMenuKeyDown);
+            window.addEventListener('keydown', keyDownListener);
 
             if (imgSrc) {
                 const selectedGameImg = selectedGame.querySelector('.game-image');
                 if (!selectedGameImg) return;
 
                 const spinner = document.createElement('div');
-                spinner.classList.add(`spinner-${Math.floor(Math.random() * 9) + 1}`, 'spinner');
+                spinner.classList.add(`spinner-${Math.floor(Math.random() * 8) + 1}`, 'spinner');
                 spinner.classList.add('image-spinner');
 
                 selectedGame.appendChild(spinner);
@@ -612,7 +615,7 @@ function initGallery(currentIndex, disabledPlatform) {
         }
     }
 
-    galleries.addEventListener('wheel', (event) => {
+    function onGalleryWheel(event) {
         event.preventDefault();
         if (event.shiftKey) {
             if (event.deltaY > 0) {
@@ -627,7 +630,9 @@ function initGallery(currentIndex, disabledPlatform) {
                 simulateKeyDown('ArrowUp');
             }
         }
-    });
+    }
+
+    galleries.addEventListener('wheel', onGalleryWheel);
 
     window.addEventListener('keydown', onGalleryKeyDown);
     updatePagesCarousel(); // Initialize the pages carousel

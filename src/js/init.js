@@ -23,7 +23,7 @@ const resolvedPath = path.resolve('.');
 // console.log("app.getAppPath(): ", app.getAppPath());
 
 
-LB.enabledPlatforms = [];
+LB.enabledPlatforms = ['settings'];
 
 LB.isMenuOpen = false;
 

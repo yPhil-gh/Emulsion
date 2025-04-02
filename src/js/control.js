@@ -21,9 +21,7 @@ function initSlideShow(platformToDisplay) {
     const radius = 500;
     let currentIndex = platformToDisplay ? platformToDisplay : 0;
 
-
     console.log("platformToDisplay: ", platformToDisplay);
-
 
     function updateHomeCarousel(platformIndex) {
         const angleIncrement = 360 / totalSlides;

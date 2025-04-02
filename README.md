@@ -1,3 +1,3 @@
-# ÉmumÈ
+# Emulsion
 
-Launch Break
+Better gaming through chemistry

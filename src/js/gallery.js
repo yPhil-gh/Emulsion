@@ -169,6 +169,13 @@ function buildSettingsPageContent(platforms) {
 
 // Build the gallery for a specific platform
 async function buildGallery(params) {
+
+    console.log("LB.kidsMode: ", LB.kidsMode);
+
+    if (LB.kidsMode && params.platform === 'settings') {
+        return null;
+    }
+
     const platform = params.platform;
     const gamesDir = params.gamesDir;
     const emulator = params.emulator;
@@ -225,6 +232,7 @@ async function buildGallery(params) {
             pageContent.appendChild(gameContainer);
             page.setAttribute('data-status', 'disabled');
             page.appendChild(pageContent);
+            page.classList.add('disabled');
             return page;
         }
 

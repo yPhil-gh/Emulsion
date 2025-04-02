@@ -21,7 +21,11 @@ function initSlideShow(platformToDisplay) {
     const radius = 500;
     let currentIndex = platformToDisplay ? platformToDisplay : 0;
 
-    function updateHomeCarousel() {
+
+    console.log("platformToDisplay: ", platformToDisplay);
+
+
+    function updateHomeCarousel(platformIndex) {
         const angleIncrement = 360 / totalSlides;
 
         slides.forEach((slide, index) => {
@@ -37,6 +41,11 @@ function initSlideShow(platformToDisplay) {
 
             if (LB.homeMenuTheme === '3D') {
                 is3D = true;
+            }
+
+            if (platformIndex && slide.dataset.index === platformIndex) {
+                console.log("YOO: ");
+                slide.classList.add('active');
             }
 
             if (index === currentIndex) {
@@ -133,10 +142,10 @@ function initSlideShow(platformToDisplay) {
             let activePlatformName;
 
             slides.forEach((slide, index) => {
-                // console.log("slide, index: ", slide, index);
                 if (slide.classList.contains('active')) {
                     activePlatformName = slide.dataset.platform;
-                    activeGalleryIndex = index;
+                    activeGalleryIndex = Number(slide.dataset.index);
+                    // console.assert(index === Number(slide.dataset.index));
                 }
             });
 
@@ -155,18 +164,12 @@ function initSlideShow(platformToDisplay) {
         }
     }
 
-    // function onKeyUp (event) {
-    //     document.getElementById('dpad-icon').src = '../img/controls/key-arrows-horiz.png';
-    // }
-
-    // window.addEventListener('keyup', onKeyUp);
-
     LB.utils.updateControls('dpad', 'button-dpad-ew', 'Browse<br>Platforms', 'on');
     LB.utils.updateControls('shoulders', 'same', 'Browse<br>Platforms', 'off');
     LB.utils.updateControls('square', 'same', 'same', 'off');
     LB.utils.updateControls('circle', 'same', 'Exit');
 
-    updateHomeCarousel();
+    updateHomeCarousel(platformToDisplay);
 }
 
 function setGalleryControls(currentIndex) {
@@ -195,37 +198,23 @@ function initGallery(currentIndex, disabledPlatform) {
     const pages = Array.from(galleries.querySelectorAll('.page'));
     const totalPages = pages.length;
 
-    let currentPageIndex = currentIndex; // Initialize currentPageIndex
-    let gameContainers = []; // Initialize gameContainers
+    let currentPageIndex = currentIndex;
+    let gameContainers = [];
 
     const enabledPages = pages.filter(page => page.dataset.status !== 'disabled');
 
-    function updatePagesCarousel() {
-        pages.forEach((page, pageIndex) => {
-            const pageIndexNumber = Number(page.dataset.index);
+    let activePlatformIndex;
 
-            if (page.dataset.status === 'disabled') {
-                // Skip disabled pages
-                page.classList.remove('active', 'next', 'prev');
-                return;
-            }
-
-            if (pageIndexNumber === currentIndex) {
+    function initCurrentGallery(page, index) {
 
                 page.scrollIntoView({
                     behavior: "smooth",
                     block: "start",
                 });
 
-                // if (currentIndex === 0) {
-                //     LB.utils.updateControls('square', 'same', 'Fetch cover', 'off');
-                // } else {
-                //     LB.utils.updateControls('square', 'same', 'Fetch<br>cover', 'on');
-                // }
+                setGalleryControls(index);
 
-                setGalleryControls(currentIndex);
-
-                currentPageIndex = currentIndex;
+                currentPageIndex = index;
                 gameContainers = Array.from(page.querySelectorAll('.game-container') || []);
 
                 gameContainers.forEach((container, index) => {
@@ -248,44 +237,68 @@ function initGallery(currentIndex, disabledPlatform) {
                 });
 
                 document.querySelector('header .platform-name').textContent = LB.utils.getPlatformName(page.dataset.platform);
-                document.querySelector('header .item-type').textContent = currentIndex === 0 ? ' platforms' : ' games';
+                document.querySelector('header .item-type').textContent = index === 0 ? ' platforms' : ' games';
                 document.querySelector('header .item-number').textContent = gameContainers.length - 1;
 
                 const platformImage = document.createElement('img');
                 if (page.dataset.platform === 'settings') {
                     document.querySelector('header .platform-image').style.backgroundImage = `url('../../img/emulsion.png')`;
                 } else {
-                    // platformImage.src = `../../img/platforms/${page.dataset.platform}.png`;
                     platformImage.classList.add(page.dataset.platform);
                     document.querySelector('header .platform-image').style.backgroundImage = `url('../../img/platforms/${page.dataset.platform}.png')`;
                 }
 
-                // document.querySelector('header .platform-image').appendChild(platformImage);
-
                 document.querySelector('header .prev-link').onclick = function() {
-                    prevPage();
+                    goToPrevPage();
                 };
 
                 document.querySelector('header .next-link').onclick = function() {
-                    nextPage();
+                    goToNextPage();
                 };
 
-                // Active page
+    }
+
+    function updatePagesCarousel() {
+        // Filter out disabled pages and sort by dataset.index
+        const enabledPages = pages
+              .filter(page => page.dataset.status !== 'disabled')
+              .sort((a, b) => Number(a.dataset.index) - Number(b.dataset.index));
+
+        // Find the active page's position in the enabled array
+        const activePos = enabledPages.findIndex(page => Number(page.dataset.index) === currentIndex);
+
+        activePlatformIndex = activePos;
+
+        // Determine immediate neighbors
+        const prevPage = enabledPages[activePos - 1] || null;
+        const nextPage = enabledPages[activePos + 1] || null;
+
+        const isAnim = true;
+
+        pages.forEach(page => {
+            const pageIndexNumber = Number(page.dataset.index);
+
+            page.classList.remove('active', 'prev', 'next', 'adjacent');
+
+            if (page.dataset.status === 'disabled') {
+                return;
+            }
+
+            if (pageIndexNumber === currentIndex) {
+                initCurrentGallery(page, currentIndex);
                 page.classList.add('active');
-                page.classList.remove('next', 'prev');
-            } else if (pageIndexNumber < currentIndex) {
-                // Previous page
-                page.classList.remove('active', 'next');
+            } else if (prevPage && Number(prevPage.dataset.index) === pageIndexNumber) {
                 page.classList.add('prev');
-            } else if (pageIndexNumber > currentIndex) {
-                // Next page
-                page.classList.remove('active', 'prev');
+            } else if (nextPage && Number(nextPage.dataset.index) === pageIndexNumber) {
                 page.classList.add('next');
+            } else {
+                page.classList.add('adjacent');
             }
         });
     }
 
-    function nextPage() {
+
+    function goToNextPage() {
         // Find the index of the current page in the enabledPages array
         const currentEnabledIndex = enabledPages.findIndex(page => Number(page.dataset.index) === currentIndex);
         const nextEnabledIndex = (currentEnabledIndex + 1) % enabledPages.length;
@@ -296,7 +309,7 @@ function initGallery(currentIndex, disabledPlatform) {
         updatePagesCarousel();
     }
 
-    function prevPage() {
+    function goToPrevPage() {
         const currentEnabledIndex = enabledPages.findIndex(page => Number(page.dataset.index) === currentIndex);
         const prevEnabledIndex = (currentEnabledIndex - 1 + enabledPages.length) % enabledPages.length;
         currentIndex = Number(enabledPages[prevEnabledIndex].dataset.index);
@@ -528,14 +541,14 @@ function initGallery(currentIndex, disabledPlatform) {
         switch (event.key) {
         case 'ArrowRight':
             if (event.shiftKey) {
-                nextPage();
+                goToNextPage();
             } else {
                 selectedIndex = (selectedIndex + 1) % gameContainers.length;
             }
             break;
         case 'ArrowLeft':
             if (event.shiftKey) {
-                prevPage();
+                goToPrevPage();
             } else {
                 selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
             }
@@ -580,7 +593,11 @@ function initGallery(currentIndex, disabledPlatform) {
             document.getElementById('slideshow').style.display = 'flex';
             document.getElementById('galleries').style.display = 'none';
             window.removeEventListener('keydown', onGalleryKeyDown);
-            LB.control.initSlideShow(currentIndex);
+
+            console.log("activePlatformIndex: ", activePlatformIndex);
+
+            LB.control.initSlideShow(activePlatformIndex);
+            // LB.control.initSlideShow(LB.kidsMode ? currentIndex - 1 : currentIndex);
             document.querySelector('header .item-number').textContent = '';
             break;
         }
@@ -601,9 +618,9 @@ function initGallery(currentIndex, disabledPlatform) {
         event.preventDefault();
         if (event.shiftKey) {
             if (event.deltaY > 0) {
-                nextPage();
+                goToNextPage();
             } else if (event.deltaY < 0) {
-                prevPage();
+                goToPrevPage();
             }
         } else {
             if (event.deltaY > 0) {

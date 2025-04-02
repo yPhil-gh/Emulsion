@@ -138,7 +138,7 @@ label.checkbox {
 }
 
 .input,
-.footer-size-input-ctn {
+.input-ctn {
   width: -webkit-fill-available;
   min-height: 40px;
 
@@ -153,6 +153,11 @@ label.checkbox {
   /* box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px; */
   font-family: var(--font-main);
 
+}
+
+.input-ctn {
+  display: flex;
+  flex-direction: row;
 }
 
 .footer-size-input-ctn {

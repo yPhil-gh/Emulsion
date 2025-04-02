@@ -194,16 +194,20 @@ async function _loadUserData() {
         LB.userDataPath = preferences.userDataPath;
         LB.baseDir = path.resolve(preferences.appPath);
         LB.versionNumber = preferences.versionNumber;
+        LB.kidsMode = preferences.kidsMode;
 
         delete preferences.userDataPath;
         delete preferences.appPath;
         delete preferences.versionNumber;
+        delete preferences.kidsMode;
 
         LB.preferences = preferences;
 
         return preferences;
     } catch (error) {
         console.error("Failed to load preferences:", error);
+        window.location.reload();
+
         throw error; // Re-throw the error if needed
     }
 }
@@ -211,6 +215,7 @@ async function _loadUserData() {
 async function getPrefs() {
     try {
         const preferences = await _loadUserData();
+        console.log("getPrefs: ", preferences);
         return preferences;
     } catch (error) {
         console.error("Error loading preferences:", error);

@@ -28,7 +28,7 @@ async function buildGameMenu(gameName, image) {
         gameMenuContainer.appendChild(currentImageContainer);
 
         // Send a request to fetch images
-        ipcRenderer.send('fetch-images', gameName, LB.steamGridAPIKey);
+        ipcRenderer.send('fetch-images', gameName, LB.steamGridKey);
 
         // Use 'once' to ensure the event handler runs only one time
         ipcRenderer.once('image-urls', (event, urls) => {
@@ -50,210 +50,143 @@ async function buildGameMenu(gameName, image) {
     });
 }
 
+function _buildPrefsFormItem(name, iconName, type, description, shortDescription, value, onChangeFct) {
+
+    // console.log("name, iconName, type, description, shortDescription, value, onChangeFct: ", name, iconName, type, description, shortDescription, value, onChangeFct);
+
+    let input;
+    const group = document.createElement('div');
+
+    const radios = [];
+
+    if (typeof type === 'object') {
+        const types = type;
+
+        const inputCtn = document.createElement('div');
+        inputCtn.classList.add('input-ctn');
+
+        const radiosContainer = document.createElement('div');
+        radiosContainer.style.display = 'flex';
+        radiosContainer.style.gap = '20px';
+        radiosContainer.style.alignItems = 'center';
+        radiosContainer.classList.add('radio-container');
+
+        types.forEach(type => {
+
+            const label = document.createElement('label');
+            label.style.display = 'flex';
+            label.style.alignItems = 'center';
+            label.style.gap = '6px';
+
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = name;
+            radio.value = type;
+            radio.checked = type === value;
+
+            radios.push(radio);
+
+            radio.style.margin = '0';
+            radio.style.accentColor = 'var(--color-accent)';
+
+            const text = document.createTextNode(type.charAt(0).toUpperCase() + type.slice(1));
+
+            radio.addEventListener('change', () => {
+                console.log("change!: ");
+                if (radio.checked && onChangeFct) onChangeFct(type);
+            });
+
+            label.appendChild(radio);
+            label.appendChild(text);
+            radiosContainer.appendChild(label);
+
+        });
+
+        inputCtn.appendChild(radiosContainer);
+
+        input = inputCtn;
+
+    } else {
+
+        input = document.createElement('input');
+        input.type = type;
+        input.id = name;
+        input.name = name;
+        input.min = '2';
+        input.max = '12';
+        input.placeholder = description;
+
+        input.classList.add('input');
+        input.value = value;
+
+    }
+
+    const icon = document.createElement('div');
+    icon.classList.add('form-icon');
+    icon.innerHTML = `<i class="form-icon fa fa-2x fa-${iconName}" aria-hidden="true"></i>`;
+
+    const label = document.createElement('label');
+    label.textContent = shortDescription;
+
+    const SubLabel = document.createElement('label');
+    SubLabel.id = 'num-cols-sub-label';
+    SubLabel.classList.add('sub-label');
+
+    const ctn = document.createElement('div');
+    ctn.classList.add('dual-ctn');
+
+    ctn.appendChild(icon);
+    ctn.appendChild(input);
+
+    group.appendChild(label);
+    group.appendChild(ctn);
+
+    return { group, input, radios };
+}
+
 function _buildPrefsForm() {
 
+    // Image
     const formContainer = document.createElement('div');
     formContainer.classList.add('platform-menu-container');
-
     const platformMenuImageCtn = document.createElement('div');
     platformMenuImageCtn.classList.add('platform-menu-image-ctn');
     const platformMenuImage = document.createElement('img');
     platformMenuImage.src = path.join(LB.baseDir, 'img', 'emulsion.png');
     platformMenuImage.width = '250';
-
     platformMenuImageCtn.appendChild(platformMenuImage);
 
-    const numberOfColumnsGroup = document.createElement('div');
+    // Rows
+    const numberOfColumns = _buildPrefsFormItem('numberOfColumns', 'th', 'number', 'The number of columns in each platform gallery', 'Number of columns', LB.galleryNumOfCols);
+    const numberOfColumnsGroup = numberOfColumns.group;
+    const numberOfColumnsInput = numberOfColumns.input;
 
-    const numberOfColumnsInput = document.createElement('input');
-    numberOfColumnsInput.type = 'number';
-    numberOfColumnsInput.id = 'numberOfColumns';
-    numberOfColumnsInput.name = 'numberOfColumns';
-    numberOfColumnsInput.min = '2';
-    numberOfColumnsInput.max = '12';
-    numberOfColumnsInput.placeholder = 'The number of columns in each platform gallery';
+    const footerSize = _buildPrefsFormItem('footerSize', 'arrows', ['small', 'medium', 'big'], '', 'Footer menu size', LB.footerSize, LB.control.setFooterSize);
+    const footerSizeGroup = footerSize.group;
+    const footerSizeRadios = footerSize.radios;
 
-    numberOfColumnsInput.classList.add('input');
-    numberOfColumnsInput.value = LB.galleryNumOfCols;
+    const homeMenuTheme = _buildPrefsFormItem('homeMenuTheme', 'arrows-h', ['flat', '3D'], '', 'Home menu style', LB.homeMenuTheme);
+    const homeMenuThemeGroup = homeMenuTheme.group;
+    const homeMenuThemeRadios = homeMenuTheme.radios;
 
-    const numberOfColumnsIcon = document.createElement('div');
-    numberOfColumnsIcon.classList.add('form-icon');
-    numberOfColumnsIcon.innerHTML = '<i class="form-icon num-cols-icon fa fa-2x fa-th" aria-hidden="true"></i>';
+    console.log("LB.disabledPlatformsPolicy: ", LB.disabledPlatformsPolicy);
 
-    const numberOfColumnsLabel = document.createElement('label');
-    numberOfColumnsLabel.textContent = 'Number of columns';
+    const disabledPlatformsPolicy = _buildPrefsFormItem('disabledPlatformsPolicy', 'check-square-o', ['show', 'hide'], '', 'Disabled Platforms', LB.disabledPlatformsPolicy);
+    const disabledPlatformsPolicyGroup = disabledPlatformsPolicy.group;
+    const disabledPlatformsPolicyRadios = disabledPlatformsPolicy.radios;
 
-    const numberOfColumnsSubLabel = document.createElement('label');
-    numberOfColumnsSubLabel.id = 'num-cols-sub-label';
-    numberOfColumnsSubLabel.classList.add('sub-label');
+    const steamGridKey = _buildPrefsFormItem('steamGridKey', 'cog', 'text', 'Your SteamGrid API Key', 'SteamGrid API Key', LB.steamGridKey || '');
+    const steamGridKeyGroup = steamGridKey.group;
+    const steamGridKeyInput = steamGridKey.input;
 
-    const numberOfColumnsCtn = document.createElement('div');
-    numberOfColumnsCtn.classList.add('dual-ctn');
+    formContainer.appendChild(platformMenuImageCtn);
+    formContainer.appendChild(numberOfColumnsGroup);
+    formContainer.appendChild(homeMenuThemeGroup);
+    formContainer.appendChild(footerSizeGroup);
+    formContainer.appendChild(disabledPlatformsPolicyGroup);
+    formContainer.appendChild(steamGridKeyGroup);
 
-    numberOfColumnsCtn.appendChild(numberOfColumnsIcon);
-    numberOfColumnsCtn.appendChild(numberOfColumnsInput);
-    numberOfColumnsGroup.appendChild(numberOfColumnsLabel);
-    numberOfColumnsGroup.appendChild(numberOfColumnsCtn);
-
-    numberOfColumnsGroup.appendChild(numberOfColumnsLabel);
-    numberOfColumnsGroup.appendChild(numberOfColumnsCtn);
-
-    const footerSizeGroup = document.createElement('div');
-
-    const footerSizeInputCtn = document.createElement('div');
-    footerSizeInputCtn.classList.add('footer-size-input-ctn');
-
-    const footerSizeRadioContainer = document.createElement('div');
-    footerSizeRadioContainer.style.display = 'flex';
-    footerSizeRadioContainer.style.gap = '20px';
-    footerSizeRadioContainer.style.alignItems = 'center';
-    footerSizeRadioContainer.classList.add('radio-container');
-
-    const footerSizeRadios = []; // Store references to the radio buttons
-
-    const footerSizes = ['small', 'medium', 'big'];
-    footerSizes.forEach(size => {
-        const footerSizesLabel = document.createElement('label');
-        footerSizesLabel.style.display = 'flex';
-        footerSizesLabel.style.alignItems = 'center';
-        footerSizesLabel.style.gap = '6px';
-
-        const footerSizesRadio = document.createElement('input');
-        footerSizesRadio.type = 'radio';
-        footerSizesRadio.name = 'footerSize';
-        footerSizesRadio.value = size;
-        footerSizesRadio.checked = size === LB.footerSize;
-
-        footerSizeRadios.push(footerSizesRadio);
-
-        // Style radio button
-        footerSizesRadio.style.margin = '0';
-        footerSizesRadio.style.accentColor = 'var(--color-accent)';
-
-        const FooterSizesText = document.createTextNode(size.charAt(0).toUpperCase() + size.slice(1));
-
-        footerSizesRadio.addEventListener('change', () => {
-            if (footerSizesRadio.checked) LB.control.setFooterSize(size);
-        });
-
-        footerSizesLabel.appendChild(footerSizesRadio);
-        footerSizesLabel.appendChild(FooterSizesText);
-        footerSizeRadioContainer.appendChild(footerSizesLabel);
-    });
-
-    footerSizeInputCtn.appendChild(footerSizeRadioContainer);
-
-    const footerSizeIcon = document.createElement('div');
-    footerSizeIcon.classList.add('form-icon');
-    footerSizeIcon.innerHTML = '<i class="form-icon num-cols-icon fa fa-2x fa-arrows" aria-hidden="true"></i>';
-
-    const footerSizeLabel = document.createElement('label');
-    footerSizeLabel.textContent = 'Footer menu size';
-
-    const footerSizeSubLabel = document.createElement('label');
-    footerSizeSubLabel.id = 'num-cols-sub-label';
-    footerSizeSubLabel.classList.add('sub-label');
-
-    const footerSizeCtn = document.createElement('div');
-    footerSizeCtn.classList.add('dual-ctn');
-
-    footerSizeCtn.appendChild(footerSizeIcon);
-    footerSizeCtn.appendChild(footerSizeInputCtn);
-    footerSizeGroup.appendChild(footerSizeLabel);
-    footerSizeGroup.appendChild(footerSizeCtn);
-
-    footerSizeGroup.appendChild(footerSizeLabel);
-    footerSizeGroup.appendChild(footerSizeCtn);
-
-
-    const homeMenuThemeGroup = document.createElement('div');
-
-    const homeMenuThemeInputCtn = document.createElement('div');
-    homeMenuThemeInputCtn.classList.add('footer-size-input-ctn');
-
-    const homeMenuThemeRadioContainer = document.createElement('div');
-    homeMenuThemeRadioContainer.style.display = 'flex';
-    homeMenuThemeRadioContainer.style.gap = '20px';
-    homeMenuThemeRadioContainer.style.alignItems = 'center';
-    homeMenuThemeRadioContainer.classList.add('radio-container');
-
-    const homeMenuThemeRadios = []; // Store references to the radio buttons
-
-    const homeMenuThemes = ['flat', '3D'];
-    homeMenuThemes.forEach(theme => {
-        const homeMenuThemesLabel = document.createElement('label');
-        homeMenuThemesLabel.style.display = 'flex';
-        homeMenuThemesLabel.style.alignItems = 'center';
-        homeMenuThemesLabel.style.gap = '6px';
-
-        const homeMenuThemesRadio = document.createElement('input');
-        homeMenuThemesRadio.type = 'radio';
-        homeMenuThemesRadio.name = 'homeMenuTheme';
-        homeMenuThemesRadio.value = theme;
-        homeMenuThemesRadio.checked = theme === LB.homeMenuTheme;
-
-        homeMenuThemeRadios.push(homeMenuThemesRadio);
-
-        // Style radio button
-        homeMenuThemesRadio.style.margin = '0';
-        homeMenuThemesRadio.style.accentColor = 'var(--color-accent)';
-
-        const FooterSizesText = document.createTextNode(theme.charAt(0).toUpperCase() + theme.slice(1));
-
-        homeMenuThemesLabel.appendChild(homeMenuThemesRadio);
-        homeMenuThemesLabel.appendChild(FooterSizesText);
-        homeMenuThemeRadioContainer.appendChild(homeMenuThemesLabel);
-    });
-
-    homeMenuThemeInputCtn.appendChild(homeMenuThemeRadioContainer);
-
-    const homeMenuThemeIcon = document.createElement('div');
-    homeMenuThemeIcon.classList.add('form-icon');
-    homeMenuThemeIcon.innerHTML = '<i class="form-icon num-cols-icon fa fa-2x fa-home" aria-hidden="true"></i>';
-
-    const homeMenuThemeLabel = document.createElement('label');
-    homeMenuThemeLabel.textContent = 'Footer menu size';
-
-    const homeMenuThemeSubLabel = document.createElement('label');
-    homeMenuThemeSubLabel.id = 'num-cols-sub-label';
-    homeMenuThemeSubLabel.classList.add('sub-label');
-
-    const homeMenuThemeCtn = document.createElement('div');
-    homeMenuThemeCtn.classList.add('dual-ctn');
-
-    homeMenuThemeCtn.appendChild(homeMenuThemeIcon);
-    homeMenuThemeCtn.appendChild(homeMenuThemeInputCtn);
-    homeMenuThemeGroup.appendChild(homeMenuThemeLabel);
-    homeMenuThemeGroup.appendChild(homeMenuThemeCtn);
-
-    homeMenuThemeGroup.appendChild(homeMenuThemeLabel);
-    homeMenuThemeGroup.appendChild(homeMenuThemeCtn);
-
-    const steamGridKeyGroup = document.createElement('div');
-
-    const steamGridKeyCtn = document.createElement('div');
-    steamGridKeyCtn.classList.add('dual-ctn');
-
-    const steamGridKeyIcon = document.createElement('div');
-    steamGridKeyIcon.classList.add('form-icon');
-    steamGridKeyIcon.innerHTML = '<i class="form-icon emulator-args-icon fa fa-2x fa-cog" aria-hidden="true"></i>';
-
-    const steamGridKeyLabel = document.createElement('label');
-    steamGridKeyLabel.textContent = 'Steam Grid API Key';
-
-    const steamGridKeyLink = document.createElement('a');
-    steamGridKeyLink.href = 'https://www.steamgriddb.com/profile/preferences';
-
-    const steamGridKeyInput = document.createElement('input');
-    steamGridKeyInput.classList.add('input');
-    steamGridKeyInput.type = 'text';
-    steamGridKeyInput.placeholder = 'Your Steam Grid API Key';
-
-    steamGridKeyCtn.appendChild(steamGridKeyIcon);
-    steamGridKeyCtn.appendChild(steamGridKeyInput);
-    steamGridKeyGroup.appendChild(steamGridKeyLabel);
-    steamGridKeyGroup.appendChild(steamGridKeyCtn);
-
+    // Buttons
     const saveButton = document.createElement('button');
     saveButton.type = 'button';
     saveButton.classList.add('button');
@@ -269,32 +202,13 @@ function _buildPrefsForm() {
     cancelButton.classList.add('is-info', 'button');
     cancelButton.textContent = 'Cancel';
 
-    if (LB.steamGridAPIKey) {
-        steamGridKeyInput.value = LB.steamGridAPIKey;
-    }
-
-    // LB.prefs.getValue('settings', 'steamGridAPIKey')
-    //     .then((value) => {
-    //         steamGridKeyInput.value = value;
-    //     })
-    //     .catch((error) => {
-    //         console.error('Failed to get platform preference:', error);
-    //     });
-
-    // gamesDirButton.addEventListener('click', _gamesDirButtonClick);
-
-    formContainer.appendChild(platformMenuImageCtn);
-    formContainer.appendChild(numberOfColumnsGroup);
-    formContainer.appendChild(homeMenuThemeGroup);
-    formContainer.appendChild(footerSizeGroup);
-    formContainer.appendChild(steamGridKeyGroup);
-    // formContainer.appendChild(cancelButton);
-
     const formContainerButtons = document.createElement('div');
     formContainerButtons.classList.add('cancel-save-buttons');
     formContainerButtons.appendChild(cancelButton);
     formContainerButtons.appendChild(aboutButton);
     formContainerButtons.appendChild(saveButton);
+
+    formContainer.appendChild(formContainerButtons);
 
     cancelButton.addEventListener('click', _cancelButtonClick);
 
@@ -322,14 +236,13 @@ function _buildPrefsForm() {
             await LB.prefs.save('settings', 'numberOfColumns', parseInt(numberOfColumnsInput.value, 10));
             await LB.prefs.save('settings', 'footerSize', footerSizeRadios.find(radio => radio.checked)?.value);
             await LB.prefs.save('settings', 'homeMenuTheme', homeMenuThemeRadios.find(radio => radio.checked)?.value);
+            await LB.prefs.save('settings', 'disabledPlatformsPolicy', disabledPlatformsPolicyRadios.find(radio => radio.checked)?.value);
             await LB.prefs.save('settings', 'steamGridKey', steamGridKeyInput.value);
             window.location.reload();
         } catch (error) {
             console.error('Failed to save preferences:', error);
         }
     }
-
-    formContainer.appendChild(formContainerButtons);
 
     return formContainer;
 }
@@ -372,7 +285,6 @@ function buildPlatformForm(platformName) {
             document.getElementById('form-status-label-platform-status').textContent = statusCheckBox.checked ? 'On' : 'Off';
         }
     });
-
 
     const statusLabel = document.createElement('label');
     statusLabel.classList.add('checkbox');

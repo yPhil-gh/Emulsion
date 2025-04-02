@@ -323,7 +323,7 @@ function initGallery(currentIndex, disabledPlatform) {
         _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), selectedIndex, onGalleryKeyDown, isMenuOpen, disabledPlatform);
     }
 
-    function _toggleMenu(gameContainers, selectedIndex, listener, isMenuOpen, platformToOpen) {
+    function _toggleMenu(gameContainers, selectedIndex, keyDownListener, isMenuOpen, platformToOpen) {
 
         const menu = document.getElementById('menu');
         const menuContainer = document.getElementById('menu-container');
@@ -338,7 +338,7 @@ function initGallery(currentIndex, disabledPlatform) {
         const selectedGame = LB.utils.getSelectedGame(gameContainers, selectedIndex);
         const selectedGameImg = selectedGame.querySelector('.game-image');
 
-        function menuKeyDown(event) {
+        function onMenuKeyDown(event) {
 
             event.stopPropagation();
             event.stopImmediatePropagation(); // Stops other listeners on the same element
@@ -396,6 +396,23 @@ function initGallery(currentIndex, disabledPlatform) {
 
         }
 
+        function onMenuWheel(event) {
+            event.preventDefault();
+            if (event.shiftKey) {
+                if (event.deltaY > 0) {
+                    goToNextPage();
+                } else if (event.deltaY < 0) {
+                    goToPrevPage();
+                }
+            } else {
+                if (event.deltaY > 0) {
+                    simulateKeyDown('ArrowDown');
+                } else if (event.deltaY < 0) {
+                    simulateKeyDown('ArrowUp');
+                }
+            }
+        }
+
         const downloadImage = async (imgSrc, platform, gameName) => {
             try {
                 const result = await ipcRenderer.invoke('download-image', imgSrc, platform, gameName);
@@ -426,9 +443,9 @@ function initGallery(currentIndex, disabledPlatform) {
 
             menuContainer.innerHTML = '';
 
-            window.removeEventListener('keydown', listener);
-            window.addEventListener('keydown', menuKeyDown);
-
+            window.removeEventListener('keydown', keyDownListener);
+            window.addEventListener('keydown', onMenuKeyDown);
+            menuContainer.addEventListener('wheel', onMenuWheel);
 
             gameContainers.forEach(async (container, index) => {
                 if (index === selectedIndex) {
@@ -470,8 +487,8 @@ function initGallery(currentIndex, disabledPlatform) {
             menu.style.height = '0';
 
             // controls.style.display = 'flex';
-            window.removeEventListener('keydown', menuKeyDown);
-            window.addEventListener('keydown', listener);
+            window.removeEventListener('keydown', onMenuKeyDown);
+            window.addEventListener('keydown', keyDownListener);
 
             if (imgSrc) {
                 const selectedGameImg = selectedGame.querySelector('.game-image');
@@ -598,7 +615,7 @@ function initGallery(currentIndex, disabledPlatform) {
         }
     }
 
-    galleries.addEventListener('wheel', (event) => {
+    function onGalleryWheel(event) {
         event.preventDefault();
         if (event.shiftKey) {
             if (event.deltaY > 0) {
@@ -613,7 +630,9 @@ function initGallery(currentIndex, disabledPlatform) {
                 simulateKeyDown('ArrowUp');
             }
         }
-    });
+    }
+
+    galleries.addEventListener('wheel', onGalleryWheel);
 
     window.addEventListener('keydown', onGalleryKeyDown);
     updatePagesCarousel(); // Initialize the pages carousel

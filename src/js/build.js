@@ -297,7 +297,7 @@ function buildPlatformForm(platformName) {
 
     const statusLabelPlatormName = document.createElement('span');
     statusLabelPlatormName.id = 'form-status-label-platform-name';
-    statusLabelPlatormName.textContent = `${platformName} is `;
+    statusLabelPlatormName.innerHTML = `${LB.utils.getPlatformName(platformName)} is&nbsp;`;
 
     const statusLabelPlatormStatus = document.createElement('span');
     statusLabelPlatormStatus.id = 'form-status-label-platform-status';

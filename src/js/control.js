@@ -389,27 +389,19 @@ function initGallery(currentIndex, disabledPlatform) {
                 container.classList.toggle('selected', index === menuSelectedIndex);
             });
 
-            menuGameContainers[menuSelectedIndex].scrollIntoView({
-                behavior: "smooth",
-                block: "center"
-            });
+            // menuGameContainers[menuSelectedIndex].scrollIntoView({
+            //     behavior: "smooth",
+            //     block: "center"
+            // });
 
         }
 
         function onMenuWheel(event) {
             event.preventDefault();
-            if (event.shiftKey) {
-                if (event.deltaY > 0) {
-                    goToNextPage();
-                } else if (event.deltaY < 0) {
-                    goToPrevPage();
-                }
-            } else {
-                if (event.deltaY > 0) {
-                    simulateKeyDown('ArrowDown');
-                } else if (event.deltaY < 0) {
-                    simulateKeyDown('ArrowUp');
-                }
+            if (event.deltaY > 0) {
+                simulateKeyDown('ArrowDown');
+            } else if (event.deltaY < 0) {
+                simulateKeyDown('ArrowUp');
             }
         }
 
@@ -454,13 +446,11 @@ function initGallery(currentIndex, disabledPlatform) {
                         const platformForm = LB.build.platformForm(platformToOpen || container.dataset.platform);
                         menuContainer.appendChild(platformForm);
                     } else {
+
                         const gameImage = container.querySelector('img');
                         const gameMenuContainer = LB.build.gameMenu(container.title, gameImage);
                         menuContainer.appendChild(gameMenuContainer);
                         await LB.build.populateGameMenu(gameMenuContainer, container.title);
-
-                        const spinner = document.body.querySelector('.spinner');
-                        setTimeout(() => spinner.remove(), 500);
 
                     }
 

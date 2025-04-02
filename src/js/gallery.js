@@ -75,7 +75,7 @@ LB.gallery = {
 // Recursively scan a directory for files with specific extensions.
 // If recursive is false, only the top-level directory is scanned.
 // If gamesDir is invalid, it returns an empty array.
-async function scanDirectory(gamesDir, extensions, recursive = true, ignoredDirs = ['PS3_EXTRA', 'PKGDIR']) {
+async function scanDirectory(gamesDir, extensions, recursive = true, ignoredDirs = ['PS3_EXTRA', 'PKGDIR', 'freezer', 'tmp']) {
     let files = [];
 
     // Validate the gamesDir argument

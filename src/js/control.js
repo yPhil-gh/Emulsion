@@ -434,26 +434,16 @@ function initGallery(currentIndex, disabledPlatform) {
                 if (index === selectedIndex) {
 
                     if (container.classList.contains('settings')) {
-
                         const platformForm = LB.build.platformForm(platformToOpen || container.dataset.platform);
                         menuContainer.appendChild(platformForm);
-
-                        // document.querySelectorAll('platform-container');
-
-                        // document.querySelector('header .item-number').textContent = document.querySelectorAll('platform-container').length - 1;
-                        // document.querySelector('header .item-type').textContent = ' platforms';
-
                     } else {
                         const gameImage = container.querySelector('img');
-                        await LB.build.gameMenu(container.title, gameImage)
-                            .then((gameMenu) => {
+                        const gameMenuContainer = LB.build.gameMenu(container.title, gameImage);
+                        menuContainer.appendChild(gameMenuContainer);
+                        await LB.build.populateGameMenu(gameMenuContainer, container.title);
 
-                                menuContainer.appendChild(gameMenu);
-
-                                const spinner = document.body.querySelector('.spinner');
-                                setTimeout(() => spinner.remove(), 500);
-
-                            });
+                        const spinner = document.body.querySelector('.spinner');
+                        setTimeout(() => spinner.remove(), 500);
 
                     }
 

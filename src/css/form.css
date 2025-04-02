@@ -89,19 +89,34 @@ label.checkbox {
 
 /* Style the radio buttons as rectangles */
 .radio-box {
-      flex: 1; /* Make the box fill the available space */
-  background-color: blue;
+  display: flex;
+  flex: 1; /* Make the box fill the available space */
+  background-color: var(--color-button-on);
+  font-weight: normal;
   height: 100%;
-    color: white;
-    text-align: center;
-    transition: background 0.3s;
+  color: white;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid gray;
+  transition: background 0.3s;
+}
+
+.radio-box.last {
+  border-right: none;
 }
 
 /* Change color when selected */
 .radio-container input[type="radio"]:checked + .radio-box {
-    background-color: red;
+    background-color: var(--color-button-off);
+    font-weight: bold;
 }
 
+.input::-webkit-inner-spin-button {
+    background: red; /* Change background */
+    width: 20px; /* Adjust size */
+    height: 20px;
+    border-radius: 50%; /* Make it circular */
+}
 
 #form-status-label-platform-status.off {
   color: red;

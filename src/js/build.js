@@ -76,7 +76,7 @@ function _buildPrefsFormItem(name, iconName, type, description, shortDescription
         // radiosContainer.style.gap = '20px';
         // radiosContainer.style.alignItems = 'center';
 
-        types.forEach(type => {
+        types.forEach((type, index) => {
 
             const label = document.createElement('label');
             // label.style.display = 'flex';
@@ -92,6 +92,10 @@ function _buildPrefsFormItem(name, iconName, type, description, shortDescription
             const radioBox = document.createElement('div');
             radioBox.classList.add('radio-box');
             radioBox.textContent = type;
+
+            if (index === types.length - 1) {
+                radioBox.classList.add('last');
+            }
 
             radios.push(radio);
 

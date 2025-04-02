@@ -34,7 +34,8 @@ function initSlideShow(platformToDisplay) {
             slide.style.setProperty('--radius', radius);
 
             // Remove all state classes before reassigning
-            slide.classList.remove('active', 'prev-slide', 'next-slide', 'adjacent');
+            // slide.classList.remove('active', 'prev-slide', 'next-slide', 'adjacent');
+            slide.classList.remove('active', 'prev-slide-3d', 'prev-slide-flat', 'next-slide-3d', 'next-slide-flat', 'adjacent');
             slide.style.opacity = 1;
 
             let is3D = false;
@@ -44,34 +45,25 @@ function initSlideShow(platformToDisplay) {
             }
 
             if (platformIndex && slide.dataset.index === platformIndex) {
-                console.log("YOO: ");
                 slide.classList.add('active');
             }
 
             if (index === currentIndex) {
                 slide.classList.add('active');
             } else if (index === (currentIndex - 1 + totalSlides) % totalSlides) {
-                slide.classList.add('prev-slide');
-
-                if (!is3D) {
-                    slide.style.opacity = 0.1;
-                }
 
                 if (is3D) {
-                    slide.style.opacity = 0.2;
-                    slide.style.transform = 'rotateY(calc(' + angle + ' * 1deg)) translateZ(calc(' + radius + ' * 1px)) translateX(-20px);';
+                    slide.classList.add('prev-slide-3d');
+                } else {
+                    slide.classList.add('prev-slide-flat');
                 }
 
             } else if (index === (currentIndex + 1) % totalSlides) {
-                slide.classList.add('next-slide');
-
-                if (!is3D) {
-                    slide.style.opacity = 0.1;
-                }
 
                 if (is3D) {
-                    slide.style.opacity = 0.2;
-                    slide.style.transform = 'rotateY(calc(' + angle + ' * 1deg)) translateZ(calc(' + radius + ' * 1px)) translateX(20px);';
+                    slide.classList.add('next-slide-3d');
+                } else {
+                    slide.classList.add('next-slide-flat');
                 }
 
             } else {

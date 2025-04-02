@@ -48,34 +48,43 @@
 
 .slide.active {
   opacity: 1;
-  transform: translateZ(0) rotateY(0deg) scale(1);
+  /* transform: translateZ(0) translateX(0) rotateY(0deg) scale(1); */
   z-index: 2;
   filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8));
   animation: pulse-glow 5s infinite ease-in-out;
 }
 
-.slide.prev-slide {
-  /* Adjust as needed for left side appearance */
+.slide.prev-slide-flat{
   opacity: 0.2;
-  /* transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px)) translateX(-20px); */
   transform: translateX(-500px);
   z-index: 1;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.slide.next-slide {
-  /* Adjust as needed for right side appearance */
+.slide.next-slide-flat {
   opacity: 0.2;
-  /* transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px)) translateX(20px); */
   transform: translateX(500px);
   z-index: 1;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Fallback for all other slides if needed */
+.slide.prev-slide-3d {
+  opacity: 0.2;
+  transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px)) translateX(-20px);
+  z-index: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.slide.next-slide-3d {
+  opacity: 0.2;
+  transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px)) translateX(20px);
+  z-index: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
 .slide.adjacent {
   opacity: 0.2;
-  transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px));
+  /* transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px)); */
   z-index: 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }

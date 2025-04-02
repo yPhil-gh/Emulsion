@@ -389,14 +389,11 @@ function initGallery(currentIndex, disabledPlatform) {
                 container.classList.toggle('selected', index === menuSelectedIndex);
             });
 
-            if (!event.shiftKey) {
-                if (menuSelectedIndex < menuGameContainers.length && menuSelectedIndex > 0) {
-                    menuGameContainers[menuSelectedIndex].scrollIntoView({
-                        behavior: "smooth",
-                        block: "center"
-                    });
-                }
-            }
+            menuGameContainers[menuSelectedIndex].scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
         }
 
         const downloadImage = async (imgSrc, platform, gameName) => {
@@ -422,7 +419,7 @@ function initGallery(currentIndex, disabledPlatform) {
             LB.utils.updateControls('dpad', 'same', '', 'off');
             LB.utils.updateControls('shoulders', 'same', '', 'off');
 
-            menu.style.height = '83vh';
+            menu.style.height = '100vh';
 
             document.querySelector('#header .prev-link').style.opacity = 0;
             document.querySelector('#header .next-link').style.opacity = 0;
@@ -455,9 +452,6 @@ function initGallery(currentIndex, disabledPlatform) {
 
                                 const spinner = document.body.querySelector('.spinner');
                                 setTimeout(() => spinner.remove(), 500);
-
-                                const menuGameContainers = Array.from(gameMenu.querySelectorAll('.menu-game-container'));
-                                console.log("menuGameContainers len: ", menuGameContainers.length);
 
                             });
 
@@ -494,7 +488,7 @@ function initGallery(currentIndex, disabledPlatform) {
                 if (!selectedGameImg) return;
 
                 const spinner = document.createElement('div');
-                spinner.classList.add(`spinner-${Math.floor(Math.random() * 9) + 1}`, 'spinner');
+                spinner.classList.add(`spinner-${Math.floor(Math.random() * 8) + 1}`, 'spinner');
                 spinner.classList.add('image-spinner');
 
                 selectedGame.appendChild(spinner);

@@ -21,17 +21,31 @@ async function buildGameMenu(gameName, image) {
         currentImageContainer.appendChild(currentImage);
 
         const spinner = document.createElement('div');
-        spinner.classList.add(`spinner-${Math.floor(Math.random() * 9) + 1}`, 'spinner');
+        spinner.classList.add(`spinner-${Math.floor(Math.random() * 8) + 1}`, 'spinner');
 
         document.body.appendChild(spinner);
 
         gameMenuContainer.appendChild(currentImageContainer);
+
+        const dummyGameContainer = document.createElement('div');
+        dummyGameContainer.classList.add('menu-game-container', 'dummy-game-container');
+        dummyGameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+        dummyGameContainer.textContent = 'Searching...';
+        gameMenuContainer.appendChild(dummyGameContainer);
 
         // Send a request to fetch images
         ipcRenderer.send('fetch-images', gameName, LB.steamGridKey);
 
         // Use 'once' to ensure the event handler runs only one time
         ipcRenderer.once('image-urls', (event, urls) => {
+            console.log("urls: ", urls);
+            if (urls.length === 0) {
+                console.log("nothing: ");
+                dummyGameContainer.textContent = `No cover art found for ${gameName}.`;
+            } else {
+                gameMenuContainer.removeChild(dummyGameContainer);
+            }
+
             urls.forEach((url) => {
                 const gameContainer = document.createElement('div');
                 gameContainer.classList.add('menu-game-container');
@@ -39,7 +53,7 @@ async function buildGameMenu(gameName, image) {
 
                 const img = document.createElement('img');
                 img.src = url;
-                img.alt = 'Game image from SteamGrid';
+                img.title = 'Game image from SteamGrid';
                 img.classList.add('game-image');
                 gameContainer.appendChild(img);
                 gameMenuContainer.appendChild(gameContainer);

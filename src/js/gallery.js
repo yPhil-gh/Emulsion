@@ -75,7 +75,7 @@ LB.gallery = {
 // Recursively scan a directory for files with specific extensions.
 // If recursive is false, only the top-level directory is scanned.
 // If gamesDir is invalid, it returns an empty array.
-async function scanDirectory(gamesDir, extensions, recursive = true, ignoredDirs = ['PS3_EXTRA', 'PKGDIR', 'freezer', 'tmp']) {
+async function scanDirectory(gamesDir, extensions, recursive = true, ignoredDirs = ['PS3_EXTRA', 'PKGDIR']) {
     let files = [];
 
     // Validate the gamesDir argument
@@ -169,13 +169,6 @@ function buildSettingsPageContent(platforms) {
 
 // Build the gallery for a specific platform
 async function buildGallery(params) {
-
-    console.log("LB.kidsMode: ", LB.kidsMode);
-
-    if (LB.kidsMode && params.platform === 'settings') {
-        return null;
-    }
-
     const platform = params.platform;
     const gamesDir = params.gamesDir;
     const emulator = params.emulator;
@@ -232,7 +225,6 @@ async function buildGallery(params) {
             pageContent.appendChild(gameContainer);
             page.setAttribute('data-status', 'disabled');
             page.appendChild(pageContent);
-            page.classList.add('disabled');
             return page;
         }
 

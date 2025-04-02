@@ -21,11 +21,7 @@ function initSlideShow(platformToDisplay) {
     const radius = 500;
     let currentIndex = platformToDisplay ? platformToDisplay : 0;
 
-
-    console.log("platformToDisplay: ", platformToDisplay);
-
-
-    function updateHomeCarousel(platformIndex) {
+    function updateHomeCarousel() {
         const angleIncrement = 360 / totalSlides;
 
         slides.forEach((slide, index) => {
@@ -41,11 +37,6 @@ function initSlideShow(platformToDisplay) {
 
             if (LB.homeMenuTheme === '3D') {
                 is3D = true;
-            }
-
-            if (platformIndex && slide.dataset.index === platformIndex) {
-                console.log("YOO: ");
-                slide.classList.add('active');
             }
 
             if (index === currentIndex) {
@@ -142,10 +133,10 @@ function initSlideShow(platformToDisplay) {
             let activePlatformName;
 
             slides.forEach((slide, index) => {
+                // console.log("slide, index: ", slide, index);
                 if (slide.classList.contains('active')) {
                     activePlatformName = slide.dataset.platform;
-                    activeGalleryIndex = Number(slide.dataset.index);
-                    // console.assert(index === Number(slide.dataset.index));
+                    activeGalleryIndex = index;
                 }
             });
 
@@ -164,12 +155,18 @@ function initSlideShow(platformToDisplay) {
         }
     }
 
+    // function onKeyUp (event) {
+    //     document.getElementById('dpad-icon').src = '../img/controls/key-arrows-horiz.png';
+    // }
+
+    // window.addEventListener('keyup', onKeyUp);
+
     LB.utils.updateControls('dpad', 'button-dpad-ew', 'Browse<br>Platforms', 'on');
     LB.utils.updateControls('shoulders', 'same', 'Browse<br>Platforms', 'off');
     LB.utils.updateControls('square', 'same', 'same', 'off');
     LB.utils.updateControls('circle', 'same', 'Exit');
 
-    updateHomeCarousel(platformToDisplay);
+    updateHomeCarousel();
 }
 
 function setGalleryControls(currentIndex) {
@@ -198,23 +195,37 @@ function initGallery(currentIndex, disabledPlatform) {
     const pages = Array.from(galleries.querySelectorAll('.page'));
     const totalPages = pages.length;
 
-    let currentPageIndex = currentIndex;
-    let gameContainers = [];
+    let currentPageIndex = currentIndex; // Initialize currentPageIndex
+    let gameContainers = []; // Initialize gameContainers
 
     const enabledPages = pages.filter(page => page.dataset.status !== 'disabled');
 
-    let activePlatformIndex;
+    function updatePagesCarousel() {
+        pages.forEach((page, pageIndex) => {
+            const pageIndexNumber = Number(page.dataset.index);
 
-    function initCurrentGallery(page, index) {
+            if (page.dataset.status === 'disabled') {
+                // Skip disabled pages
+                page.classList.remove('active', 'next', 'prev');
+                return;
+            }
+
+            if (pageIndexNumber === currentIndex) {
 
                 page.scrollIntoView({
                     behavior: "smooth",
                     block: "start",
                 });
 
-                setGalleryControls(index);
+                // if (currentIndex === 0) {
+                //     LB.utils.updateControls('square', 'same', 'Fetch cover', 'off');
+                // } else {
+                //     LB.utils.updateControls('square', 'same', 'Fetch<br>cover', 'on');
+                // }
 
-                currentPageIndex = index;
+                setGalleryControls(currentIndex);
+
+                currentPageIndex = currentIndex;
                 gameContainers = Array.from(page.querySelectorAll('.game-container') || []);
 
                 gameContainers.forEach((container, index) => {
@@ -237,68 +248,44 @@ function initGallery(currentIndex, disabledPlatform) {
                 });
 
                 document.querySelector('header .platform-name').textContent = LB.utils.getPlatformName(page.dataset.platform);
-                document.querySelector('header .item-type').textContent = index === 0 ? ' platforms' : ' games';
+                document.querySelector('header .item-type').textContent = currentIndex === 0 ? ' platforms' : ' games';
                 document.querySelector('header .item-number').textContent = gameContainers.length - 1;
 
                 const platformImage = document.createElement('img');
                 if (page.dataset.platform === 'settings') {
                     document.querySelector('header .platform-image').style.backgroundImage = `url('../../img/emulsion.png')`;
                 } else {
+                    // platformImage.src = `../../img/platforms/${page.dataset.platform}.png`;
                     platformImage.classList.add(page.dataset.platform);
                     document.querySelector('header .platform-image').style.backgroundImage = `url('../../img/platforms/${page.dataset.platform}.png')`;
                 }
 
+                // document.querySelector('header .platform-image').appendChild(platformImage);
+
                 document.querySelector('header .prev-link').onclick = function() {
-                    goToPrevPage();
+                    prevPage();
                 };
 
                 document.querySelector('header .next-link').onclick = function() {
-                    goToNextPage();
+                    nextPage();
                 };
 
-    }
-
-    function updatePagesCarousel() {
-        // Filter out disabled pages and sort by dataset.index
-        const enabledPages = pages
-              .filter(page => page.dataset.status !== 'disabled')
-              .sort((a, b) => Number(a.dataset.index) - Number(b.dataset.index));
-
-        // Find the active page's position in the enabled array
-        const activePos = enabledPages.findIndex(page => Number(page.dataset.index) === currentIndex);
-
-        activePlatformIndex = activePos;
-
-        // Determine immediate neighbors
-        const prevPage = enabledPages[activePos - 1] || null;
-        const nextPage = enabledPages[activePos + 1] || null;
-
-        const isAnim = true;
-
-        pages.forEach(page => {
-            const pageIndexNumber = Number(page.dataset.index);
-
-            page.classList.remove('active', 'prev', 'next', 'adjacent');
-
-            if (page.dataset.status === 'disabled') {
-                return;
-            }
-
-            if (pageIndexNumber === currentIndex) {
-                initCurrentGallery(page, currentIndex);
+                // Active page
                 page.classList.add('active');
-            } else if (prevPage && Number(prevPage.dataset.index) === pageIndexNumber) {
+                page.classList.remove('next', 'prev');
+            } else if (pageIndexNumber < currentIndex) {
+                // Previous page
+                page.classList.remove('active', 'next');
                 page.classList.add('prev');
-            } else if (nextPage && Number(nextPage.dataset.index) === pageIndexNumber) {
+            } else if (pageIndexNumber > currentIndex) {
+                // Next page
+                page.classList.remove('active', 'prev');
                 page.classList.add('next');
-            } else {
-                page.classList.add('adjacent');
             }
         });
     }
 
-
-    function goToNextPage() {
+    function nextPage() {
         // Find the index of the current page in the enabledPages array
         const currentEnabledIndex = enabledPages.findIndex(page => Number(page.dataset.index) === currentIndex);
         const nextEnabledIndex = (currentEnabledIndex + 1) % enabledPages.length;
@@ -309,7 +296,7 @@ function initGallery(currentIndex, disabledPlatform) {
         updatePagesCarousel();
     }
 
-    function goToPrevPage() {
+    function prevPage() {
         const currentEnabledIndex = enabledPages.findIndex(page => Number(page.dataset.index) === currentIndex);
         const prevEnabledIndex = (currentEnabledIndex - 1 + enabledPages.length) % enabledPages.length;
         currentIndex = Number(enabledPages[prevEnabledIndex].dataset.index);
@@ -323,7 +310,7 @@ function initGallery(currentIndex, disabledPlatform) {
         _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), selectedIndex, onGalleryKeyDown, isMenuOpen, disabledPlatform);
     }
 
-    function _toggleMenu(gameContainers, selectedIndex, keyDownListener, isMenuOpen, platformToOpen) {
+    function _toggleMenu(gameContainers, selectedIndex, listener, isMenuOpen, platformToOpen) {
 
         const menu = document.getElementById('menu');
         const menuContainer = document.getElementById('menu-container');
@@ -338,7 +325,7 @@ function initGallery(currentIndex, disabledPlatform) {
         const selectedGame = LB.utils.getSelectedGame(gameContainers, selectedIndex);
         const selectedGameImg = selectedGame.querySelector('.game-image');
 
-        function onMenuKeyDown(event) {
+        function menuKeyDown(event) {
 
             event.stopPropagation();
             event.stopImmediatePropagation(); // Stops other listeners on the same element
@@ -389,19 +376,13 @@ function initGallery(currentIndex, disabledPlatform) {
                 container.classList.toggle('selected', index === menuSelectedIndex);
             });
 
-            // menuGameContainers[menuSelectedIndex].scrollIntoView({
-            //     behavior: "smooth",
-            //     block: "center"
-            // });
-
-        }
-
-        function onMenuWheel(event) {
-            event.preventDefault();
-            if (event.deltaY > 0) {
-                simulateKeyDown('ArrowDown');
-            } else if (event.deltaY < 0) {
-                simulateKeyDown('ArrowUp');
+            if (!event.shiftKey) {
+                if (menuSelectedIndex < menuGameContainers.length && menuSelectedIndex > 0) {
+                    menuGameContainers[menuSelectedIndex].scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                    });
+                }
             }
         }
 
@@ -428,29 +409,44 @@ function initGallery(currentIndex, disabledPlatform) {
             LB.utils.updateControls('dpad', 'same', '', 'off');
             LB.utils.updateControls('shoulders', 'same', '', 'off');
 
-            menu.style.height = '100vh';
+            menu.style.height = '83vh';
 
             document.querySelector('#header .prev-link').style.opacity = 0;
             document.querySelector('#header .next-link').style.opacity = 0;
 
             menuContainer.innerHTML = '';
 
-            window.removeEventListener('keydown', keyDownListener);
-            window.addEventListener('keydown', onMenuKeyDown);
-            menuContainer.addEventListener('wheel', onMenuWheel);
+            window.removeEventListener('keydown', listener);
+            window.addEventListener('keydown', menuKeyDown);
+
 
             gameContainers.forEach(async (container, index) => {
                 if (index === selectedIndex) {
 
                     if (container.classList.contains('settings')) {
+
                         const platformForm = LB.build.platformForm(platformToOpen || container.dataset.platform);
                         menuContainer.appendChild(platformForm);
-                    } else {
 
+                        // document.querySelectorAll('platform-container');
+
+                        // document.querySelector('header .item-number').textContent = document.querySelectorAll('platform-container').length - 1;
+                        // document.querySelector('header .item-type').textContent = ' platforms';
+
+                    } else {
                         const gameImage = container.querySelector('img');
-                        const gameMenuContainer = LB.build.gameMenu(container.title, gameImage);
-                        menuContainer.appendChild(gameMenuContainer);
-                        await LB.build.populateGameMenu(gameMenuContainer, container.title);
+                        await LB.build.gameMenu(container.title, gameImage)
+                            .then((gameMenu) => {
+
+                                menuContainer.appendChild(gameMenu);
+
+                                const spinner = document.body.querySelector('.spinner');
+                                setTimeout(() => spinner.remove(), 500);
+
+                                const menuGameContainers = Array.from(gameMenu.querySelectorAll('.menu-game-container'));
+                                console.log("menuGameContainers len: ", menuGameContainers.length);
+
+                            });
 
                     }
 
@@ -477,15 +473,15 @@ function initGallery(currentIndex, disabledPlatform) {
             menu.style.height = '0';
 
             // controls.style.display = 'flex';
-            window.removeEventListener('keydown', onMenuKeyDown);
-            window.addEventListener('keydown', keyDownListener);
+            window.removeEventListener('keydown', menuKeyDown);
+            window.addEventListener('keydown', listener);
 
             if (imgSrc) {
                 const selectedGameImg = selectedGame.querySelector('.game-image');
                 if (!selectedGameImg) return;
 
                 const spinner = document.createElement('div');
-                spinner.classList.add(`spinner-${Math.floor(Math.random() * 8) + 1}`, 'spinner');
+                spinner.classList.add(`spinner-${Math.floor(Math.random() * 9) + 1}`, 'spinner');
                 spinner.classList.add('image-spinner');
 
                 selectedGame.appendChild(spinner);
@@ -532,14 +528,14 @@ function initGallery(currentIndex, disabledPlatform) {
         switch (event.key) {
         case 'ArrowRight':
             if (event.shiftKey) {
-                goToNextPage();
+                nextPage();
             } else {
                 selectedIndex = (selectedIndex + 1) % gameContainers.length;
             }
             break;
         case 'ArrowLeft':
             if (event.shiftKey) {
-                goToPrevPage();
+                prevPage();
             } else {
                 selectedIndex = (selectedIndex - 1 + gameContainers.length) % gameContainers.length;
             }
@@ -584,11 +580,7 @@ function initGallery(currentIndex, disabledPlatform) {
             document.getElementById('slideshow').style.display = 'flex';
             document.getElementById('galleries').style.display = 'none';
             window.removeEventListener('keydown', onGalleryKeyDown);
-
-            console.log("activePlatformIndex: ", activePlatformIndex);
-
-            LB.control.initSlideShow(activePlatformIndex);
-            // LB.control.initSlideShow(LB.kidsMode ? currentIndex - 1 : currentIndex);
+            LB.control.initSlideShow(currentIndex);
             document.querySelector('header .item-number').textContent = '';
             break;
         }
@@ -605,13 +597,13 @@ function initGallery(currentIndex, disabledPlatform) {
         }
     }
 
-    function onGalleryWheel(event) {
+    galleries.addEventListener('wheel', (event) => {
         event.preventDefault();
         if (event.shiftKey) {
             if (event.deltaY > 0) {
-                goToNextPage();
+                nextPage();
             } else if (event.deltaY < 0) {
-                goToPrevPage();
+                prevPage();
             }
         } else {
             if (event.deltaY > 0) {
@@ -620,9 +612,7 @@ function initGallery(currentIndex, disabledPlatform) {
                 simulateKeyDown('ArrowUp');
             }
         }
-    }
-
-    galleries.addEventListener('wheel', onGalleryWheel);
+    });
 
     window.addEventListener('keydown', onGalleryKeyDown);
     updatePagesCarousel(); // Initialize the pages carousel

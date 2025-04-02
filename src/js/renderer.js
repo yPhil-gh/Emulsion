@@ -6,15 +6,10 @@ LB.control.initGamepad();
 
 function buildSlide(platformName, preferences) {
 
-    if (platformName !== 'settings') {
-        if (LB.disabledPlatformsPolicy === 'hide' && !preferences[platformName].isEnabled) {
-            return null;
-        }
-    }
-
-    if (LB.kidsMode && platformName === 'settings') {
-        return null;
-    }
+    // if (!isPlatformValid(platformName, preferences)) {
+    //     console.log("null: ", platformName);
+    //     return null;
+    // }
 
     const slide = document.createElement("div");
     slide.className = "slide";
@@ -39,11 +34,16 @@ function buildSlide(platformName, preferences) {
 LB.prefs.load()
     .then((preferences) => {
 
+        console.log("preferences: ", preferences);
+
+        if (!preferences) {
+            console.log("No preferences found, using default preferences");
+        }
+
         LB.galleryNumOfCols = preferences.settings.numberOfColumns;
-        LB.steamGridKey = preferences.settings.steamGridKey;
+        LB.steamGridAPIKey = preferences.settings.steamGridAPIKey;
         LB.footerSize = preferences.settings.footerSize;
         LB.homeMenuTheme = preferences.settings.homeMenuTheme;
-        LB.disabledPlatformsPolicy = preferences.settings.disabledPlatformsPolicy;
 
         LB.control.setFooterSize(LB.footerSize);
 

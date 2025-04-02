@@ -41,15 +41,12 @@ button {
 }
 
 label {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-
   font-family: 'sans-serif';
   font-weight: normal;
   font-style: normal;
   font-size: 12pt;
-
+  display: flex !important;
+  flex-direction: row;
   margin-left: 60px;
 }
 
@@ -58,6 +55,10 @@ label.checkbox {
   font-weight: 600;
   font-size: 16pt;
   /* font-style: normal; */
+}
+
+#form-status-label-platform-name {
+
 }
 
 .field {
@@ -85,8 +86,7 @@ label.checkbox {
   /* flex-direction: column; */
   align-items: stretch;
   overflow: hidden;
-  /* bottom: 0; */
-  top: 101px;
+  bottom: 100px;
   /* transition: height 0.3s ease; */
 }
 
@@ -138,7 +138,7 @@ label.checkbox {
 }
 
 .input,
-.input-ctn {
+.footer-size-input-ctn {
   width: -webkit-fill-available;
   min-height: 40px;
 
@@ -153,11 +153,6 @@ label.checkbox {
   /* box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px; */
   font-family: var(--font-main);
 
-}
-
-.input-ctn {
-  display: flex;
-  flex-direction: row;
 }
 
 .footer-size-input-ctn {

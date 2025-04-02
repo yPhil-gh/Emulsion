@@ -15,8 +15,11 @@
   height: 100vh;
   background-color: var(--color-bg1);
   opacity: 1;
+  transition: transform 0.5s ease;
 
-  transition: transform 0.5s ease, opacity 0.5s ease, box-shadow 0.5s ease;
+  /* left: 50%; */
+  /* top: 50%; */
+  /* transform: translate(-50%, -50%); */
 
   left: 0;
   top: 0;
@@ -25,34 +28,55 @@
   margin-top: 100px;
 }
 
-.page.disabled {
-  opacity: 0;
-}
-
 .page.active {
   opacity: 1;
-  transform: translateX(0);
+  transition: opacity 0.2s ease-out;
+  /* transform: translate(-50%, -50%) translateX(0); */
   z-index: 2;
 }
 
-.page.prev {
-  transform: translateX(-50vw);
+/* Slide in from the right for next page */
+.page.next {
+  transition: opacity 0.2s ease-out;
+  /* transform: translate(-50%, -50%) translateX(100%); */
   opacity: 0;
 }
 
-.page.next {
-  transform: translateX(50vw);
+/* Slide in from the left for previous page */
+.page.prev {
+  transition: opacity 0.2s ease-out;
+  /* transform: translate(-50%, -50%) translateX(-100%); */
   opacity: 0;
 }
+
+/* .page.active { */
+/*   opacity: 1; */
+/*   transform: translate(-50vw, -50vw) translateX(0) scale(1); /\* Adjusted for centering *\/ */
+/*   /\* transition: transform 0.8s linear, opacity 0.1s linear; *\/ */
+/*   z-index: 2; */
+
+/*   /\* Slide: *\/ */
+/*   /\* transform: translateZ(0) scale(1); *\/ */
+/* } */
 
 .page.adjacent {
   opacity: 0;
+  transform: translate(-50%, -50%) rotateY(calc(var(--page-rotation-angle) * 1deg)) translateZ(calc(var(--page-rotation-radius) * 1px)); /* Adjusted for centering */
+
+  /* transform: translateX(-100%); /\* Push effect *\/ */
+  /* transition: transform 0.8s linear, opacity 0.8s linear; */
+
+  z-index: 1;
 }
 
 .page-content {
   display: grid;
+  /* grid-template-columns: repeat(6, 1fr); */
   gap: 10px;
   padding: 10px;
+  /* overflow-y: auto; /\* Allow vertical scrolling *\/ */
+  /* width: 100%; */
+  /* margin-top: 200px; */
 }
 
 .prefs-platform-img {
@@ -84,7 +108,7 @@ div.game-container.launching {
 div.game-container,
 div.menu-game-container {
   /* height: 22vw; */
-  border: 1px solid var(--color-border-off);
+  border: 1px solid var(--color-border);
   display: flex;
 
   flex-direction: column;
@@ -97,19 +121,10 @@ div.menu-game-container {
   overflow: hidden;
   /* white-space: nowrap; */
   position: relative; /* Needed for absolute positioning of the label */
-}
 
-.dummy-game-container {
-  animation: pulse-glow 2s infinite ease-in-out;
-}
+  /* width: calc(100vw / 6); /\* Ensure stable width *\/ */
+  /* height: calc(120vw / 6); /\* Placeholder height using an aspect ratio *\/ */
 
-@keyframes pulse-glow {
-  0% {
-    border-color: var(--color-border-off);
-  }
-  100% {
-    border-color: var(--color-border-on);
-  }
 }
 
 div.platform-container {

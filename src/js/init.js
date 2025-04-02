@@ -108,10 +108,8 @@ function cleanFileName(fileName) {
   // Step 4: Split acronyms from following capitalized words (e.g., "XMLHttp" → "XML Http")
   let withAcronymSplit = _splitAcronym(withCamelSplit);
 
-  let withNumberSplit = _splitNumberWord(withAcronymSplit);
-
-  // // Step 5: Remove extra spaces and trim.
-  // let normalized = _normalizeSpaces(withNumberSplit);
+  // Step 5: Remove extra spaces and trim.
+  let normalized = _normalizeSpaces(withAcronymSplit);
 
   let articleToFront = _moveTrailingArticleToFront(withAcronymSplit);
 
@@ -141,13 +139,9 @@ function _splitAcronym(s) {
   return s.replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2');
 }
 
-// // Normalizes spacing by trimming and replacing multiple spaces with a single space.
-// function _normalizeSpaces(s) {
-//   return s.trim().replace(/\s+/g, ' ');
-// }
-
-function _splitNumberWord(s) {
-    s.replace(/(?<!\b[234])(\d+)([A-Za-z])/g, '$1 $2');
+// Normalizes spacing by trimming and replacing multiple spaces with a single space.
+function _normalizeSpaces(s) {
+  return s.trim().replace(/\s+/g, ' ');
 }
 
 // Final function: If the string ends with ", The", move "The" to the beginning.
@@ -200,20 +194,16 @@ async function _loadUserData() {
         LB.userDataPath = preferences.userDataPath;
         LB.baseDir = path.resolve(preferences.appPath);
         LB.versionNumber = preferences.versionNumber;
-        LB.kidsMode = preferences.kidsMode;
 
         delete preferences.userDataPath;
         delete preferences.appPath;
         delete preferences.versionNumber;
-        delete preferences.kidsMode;
 
         LB.preferences = preferences;
 
         return preferences;
     } catch (error) {
         console.error("Failed to load preferences:", error);
-        window.location.reload();
-
         throw error; // Re-throw the error if needed
     }
 }
@@ -221,7 +211,6 @@ async function _loadUserData() {
 async function getPrefs() {
     try {
         const preferences = await _loadUserData();
-        console.log("getPrefs: ", preferences);
         return preferences;
     } catch (error) {
         console.error("Error loading preferences:", error);

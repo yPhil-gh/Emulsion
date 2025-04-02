@@ -18,7 +18,7 @@ function initSlideShow(platformToDisplay) {
     document.body.style.display = "block";
     const slides = Array.from(slideshow.querySelectorAll('.slide'));
     const totalSlides = slides.length;
-    const radius = 500;
+    const radius = 90 * totalSlides;
     let currentIndex = platformToDisplay ? platformToDisplay : 0;
 
 
@@ -35,8 +35,8 @@ function initSlideShow(platformToDisplay) {
 
             // Remove all state classes before reassigning
             // slide.classList.remove('active', 'prev-slide', 'next-slide', 'adjacent');
-            slide.classList.remove('active', 'prev-slide-3d', 'prev-slide-flat', 'next-slide-3d', 'next-slide-flat', 'adjacent');
-            slide.style.opacity = 1;
+            slide.classList.remove('active', 'prev-slide-3d', 'prev-slide-flat', 'next-slide-3d', 'next-slide-flat', 'adjacent-flat', 'adjacent-3d');
+            // slide.style.opacity = 1;
 
             let is3D = false;
 
@@ -67,13 +67,11 @@ function initSlideShow(platformToDisplay) {
                 }
 
             } else {
-                slide.classList.add('adjacent');
 
                 if (is3D) {
-                    slide.style.opacity = 0.2;
-                    slide.style.transform = 'rotateY(calc(' + angle + ' * 1deg)) translateZ(calc(' + radius + ' * 1px)));';
+                    slide.classList.add('adjacent-3d');
                 } else {
-                    slide.style.opacity = 0;
+                    slide.classList.add('adjacent-flat');
                 }
 
             }

@@ -58,35 +58,35 @@
   opacity: 0.2;
   transform: translateX(-500px);
   z-index: 1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .slide.next-slide-flat {
   opacity: 0.2;
   transform: translateX(500px);
   z-index: 1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .slide.prev-slide-3d {
   opacity: 0.2;
   transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px)) translateX(-20px);
   z-index: 1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .slide.next-slide-3d {
   opacity: 0.2;
   transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px)) translateX(20px);
   z-index: 1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.slide.adjacent {
+.slide.adjacent-3d {
   opacity: 0.2;
-  /* transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px)); */
+  transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px));
   z-index: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.slide.adjacent-flat {
+  opacity: 0;
+  z-index: 0;
 }
 
 

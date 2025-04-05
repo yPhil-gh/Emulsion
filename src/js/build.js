@@ -35,11 +35,11 @@ async function populateGameMenu(gameMenuContainer, gameName) {
     ipcRenderer.send('fetch-images', gameName, LB.steamGridKey);
 
     ipcRenderer.once('image-urls', (event, urls) => {
-        if (urls.length === 0) {
-            dummyGameContainer.innerHTML = `No cover art found for <br><strong>${gameName}</strong>.`;
-        } else {
-            gameMenuContainer.removeChild(dummyGameContainer);
-        }
+        gameMenuContainer.removeChild(dummyGameContainer);
+        // if (urls.length === 0) {
+        //     dummyGameContainer.innerHTML = `No cover art found for <br><strong>${gameName}</strong>.`;
+        // } else {
+        // }
 
         urls.forEach((url) => {
             const gameContainer = document.createElement('div');

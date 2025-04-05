@@ -449,6 +449,11 @@ function initGallery(currentIndex, disabledPlatform) {
                         menuContainer.appendChild(gameMenuContainer);
                         await LB.build.populateGameMenu(gameMenuContainer, container.title);
 
+                        document.querySelector('header .platform-name').textContent = container.title;
+                        document.querySelector('header .item-type').textContent = '';
+                        document.querySelector('header .item-number').textContent = '';
+
+
                         const spinner = document.body.querySelector('.spinner');
                         setTimeout(() => spinner.remove(), 500);
 
@@ -460,6 +465,8 @@ function initGallery(currentIndex, disabledPlatform) {
         }
 
         async function _closeMenu(imgSrc) {
+
+            updatePagesCarousel();
 
             // LB.utils.updateControls('square', 'same', 'Fetch cover', 'on');
             LB.utils.updateControls('dpad', 'same', 'Browse', 'on');
@@ -484,13 +491,7 @@ function initGallery(currentIndex, disabledPlatform) {
                 const selectedGameImg = selectedGame.querySelector('.game-image');
                 if (!selectedGameImg) return;
 
-                const spinner = document.createElement('div');
-                spinner.classList.add(`spinner-${Math.floor(Math.random() * 8) + 1}`, 'spinner');
-                spinner.classList.add('image-spinner');
-
-                selectedGame.appendChild(spinner);
-                // Optionally reset the image source before setting it to force refresh
-                // selectedGameImg.src = '';
+                selectedGame.classList.add('loading');
 
                 // Call downloadImage first, and then update the image once it succeeds
                 const savedImagePath = await downloadImage(imgSrc, selectedGame.dataset.platform, selectedGame.dataset.gameName);
@@ -504,7 +505,7 @@ function initGallery(currentIndex, disabledPlatform) {
                     selectedGameImg.onload = () => {
                         selectedGameImg.style.transform = "scale(1)";
                         selectedGameImg.style.opacity = "1";
-                        spinner.remove();
+                        selectedGame.classList.remove('loading');
                     };
                 }
             }

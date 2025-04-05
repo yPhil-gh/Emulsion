@@ -103,10 +103,15 @@ div.menu-game-container {
   animation: pulse-glow 2s infinite ease-in-out;
 }
 
-div.empty-platform-game-container {
+div.empty-platform-game-container,
+div.dummy-game-container {
   justify-content: flex-start;
-  font-size: 1em;
+  font-size: 0.5em;
   font-weight: normal;
+}
+
+.loading {
+  animation: pulse-glow 0.5s infinite ease-in-out;
 }
 
 div.empty-platform-game-container i {
@@ -117,8 +122,11 @@ div.empty-platform-game-container i {
   0% {
     border-color: var(--color-border-off);
   }
-  100% {
+  50% {
     border-color: var(--color-border-on);
+  }
+  100% {
+    border-color: var(--color-border-off);
   }
 }
 

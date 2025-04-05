@@ -22,7 +22,7 @@ function buildGameMenu(gameName, image) {
     const dummyGameContainer = document.createElement('div');
     dummyGameContainer.classList.add('menu-game-container', 'dummy-game-container');
     dummyGameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
-    dummyGameContainer.textContent = 'Searching...';
+    dummyGameContainer.innerHTML = `Searching for <strong>${gameName}<strong>...`;
 
     gameMenuContainer.appendChild(dummyGameContainer);
 

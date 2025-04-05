@@ -62,13 +62,10 @@ header .platform-image img {
   transition: opacity 0.2s ease;
 }
 
-.left-links {
-  display: flex;
+.pages-nav-links:hover {
+  color: var(--color-border-on);
 }
 
-.left-links .back-link {
-  display: none;
-  /* position: relative; */
-  /* left: 0; */
-  /* top: 0; */
+.left-links {
+  display: flex;
 }

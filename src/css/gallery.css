@@ -36,7 +36,7 @@
 }
 
 .page.prev {
-  transform: translateX(-50vw);
+  transform: translateX(-100vw);
   opacity: 0;
 }
 
@@ -103,8 +103,14 @@ div.menu-game-container {
   animation: pulse-glow 2s infinite ease-in-out;
 }
 
-.empty-platform-game-container {
-  justify-content: center !important;
+div.empty-platform-game-container {
+  justify-content: flex-start;
+  font-size: 1em;
+  font-weight: normal;
+}
+
+div.empty-platform-game-container i {
+  color: var(--color-border-on);
 }
 
 @keyframes pulse-glow {

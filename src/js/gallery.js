@@ -319,11 +319,13 @@ async function buildGallery(params) {
 
             const gameContainer = document.createElement('div');
             gameContainer.classList.add('game-container', 'empty-platform-game-container');
-            gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
-            // gameContainer.style.gridColumn = `span 1 / ${LB.galleryNumOfCols}`;
-            gameContainer.style.gridColumn = `1 / calc(${LB.galleryNumOfCols} + 1)`;
+            // gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+            // gameContainer.style.gridColumn = `1 / span ${LB.galleryNumOfCols}`;
+            // gameContainer.style.gridColumn = `2 / calc(${LB.galleryNumOfCols} - 1)`;
+            // gameContainer.style.gridColumn = `calc(${LB.galleryNumOfCols} / 2) / span 2`;
+            gameContainer.style.gridColumn = `1 / span 2`;
 
-            gameContainer.innerHTML = `No game files found in<p><code>${gamesDir}</code></p>`;
+            gameContainer.innerHTML = `<p><i class="fa fa-heartbeat fa-5x" aria-hidden="true"></i></p><p>No game files found in</p><p><code>${gamesDir}</code></p>`;
             pageContent.appendChild(gameContainer);
 
         }

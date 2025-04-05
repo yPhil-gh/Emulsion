@@ -570,6 +570,9 @@ function initGallery(currentIndex, disabledPlatform) {
             break;
         case 'Enter':
             const selectedGameContainer = LB.utils.getSelectedGame(gameContainers, selectedIndex);
+            if (selectedGameContainer.classList.contains('empty-platform-game-container')) {
+                return;
+            }
             if (currentPageIndex === 0) {
                 _toggleMenu(gameContainers, selectedIndex, onGalleryKeyDown, isMenuOpen);
             } else {

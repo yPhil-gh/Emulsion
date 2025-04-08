@@ -36,26 +36,65 @@ async function populateGameMenu(gameMenuContainer, gameName) {
 
     ipcRenderer.once('image-urls', (event, urls) => {
         gameMenuContainer.removeChild(dummyGameContainer);
-        // if (urls.length === 0) {
-        //     dummyGameContainer.innerHTML = `No cover art found for <br><strong>${gameName}</strong>.`;
-        // } else {
-        // }
 
-        urls.forEach((url) => {
-            const gameContainer = document.createElement('div');
-            gameContainer.classList.add('menu-game-container');
-            gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+        if (urls.length === 0) {
+            dummyGameContainer.innerHTML = `No cover art found for <br><strong>${gameName}</strong>.`;
+        } else {
 
-            const img = document.createElement('img');
-            img.src = url;
-            img.title = 'Click to save';
-            img.classList.add('game-image');
-            gameContainer.appendChild(img);
-            gameMenuContainer.appendChild(gameContainer);
-        });
+            urls.forEach((url) => {
+                const img = new Image();
+                img.src = url;
+                img.title = 'Click to save';
+                img.classList.add('game-image');
+                img.style.opacity = '0';
+                img.style.transition = 'opacity 0.3s ease-in';
+
+                img.onload = () => {
+                    const gameContainer = document.createElement('div');
+                    gameContainer.classList.add('menu-game-container');
+                    gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+                    gameContainer.appendChild(img);
+                    gameMenuContainer.appendChild(gameContainer);
+
+                    requestAnimationFrame(() => {
+                        img.style.opacity = '1';
+                    });
+                };
+
+                img.onerror = () => {
+                    console.warn('Failed to load image:', url);
+                };
+            });
+        }
     });
 }
 
+// async function populateGameMenu(gameMenuContainer, gameName) {
+//     const dummyGameContainer = gameMenuContainer.querySelector('.dummy-game-container');
+
+//     ipcRenderer.send('fetch-images', gameName, LB.steamGridKey);
+
+//     ipcRenderer.once('image-urls', (event, urls) => {
+//         gameMenuContainer.removeChild(dummyGameContainer);
+//         // if (urls.length === 0) {
+//         //     dummyGameContainer.innerHTML = `No cover art found for <br><strong>${gameName}</strong>.`;
+//         // } else {
+//         // }
+
+//         urls.forEach((url) => {
+//             const gameContainer = document.createElement('div');
+//             gameContainer.classList.add('menu-game-container');
+//             gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+
+//             const img = document.createElement('img');
+//             img.src = url;
+//             img.title = 'Click to save';
+//             img.classList.add('game-image');
+//             gameContainer.appendChild(img);
+//             gameMenuContainer.appendChild(gameContainer);
+//         });
+//     });
+// }
 
 function _buildPrefsFormItem(name, iconName, type, description, shortDescription, value, onChangeFct) {
 

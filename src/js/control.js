@@ -209,6 +209,9 @@ function initGallery(currentIndex, disabledPlatform) {
 
                 gameContainers.forEach((container, index) => {
                     container.addEventListener('click', (event) => {
+                        if (event.currentTarget.classList.contains('empty-platform-game-container')) {
+                            return;
+                        }
                         if (event.currentTarget.classList.contains('settings')) {
                             _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), event.currentTarget.dataset.index / 1, onGalleryKeyDown, false, disabledPlatform);
                         } else {
@@ -333,7 +336,7 @@ function initGallery(currentIndex, disabledPlatform) {
             event.stopPropagation();
             event.stopImmediatePropagation(); // Stops other listeners on the same element
             const menuGameContainers = Array.from(menu.querySelectorAll('.menu-game-container'));
-            console.log("menuGameContainers len: ", menuGameContainers.length);
+            // console.log("menuGameContainers len: ", menuGameContainers.length);
 
             switch (event.key) {
             case 'ArrowRight':
@@ -487,6 +490,11 @@ function initGallery(currentIndex, disabledPlatform) {
             window.removeEventListener('keydown', onMenuKeyDown);
             window.addEventListener('keydown', keyDownListener);
 
+            selectedGame.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
             if (imgSrc) {
                 const selectedGameImg = selectedGame.querySelector('.game-image');
                 if (!selectedGameImg) return;
@@ -500,11 +508,7 @@ function initGallery(currentIndex, disabledPlatform) {
 
                     selectedGameImg.src = savedImagePath + '?t=' + new Date().getTime(); // Refresh with timestamp
 
-
-                    // Apply the zoom effect after the image has been successfully set
                     selectedGameImg.onload = () => {
-                        selectedGameImg.style.transform = "scale(1)";
-                        selectedGameImg.style.opacity = "1";
                         selectedGame.classList.remove('loading');
                     };
                 }

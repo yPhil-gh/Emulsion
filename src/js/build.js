@@ -29,10 +29,10 @@ function buildGameMenu(gameName, image) {
     return gameMenuContainer;
 }
 
-async function populateGameMenu(gameMenuContainer, gameName) {
+async function populateGameMenu(gameMenuContainer, gameName, platformName) {
     const dummyGameContainer = gameMenuContainer.querySelector('.dummy-game-container');
 
-    ipcRenderer.send('fetch-images', gameName, LB.steamGridKey);
+    ipcRenderer.send('fetch-images', gameName, platformName, LB.steamGridKey);
 
     ipcRenderer.once('image-urls', (event, urls) => {
 

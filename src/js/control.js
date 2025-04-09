@@ -450,7 +450,7 @@ function initGallery(currentIndex, disabledPlatform) {
                         const gameImage = container.querySelector('img');
                         const gameMenuContainer = LB.build.gameMenu(container.title, gameImage);
                         menuContainer.appendChild(gameMenuContainer);
-                        await LB.build.populateGameMenu(gameMenuContainer, container.title);
+                        await LB.build.populateGameMenu(gameMenuContainer, container.title, platformToOpen || container.dataset.platform);
 
                         document.querySelector('header .platform-name').textContent = container.title;
                         document.querySelector('header .item-type').textContent = '';

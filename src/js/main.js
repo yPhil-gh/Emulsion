@@ -259,9 +259,11 @@ ipcMain.handle('go-to-url', async (event, link) => {
     return true;
 });
 
-ipcMain.on('fetch-images', (event, gameName, steamGridKey) => {
-    getAllCoverImageUrls(gameName, steamGridKey)
-        .then((urls) => event.reply('image-urls', urls))
+ipcMain.on('fetch-images', (event, gameName, platformName, steamGridKey) => {
+    getAllCoverImageUrls(gameName, platformName, { steamGridKey })
+        .then((urls) => {
+            event.reply('image-urls', urls);
+        })
         .catch((err) => {
             console.error('Failed to fetch image URLs:', err);
             event.reply('image-urls', []);

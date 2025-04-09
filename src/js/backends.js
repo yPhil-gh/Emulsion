@@ -19,5 +19,6 @@ export const getAllCoverImageUrls = async (gameName, platform, options = {}) => 
         result.status === 'fulfilled' ? result.value : []
     );
 
-    return allImages;
+    return allImages.flat();
+
 };

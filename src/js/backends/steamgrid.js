@@ -7,15 +7,19 @@ export const fetchImages = async (gameName, APIKey, platform) => {
         const games = await client.searchGame(gameName);
         if (!games.length) return [];
 
-        const allUrls = [];
+        const imageUrls = [];
 
         for (const game of games) {
             const gameId = game.steam_app_id || game.id;
             const images = await client.getGrids({ type: 'game', id: gameId });
-            allUrls.push(...images.map(img => img.url));
+            imageUrls.push(...images.map(img => img.url));
         }
 
-        return allUrls;
+        return imageUrls.map((url) => ({
+            url,
+            source: 'SteamGridDB'
+        }));
+
     } catch (err) {
         console.error('SteamGridDB error:', err.message);
         return [];

@@ -46,10 +46,11 @@ async function populateGameMenu(gameMenuContainer, gameName, platformName) {
         } else {
             gameMenuContainer.removeChild(dummyGameContainer);
 
-            urls.forEach((url) => {
+            urls.forEach(({ url, source }) => {
+
                 const img = new Image();
                 img.src = url;
-                img.title = 'Click to save';
+                img.title = `Downloaded from ${source}`;
                 img.classList.add('game-image');
                 img.style.opacity = '0';
                 img.style.transition = 'opacity 0.3s ease-in';

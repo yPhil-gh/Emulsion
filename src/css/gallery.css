@@ -13,8 +13,7 @@
   position: absolute;
   width: 100vw;
   height: 100vh;
-  background-color: var(--color-bg1);
-  background-image: url('../../img/sky.png');
+  /* background-color: var(--color-bg1); */
   background-repeat: repeat;
   opacity: 1;
 

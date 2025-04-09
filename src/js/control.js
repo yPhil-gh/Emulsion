@@ -390,7 +390,7 @@ function initGallery(currentIndex, disabledPlatform) {
         }
 
         function onMenuWheel(event) {
-            event.preventDefault();
+            // event.preventDefault();
             if (event.shiftKey) {
                 if (event.deltaY > 0) {
                     goToNextPage();

@@ -247,6 +247,11 @@ function _buildPrefsForm() {
 
     formContainer.appendChild(formContainerButtons);
 
+    const formContainerVSpacerDiv = document.createElement('div');
+    formContainerVSpacerDiv.classList.add('spacer-div');
+
+    formContainer.appendChild(formContainerVSpacerDiv);
+
     cancelButton.addEventListener('click', _cancelButtonClick);
 
     aboutButton.addEventListener('click', () => {

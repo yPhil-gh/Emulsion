@@ -4,6 +4,9 @@ import * as cheerio from 'cheerio'; // It's a CJS thing
 
 export const fetchImages = async (gameName, platform = '') => {
 
+    console.log("\n");
+    console.log(`Searching MobyGames for ${gameName} (${platform})`);
+
     try {
         const searchUrl = `https://www.mobygames.com/search/?q=${encodeURIComponent(gameName)}`;
         const searchResponse = await axios.get(searchUrl);

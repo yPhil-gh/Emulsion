@@ -6,12 +6,12 @@ import { fetchImages as commonsFetch } from './backends/commons.js';
 import { fetchImages as giantbombFetch } from './backends/giantbomb.js';
 
 export const getAllCoverImageUrls = async (gameName, platform, options = {}) => {
-    const { steamGridKey, giantBombAPIKey } = options;
+    const { steamGridAPIKey, giantBombAPIKey } = options;
 
     const backends = [];
 
-    if (steamGridKey) {
-        backends.push(() => steamgridFetch(gameName, steamGridKey));
+    if (steamGridAPIKey) {
+        backends.push(() => steamgridFetch(gameName, steamGridAPIKey));
     }
 
     if (giantBombAPIKey) { // <-- Only add if API key exists

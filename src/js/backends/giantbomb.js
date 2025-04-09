@@ -2,7 +2,6 @@
 import axios from 'axios';
 
 export const fetchImages = async (gameName, apiKey, platform = '') => {
-    console.log("GiantBomb :: gameName, apiKey, platform:", gameName, !!apiKey, platform);
 
     if (!apiKey) {
         console.warn("GiantBomb backend disabled: no API key provided.");

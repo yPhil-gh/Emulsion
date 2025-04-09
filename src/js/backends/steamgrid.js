@@ -1,6 +1,10 @@
 import SGDB from 'steamgriddb';
 
 export const fetchImages = async (gameName, APIKey, platform) => {
+
+    console.log("\n");
+    console.log(`Searching SteamGrid for ${gameName} (${platform})`);
+
     const client = new SGDB({ key: APIKey });
 
     try {

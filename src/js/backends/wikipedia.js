@@ -5,7 +5,7 @@ import * as cheerio from 'cheerio';
 export const fetchImages = async (gameName, platform = '') => {
 
     console.log("\n");
-    console.log("Searching WikiPedia for ", gameName, platform);
+    console.log(`Searching Wikipedia for ${gameName} (${platform})`);
 
     try {
         const firstLetter = gameName.charAt(0).toUpperCase();

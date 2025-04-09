@@ -4,6 +4,9 @@ import * as cheerio from 'cheerio';
 
 export const fetchImages = async (gameName, platform = '') => {
 
+    console.log("\n");
+    console.log(`Searching Exotica for ${gameName} (${platform})`);
+
     try {
         // Build the Exotica search URL using the first letter of the game name
         const firstLetter = gameName.charAt(0).toUpperCase();
@@ -32,11 +35,10 @@ export const fetchImages = async (gameName, platform = '') => {
         });
 
         if (!gamePageUrl) {
-            console.error(`Exotica: No results found on for "${gameName}" (${platform}).`);
+            console.error(`[Exotica] No results found on for "${gameName}" (${platform}).`);
             return [];
         }
 
-        // Fetch the game page to obtain the image URL
         const gamePageResponse = await axios.get(gamePageUrl);
         if (gamePageResponse.status !== 200) return [];
 
@@ -44,20 +46,16 @@ export const fetchImages = async (gameName, platform = '') => {
         const imageUrl = gamePage$('div.fullImageLink a').attr('href');
 
         if (!imageUrl) {
-            console.error(`No image found for "${gameName}" (${platform}).`);
+            console.error(`[Exotica] No image found for "${gameName}" (${platform}).`);
             return [];
         }
 
-        // Parse the image URL to construct the final file URL
         const parts = imageUrl.split('/');
         const directory = parts[3];
         const subdirectory = parts[4];
         const filesUrl = `https://www.exotica.org.uk/mediawiki/files/${directory}/${subdirectory}/`;
         const fileName = filesUrl + parts.pop();
 
-        console.log("fileName: ", fileName);
-
-        // Return an array with an object that matches mobygames' output format.
         return [{
             url: fileName,
             source: 'Exotica'

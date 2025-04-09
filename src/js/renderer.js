@@ -40,7 +40,7 @@ LB.prefs.load()
     .then((preferences) => {
 
         LB.galleryNumOfCols = preferences.settings.numberOfColumns;
-        LB.steamGridKey = preferences.settings.steamGridKey;
+        LB.steamGridAPIKey = preferences.settings.steamGridAPIKey;
         LB.giantBombAPIKey = preferences.settings.giantBombAPIKey;
         LB.footerSize = preferences.settings.footerSize;
         LB.homeMenuTheme = preferences.settings.homeMenuTheme;

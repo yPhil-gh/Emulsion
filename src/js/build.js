@@ -32,7 +32,7 @@ function buildGameMenu(gameName, image) {
 async function populateGameMenu(gameMenuContainer, gameName, platformName) {
     const dummyGameContainer = gameMenuContainer.querySelector('.dummy-game-container');
 
-    ipcRenderer.send('fetch-images', gameName, platformName, LB.steamGridKey, LB.giantBombAPIKey);
+    ipcRenderer.send('fetch-images', gameName, platformName, LB.steamGridAPIKey, LB.giantBombAPIKey);
 
     ipcRenderer.once('image-urls', (event, urls) => {
 
@@ -207,9 +207,9 @@ function _buildPrefsForm() {
     const disabledPlatformsPolicyGroup = disabledPlatformsPolicy.group;
     const disabledPlatformsPolicyRadios = disabledPlatformsPolicy.radios;
 
-    const steamGridKey = _buildPrefsFormItem('steamGridKey', 'steam-square', 'text', 'Your SteamGrid API Key', 'SteamGrid API Key', LB.steamGridKey || '');
-    const steamGridKeyGroup = steamGridKey.group;
-    const steamGridKeyInput = steamGridKey.input;
+    const steamGridAPIKey = _buildPrefsFormItem('steamGridAPIKey', 'steam-square', 'text', 'Your SteamGrid API Key', 'SteamGrid API Key', LB.steamGridAPIKey || '');
+    const steamGridAPIKeyGroup = steamGridAPIKey.group;
+    const steamGridAPIKeyInput = steamGridAPIKey.input;
 
     const giantBombAPIKey = _buildPrefsFormItem('giantBombAPIKey', 'bomb', 'text', 'Your GiantBomb API Key', 'GiantBomb API Key', LB.giantBombAPIKey || '');
     const giantBombAPIKeyGroup = giantBombAPIKey.group;
@@ -220,7 +220,7 @@ function _buildPrefsForm() {
     formContainer.appendChild(homeMenuThemeGroup);
     formContainer.appendChild(footerSizeGroup);
     formContainer.appendChild(disabledPlatformsPolicyGroup);
-    formContainer.appendChild(steamGridKeyGroup);
+    formContainer.appendChild(steamGridAPIKeyGroup);
     formContainer.appendChild(giantBombAPIKeyGroup);
 
     // Buttons
@@ -270,11 +270,19 @@ function _buildPrefsForm() {
 
     async function _saveButtonClick() {
         try {
-            await LB.prefs.save('settings', 'numberOfColumns', parseInt(numberOfColumnsInput.value, 10));
+            let numberOfColumns = parseInt(numberOfColumnsInput.value, 10);
+
+            if (numberOfColumns < 2) {
+                numberOfColumns = 2;
+            } else if (numberOfColumns > 12) {
+                numberOfColumns = 12;
+            }
+
+            await LB.prefs.save('settings', 'numberOfColumns', numberOfColumns);
             await LB.prefs.save('settings', 'footerSize', footerSizeRadios.find(radio => radio.checked)?.value);
             await LB.prefs.save('settings', 'homeMenuTheme', homeMenuThemeRadios.find(radio => radio.checked)?.value);
             await LB.prefs.save('settings', 'disabledPlatformsPolicy', disabledPlatformsPolicyRadios.find(radio => radio.checked)?.value);
-            await LB.prefs.save('settings', 'steamGridKey', steamGridKeyInput.value);
+            await LB.prefs.save('settings', 'steamGridAPIKey', steamGridAPIKeyInput.value);
             await LB.prefs.save('settings', 'giantBombAPIKey', giantBombAPIKeyInput.value);
             window.location.reload();
         } catch (error) {

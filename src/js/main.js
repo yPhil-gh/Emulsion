@@ -108,7 +108,7 @@ function loadPreferences() {
                                 typeof platformPreferences.footerSize !== 'string' ||
                                 typeof platformPreferences.homeMenuTheme !== 'string' ||
                                 typeof platformPreferences.disabledPlatformsPolicy !== 'string' ||
-                                typeof platformPreferences.steamGridKey !== 'string'
+                                typeof platformPreferences.steamGridAPIKey !== 'string'
                         ) {
                             console.error(`Invalid preferences`);
                             return { error: 'INVALID_JSON', message: 'The preferences file contains invalid JSON. It will now be reset.' };
@@ -259,8 +259,8 @@ ipcMain.handle('go-to-url', async (event, link) => {
     return true;
 });
 
-ipcMain.on('fetch-images', (event, gameName, platformName, steamGridKey, giantBombAPIKey) => {
-    getAllCoverImageUrls(gameName, platformName, { steamGridKey, giantBombAPIKey })
+ipcMain.on('fetch-images', (event, gameName, platformName, steamGridAPIKey, giantBombAPIKey) => {
+    getAllCoverImageUrls(gameName, platformName, { steamGridAPIKey, giantBombAPIKey })
         .then((urls) => {
             event.reply('image-urls', urls);
         })
@@ -293,7 +293,8 @@ const defaultPreferences = {
         footerSize: "medium",
         homeMenuTheme: "flat",
         disabledPlatformsPolicy: "show",
-        steamGridKey: ""
+        steamGridAPIKey: "",
+        giantBombAPIKey: ""
     }
 };
 

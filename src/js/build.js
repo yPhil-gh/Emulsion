@@ -32,7 +32,7 @@ function buildGameMenu(gameName, image) {
 async function populateGameMenu(gameMenuContainer, gameName, platformName) {
     const dummyGameContainer = gameMenuContainer.querySelector('.dummy-game-container');
 
-    ipcRenderer.send('fetch-images', gameName, platformName, LB.steamGridKey);
+    ipcRenderer.send('fetch-images', gameName, platformName, LB.steamGridKey, LB.giantBombAPIKey);
 
     ipcRenderer.once('image-urls', (event, urls) => {
 
@@ -207,9 +207,13 @@ function _buildPrefsForm() {
     const disabledPlatformsPolicyGroup = disabledPlatformsPolicy.group;
     const disabledPlatformsPolicyRadios = disabledPlatformsPolicy.radios;
 
-    const steamGridKey = _buildPrefsFormItem('steamGridKey', 'cog', 'text', 'Your SteamGrid API Key', 'SteamGrid API Key', LB.steamGridKey || '');
+    const steamGridKey = _buildPrefsFormItem('steamGridKey', 'steam-square', 'text', 'Your SteamGrid API Key', 'SteamGrid API Key', LB.steamGridKey || '');
     const steamGridKeyGroup = steamGridKey.group;
     const steamGridKeyInput = steamGridKey.input;
+
+    const giantBombAPIKey = _buildPrefsFormItem('giantBombAPIKey', 'bomb', 'text', 'Your GiantBomb API Key', 'GiantBomb API Key', LB.giantBombAPIKey || '');
+    const giantBombAPIKeyGroup = giantBombAPIKey.group;
+    const giantBombAPIKeyInput = giantBombAPIKey.input;
 
     formContainer.appendChild(platformMenuImageCtn);
     formContainer.appendChild(numberOfColumnsGroup);
@@ -217,6 +221,7 @@ function _buildPrefsForm() {
     formContainer.appendChild(footerSizeGroup);
     formContainer.appendChild(disabledPlatformsPolicyGroup);
     formContainer.appendChild(steamGridKeyGroup);
+    formContainer.appendChild(giantBombAPIKeyGroup);
 
     // Buttons
     const saveButton = document.createElement('button');
@@ -270,6 +275,7 @@ function _buildPrefsForm() {
             await LB.prefs.save('settings', 'homeMenuTheme', homeMenuThemeRadios.find(radio => radio.checked)?.value);
             await LB.prefs.save('settings', 'disabledPlatformsPolicy', disabledPlatformsPolicyRadios.find(radio => radio.checked)?.value);
             await LB.prefs.save('settings', 'steamGridKey', steamGridKeyInput.value);
+            await LB.prefs.save('settings', 'giantBombAPIKey', giantBombAPIKeyInput.value);
             window.location.reload();
         } catch (error) {
             console.error('Failed to save preferences:', error);

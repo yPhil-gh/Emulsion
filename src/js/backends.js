@@ -3,14 +3,19 @@ import { fetchImages as mobygamesFetch } from './backends/mobygames.js';
 import { fetchImages as exoticaFetch } from './backends/exotica.js';
 import { fetchImages as wikipediaFetch } from './backends/wikipedia.js';
 import { fetchImages as commonsFetch } from './backends/commons.js';
+import { fetchImages as giantbombFetch } from './backends/giantbomb.js';
 
 export const getAllCoverImageUrls = async (gameName, platform, options = {}) => {
-    const { steamGridKey } = options;
+    const { steamGridKey, giantBombAPIKey } = options;
 
     const backends = [];
 
     if (steamGridKey) {
         backends.push(() => steamgridFetch(gameName, steamGridKey));
+    }
+
+    if (giantBombAPIKey) { // <-- Only add if API key exists
+        backends.push(() => giantbombFetch(gameName, giantBombAPIKey, platform));
     }
 
     backends.push(() => mobygamesFetch(gameName, platform));
@@ -28,5 +33,4 @@ export const getAllCoverImageUrls = async (gameName, platform, options = {}) => 
     );
 
     return allImages.flat();
-
 };

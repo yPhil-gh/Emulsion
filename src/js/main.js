@@ -259,8 +259,8 @@ ipcMain.handle('go-to-url', async (event, link) => {
     return true;
 });
 
-ipcMain.on('fetch-images', (event, gameName, platformName, steamGridKey) => {
-    getAllCoverImageUrls(gameName, platformName, { steamGridKey })
+ipcMain.on('fetch-images', (event, gameName, platformName, steamGridKey, giantBombAPIKey) => {
+    getAllCoverImageUrls(gameName, platformName, { steamGridKey, giantBombAPIKey })
         .then((urls) => {
             event.reply('image-urls', urls);
         })
@@ -319,113 +319,6 @@ platforms.forEach((platform, index) => {
         extensions: platform.extensions
     };
 });
-
-// const defaultPreferencesZ = {
-//     "settings": {
-//         "isEnabled": true,
-//         "index": 0,
-//         "numberOfColumns": 6,
-//         "footerSize": "medium",
-//         "homeMenuTheme": "flat",
-//         "disabledPlatformsPolicy": "show",
-//         "steamGridKey": ""
-//     },
-//     "amiga": {
-//         "isEnabled": false,
-//         "index": 1,
-//         "gamesDir": "",
-//         "emulator": "",
-//         "emulatorArgs": "",
-//         "extensions": [
-//             ".lha",
-//             ".adf"
-//         ]
-//     },
-//     "snes": {
-//         "isEnabled": false,
-//         "index": 2,
-//         "gamesDir": "",
-//         "emulator": "",
-//         "emulatorArgs": "",
-//         "extensions": [
-//             ".smc"
-//         ]
-//     },
-//     "pcengine": {
-//         "isEnabled": false,
-//         "index": 3,
-//         "gamesDir": "",
-//         "emulator": "",
-//         "emulatorArgs": "",
-//         "extensions": [
-//             ".pce"
-//         ]
-//     },
-//     "dreamcast": {
-//         "isEnabled": false,
-//         "index": 4,
-//         "gamesDir": "",
-//         "emulator": "",
-//         "emulatorArgs": "",
-//         "extensions": [
-//             ".gdi",
-//             ".cdi"
-//         ]
-//     },
-//     "gamecube": {
-//         "isEnabled": false,
-//         "index": 5,
-//         "gamesDir": "",
-//         "emulator": "",
-//         "emulatorArgs": "",
-//         "extensions": [
-//             ".iso",
-//             ".ciso"
-//         ]
-//     },
-//     "n64": {
-//         "isEnabled": false,
-//         "index": 6,
-//         "gamesDir": "",
-//         "emulator": "",
-//         "emulatorArgs": "",
-//         "extensions": [
-//             ".z64"
-//         ]
-//     },
-//     "psx": {
-//         "isEnabled": false,
-//         "index": 7,
-//         "gamesDir": "",
-//         "emulator": "",
-//         "emulatorArgs": "",
-//         "extensions": [
-//             ".srm"
-//         ]
-//     },
-//     "ps2": {
-//         "isEnabled": false,
-//         "index": 8,
-//         "gamesDir": "",
-//         "emulator": "",
-//         "emulatorArgs": "",
-//         "extensions": [
-//             ".bin",
-//             ".iso"
-//         ]
-//     },
-//     "ps3": {
-//         "isEnabled": false,
-//         "index": 9,
-//         "gamesDir": "",
-//         "emulator": "",
-//         "emulatorArgs": "",
-//         "extensions": [
-//             ".bin",
-//             ".iso"
-//         ]
-//     }
-// };
 
 ipcMain.handle('load-preferences', () => {
     const preferences = loadPreferences();

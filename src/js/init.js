@@ -56,15 +56,15 @@ function getSelectedGame(gameContainers, selectedIndex) {
 
 
 function simulateKeyDown(key) {
-  const keyCode = key === 'ArrowDown' ? 40 : 38;
-  const keyboardEvent = new KeyboardEvent('keydown', {
-    key,
-    code: key,
-    keyCode,
-    which: keyCode,
-    bubbles: true
-  });
-  document.dispatchEvent(keyboardEvent);
+    const keyCode = key === 'ArrowDown' ? 40 : 38;
+    const keyboardEvent = new KeyboardEvent('keydown', {
+        key,
+        code: key,
+        keyCode,
+        which: keyCode,
+        bubbles: true
+    });
+    document.dispatchEvent(keyboardEvent);
 }
 
 function safeFileName(fileName) {
@@ -84,49 +84,55 @@ function safeFileName(fileName) {
 }
 
 function cleanFileName(fileName) {
-  // Step 1: Remove everything after the first underscore.
-  let baseName = _removeAfterUnderscore(fileName);
+    // Step 1: Remove everything after the first underscore.
+    let baseName = _removeAfterUnderscore(fileName);
 
-  // Step 2: Handle special digit+letter cases (e.g., "3DWorld" → "3D World")
-  let withSpecialSplit = _splitSpecial(baseName);
+    // Step 2: Handle special digit+letter cases (e.g., "3DWorld" → "3D World")
+    let withSpecialSplit = _splitSpecial(baseName);
 
-  // Step 3: Split camelCase (insert space between a lowercase and an uppercase letter)
-  let withCamelSplit = _splitCamelCase(withSpecialSplit);
+    // Step 3: Split camelCase (insert space between a lowercase and an uppercase letter)
+    let withCamelSplit = _splitCamelCase(withSpecialSplit);
 
-  // Step 4: Split acronyms from following capitalized words (e.g., "XMLHttp" → "XML Http")
-  let withAcronymSplit = _splitAcronym(withCamelSplit);
+    // Step 4: Split acronyms from following capitalized words (e.g., "XMLHttp" → "XML Http")
+    let withAcronymSplit = _splitAcronym(withCamelSplit);
 
-  let withNumberSplit = _splitNumberWord(withAcronymSplit);
+    let withNumberSplit = _splitNumberWord(withAcronymSplit);
 
-  // // Step 5: Remove extra spaces and trim.
-  // let normalized = _normalizeSpaces(withNumberSplit);
+    // // Step 5: Remove extra spaces and trim.
+    // let normalized = _normalizeSpaces(withNumberSplit);
 
-  let articleToFront = _moveTrailingArticleToFront(withAcronymSplit);
+    let articleToFront = _moveTrailingArticleToFront(withAcronymSplit);
 
-  return _removeBrackets(articleToFront);
+    let withoutParens = _removeParens(articleToFront);
+
+    return _removeBrackets(withoutParens);
 }
 
 function _removeAfterUnderscore(fileName) {
-  return fileName.split('_')[0];
+    return fileName.split('_')[0];
 }
 
 function _removeBrackets(s) {
     return s.replace(/\s*\[.*?\]/g, '');
 }
 
+function _removeParens(s) {
+    return s.replace(/\s*\(.*?\)/g, '');
+}
+
 // Inserts a space after a sequence like "3D" when it is immediately followed by an uppercase letter and a lowercase letter.
 function _splitSpecial(s) {
-  return s.replace(/(\d+[A-Z])(?=[A-Z][a-z])/g, '$1 ');
+    return s.replace(/(\d+[A-Z])(?=[A-Z][a-z])/g, '$1 ');
 }
 
 // Splits camelCase by inserting a space between a lowercase letter and an uppercase letter.
 function _splitCamelCase(s) {
-  return s.replace(/([a-z])([A-Z])/g, '$1 $2');
+    return s.replace(/([a-z])([A-Z])/g, '$1 $2');
 }
 
 // Splits an acronym from a following capitalized word (e.g., "XMLHttp" becomes "XML Http").
 function _splitAcronym(s) {
-  return s.replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2');
+    return s.replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2');
 }
 
 // // Normalizes spacing by trimming and replacing multiple spaces with a single space.
@@ -140,14 +146,14 @@ function _splitNumberWord(s) {
 
 // Final function: If the string ends with ", The", move "The" to the beginning.
 function _moveTrailingArticleToFront(s) {
-  // Match pattern: any text, followed by a comma, optional whitespace, then "The" (case-insensitive)
-  const pattern = /^(.*),\s*(The)$/i;
-  const match = s.match(pattern);
-  if (match) {
-    // Return "The " + the rest of the string (trimmed)
-    return match[2].charAt(0).toUpperCase() + match[2].slice(1).toLowerCase() + ' ' + match[1].trim();
-  }
-  return s;
+    // Match pattern: any text, followed by a comma, optional whitespace, then "The" (case-insensitive)
+    const pattern = /^(.*),\s*(The)$/i;
+    const match = s.match(pattern);
+    if (match) {
+        // Return "The " + the rest of the string (trimmed)
+        return match[2].charAt(0).toUpperCase() + match[2].slice(1).toLowerCase() + ' ' + match[1].trim();
+    }
+    return s;
 }
 
 function getPlatformName(name) {

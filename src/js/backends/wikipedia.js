@@ -4,6 +4,9 @@ import * as cheerio from 'cheerio';
 
 export const fetchImages = async (gameName, platform = '') => {
 
+    console.log("\n");
+    console.log("Searching WikiPedia for ", gameName, platform);
+
     try {
         const firstLetter = gameName.charAt(0).toUpperCase();
         const categoryUrl = `https://en.wikipedia.org/w/index.php?title=Category:Amiga_game_covers&from=${firstLetter}`;

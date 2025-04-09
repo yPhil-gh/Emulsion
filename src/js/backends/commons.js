@@ -3,6 +3,9 @@ import axios from 'axios';
 
 export const fetchImages = async (gameName, platform = '') => {
 
+    console.log("\n");
+    console.log("Searching Wikimedia commons for ", gameName, platform);
+
     try {
         const apiUrl = new URL('https://commons.wikimedia.org/w/api.php');
         apiUrl.searchParams.append('action', 'query');

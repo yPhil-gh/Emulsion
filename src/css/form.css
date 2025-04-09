@@ -78,7 +78,6 @@ label.checkbox {
     flex: 1; /* Make each label take up equal space */
     display: flex;
     align-items: center;
-    cursor: pointer;
     margin: 0;
 }
 

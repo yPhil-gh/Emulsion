@@ -456,10 +456,6 @@ function initGallery(currentIndex, disabledPlatform) {
                         document.querySelector('header .item-type').textContent = '';
                         document.querySelector('header .item-number').textContent = '';
 
-
-                        const spinner = document.body.querySelector('.spinner');
-                        setTimeout(() => spinner.remove(), 500);
-
                     }
 
                 }

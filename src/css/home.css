@@ -50,9 +50,21 @@
   opacity: 1;
   /* transform: translateZ(0) translateX(0) rotateY(0deg) scale(1); */
   z-index: 2;
-  filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8));
-  animation: pulse-glow 5s infinite ease-in-out;
+  filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.6));
+  animation: pulse-glow 2s infinite ease-in-out;
 }
+
+/* @keyframes pulse-glow { */
+/*   0% { */
+/*     filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8)); */
+/*   } */
+/*   50% { */
+/*     filter: drop-shadow(0 0 18px rgba(var(--glow-color), 0.9)); */
+/*   } */
+/*   100% { */
+/*     filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8)); */
+/*   } */
+/* } */
 
 .slide.prev-slide-flat{
   opacity: 0.2;
@@ -89,16 +101,6 @@
   z-index: 0;
 }
 
-
-@keyframes pulse-glow {
-  0%, 100% {
-    filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8));
-  }
-  50% {
-    filter: drop-shadow(0 0 8px rgba(var(--glow-color), 0.8));
-  }
-}
-
 .slide-content {
   position: relative;
   height: 100%; /* Ensure it takes the full height of the slide */
@@ -108,14 +110,14 @@
   align-items: center; /* Center horizontally */
 }
 
-/* @keyframes pulse-glow { */
-/*   0% { */
-/*     filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8)); /\* Initial glow *\/ */
-/*   } */
-/*   50% { */
-/*     filter: drop-shadow(0 0 4px rgba(var(--glow-color), 1)); /\* Stronger glow *\/ */
-/*   } */
-/*   100% { */
-/*     filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.8)); /\* Back to initial glow *\/ */
-/*   } */
-/* } */
+@keyframes pulse-glow {
+  0% {
+    filter: drop-shadow(0 0 2px rgba(255, 0, 0, 0.6));
+  }
+  50% {
+    filter: drop-shadow(0 0 14px rgba(255, 255, 255, 1));
+  }
+  100% {
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+  }
+}

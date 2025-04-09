@@ -1,4 +1,3 @@
-// /src/steamgrid.js
 import SGDB from 'steamgriddb';
 
 /**

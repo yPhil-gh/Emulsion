@@ -35,11 +35,16 @@ async function populateGameMenu(gameMenuContainer, gameName) {
     ipcRenderer.send('fetch-images', gameName, LB.steamGridKey);
 
     ipcRenderer.once('image-urls', (event, urls) => {
-        gameMenuContainer.removeChild(dummyGameContainer);
 
         if (urls.length === 0) {
-            dummyGameContainer.innerHTML = `No cover art found for <br><strong>${gameName}</strong>.`;
+            // dummyGameContainer.innerHTML = `No cover art found for <br><strong>${gameName}</strong>.`;
+            dummyGameContainer.innerHTML = `<p><i class="fa fa-heartbeat fa-5x" aria-hidden="true"></i></p><p>No cover art found for</p><p><code>${gameName}</code></p>`;
+
+            dummyGameContainer.style.gridColumn = `2 / calc(${LB.galleryNumOfCols} + 1)`;
+
+            dummyGameContainer.style.animation = 'unset';
         } else {
+            gameMenuContainer.removeChild(dummyGameContainer);
 
             urls.forEach((url) => {
                 const img = new Image();
@@ -68,33 +73,6 @@ async function populateGameMenu(gameMenuContainer, gameName) {
         }
     });
 }
-
-// async function populateGameMenu(gameMenuContainer, gameName) {
-//     const dummyGameContainer = gameMenuContainer.querySelector('.dummy-game-container');
-
-//     ipcRenderer.send('fetch-images', gameName, LB.steamGridKey);
-
-//     ipcRenderer.once('image-urls', (event, urls) => {
-//         gameMenuContainer.removeChild(dummyGameContainer);
-//         // if (urls.length === 0) {
-//         //     dummyGameContainer.innerHTML = `No cover art found for <br><strong>${gameName}</strong>.`;
-//         // } else {
-//         // }
-
-//         urls.forEach((url) => {
-//             const gameContainer = document.createElement('div');
-//             gameContainer.classList.add('menu-game-container');
-//             gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
-
-//             const img = document.createElement('img');
-//             img.src = url;
-//             img.title = 'Click to save';
-//             img.classList.add('game-image');
-//             gameContainer.appendChild(img);
-//             gameMenuContainer.appendChild(gameContainer);
-//         });
-//     });
-// }
 
 function _buildPrefsFormItem(name, iconName, type, description, shortDescription, value, onChangeFct) {
 

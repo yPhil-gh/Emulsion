@@ -4,7 +4,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { spawn, exec } from 'child_process';
-import { getAllCoverImageUrls } from './steamgrid.js';
+import { getAllCoverImageUrls } from './backends.js';
+
 import axios from 'axios';
 import gamecontroller from "sdl2-gamecontroller";
 import os from 'os';
@@ -260,12 +261,10 @@ ipcMain.handle('go-to-url', async (event, link) => {
 
 ipcMain.on('fetch-images', (event, gameName, steamGridKey) => {
     getAllCoverImageUrls(gameName, steamGridKey)
-        .then((urls) => {
-            event.reply('image-urls', urls); // Send the URLs back to the renderer process
-        })
+        .then((urls) => event.reply('image-urls', urls))
         .catch((err) => {
             console.error('Failed to fetch image URLs:', err);
-            event.reply('image-urls', []); // Send an empty array in case of error
+            event.reply('image-urls', []);
         });
 });
 

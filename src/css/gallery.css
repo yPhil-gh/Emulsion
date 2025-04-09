@@ -102,14 +102,18 @@ div.menu-game-container {
   position: relative; /* Needed for absolute positioning of the label */
 }
 
+p {
+  margin-top: 0;
+}
+
 .dummy-game-container {
   animation: pulse-glow 2s infinite ease-in-out;
 }
 
 div.empty-platform-game-container,
 div.dummy-game-container {
-  justify-content: flex-start;
-  font-size: 1em;
+  justify-content: center;
+  font-size: 14pt;
   font-weight: normal;
 }
 
@@ -117,7 +121,8 @@ div.dummy-game-container {
   animation: pulse-glow 0.5s infinite ease-in-out;
 }
 
-div.empty-platform-game-container i {
+div.empty-platform-game-container i,
+div.dummy-game-container i {
   color: var(--color-border-on);
 }
 

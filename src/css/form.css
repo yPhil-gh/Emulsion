@@ -129,8 +129,9 @@ label.checkbox {
 
 #menu {
   /* display: none; */
-  width: 100%;
-  position: fixed;
+  width: 100vw;
+  /* height: 100vh; */
+  position: absolute;
   left: 0;
   background-color: var(--color-bg1);
   /* align-items: center; */

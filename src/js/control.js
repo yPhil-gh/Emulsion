@@ -319,7 +319,7 @@ function initGallery(currentIndex, disabledPlatform) {
     function _toggleMenu(gameContainers, selectedIndex, keyDownListener, isMenuOpen, platformToOpen) {
 
         const menu = document.getElementById('menu');
-        const menuContainer = document.getElementById('menu-container');
+        const menuContainer = document.getElementById('menu');
 
         // const footer = document.getElementById('footer');
         // const footerMenuContainer = document.getElementById('footer-menu-container');
@@ -429,7 +429,7 @@ function initGallery(currentIndex, disabledPlatform) {
             LB.utils.updateControls('dpad', 'same', '', 'off');
             LB.utils.updateControls('shoulders', 'same', '', 'off');
 
-            menu.style.height = '100vh';
+            menu.style.height = '80vh';
 
             document.querySelector('#header .prev-link').style.opacity = 0;
             document.querySelector('#header .next-link').style.opacity = 0;
@@ -477,7 +477,7 @@ function initGallery(currentIndex, disabledPlatform) {
 
             LB.imageSrc = imgSrc;
             console.log("closeMenu: ");
-            document.getElementById('menu-container').innerHTML = '';
+            document.getElementById('menu').innerHTML = '';
             // footer.style.height = '100px'; // original height
 
             menu.style.height = '0';

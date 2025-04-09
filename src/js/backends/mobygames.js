@@ -2,9 +2,7 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio'; // It's a CJS thing
 
-export const fetchImages = async (gameName, _apiKey, platform = '') => {
-
-    console.log("gameName, _apiKey, platform: ", gameName, _apiKey, platform);
+export const fetchImages = async (gameName, platform = '') => {
 
     try {
         const searchUrl = `https://www.mobygames.com/search/?q=${encodeURIComponent(gameName)}`;

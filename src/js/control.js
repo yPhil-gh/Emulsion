@@ -581,8 +581,11 @@ function initGallery(currentIndex, disabledPlatform) {
                 // ipcRenderer.send('run-command', selectedGameContainer.dataset.command);
 
                 ipcRenderer.send('run-command', {
-                    command: selectedGameContainer.dataset.command,
-                    gamePath: selectedGameContainer.dataset.gamePath,
+                    fileName: selectedGameContainer.dataset.gameName,
+                    filePath: selectedGameContainer.dataset.gamePath,
+                    gameName: selectedGameContainer.title,
+                    emulator: selectedGameContainer.dataset.emulator,
+                    emulatorArgs: selectedGameContainer.dataset.emulatorArgs,
                     platform: selectedGameContainer.dataset.platform
                 });
 

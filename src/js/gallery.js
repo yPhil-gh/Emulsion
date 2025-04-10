@@ -1,23 +1,35 @@
+
+// LB.gallery.buildGalleries now also builds the "recent" gallery
 LB.gallery = {
     buildGalleries: async function (preferences, userDataPath) {
         return new Promise(async (resolve, reject) => {
             try {
                 const galleriesContainer = document.getElementById('galleries');
-                let i = 0;
-
+                let i = 0; // current page index
                 const platforms = Object.keys(preferences);
 
+                // Build regular galleries from each platform/sheet in preferences
                 for (const platformName of platforms) {
                     let prefs = preferences[platformName];
 
                     if (prefs) {
-                        let gamesDir = prefs.gamesDir;
-                        let emulator = prefs.emulator;
-                        let emulatorArgs = prefs.emulatorArgs;
-                        let extensions = prefs.extensions;
-                        let isEnabled = prefs.isEnabled;
-                        let index = prefs.index;
-
+                        // Build regular gallery for platform (including settings)
+                        let gamesDir, emulator, emulatorArgs, extensions, isEnabled, index;
+                        if (platformName === 'settings') {
+                            gamesDir = 'none';
+                            emulator = 'none';
+                            emulatorArgs = 'none';
+                            extensions = 'none';
+                            index = i;
+                        } else {
+                            gamesDir = prefs.gamesDir;
+                            emulator = prefs.emulator;
+                            emulatorArgs = prefs.emulatorArgs;
+                            extensions = prefs.extensions;
+                            isEnabled = prefs.isEnabled;
+                            // Use the index defined in the preferences for that platform
+                            index = prefs.index;
+                        }
                         const params = {
                             platform: platformName,
                             gamesDir,
@@ -33,13 +45,12 @@ LB.gallery = {
                         const container = await buildGallery(params);
                         if (container) {
                             galleriesContainer.appendChild(container);
-                            i++;
+                            i++; // increment page index as we added a page
                         }
 
-                        if (isEnabled) {
+                        if (platformName !== 'settings' && prefs.isEnabled) {
                             LB.enabledPlatforms.push(platformName);
                         }
-
                     } else if (platformName === 'settings') {
                         const params = {
                             platform: platformName,
@@ -51,16 +62,22 @@ LB.gallery = {
                             platforms,
                             extensions: 'none'
                         };
-
                         const container = await buildGallery(params);
-
                         if (container) {
                             galleriesContainer.appendChild(container);
                         }
-
                         i++;
                     } else {
-                        reject('No prefs for ', platformName);
+                        reject('No prefs for ' + platformName);
+                    }
+                }
+
+                // If preferences.settings.showRecent is true, build and append the recent gallery
+                if (preferences.settings.showRecent) {
+                    const recentGallery = await _buildRecentGallery({ userDataPath, index: i });
+                    if (recentGallery) {
+                        galleriesContainer.appendChild(recentGallery);
+                        i++;
                     }
                 }
 
@@ -71,6 +88,74 @@ LB.gallery = {
         });
     }
 };
+
+// Internal function that builds the "Recently Played" gallery page.
+async function _buildRecentGallery({ userDataPath, index }) {
+    // Path to your recently_played.json file
+    let recents = LB.recents;
+
+    if (!recents || recents.length === 0) {
+        console.log("No recent entries found.");
+        return null;
+    }
+
+    // Create the main page container for the "recent" gallery
+    const page = document.createElement('div');
+    page.classList.add('page');
+    page.id = `page${index}`;
+    page.setAttribute('data-index', index);
+    page.setAttribute('data-platform', 'recent');
+
+    // Create the page content container with grid layout
+    const pageContent = document.createElement('div');
+    pageContent.classList.add('page-content');
+    pageContent.style.gridTemplateColumns = `repeat(${LB.galleryNumOfCols}, 1fr)`;
+
+    // For each recent entry, create a game container
+    recents.forEach((recent, i) => {
+
+        const gameContainer = document.createElement('div');
+        gameContainer.classList.add('game-container');
+        // Use the same dangerous height logic
+        gameContainer.style.height = `calc(120vw / ${LB.galleryNumOfCols})`;
+        gameContainer.title = recent.gameName;
+
+        gameContainer.setAttribute('data-game-name', recent.gameName);
+        gameContainer.setAttribute('data-platform', recent.platform);
+        gameContainer.setAttribute('data-emulator', recent.emulator);
+        gameContainer.setAttribute('data-emulator-args', recent.emulatorArgs);
+        gameContainer.setAttribute('data-game-path', recent.filePath);
+        gameContainer.setAttribute('data-index', i);
+
+        let coverImagePath = findImageFile(
+            path.join(userDataPath, "covers", recent.platform),
+            recent.fileName
+        );
+        const missingImagePath = path.join(LB.baseDir, 'img', 'missing.png');
+        const isImgExists = (coverImagePath && fs.existsSync(coverImagePath));
+        const gameImage = document.createElement('img');
+        gameImage.src = isImgExists ? coverImagePath : missingImagePath;
+        gameImage.classList.add('game-image');
+        if (!isImgExists) {
+            gameImage.classList.add('missing-image');
+        }
+
+        const viewportWidth = window.innerWidth;
+        const columnWidth = viewportWidth / LB.galleryNumOfCols;
+        gameImage.width = columnWidth;
+
+        const gameLabel = document.createElement('div');
+        gameLabel.classList.add('game-label');
+        gameLabel.textContent = recent.gameName;
+
+        gameContainer.appendChild(gameLabel);
+        gameContainer.appendChild(gameImage);
+        pageContent.appendChild(gameContainer);
+    });
+
+    page.appendChild(pageContent);
+    return page;
+}
 
 // Recursively scan a directory for files with specific extensions.
 // If recursive is false, only the top-level directory is scanned.
@@ -293,6 +378,8 @@ async function buildGallery(params) {
                 gameContainer.setAttribute('data-game-name', fileNameWithoutExt);
                 gameContainer.setAttribute('data-platform', platform);
                 gameContainer.setAttribute('data-command', dataCommand);
+                gameContainer.setAttribute('data-emulator', emulator);
+                gameContainer.setAttribute('data-emulator-args', emulatorArgs);
                 gameContainer.setAttribute('data-game-path', gameFilePath);
                 gameContainer.setAttribute('data-index', i);
 

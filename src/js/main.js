@@ -69,6 +69,7 @@ gamecontroller.on('controller-button-up', (event) => {
 });
 
 const preferencesFilePath = path.join(app.getPath('userData'), "preferences.json");
+const recentFilePath = path.join(app.getPath('userData'), "recently_played.json");
 
 function showHelp() {
     console.log(`
@@ -85,6 +86,30 @@ Options:
 
 if (process.argv.includes('--help')) {
     showHelp();
+}
+
+function loadRecents() {
+    try {
+        if (fs.existsSync(recentFilePath)) {
+            const recentFileContent = fs.readFileSync(recentFilePath, 'utf8');
+
+            // Attempt to parse the JSON
+            try {
+                // console.log("data: ", recentFileContent);
+                const recent = JSON.parse(recentFileContent);;
+
+                return recent;
+            } catch (parseError) {
+                console.error('Invalid JSON in recent file:', parseError);
+                return { error: 'INVALID_JSON', message: 'The recent file contains invalid JSON. It will now be reset.' };
+            }
+        } else {
+            return { error: 'FILE_NOT_FOUND', message: 'No recent file found. Using default recent.' };
+        }
+    } catch (error) {
+        console.error('Error loading recent:', error);
+        return { error: 'UNKNOWN_ERROR', message: 'An unknown error occurred while loading recent.' };
+    }
 }
 
 function loadPreferences() {
@@ -296,40 +321,35 @@ function getRecentlyPlayedPath() {
 // }
 
 ipcMain.on('run-command', (event, data) => {
-    const { command, gamePath, platform } = data; // Destructure incoming data
+    const { fileName, filePath, gameName, emulator, emulatorArgs, platform } = data;
 
-    // Log the game launch command (you may want to actually execute it afterward)
-    console.log(`Launching game with command: ${command}`);
-
-    // Get current date and time in ISO format
-    const now = new Date().toISOString();
-
-    // Create an entry object
     const entry = {
-        date: now,
-        gamePath,
-        platform
+        fileName,
+        filePath,
+        gameName,
+        emulator,
+        emulatorArgs,
+        platform,
+        date: new Date().toISOString()
     };
+
+    const command = `${emulator} ${emulatorArgs || ""} "${filePath}"`;
 
     const recentFilePath = getRecentlyPlayedPath();
     let recentEntries = [];
 
-    // If the file exists, read its contents. Otherwise, start with an empty array.
     if (fs.existsSync(recentFilePath)) {
         try {
             const data = fs.readFileSync(recentFilePath, 'utf8');
             recentEntries = JSON.parse(data);
         } catch (readErr) {
             console.error("Error reading recently_played.json:", readErr);
-            // Optionally, reset to an empty array if there's an error.
             recentEntries = [];
         }
     }
 
-    // Append the new entry.
     recentEntries.push(entry);
 
-    // Write back the file with pretty-print formatting.
     try {
         fs.writeFileSync(recentFilePath, JSON.stringify(recentEntries, null, 4), 'utf8');
         console.log("Updated recently_played.json with new entry.");
@@ -348,7 +368,6 @@ ipcMain.on('run-command', (event, data) => {
     child.on('exit', () => {
         childProcesses.delete(child.pid);
     });
-
 
 });
 
@@ -389,9 +408,15 @@ platforms.forEach((platform, index) => {
 
 ipcMain.handle('load-preferences', () => {
     const preferences = loadPreferences();
+    const recents = loadRecents();
+
     const userDataPath = app.getPath('userData');
     const appPath = app.getAppPath();
     const versionNumber = pjson.version;
+
+    if (recents.error) {
+        console.log("recent.message: ", recents.message);
+    }
 
     if (preferences.error) {
 
@@ -422,6 +447,7 @@ ipcMain.handle('load-preferences', () => {
         preferences.appPath = appPath;
         preferences.versionNumber = versionNumber;
         preferences.kidsMode = process.argv.includes('--kids-mode');
+        preferences.recents = recents;
         return preferences;
     }
 });

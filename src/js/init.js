@@ -195,11 +195,13 @@ async function _loadUserData() {
         LB.baseDir = path.resolve(preferences.appPath);
         LB.versionNumber = preferences.versionNumber;
         LB.kidsMode = preferences.kidsMode;
+        LB.recents = preferences.recents;
 
         delete preferences.userDataPath;
         delete preferences.appPath;
         delete preferences.versionNumber;
         delete preferences.kidsMode;
+        delete preferences.recents;
 
         LB.preferences = preferences;
 

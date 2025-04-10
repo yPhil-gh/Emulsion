@@ -578,7 +578,14 @@ function initGallery(currentIndex, disabledPlatform) {
                 _toggleMenu(gameContainers, selectedIndex, onGalleryKeyDown, isMenuOpen);
             } else {
                 selectedGameContainer.classList.add('launching');
-                ipcRenderer.send('run-command', selectedGameContainer.dataset.command);
+                // ipcRenderer.send('run-command', selectedGameContainer.dataset.command);
+
+                ipcRenderer.send('run-command', {
+                    command: selectedGameContainer.dataset.command,
+                    gamePath: selectedGameContainer.dataset.gamePath,
+                    platform: selectedGameContainer.dataset.platform
+                });
+
                 setTimeout(() => {
                     selectedGameContainer.classList.remove('launching');
                 }, 1000);

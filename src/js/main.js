@@ -272,7 +272,71 @@ ipcMain.on('fetch-images', (event, gameName, platformName, steamGridAPIKey, gian
 
 let childProcesses = new Map();
 
-ipcMain.on('run-command', (event, command) => {
+// ipcMain.on('run-command', (event, command) => {
+//     const child = spawn(command, {
+//         shell: true,
+//         detached: true,
+//         stdio: 'ignore'
+//     });
+
+//     childProcesses.set(child.pid, child);
+
+//     child.on('exit', () => {
+//         childProcesses.delete(child.pid);
+//     });
+// });
+
+function getRecentlyPlayedPath() {
+    const userDataPath = app.getPath('userData');
+    return path.join(userDataPath, 'recently_played.json');
+}
+
+// function runCommand(command) {
+
+// }
+
+ipcMain.on('run-command', (event, data) => {
+    const { command, gamePath, platform } = data; // Destructure incoming data
+
+    // Log the game launch command (you may want to actually execute it afterward)
+    console.log(`Launching game with command: ${command}`);
+
+    // Get current date and time in ISO format
+    const now = new Date().toISOString();
+
+    // Create an entry object
+    const entry = {
+        date: now,
+        gamePath,
+        platform
+    };
+
+    const recentFilePath = getRecentlyPlayedPath();
+    let recentEntries = [];
+
+    // If the file exists, read its contents. Otherwise, start with an empty array.
+    if (fs.existsSync(recentFilePath)) {
+        try {
+            const data = fs.readFileSync(recentFilePath, 'utf8');
+            recentEntries = JSON.parse(data);
+        } catch (readErr) {
+            console.error("Error reading recently_played.json:", readErr);
+            // Optionally, reset to an empty array if there's an error.
+            recentEntries = [];
+        }
+    }
+
+    // Append the new entry.
+    recentEntries.push(entry);
+
+    // Write back the file with pretty-print formatting.
+    try {
+        fs.writeFileSync(recentFilePath, JSON.stringify(recentEntries, null, 4), 'utf8');
+        console.log("Updated recently_played.json with new entry.");
+    } catch (writeErr) {
+        console.error("Error writing recently_played.json:", writeErr);
+    }
+
     const child = spawn(command, {
         shell: true,
         detached: true,
@@ -284,6 +348,8 @@ ipcMain.on('run-command', (event, command) => {
     child.on('exit', () => {
         childProcesses.delete(child.pid);
     });
+
+
 });
 
 const defaultPreferences = {
@@ -340,7 +406,7 @@ ipcMain.handle('load-preferences', () => {
         if (result === 0) {
 
             console.log("Resetting preferences to default...");
-            fs.writeFileSync(preferencesFilePath, JSON.stringify(defaultPreferences, null, 2), 'utf8');
+            fs.writeFileSync(preferencesFilePath, JSON.stringify(defaultPreferences, null, 4), 'utf8');
 
             defaultPreferences.userDataPath = userDataPath;
             return defaultPreferences;

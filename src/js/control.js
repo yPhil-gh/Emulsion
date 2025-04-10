@@ -143,7 +143,7 @@ function initSlideShow(platformToDisplay) {
 
             if (activePlatformName === 'recents') {
                 initGallery(10);
-            } else if (isPlatformEnabled === true) {
+            } else if (LB.enabledPlatforms.includes(activePlatformName)) {
                 initGallery(activeGalleryIndex);
             } else {
                 initGallery(0, activePlatformName);

@@ -323,7 +323,7 @@ function getRecentlyPlayedPath() {
 ipcMain.on('run-command', (event, data) => {
     const { fileName, filePath, gameName, emulator, emulatorArgs, platform } = data;
 
-    const entry = {
+    const recentEntry = {
         fileName,
         filePath,
         gameName,
@@ -336,23 +336,32 @@ ipcMain.on('run-command', (event, data) => {
     const command = `${emulator} ${emulatorArgs || ""} "${filePath}"`;
 
     const recentFilePath = getRecentlyPlayedPath();
-    let recentEntries = [];
+    let recents = [];
 
     if (fs.existsSync(recentFilePath)) {
         try {
-            const data = fs.readFileSync(recentFilePath, 'utf8');
-            recentEntries = JSON.parse(data);
+            const fileData = fs.readFileSync(recentFilePath, 'utf8');
+            recents = JSON.parse(fileData);
         } catch (readErr) {
             console.error("Error reading recently_played.json:", readErr);
-            recentEntries = [];
+            recents = [];
         }
     }
 
-    recentEntries.push(entry);
+    // Check if an entry already exists with the same fileName.
+    const existingIndex = recents.findIndex(entry => entry.fileName === fileName);
+
+    if (existingIndex >= 0) {
+        // Update the date of the existing entry.
+        recents[existingIndex].date = new Date().toISOString();
+    } else {
+        // No existing entry, so push the new one.
+        recents.push(recentEntry);
+    }
 
     try {
-        fs.writeFileSync(recentFilePath, JSON.stringify(recentEntries, null, 4), 'utf8');
-        console.log("Updated recently_played.json with new entry.");
+        fs.writeFileSync(recentFilePath, JSON.stringify(recents, null, 4), 'utf8');
+        console.log("Updated recently_played.json with new/updated entry.");
     } catch (writeErr) {
         console.error("Error writing recently_played.json:", writeErr);
     }
@@ -368,7 +377,6 @@ ipcMain.on('run-command', (event, data) => {
     child.on('exit', () => {
         childProcesses.delete(child.pid);
     });
-
 });
 
 const defaultPreferences = {

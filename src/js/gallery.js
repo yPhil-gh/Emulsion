@@ -95,7 +95,7 @@ async function _buildRecentGallery({ userDataPath, index }) {
     // Path to your recently_played.json file
     let recents = LB.recents;
 
-    if (!recents || recents.length === 0) {
+    if (!recents || recents.length === 0 || recents.error) {
         console.log("No recent entries found.");
         return null;
     }
@@ -105,7 +105,7 @@ async function _buildRecentGallery({ userDataPath, index }) {
     page.classList.add('page');
     page.id = `page${index}`;
     page.setAttribute('data-index', index);
-    page.setAttribute('data-platform', 'recent');
+    page.setAttribute('data-platform', 'recents');
 
     // Create the page content container with grid layout
     const pageContent = document.createElement('div');
@@ -119,7 +119,9 @@ async function _buildRecentGallery({ userDataPath, index }) {
         gameContainer.classList.add('game-container');
         // Use the same dangerous height logic
         gameContainer.style.height = `calc(120vw / ${LB.galleryNumOfCols})`;
-        gameContainer.title = recent.gameName;
+
+        const date = new Date(recent.date);
+        gameContainer.title = `Last played on ${date.toLocaleString()}`;
 
         gameContainer.setAttribute('data-game-name', recent.gameName);
         gameContainer.setAttribute('data-platform', recent.platform);

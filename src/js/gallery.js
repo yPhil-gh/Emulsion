@@ -265,21 +265,21 @@ async function buildGallery(params) {
 
         if (gameFiles.length > 0) {
             for (let i = 0; i < gameFiles.length; i++) {
-                const gameFile = gameFiles[i];
+                const gameFilePath = gameFiles[i];
                 // console.log("gameFile: ", gameFile);
                 const missingImagePath = path.join(LB.baseDir, 'img', 'missing.png');
 
-                let fileName = path.basename(gameFile);
+                let fileName = path.basename(gameFilePath);
                 let fileNameWithoutExt = path.parse(fileName).name;
                 let fileNameClean = LB.utils.cleanFileName(fileNameWithoutExt);
 
-                let dataCommand = `${emulator} ${emulatorArgs || ""} "${gameFile}"`;
+                let dataCommand = `${emulator} ${emulatorArgs || ""} "${gameFilePath}"`;
 
                 if (platform === 'ps3') {
-                    const ps3GameTitle = await getPs3GameTitle(gameFile);
+                    const ps3GameTitle = await getPs3GameTitle(gameFilePath);
                     fileNameWithoutExt = LB.utils.safeFileName(ps3GameTitle);
                     fileNameClean = ps3GameTitle;
-                    dataCommand = `${emulator} ${emulatorArgs || ""} "${getEbootPath(gameFile)}"`;
+                    dataCommand = `${emulator} ${emulatorArgs || ""} "${getEbootPath(gameFilePath)}"`;
                 }
 
                 let coverImagePath = findImageFile(path.join(userDataPath, "covers", platform), fileNameWithoutExt);
@@ -293,6 +293,7 @@ async function buildGallery(params) {
                 gameContainer.setAttribute('data-game-name', fileNameWithoutExt);
                 gameContainer.setAttribute('data-platform', platform);
                 gameContainer.setAttribute('data-command', dataCommand);
+                gameContainer.setAttribute('data-game-path', gameFilePath);
                 gameContainer.setAttribute('data-index', i);
 
                 const gameImage = document.createElement('img');

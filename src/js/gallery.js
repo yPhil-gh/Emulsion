@@ -79,6 +79,7 @@ LB.gallery = {
                         galleriesContainer.appendChild(recentGallery);
                         i++;
                     }
+                    platforms.push("recents");
                 }
 
                 resolve(platforms);

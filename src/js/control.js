@@ -130,16 +130,20 @@ function initSlideShow(platformToDisplay) {
 
             let activeGalleryIndex;
             let activePlatformName;
+            let isPlatformEnabled;
 
             slides.forEach((slide, index) => {
                 if (slide.classList.contains('active')) {
                     activePlatformName = slide.dataset.platform;
                     activeGalleryIndex = Number(slide.dataset.index);
+                    isPlatformEnabled = slide.dataset.isEnabled;
                     // console.assert(index === Number(slide.dataset.index));
                 }
             });
 
-            if (LB.enabledPlatforms.includes(activePlatformName)) {
+            if (activePlatformName === 'recents') {
+                initGallery(10);
+            } else if (isPlatformEnabled === true) {
                 initGallery(activeGalleryIndex);
             } else {
                 initGallery(0, activePlatformName);

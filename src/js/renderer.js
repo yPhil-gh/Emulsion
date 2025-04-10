@@ -6,22 +6,12 @@ LB.control.initGamepad();
 
 function buildSlide(platformName, preferences) {
 
-    if (platformName !== 'settings') {
-        if (LB.disabledPlatformsPolicy === 'hide' && !preferences[platformName].isEnabled) {
-            return null;
-        }
-    }
-
-    if (LB.kidsMode && platformName === 'settings') {
-        return null;
-    }
-
     const slide = document.createElement("div");
     slide.className = "slide";
-    slide.setAttribute('data-index', preferences[platformName].index);
     slide.id = platformName;
     const platformImgPath = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
     const emulsionImgPath = path.join(LB.baseDir, 'img', 'emulsion.png');
+
     slide.style.backgroundImage = platformName === "settings"
         ? `url('${emulsionImgPath}')`
         : `url('${platformImgPath}')`;
@@ -32,6 +22,24 @@ function buildSlide(platformName, preferences) {
     slide.setAttribute('data-platform', platformName);
 
     slide.appendChild(slideContent);
+
+    if (platformName === 'recents') {
+        slide.setAttribute('data-index', 10);
+        return slide;
+    }
+
+    if (platformName !== 'settings') {
+        if (LB.disabledPlatformsPolicy === 'hide' && !preferences[platformName].isEnabled) {
+            return null;
+        }
+    }
+
+    if (LB.kidsMode && platformName === 'settings') {
+        return null;
+    }
+
+    slide.setAttribute('data-index', preferences[platformName].index);
+    slide.setAttribute('data-is-enabled', preferences[platformName].isEnabled);
 
     return slide;
 }
@@ -59,6 +67,17 @@ LB.prefs.load()
             });
     })
     .then(({ platforms, preferences }) => {
+
+        platforms.recents = {
+            "isEnabled": true,
+            "index": 10,
+            "gamesDir": "/home/px/bin/EMU/ROMS/ps3",
+            "emulator": "/home/px/bin/EMU/rpcs3-v0.0.34-17413-665bb832_linux64.AppImage",
+            "emulatorArgs": "",
+            "extensions": [
+                ".SFO"
+            ]
+        };
 
         platforms.forEach((platform) => {
             const homeSlide = buildSlide(platform, preferences);

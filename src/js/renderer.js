@@ -18,13 +18,14 @@ function buildSlide(platformName, preferences) {
 
     const slideContent = document.createElement("div");
     slideContent.className = "slide-content";
+    slideContent.innerHTML = `${LB.utils.getPlatformName(platformName)}`;
 
     slide.setAttribute('data-platform', platformName);
 
     slide.appendChild(slideContent);
 
     if (platformName === 'recents') {
-        slide.setAttribute('data-index', 10);
+        slide.setAttribute('data-index', LB.totalNumberOfPlatforms);
         return slide;
     }
 
@@ -68,16 +69,9 @@ LB.prefs.load()
     })
     .then(({ platforms, preferences }) => {
 
-        platforms.recents = {
-            "isEnabled": true,
-            "index": 10,
-            "gamesDir": "/home/px/bin/EMU/ROMS/ps3",
-            "emulator": "/home/px/bin/EMU/rpcs3-v0.0.34-17413-665bb832_linux64.AppImage",
-            "emulatorArgs": "",
-            "extensions": [
-                ".SFO"
-            ]
-        };
+        console.log("platforms.length: ", platforms.length);
+
+        LB.totalNumberOfPlatforms = platforms.length - 1;
 
         platforms.forEach((platform) => {
             const homeSlide = buildSlide(platform, preferences);

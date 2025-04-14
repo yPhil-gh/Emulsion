@@ -21,10 +21,6 @@ function initSlideShow(platformToDisplay) {
     const radius = 90 * totalSlides;
     let currentIndex = platformToDisplay ? platformToDisplay : 0;
 
-
-    console.log("platformToDisplay: ", platformToDisplay);
-
-
     function updateHomeCarousel(platformIndex) {
         const angleIncrement = 360 / totalSlides;
 
@@ -101,10 +97,8 @@ function initSlideShow(platformToDisplay) {
     slides.forEach((slide, index) => {
         slide.addEventListener('click', (event) => {
             event.stopPropagation();
-            if (slide.classList.contains('adjacent')) {
-                currentIndex = index; // Set the clicked slide as the current slide
-                updateHomeCarousel();
-            } else if (slide.classList.contains('active')) {
+            event.stopImmediatePropagation();
+            if (slide.classList.contains('active')) {
                 simulateKeyDown('Enter');
             }
         });
@@ -142,7 +136,7 @@ function initSlideShow(platformToDisplay) {
             });
 
             if (activePlatformName === 'recents') {
-                initGallery(10);
+                initGallery(LB.totalNumberOfPlatforms);
             } else if (LB.enabledPlatforms.includes(activePlatformName)) {
                 initGallery(activeGalleryIndex);
             } else {
@@ -433,7 +427,7 @@ function initGallery(currentIndex, disabledPlatform) {
             LB.utils.updateControls('dpad', 'same', '', 'off');
             LB.utils.updateControls('shoulders', 'same', '', 'off');
 
-            menu.style.height = '80vh';
+            menu.style.height = '85vh';
 
             document.querySelector('#header .prev-link').style.opacity = 0;
             document.querySelector('#header .next-link').style.opacity = 0;

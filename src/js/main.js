@@ -392,14 +392,18 @@ const defaultPreferences = {
 };
 
 const platforms = [
-    { name: "amiga", extensions: [".lha", ".adf"] },
-    { name: "snes", extensions: [".smc"] },
     { name: "pcengine", extensions: [".pce"] },
-    { name: "dreamcast", extensions: [".gdi", ".cdi"] },
-    { name: "gamecube", extensions: [".iso", ".ciso"] },
-    { name: "n64", extensions: [".z64"] },
+    { name: "amiga", extensions: [".lha", ".adf"] },
+    { name: "megadrive", extensions: [".md"] },
+    { name: "snes", extensions: [".smc"] },
+    { name: "jaguar", extensions: [".jag"] },
     { name: "psx", extensions: [".srm"] },
+    { name: "n64", extensions: [".z64"] },
+    { name: "dreamcast", extensions: [".gdi", ".cdi"] },
     { name: "ps2", extensions: [".bin", ".iso"] },
+    { name: "gamecube", extensions: [".iso", ".ciso"] },
+    { name: "xbox", extensions: [".xiso.iso"] },
+    { name: "psp", extensions: [".iso"] },
     { name: "ps3", extensions: [".SFO"] }
 ];
 
@@ -426,7 +430,7 @@ ipcMain.handle('load-preferences', () => {
         console.log("recent.message: ", recents.message);
     }
 
-    if (preferences.error) {
+    if (preferences.error && preferences.error === 'INVALID_JSON') {
 
         const result = dialog.showMessageBoxSync(mainWindow, {
             type: 'error',
@@ -437,7 +441,6 @@ ipcMain.handle('load-preferences', () => {
         });
 
         if (result === 0) {
-
             console.log("Resetting preferences to default...");
             fs.writeFileSync(preferencesFilePath, JSON.stringify(defaultPreferences, null, 4), 'utf8');
 
@@ -449,6 +452,15 @@ ipcMain.handle('load-preferences', () => {
             app.quit();
             return null;
         }
+
+    } else if (preferences.error && preferences.error === 'FILE_NOT_FOUND') {
+
+        console.log("Setting preferences to default...");
+        fs.writeFileSync(preferencesFilePath, JSON.stringify(defaultPreferences, null, 4), 'utf8');
+
+        defaultPreferences.userDataPath = userDataPath;
+        return defaultPreferences;
+
     } else {
 
         preferences.userDataPath = userDataPath;

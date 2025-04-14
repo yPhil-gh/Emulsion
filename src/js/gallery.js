@@ -5,15 +5,13 @@ LB.gallery = {
         return new Promise(async (resolve, reject) => {
             try {
                 const galleriesContainer = document.getElementById('galleries');
-                let i = 0; // current page index
+                let i = 0;
                 const platforms = Object.keys(preferences);
 
-                // Build regular galleries from each platform/sheet in preferences
                 for (const platformName of platforms) {
                     let prefs = preferences[platformName];
 
                     if (prefs) {
-                        // Build regular gallery for platform (including settings)
                         let gamesDir, emulator, emulatorArgs, extensions, isEnabled, index;
                         if (platformName === 'settings') {
                             gamesDir = 'none';
@@ -45,7 +43,7 @@ LB.gallery = {
                         const container = await buildGallery(params);
                         if (container) {
                             galleriesContainer.appendChild(container);
-                            i++; // increment page index as we added a page
+                            i++;
                         }
 
                         if (platformName !== 'settings' && prefs.isEnabled) {
@@ -72,8 +70,7 @@ LB.gallery = {
                     }
                 }
 
-                // If preferences.settings.showRecent is true, build and append the recent gallery
-                if (preferences.settings.showRecent) {
+                if (true) {
                     const recentGallery = await _buildRecentGallery({ userDataPath, index: i });
                     if (recentGallery) {
                         galleriesContainer.appendChild(recentGallery);
@@ -90,9 +87,7 @@ LB.gallery = {
     }
 };
 
-// Internal function that builds the "Recently Played" gallery page.
 async function _buildRecentGallery({ userDataPath, index }) {
-    // Path to your recently_played.json file
     let recents = LB.recents;
 
     if (!recents || recents.length === 0 || recents.error) {
@@ -100,19 +95,16 @@ async function _buildRecentGallery({ userDataPath, index }) {
         return null;
     }
 
-    // Create the main page container for the "recent" gallery
     const page = document.createElement('div');
     page.classList.add('page');
     page.id = `page${index}`;
     page.setAttribute('data-index', index);
     page.setAttribute('data-platform', 'recents');
 
-    // Create the page content container with grid layout
     const pageContent = document.createElement('div');
     pageContent.classList.add('page-content');
     pageContent.style.gridTemplateColumns = `repeat(${LB.galleryNumOfCols}, 1fr)`;
 
-    // For each recent entry, create a game container
     recents.forEach((recent, i) => {
 
         const gameContainer = document.createElement('div');
@@ -143,9 +135,9 @@ async function _buildRecentGallery({ userDataPath, index }) {
             gameImage.classList.add('missing-image');
         }
 
-        const viewportWidth = window.innerWidth;
-        const columnWidth = viewportWidth / LB.galleryNumOfCols;
-        gameImage.width = columnWidth;
+        // const viewportWidth = window.innerWidth;
+        // const columnWidth = viewportWidth / LB.galleryNumOfCols;
+        // gameImage.width = columnWidth;
 
         const gameLabel = document.createElement('div');
         gameLabel.classList.add('game-label');
@@ -231,7 +223,7 @@ function buildSettingsPageContent(platforms) {
         platformContainer.setAttribute('data-index', i);
 
         const platformNameElement = document.createElement('div');
-        platformNameElement.textContent = platformName;
+        platformNameElement.textContent = LB.utils.getPlatformName(platformName);
         platformNameElement.classList.add('platform-name');
 
         const platformImage = document.createElement('img');
@@ -245,7 +237,7 @@ function buildSettingsPageContent(platforms) {
         platformImage.classList.add('platform-image');
         platformImage.classList.add('game-image');
 
-        // platformContainer.appendChild(platformNameElement);
+        platformContainer.appendChild(platformNameElement);
         platformContainer.appendChild(platformImage);
 
         pageContent.appendChild(platformContainer);
@@ -332,14 +324,14 @@ async function buildGallery(params) {
             return title;
         }
 
-        const viewportWidth = window.innerWidth;
-        const columnWidth = viewportWidth / LB.galleryNumOfCols; // Width per column
+        // const viewportWidth = window.innerWidth;
+        // const columnWidth = viewportWidth / LB.galleryNumOfCols;
 
         console.log("platform: ", platform);
 
         function getEbootPath(gameFile) {
-            const gameDir = path.dirname(gameFile); // Get the directory of the game file
-            return path.join(gameDir, 'USRDIR', 'EBOOT.BIN'); // Append the relative path
+            const gameDir = path.dirname(gameFile);
+            return path.join(gameDir, 'USRDIR', 'EBOOT.BIN');
         }
 
         async function getPs3GameTitle(filePath) {
@@ -354,7 +346,6 @@ async function buildGallery(params) {
         if (gameFiles.length > 0) {
             for (let i = 0; i < gameFiles.length; i++) {
                 const gameFilePath = gameFiles[i];
-                // console.log("gameFile: ", gameFile);
                 const missingImagePath = path.join(LB.baseDir, 'img', 'missing.png');
 
                 let fileName = path.basename(gameFilePath);
@@ -395,7 +386,7 @@ async function buildGallery(params) {
                 }
 
                 // Set explicit width and height attributes
-                gameImage.width = columnWidth; // Set width attribute
+                // gameImage.width = columnWidth; // Set width attribute
                 // gameImage.height = columnWidth; // Set height attribute (placeholder)
 
                 const gameLabel = document.createElement('div');
@@ -414,6 +405,7 @@ async function buildGallery(params) {
             // gameContainer.style.gridColumn = `1 / span ${LB.galleryNumOfCols}`;
             // gameContainer.style.gridColumn = `2 / calc(${LB.galleryNumOfCols} - 1)`;
             // gameContainer.style.gridColumn = `calc(${LB.galleryNumOfCols} / 2) / span 2`;
+
             gameContainer.style.gridColumn = `1 / span 2`;
 
             gameContainer.innerHTML = `<p><i class="fa fa-heartbeat fa-5x" aria-hidden="true"></i></p><p>No game files found in</p><p><code>${gamesDir}</code></p>`;

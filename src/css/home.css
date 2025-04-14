@@ -59,7 +59,7 @@
     filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.6));
   }
   50% {
-    filter: drop-shadow(0 0 4px rgba(var(--glow-color), 0.7));
+    filter: drop-shadow(0 0 14px rgba(var(--glow-color), 0.7));
   }
   100% {
     filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.6));

@@ -386,6 +386,8 @@ const defaultPreferences = {
         footerSize: "medium",
         homeMenuTheme: "flat",
         disabledPlatformsPolicy: "show",
+        recentlyPlayedPolicy: "hide",
+        theme: "default",
         steamGridAPIKey: "",
         giantBombAPIKey: ""
     }

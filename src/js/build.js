@@ -90,16 +90,10 @@ function _buildPrefsFormItem(name, iconName, type, description, shortDescription
 
         const radiosContainer = document.createElement('div');
         radiosContainer.classList.add('radio-container');
-        // radiosContainer.style.display = 'flex';
-        // radiosContainer.style.gap = '20px';
-        // radiosContainer.style.alignItems = 'center';
 
         types.forEach((type, index) => {
 
             const label = document.createElement('label');
-            // label.style.display = 'flex';
-            // label.style.alignItems = 'center';
-            // label.style.gap = '6px';
 
             const radio = document.createElement('input');
             radio.type = 'radio';
@@ -117,9 +111,6 @@ function _buildPrefsFormItem(name, iconName, type, description, shortDescription
 
             radios.push(radio);
 
-            // radio.style.margin = '0';
-            // radio.style.accentColor = 'var(--color-accent)';
-
             const text = document.createTextNode(type.charAt(0).toUpperCase() + type.slice(1));
 
             radio.addEventListener('change', () => {
@@ -129,7 +120,6 @@ function _buildPrefsFormItem(name, iconName, type, description, shortDescription
 
             label.appendChild(radio);
             label.appendChild(radioBox);
-            // label.appendChild(text);
             radiosContainer.appendChild(label);
 
         });
@@ -137,6 +127,8 @@ function _buildPrefsFormItem(name, iconName, type, description, shortDescription
         inputCtn.appendChild(radiosContainer);
 
         input = inputCtn;
+
+    } else if (type === 'menu') {
 
     } else {
 
@@ -201,6 +193,10 @@ function _buildPrefsForm() {
     const homeMenuThemeGroup = homeMenuTheme.group;
     const homeMenuThemeRadios = homeMenuTheme.radios;
 
+    const theme = _buildPrefsFormItem('theme', 'arrows-h', ['default', 'day', 'night'], '', 'Emulsion Theme', LB.theme);
+    const themeGroup = theme.group;
+    const themeRadios = theme.radios;
+
     console.log("LB.disabledPlatformsPolicy: ", LB.disabledPlatformsPolicy);
 
     const disabledPlatformsPolicy = _buildPrefsFormItem('disabledPlatformsPolicy', 'check-square-o', ['show', 'hide'], '', 'Disabled Platforms', LB.disabledPlatformsPolicy);
@@ -218,6 +214,7 @@ function _buildPrefsForm() {
     formContainer.appendChild(platformMenuImageCtn);
     formContainer.appendChild(numberOfColumnsGroup);
     formContainer.appendChild(homeMenuThemeGroup);
+    formContainer.appendChild(themeGroup);
     formContainer.appendChild(footerSizeGroup);
     formContainer.appendChild(disabledPlatformsPolicyGroup);
     formContainer.appendChild(steamGridAPIKeyGroup);
@@ -286,6 +283,7 @@ function _buildPrefsForm() {
             await LB.prefs.save('settings', 'numberOfColumns', numberOfColumns);
             await LB.prefs.save('settings', 'footerSize', footerSizeRadios.find(radio => radio.checked)?.value);
             await LB.prefs.save('settings', 'homeMenuTheme', homeMenuThemeRadios.find(radio => radio.checked)?.value);
+            await LB.prefs.save('settings', 'theme', themeRadios.find(radio => radio.checked)?.value);
             await LB.prefs.save('settings', 'disabledPlatformsPolicy', disabledPlatformsPolicyRadios.find(radio => radio.checked)?.value);
             await LB.prefs.save('settings', 'steamGridAPIKey', steamGridAPIKeyInput.value);
             await LB.prefs.save('settings', 'giantBombAPIKey', giantBombAPIKeyInput.value);

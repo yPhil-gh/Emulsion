@@ -53,9 +53,11 @@ LB.prefs.load()
         LB.giantBombAPIKey = preferences.settings.giantBombAPIKey;
         LB.footerSize = preferences.settings.footerSize;
         LB.homeMenuTheme = preferences.settings.homeMenuTheme;
+        LB.theme = preferences.settings.theme;
         LB.disabledPlatformsPolicy = preferences.settings.disabledPlatformsPolicy;
 
-        LB.control.setFooterSize(LB.footerSize);
+        LB.utils.setFooterSize(LB.footerSize);
+        LB.utils.applyTheme(LB.theme);
 
         return { preferences };
 

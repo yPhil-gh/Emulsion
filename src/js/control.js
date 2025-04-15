@@ -3,12 +3,6 @@
 //     document.getElementById('aboutContent').innerHTML = '';
 // });
 
-function setFooterSize(size) {
-  const footer = document.getElementById('footer');
-  footer.className = size === 'big' ? '' : `footer-${size}`;
-  // localStorage.setItem('footerSize', size);
-}
-
 function initSlideShow(platformToDisplay) {
 
     const slideshow = document.getElementById("slideshow");
@@ -797,6 +791,5 @@ function initGamepad () {
 LB.control = {
     initGallery: initGallery,
     initSlideShow: initSlideShow,
-    initGamepad: initGamepad,
-    setFooterSize: setFooterSize
+    initGamepad: initGamepad
 };

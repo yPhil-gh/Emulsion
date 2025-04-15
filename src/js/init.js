@@ -289,6 +289,23 @@ async function getPlatformPreference(platformName, key) {
     }
 }
 
+function applyTheme(theme) {
+    console.log("theme: ", theme);
+    const splash = document.getElementById('splash');
+    const body = document.querySelector('body');
+    const menu = document.getElementById('menu');
+
+    splash.style.backgroundImage = `url("../../img/themes/${theme}/background.png")"`;
+    body.style.backgroundImage = `url("../../img/themes/${theme}/background.png")`;
+    menu.style.backgroundImage = `url("../../img/themes/${theme}/background.png")`;
+}
+
+function setFooterSize(size) {
+  const footer = document.getElementById('footer');
+  footer.className = size === 'big' ? '' : `footer-${size}`;
+  // localStorage.setItem('footerSize', size);
+}
+
 LB.prefs = {
     load: getPrefs,
     save: updatePreference,
@@ -296,6 +313,8 @@ LB.prefs = {
 };
 
 LB.utils = {
+    applyTheme: applyTheme,
+    setFooterSize: setFooterSize,
     getPlatformName: getPlatformName,
     cleanFileName: cleanFileName,
     safeFileName: safeFileName,

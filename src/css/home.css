@@ -10,7 +10,7 @@
     align-items: center;
 
     /* background-color: var(--color-bg1); */
-    background-image: url('../../img/sky.png');
+    /* background-image: url('../../img/sky.png'); */
 
     transition: opacity 0.5s ease;
 }

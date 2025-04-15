@@ -197,11 +197,13 @@ function _buildPrefsForm() {
     const themeGroup = theme.group;
     const themeRadios = theme.radios;
 
-    console.log("LB.disabledPlatformsPolicy: ", LB.disabledPlatformsPolicy);
-
     const disabledPlatformsPolicy = _buildPrefsFormItem('disabledPlatformsPolicy', 'check-square-o', ['show', 'hide'], '', 'Disabled Platforms', LB.disabledPlatformsPolicy);
     const disabledPlatformsPolicyGroup = disabledPlatformsPolicy.group;
     const disabledPlatformsPolicyRadios = disabledPlatformsPolicy.radios;
+
+    const recentlyPlayedPolicy = _buildPrefsFormItem('recentlyPlayedPolicy', 'check-square-o', ['show', 'hide'], '', 'Recently Played', LB.recentlyPlayedPolicy);
+    const recentlyPlayedPolicyGroup = recentlyPlayedPolicy.group;
+    const recentlyPlayedPolicyRadios = recentlyPlayedPolicy.radios;
 
     const steamGridAPIKey = _buildPrefsFormItem('steamGridAPIKey', 'steam-square', 'text', 'Your SteamGrid API Key', 'SteamGrid API Key', LB.steamGridAPIKey || '');
     const steamGridAPIKeyGroup = steamGridAPIKey.group;
@@ -217,6 +219,7 @@ function _buildPrefsForm() {
     formContainer.appendChild(themeGroup);
     formContainer.appendChild(footerSizeGroup);
     formContainer.appendChild(disabledPlatformsPolicyGroup);
+    formContainer.appendChild(recentlyPlayedPolicyGroup);
     formContainer.appendChild(steamGridAPIKeyGroup);
     formContainer.appendChild(giantBombAPIKeyGroup);
 
@@ -285,6 +288,7 @@ function _buildPrefsForm() {
             await LB.prefs.save('settings', 'homeMenuTheme', homeMenuThemeRadios.find(radio => radio.checked)?.value);
             await LB.prefs.save('settings', 'theme', themeRadios.find(radio => radio.checked)?.value);
             await LB.prefs.save('settings', 'disabledPlatformsPolicy', disabledPlatformsPolicyRadios.find(radio => radio.checked)?.value);
+            await LB.prefs.save('settings', 'recentlyPlayedPolicy', recentlyPlayedPolicyRadios.find(radio => radio.checked)?.value);
             await LB.prefs.save('settings', 'steamGridAPIKey', steamGridAPIKeyInput.value);
             await LB.prefs.save('settings', 'giantBombAPIKey', giantBombAPIKeyInput.value);
             window.location.reload();

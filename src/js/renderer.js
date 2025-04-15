@@ -55,6 +55,7 @@ LB.prefs.load()
         LB.homeMenuTheme = preferences.settings.homeMenuTheme;
         LB.theme = preferences.settings.theme;
         LB.disabledPlatformsPolicy = preferences.settings.disabledPlatformsPolicy;
+        LB.recentlyPlayedPolicy = preferences.settings.recentlyPlayedPolicy;
 
         LB.utils.setFooterSize(LB.footerSize);
         LB.utils.applyTheme(LB.theme);

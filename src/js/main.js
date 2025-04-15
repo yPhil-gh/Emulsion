@@ -394,6 +394,8 @@ const defaultPreferences = {
 };
 
 const platforms = [
+    { name: "nes", extensions: [".zip"] },
+    { name: "sms", extensions: [".zip"] },
     { name: "pcengine", extensions: [".pce"] },
     { name: "amiga", extensions: [".lha", ".adf"] },
     { name: "megadrive", extensions: [".md"] },

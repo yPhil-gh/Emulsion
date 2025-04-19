@@ -298,6 +298,16 @@ function applyTheme(theme) {
     splash.style.backgroundImage = `url("../../img/themes/${theme}/background.png")"`;
     body.style.backgroundImage = `url("../../img/themes/${theme}/background.png")`;
     menu.style.backgroundImage = `url("../../img/themes/${theme}/background.png")`;
+
+    menu.style.transition = 'filter 1s';
+    menu.style.filter = 'opacity(0.5)';
+
+    setTimeout(() => {
+        menu.style.backgroundImage = `url("../../img/themes/${theme}/background.png")`;
+        menu.style.filter = 'opacity(1)';
+    }, 100);
+
+
 }
 
 function setFooterSize(size) {

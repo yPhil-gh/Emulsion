@@ -401,6 +401,7 @@ const platforms = [
     { name: "megadrive", extensions: [".md"] },
     { name: "snes", extensions: [".smc"] },
     { name: "jaguar", extensions: [".jag"] },
+    { name: "saturn", extensions: [".cue"] },
     { name: "psx", extensions: [".srm"] },
     { name: "n64", extensions: [".z64"] },
     { name: "dreamcast", extensions: [".gdi", ".cdi"] },

@@ -1,6 +1,6 @@
 :root {
   --font-main: 'Orbitron', sans-serif;
-  --glow-color: 167, 230, 255;
+  --glow-color: 167, 0, 255;
   --color-succes: #00ff18;
   --color-icon: #007bff;
 
@@ -51,6 +51,7 @@ body {
   min-height: 100vh; /* allow content to grow */
   overflow: hidden;
   cursor: default;
+  transition: background 0.8s ease;
 
   /* perspective: 600px; */
 }

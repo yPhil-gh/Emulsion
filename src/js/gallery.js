@@ -72,7 +72,7 @@ LB.gallery = {
 
                 console.log("LB.recentlyPlayedPolicy: ", LB.recentlyPlayedPolicy);
 
-                if (LB.recentlyPlayedPolicy === 'show') {
+                if (false) {
                     const recentGallery = await _buildRecentGallery({ userDataPath, index: i });
                     if (recentGallery) {
                         galleriesContainer.appendChild(recentGallery);

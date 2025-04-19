@@ -20,3 +20,39 @@ Unlike other frontends, EMULSION avoids duplicating emulator installations and c
 - Sleek & Responsive UI:
 Designed with performance and user experience in mind, ensuring that launching a game is as smooth as gameplay itself.
 
+## Supported Platforms
+
+EMULSION supports the following platforms:
+
+- Nintendo NES
+- Sega Master System
+- PCEngine
+- Amiga
+- Sega MegaDrive
+- Nintendo SNES
+- Atari Jaguar
+- Sega Saturn
+- Sony Playstation
+- Nintendo 64
+- Sega Dreamcast
+- Sony Playstation 2
+- Nintendo GameCube
+- XBox
+- Sony Playstation PSP
+- Sony Playstation 3
+
+## Installation
+
+See releases
+
+## Configuration
+
+To configure the emulators, you need to provide the path to the emulator executable and any optional launch arguments for each platform. This can be done through the application's settings.
+
+## Controller Support
+
+EMULSION supports gamepads, keyboards, and mice. 
+
+## Contributing
+
+If you want to contribute to the project, feel free to submit a pull request.

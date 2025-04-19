@@ -185,7 +185,7 @@ function _buildPrefsForm() {
     const numberOfColumnsGroup = numberOfColumns.group;
     const numberOfColumnsInput = numberOfColumns.input;
 
-    const footerSize = _buildPrefsFormItem('footerSize', 'arrows', ['small', 'medium', 'big'], '', 'Footer menu size', LB.footerSize, LB.control.setFooterSize);
+    const footerSize = _buildPrefsFormItem('footerSize', 'arrows', ['small', 'medium', 'big'], '', 'Footer menu size', LB.footerSize, LB.utils.setFooterSize);
     const footerSizeGroup = footerSize.group;
     const footerSizeRadios = footerSize.radios;
 
@@ -193,7 +193,7 @@ function _buildPrefsForm() {
     const homeMenuThemeGroup = homeMenuTheme.group;
     const homeMenuThemeRadios = homeMenuTheme.radios;
 
-    const theme = _buildPrefsFormItem('theme', 'arrows-h', ['default', 'day', 'night'], '', 'Emulsion Theme', LB.theme);
+    const theme = _buildPrefsFormItem('theme', 'eyedropper', ['default', 'day', 'night'], '', 'Emulsion Theme', LB.theme, LB.utils.applyTheme);
     const themeGroup = theme.group;
     const themeRadios = theme.radios;
 
@@ -201,7 +201,7 @@ function _buildPrefsForm() {
     const disabledPlatformsPolicyGroup = disabledPlatformsPolicy.group;
     const disabledPlatformsPolicyRadios = disabledPlatformsPolicy.radios;
 
-    const recentlyPlayedPolicy = _buildPrefsFormItem('recentlyPlayedPolicy', 'check-square-o', ['show', 'hide'], '', 'Recently Played', LB.recentlyPlayedPolicy);
+    const recentlyPlayedPolicy = _buildPrefsFormItem('recentlyPlayedPolicy', 'clock-o', ['show', 'hide'], '', 'Recently Played', LB.recentlyPlayedPolicy);
     const recentlyPlayedPolicyGroup = recentlyPlayedPolicy.group;
     const recentlyPlayedPolicyRadios = recentlyPlayedPolicy.radios;
 

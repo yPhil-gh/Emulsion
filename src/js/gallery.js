@@ -72,7 +72,7 @@ LB.gallery = {
 
                 console.log("LB.recentlyPlayedPolicy: ", LB.recentlyPlayedPolicy);
 
-                if (false) {
+                if (LB.recentlyPlayedPolicy === 'show') {
                     const recentGallery = await _buildRecentGallery({ userDataPath, index: i });
                     if (recentGallery) {
                         galleriesContainer.appendChild(recentGallery);
@@ -325,11 +325,6 @@ async function buildGallery(params) {
             }
             return title;
         }
-
-        // const viewportWidth = window.innerWidth;
-        // const columnWidth = viewportWidth / LB.galleryNumOfCols;
-
-        console.log("platform: ", platform);
 
         function getEbootPath(gameFile) {
             const gameDir = path.dirname(gameFile);

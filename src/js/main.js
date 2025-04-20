@@ -88,17 +88,39 @@ if (process.argv.includes('--help')) {
     showHelp();
 }
 
+
 function loadRecents() {
     try {
         if (fs.existsSync(recentFilePath)) {
             const recentFileContent = fs.readFileSync(recentFilePath, 'utf8');
 
-            // Attempt to parse the JSON
             try {
-                // console.log("data: ", recentFileContent);
-                const recent = JSON.parse(recentFileContent);;
+                const recent = JSON.parse(recentFileContent);
 
-                return recent;
+                if (!Array.isArray(recent)) {
+                    throw new Error("Expected an array");
+                }
+
+                const isValidRecord = (record) =>
+                    record &&
+                    typeof record.fileName === 'string' &&
+                    typeof record.filePath === 'string' &&
+                    typeof record.gameName === 'string' &&
+                    typeof record.emulator === 'string' &&
+                    typeof record.emulatorArgs === 'string' && // Can be empty string
+                    typeof record.platform === 'string' &&
+                    typeof record.date === 'string' && !isNaN(Date.parse(record.date));
+
+                const validRecords = recent.filter(isValidRecord);
+
+                // Optionally overwrite the file if invalid entries were removed
+                if (validRecords.length !== recent.length) {
+                    fs.writeFileSync(recentFilePath, JSON.stringify(validRecords, null, 2), 'utf8');
+                    console.warn(`Removed ${recent.length - validRecords.length} invalid entries from recents file.`);
+                }
+
+                return validRecords;
+
             } catch (parseError) {
                 console.error('Invalid JSON in recent file:', parseError);
                 return { error: 'INVALID_JSON', message: 'The recent file contains invalid JSON. It will now be reset.' };
@@ -352,10 +374,11 @@ ipcMain.on('run-command', (event, data) => {
     const existingIndex = recents.findIndex(entry => entry.fileName === fileName);
 
     if (existingIndex >= 0) {
-        // Update the date of the existing entry.
-        recents[existingIndex].date = new Date().toISOString();
+        recents[existingIndex] = {
+            ...recents[existingIndex],
+            date: recentEntry.date
+        };
     } else {
-        // No existing entry, so push the new one.
         recents.push(recentEntry);
     }
 
@@ -441,8 +464,8 @@ ipcMain.handle('load-preferences', () => {
             type: 'error',
             message: preferences.message,
             buttons: ['Reset', 'Quit'],
-            defaultId: 0, // "Reset" is the default button
-            cancelId: 1,  // "Quit" is the cancel button
+            defaultId: 0, // "Reset" (default)
+            cancelId: 1,  // "Quit"
         });
 
         if (result === 0) {
@@ -452,8 +475,6 @@ ipcMain.handle('load-preferences', () => {
             defaultPreferences.userDataPath = userDataPath;
             return defaultPreferences;
         } else {
-
-            console.log("Quitting the application...");
             app.quit();
             return null;
         }

@@ -575,7 +575,7 @@ function initGallery(currentIndex, disabledPlatform) {
                 ipcRenderer.send('run-command', {
                     fileName: selectedGameContainer.dataset.gameName,
                     filePath: selectedGameContainer.dataset.gamePath,
-                    gameName: selectedGameContainer.title,
+                    gameName: selectedGameContainer.dataset.gameName,
                     emulator: selectedGameContainer.dataset.emulator,
                     emulatorArgs: selectedGameContainer.dataset.emulatorArgs,
                     platform: selectedGameContainer.dataset.platform

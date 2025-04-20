@@ -65,14 +65,5 @@
         "sdl2-gamecontroller": "^1.0.11",
         "steamgriddb": "^2.2.0",
         "tree-kill": "^1.2.2"
-    },
-    "platforms": [
-        "amiga",
-        "pcengine",
-        "dreamcast",
-        "gamecube",
-        "snes",
-        "n64",
-        "settings"
-    ]
+    }
 }

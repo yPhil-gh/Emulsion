@@ -80,13 +80,13 @@
 
 .slide.prev-slide-3d {
   opacity: 0.2;
-  transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px)) translateX(-20px);
+  transform: rotateY(calc(var(--angle) * 1deg)) translateZ(50vw) translateX(-50vw);
   z-index: 1;
 }
 
 .slide.next-slide-3d {
   opacity: 0.2;
-  transform: rotateY(calc(var(--angle) * 1deg)) translateZ(calc(var(--radius) * 1px)) translateX(20px);
+  transform: rotateY(calc(var(--angle) * 1deg)) translateZ(50vw) translateX(50vw);
   z-index: 1;
 }
 

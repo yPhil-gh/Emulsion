@@ -50,7 +50,7 @@ async function populateGameMenu(gameMenuContainer, gameName, platformName) {
 
                 const img = new Image();
                 img.src = url;
-                img.title = `Downloaded from ${source}`;
+                img.title = `${gameName}\n\n- Found on ${source}\n- Click to download and save`;
                 img.classList.add('game-image');
                 img.style.opacity = '0';
                 img.style.transition = 'opacity 0.3s ease-in';
@@ -60,6 +60,7 @@ async function populateGameMenu(gameMenuContainer, gameName, platformName) {
                     gameContainer.classList.add('menu-game-container');
                     gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
                     gameContainer.appendChild(img);
+
                     gameMenuContainer.appendChild(gameContainer);
 
                     requestAnimationFrame(() => {

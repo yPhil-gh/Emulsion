@@ -167,6 +167,23 @@ function setGalleryControls(currentIndex) {
     LB.utils.updateControls('circle', 'same', 'Back');
 }
 
+function launchGame(gameContainer) {
+    gameContainer.classList.add('launching');
+
+    ipcRenderer.send('run-command', {
+        fileName: gameContainer.dataset.gameName,
+        filePath: gameContainer.dataset.gamePath,
+        gameName: gameContainer.dataset.gameName,
+        emulator: gameContainer.dataset.emulator,
+        emulatorArgs: gameContainer.dataset.emulatorArgs,
+        platform: gameContainer.dataset.platform
+    });
+
+    setTimeout(() => {
+        gameContainer.classList.remove('launching');
+    }, 1000);
+}
+
 function initGallery(currentIndex, disabledPlatform) {
 
     console.log("currentIndex init gal: ", currentIndex);
@@ -201,15 +218,28 @@ function initGallery(currentIndex, disabledPlatform) {
 
                 gameContainers.forEach((container, index) => {
                     container.addEventListener('click', (event) => {
+                        console.log("event: ", event.currentTarget);
                         if (event.currentTarget.classList.contains('empty-platform-game-container')) {
                             return;
                         }
                         if (event.currentTarget.classList.contains('settings')) {
                             _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), event.currentTarget.dataset.index / 1, onGalleryKeyDown, false, disabledPlatform);
                         } else {
-                            ipcRenderer.send('run-command', event.currentTarget.dataset.command);
+                            console.log("YO!!");
+                            launchGame(event.currentTarget);
                         }
                     });
+
+                    // right-click (contextmenu) handler
+                    container.addEventListener('contextmenu', (event) => {
+                        event.preventDefault(); // Prevent the default context menu
+
+                        if (event.currentTarget.classList.contains('empty-platform-game-container')) {
+                            return;
+                        }
+                        _toggleMenu(gameContainers, parseInt(event.currentTarget.dataset.index), onGalleryKeyDown, false);
+                    });
+
                     container.classList.remove('selected');
                 });
 
@@ -321,7 +351,7 @@ function initGallery(currentIndex, disabledPlatform) {
         let menuSelectedIndex = 1;
 
         const selectedGame = LB.utils.getSelectedGame(gameContainers, selectedIndex);
-        const selectedGameImg = selectedGame.querySelector('.game-image');
+        // const selectedGameImg = selectedGame.querySelector('.game-image');
 
         function onMenuKeyDown(event) {
 
@@ -381,6 +411,12 @@ function initGallery(currentIndex, disabledPlatform) {
 
         }
 
+        function onMenuClick(event) {
+            console.log("event.target: ", event.target);
+            console.log("event.currentTarget: ", event.currentTarget);
+            _closeMenu(event.target.src);
+        }
+
         function onMenuWheel(event) {
             // event.preventDefault();
             if (event.shiftKey) {
@@ -431,6 +467,7 @@ function initGallery(currentIndex, disabledPlatform) {
             window.removeEventListener('keydown', keyDownListener);
             window.addEventListener('keydown', onMenuKeyDown);
             menuContainer.addEventListener('wheel', onMenuWheel);
+            menuContainer.addEventListener('click', onMenuClick);
 
             gameContainers.forEach(async (container, index) => {
                 if (index === selectedIndex) {
@@ -440,11 +477,11 @@ function initGallery(currentIndex, disabledPlatform) {
                         menuContainer.appendChild(platformForm);
                     } else {
                         const gameImage = container.querySelector('img');
-                        const gameMenuContainer = LB.build.gameMenu(container.title, gameImage);
+                        const gameMenuContainer = LB.build.gameMenu(container.dataset.gameName, gameImage);
                         menuContainer.appendChild(gameMenuContainer);
-                        await LB.build.populateGameMenu(gameMenuContainer, container.title, platformToOpen || container.dataset.platform);
+                        await LB.build.populateGameMenu(gameMenuContainer, container.dataset.gameName, platformToOpen || container.dataset.platform);
 
-                        document.querySelector('header .platform-name').textContent = container.title;
+                        document.querySelector('header .platform-name').textContent = container.dataset.gameName;
                         document.querySelector('header .item-type').textContent = '';
                         document.querySelector('header .item-number').textContent = '';
 
@@ -569,21 +606,7 @@ function initGallery(currentIndex, disabledPlatform) {
             if (currentPageIndex === 0) {
                 _toggleMenu(gameContainers, selectedIndex, onGalleryKeyDown, isMenuOpen);
             } else {
-                selectedGameContainer.classList.add('launching');
-                // ipcRenderer.send('run-command', selectedGameContainer.dataset.command);
-
-                ipcRenderer.send('run-command', {
-                    fileName: selectedGameContainer.dataset.gameName,
-                    filePath: selectedGameContainer.dataset.gamePath,
-                    gameName: selectedGameContainer.dataset.gameName,
-                    emulator: selectedGameContainer.dataset.emulator,
-                    emulatorArgs: selectedGameContainer.dataset.emulatorArgs,
-                    platform: selectedGameContainer.dataset.platform
-                });
-
-                setTimeout(() => {
-                    selectedGameContainer.classList.remove('launching');
-                }, 1000);
+                launchGame(selectedGameContainer);
             }
             break;
         case 'Escape':

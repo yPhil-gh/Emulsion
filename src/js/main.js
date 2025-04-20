@@ -197,8 +197,7 @@ function loadPreferences() {
 function savePreferences(preferences) {
     console.log("preferences: ", preferences);
     try {
-        // Convert preferences to JSON and write to the file
-        const data = JSON.stringify(preferences, null, 2); // Pretty-print JSON
+        const data = JSON.stringify(preferences, null, 4); // Pretty-print the JSON
         fs.writeFileSync(preferencesFilePath, data, 'utf8');
         console.log('Preferences saved successfully to', preferencesFilePath);
         return 'Preferences saved successfully. to: ' + preferencesFilePath;

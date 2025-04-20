@@ -412,9 +412,9 @@ function initGallery(currentIndex, disabledPlatform) {
         }
 
         function onMenuClick(event) {
-            console.log("event.target: ", event.target);
-            console.log("event.currentTarget: ", event.currentTarget);
-            _closeMenu(event.target.src);
+            if (event.target.src) {
+                _closeMenu(event.target.src);
+            }
         }
 
         function onMenuWheel(event) {
@@ -493,6 +493,8 @@ function initGallery(currentIndex, disabledPlatform) {
         }
 
         async function _closeMenu(imgSrc) {
+
+            document.getElementById('menu').removeEventListener('click', onMenuClick);
 
             updatePagesCarousel();
 

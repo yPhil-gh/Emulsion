@@ -28,6 +28,21 @@
   --page-rotation-radius: 0;
 }
 
+.theme-day {
+  --color-text-1: #333333;
+  --color-text-2: #666666;
+}
+
+.theme-night {
+  --color-text-1: #ffffff;
+  --color-text-2: #dddddd;
+}
+
+.theme-default {
+  --color-text-1: #ffcc00;
+  --color-text-2: #ff9900;
+}
+
 * {
   box-sizing: border-box; /* Include padding and border in element dimensions */
   /* max-width: 100%; /\* Prevent elements from exceeding the viewport width *\/ */
@@ -108,4 +123,8 @@ header, footer  {
   right: 20px;
   font-size: 24px;
   cursor: pointer;
+}
+
+#circle:hover {
+  color: var(--color-text-2);
 }

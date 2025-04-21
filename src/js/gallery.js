@@ -230,11 +230,7 @@ function buildSettingsPageContent(platforms) {
 
         const platformImage = document.createElement('img');
 
-        if (platformName === 'settings') {
-            platformImage.src = path.join(LB.baseDir, 'img', 'emulsion.png');
-        } else {
-            platformImage.src = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
-        }
+        platformImage.src = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
 
         platformImage.classList.add('platform-image');
         platformImage.classList.add('game-image');

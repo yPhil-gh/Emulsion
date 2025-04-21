@@ -206,70 +206,64 @@ function initGallery(currentIndex, disabledPlatform) {
 
     function initCurrentGallery(page, index) {
 
-                page.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start",
-                });
+        page.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+        });
 
-                setGalleryControls(index);
+        setGalleryControls(index);
 
-                currentPageIndex = index;
-                gameContainers = Array.from(page.querySelectorAll('.game-container') || []);
+        currentPageIndex = index;
+        gameContainers = Array.from(page.querySelectorAll('.game-container') || []);
 
-                gameContainers.forEach((container, index) => {
-                    container.addEventListener('click', (event) => {
-                        console.log("event: ", event.currentTarget);
-                        if (event.currentTarget.classList.contains('empty-platform-game-container')) {
-                            return;
-                        }
-                        if (event.currentTarget.classList.contains('settings')) {
-                            _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), event.currentTarget.dataset.index / 1, onGalleryKeyDown, false, disabledPlatform);
-                        } else {
-                            console.log("YO!!");
-                            launchGame(event.currentTarget);
-                        }
-                    });
-
-                    // right-click (contextmenu) handler
-                    container.addEventListener('contextmenu', (event) => {
-                        event.preventDefault(); // Prevent the default context menu
-
-                        if (event.currentTarget.classList.contains('empty-platform-game-container')) {
-                            return;
-                        }
-                        _toggleMenu(gameContainers, parseInt(event.currentTarget.dataset.index), onGalleryKeyDown, false);
-                    });
-
-                    container.classList.remove('selected');
-                });
-
-                const firstGameContainer = page.querySelector('.game-container');
-                firstGameContainer.classList.add('selected');
-                firstGameContainer.focus();
-                firstGameContainer.scrollIntoView({
-                    behavior: "instant",
-                    block: "center"
-                });
-
-                document.querySelector('header .platform-name').textContent = LB.utils.getPlatformName(page.dataset.platform);
-                document.querySelector('header .item-type').textContent = index === 0 ? ' platforms' : ' games';
-                document.querySelector('header .item-number').textContent = gameContainers.length - 1;
-
-                const platformImage = document.createElement('img');
-                if (page.dataset.platform === 'settings') {
-                    document.querySelector('header .platform-image').style.backgroundImage = `url('../../img/emulsion.png')`;
-                } else {
-                    platformImage.classList.add(page.dataset.platform);
-                    document.querySelector('header .platform-image').style.backgroundImage = `url('../../img/platforms/${page.dataset.platform}.png')`;
+        gameContainers.forEach((container, index) => {
+            container.addEventListener('click', (event) => {
+                console.log("event: ", event.currentTarget);
+                if (event.currentTarget.classList.contains('empty-platform-game-container')) {
+                    return;
                 }
+                if (event.currentTarget.classList.contains('settings')) {
+                    _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), event.currentTarget.dataset.index / 1, onGalleryKeyDown, false, disabledPlatform);
+                } else {
+                    console.log("YO!!");
+                    launchGame(event.currentTarget);
+                }
+            });
 
-                document.querySelector('header .prev-link').onclick = function() {
-                    goToPrevPage();
-                };
+            // right-click (contextmenu) handler
+            container.addEventListener('contextmenu', (event) => {
+                event.preventDefault(); // Prevent the default context menu
 
-                document.querySelector('header .next-link').onclick = function() {
-                    goToNextPage();
-                };
+                if (event.currentTarget.classList.contains('empty-platform-game-container')) {
+                    return;
+                }
+                _toggleMenu(gameContainers, parseInt(event.currentTarget.dataset.index), onGalleryKeyDown, false);
+            });
+
+            container.classList.remove('selected');
+        });
+
+        const firstGameContainer = page.querySelector('.game-container');
+        firstGameContainer.classList.add('selected');
+        firstGameContainer.focus();
+        firstGameContainer.scrollIntoView({
+            behavior: "instant",
+            block: "center"
+        });
+
+        document.querySelector('header .platform-name').textContent = LB.utils.getPlatformName(page.dataset.platform);
+        document.querySelector('header .item-type').textContent = index === 0 ? ' platforms' : ' games';
+        document.querySelector('header .item-number').textContent = gameContainers.length - 1;
+
+        document.querySelector('header .platform-image').style.backgroundImage = `url('../../img/platforms/${page.dataset.platform}.png')`;
+
+        document.querySelector('header .prev-link').onclick = function() {
+            goToPrevPage();
+        };
+
+        document.querySelector('header .next-link').onclick = function() {
+            goToNextPage();
+        };
 
     }
 

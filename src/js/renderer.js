@@ -10,11 +10,8 @@ function buildSlide(platformName, preferences) {
     slide.className = "slide";
     slide.id = platformName;
     const platformImgPath = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
-    const emulsionImgPath = path.join(LB.baseDir, 'img', 'emulsion.png');
 
-    slide.style.backgroundImage = platformName === "settings"
-        ? `url('${emulsionImgPath}')`
-        : `url('${platformImgPath}')`;
+    slide.style.backgroundImage = `url('${platformImgPath}')`;
 
     const slideContent = document.createElement("div");
     slideContent.className = "slide-content";

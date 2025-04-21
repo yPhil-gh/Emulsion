@@ -27,6 +27,10 @@ function findProjectRoot(startDir) {
 
 const projectRoot = findProjectRoot(__dirname);
 
+console.log("projectRoot: ", projectRoot);
+
+console.log("getExecutablePath(): ", getExecutablePath());
+
 function getExecutablePath() {
     const basePath = path.join(projectRoot, 'bin');
     return os.platform() === 'win32'

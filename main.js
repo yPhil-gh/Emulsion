@@ -4,7 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { spawn, exec } from 'child_process';
-import { getAllCoverImageUrls } from './backends.js';
+import { getAllCoverImageUrls } from './src/js/backends.js';
 
 import axios from 'axios';
 import gamecontroller from "sdl2-gamecontroller";
@@ -32,15 +32,14 @@ console.log("projectRoot: ", projectRoot);
 console.log("getExecutablePath(): ", getExecutablePath());
 
 function getExecutablePath() {
-    const basePath = path.join(projectRoot, 'bin');
+    const basePath = path.join('bin');
     return os.platform() === 'win32'
         ? path.join(basePath, 'sfo.exe')
         : path.join(basePath, 'sfo');
 }
 
 async function loadPackageJson() {
-    const filePath = new URL('../../package.json', import.meta.url);
-    const data = await readFile(filePath, 'utf-8');
+    const data = await readFile('package.json', 'utf-8');
     return JSON.parse(data);
 }
 

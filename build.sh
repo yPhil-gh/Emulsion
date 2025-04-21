@@ -59,39 +59,45 @@ generateDesktopFile
 generateDebControlFile
 
 doDeb() {
-    if [ -f "dist/$PACKAGE_NAME.deb" ]; then
-        echo "Processing .deb package..."
-
-        # Prepare the repack directories
-        mkdir -p ./repack
-        mkdir -p ./out
-
-        # Copy and extract the .deb package
-        cp -v "dist/$PACKAGE_NAME.deb" ./repack/
-        dpkg-deb -x -v "./repack/$PACKAGE_NAME.deb" ./repack/
-
-        # Copy the custom files to the appropriate locations
-        cp -v ./emulsion.desktop ./repack/usr/share/applications/
-
-        # Copy ./DEBIAN/control file
-        cp -Rv ./DEBIAN ./repack/
-
-        # Remove the (50Mb+) locales, not sure if that really works
-        rm -rf "./repack/opt/emulsion/locales"
-
-        # Rebuild the .deb package into the 'out' directory
-        dpkg-deb --build ./repack "./out/$PACKAGE_NAME.deb"
-        # dpkg-deb -v -Zxz -z9 -Sextreme -b ./repack "./out/$PACKAGE_NAME.deb"
-
-        # Done
-        echo "Size before move: $(du -h "./dist/$PACKAGE_NAME.deb")"
-        cp -v "./out/$PACKAGE_NAME.deb" "./dist/$PACKAGE_NAME.deb"
-        echo "Size after move: $(du -h "./dist/$PACKAGE_NAME.deb")"
-        echo ".deb package rebuilt and saved to ./dist/$PACKAGE_NAME.deb"
-    else
-        echo "No ./dist..?"
+    local pkg="dist/$PACKAGE_NAME.deb"
+    if [ ! -f "$pkg" ]; then
+        echo "Error: $pkg not found"
+        return 1
     fi
+
+    echo "Processing .deb package..."
+
+    # Clean slate
+    rm -rf repack out
+    mkdir -p repack out
+
+    # Step 1: Copy original and extract control+data
+    cp -v "$pkg" repack/
+    dpkg-deb -R "repack/$PACKAGE_NAME.deb" "repack/$PACKAGE_NAME"
+
+    # Now you have:
+    #   repack/$PACKAGE_NAME/DEBIAN/    <- control files
+    #   repack/$PACKAGE_NAME/usr/...    <- data
+
+    # Step 2: Inject the .desktop
+    install -Dm644 \
+            emulsion.desktop \
+            "repack/$PACKAGE_NAME/usr/share/applications/emulsion.desktop"
+
+    # Step 3: Remove huge locales directory
+    rm -rf "repack/$PACKAGE_NAME/opt/emulsion/locales"
+
+    # Step 4: Rebuild the .deb
+    dpkg-deb -b "repack/$PACKAGE_NAME" "out/$PACKAGE_NAME.deb"
+
+    echo "Rebuilt .deb:"
+    du -h "out/$PACKAGE_NAME.deb"
+
+    # (Optionally) replace the original
+    cp -v "out/$PACKAGE_NAME.deb" "dist/$PACKAGE_NAME.deb"
+    echo "Replaced dist/$PACKAGE_NAME.deb with rebuilt package."
 }
+
 
 modify_atexit() {
   local file="$1"
@@ -132,7 +138,7 @@ doAppImage() {
 
 # Yeah :|
 
-# doDeb
+doDeb
 doAppImage
 
 cd ..

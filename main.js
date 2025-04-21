@@ -31,11 +31,27 @@ console.log("projectRoot: ", projectRoot);
 
 console.log("getExecutablePath(): ", getExecutablePath());
 
+console.log("process.resourcesPath: ", process.resourcesPath);
+
+// function getExecutablePath() {
+//     const basePath = path.join('bin');
+//     return os.platform() === 'win32'
+//         ? path.join(basePath, 'sfo.exe')
+//         : path.join(basePath, 'sfo');
+// }
+
 function getExecutablePath() {
-    const basePath = path.join('bin');
-    return os.platform() === 'win32'
-        ? path.join(basePath, 'sfo.exe')
-        : path.join(basePath, 'sfo');
+  const exeName = os.platform() === 'win32' ? 'sfo.exe' : 'sfo';
+  if (app.isPackaged) {
+    return path.join(
+      process.resourcesPath,          // /opt/emulsion/resources
+      'bin',
+      exeName
+    );
+  } else {
+    // __dirname in dev points to your src folder
+    return path.join(__dirname, 'bin', exeName);
+  }
 }
 
 async function loadPackageJson() {
@@ -45,8 +61,8 @@ async function loadPackageJson() {
 
 const pjson = await loadPackageJson();
 const buttonStates = {
-  back: false,
-  dpdown: false,
+    back: false,
+    dpdown: false,
 };
 
 let isProd = false;
@@ -64,11 +80,11 @@ gamecontroller.on("controller-device-added", (data) => {
 });
 
 gamecontroller.on('controller-button-up', (event) => {
-  if (event.button === 'back') {
-    buttonStates.back = false;
-  } else if (event.button === 'dpdown') {
-    buttonStates.dpdown = false;
-  }
+    if (event.button === 'back') {
+        buttonStates.back = false;
+    } else if (event.button === 'dpdown') {
+        buttonStates.dpdown = false;
+    }
 });
 
 const preferencesFilePath = path.join(app.getPath('userData'), "preferences.json");
@@ -105,14 +121,14 @@ function loadRecents() {
                 }
 
                 const isValidRecord = (record) =>
-                    record &&
-                    typeof record.fileName === 'string' &&
-                    typeof record.filePath === 'string' &&
-                    typeof record.gameName === 'string' &&
-                    typeof record.emulator === 'string' &&
-                    typeof record.emulatorArgs === 'string' && // Can be empty string
-                    typeof record.platform === 'string' &&
-                    typeof record.date === 'string' && !isNaN(Date.parse(record.date));
+                      record &&
+                      typeof record.fileName === 'string' &&
+                      typeof record.filePath === 'string' &&
+                      typeof record.gameName === 'string' &&
+                      typeof record.emulator === 'string' &&
+                      typeof record.emulatorArgs === 'string' && // Can be empty string
+                      typeof record.platform === 'string' &&
+                      typeof record.date === 'string' && !isNaN(Date.parse(record.date));
 
                 const validRecords = recent.filter(isValidRecord);
 
@@ -245,15 +261,15 @@ const downloadAndSaveImage = async (imgSrc, platform, gameName) => {
 let mainWindow;
 
 function createWindows() {
-  mainWindow = new BrowserWindow({
-    width: 800,
-      height: 600,
-      fullscreen: process.argv.includes('--fullscreen'),
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-    },
-  });
+    mainWindow = new BrowserWindow({
+        width: 800,
+        height: 600,
+        fullscreen: process.argv.includes('--fullscreen'),
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+        },
+    });
     mainWindow.loadFile('src/html/index.html');
 }
 

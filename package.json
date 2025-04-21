@@ -1,6 +1,6 @@
 {
     "name": "emulsion",
-    "version": "1.0.25",
+    "version": "1.0.34",
     "context": "prod",
     "description": "Better gaming throught chemistry",
     "homepage": "https://gitlab.com/yphil/emulsion",
@@ -31,22 +31,25 @@
             "!**/node_modules/**/tests",
             "!**/node_modules/**/examples"
         ],
+        "extraResources": [
+            {
+                "from": "bin",
+                "to": "bin",
+                "filter": ["**/*"]
+            }
+        ],
+        "asarUnpack": "bin/*",
         "appId": "com.yphil.emulsion",
         "productName": "emulsion",
         "linux": {
             "target": [
-                "AppImage",
-                "deb",
-                "rpm"
+                "AppImage"
             ],
-            "icon": "img/emulsion.png",
+            "icon": "img/icon.png",
+            "executableName": "emulsion",
             "executableArgs":["--no-sandbox"],
             "category": "Utility",
             "artifactName": "${productName}-${version}.${ext}"
-        },
-        "win": {
-            "target": "nsis",
-            "executableName": "emulsion"
         },
         "asar": true,
         "compression": "store"

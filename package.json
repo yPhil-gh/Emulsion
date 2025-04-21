@@ -1,8 +1,8 @@
 {
     "name": "emulsion",
-    "version": "1.0.21",
+    "version": "1.0.22",
     "context": "prod",
-    "description": "Symmetrical launch break",
+    "description": "Better gaming throught chemistry",
     "homepage": "https://gitlab.com/yphil/emulsion",
     "license": "GPLv3",
     "author": {

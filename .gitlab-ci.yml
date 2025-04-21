@@ -35,7 +35,7 @@ build_windows:
     - echo "Preparing Windows build with native modules..."
 
     # Install native build deps
-    - apt-get update && apt-get install -y jq python3 make g++
+    - apt-get update && apt-get install -y jq python3 make g++ cmake
 
     # Install Node dependencies
     - npm install

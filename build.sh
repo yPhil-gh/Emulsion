@@ -132,7 +132,7 @@ doAppImage() {
 
 # Yeah :|
 
-doDeb
+# doDeb
 doAppImage
 
 cd ..

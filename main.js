@@ -15,30 +15,9 @@ const __dirname = dirname(__filename);
 
 import { readFile } from 'fs/promises';
 
-function findProjectRoot(startDir) {
-    let dir = startDir;
-    while (!fs.existsSync(join(dir, 'package.json'))) {
-        const parentDir = dirname(dir);
-        if (parentDir === dir) return null;
-        dir = parentDir;
-    }
-    return dir;
-}
-
-const projectRoot = findProjectRoot(__dirname);
-
-console.log("projectRoot: ", projectRoot);
-
 console.log("getExecutablePath(): ", getExecutablePath());
 
 console.log("process.resourcesPath: ", process.resourcesPath);
-
-// function getExecutablePath() {
-//     const basePath = path.join('bin');
-//     return os.platform() === 'win32'
-//         ? path.join(basePath, 'sfo.exe')
-//         : path.join(basePath, 'sfo');
-// }
 
 function getExecutablePath() {
   const exeName = os.platform() === 'win32' ? 'sfo.exe' : 'sfo';
@@ -55,8 +34,13 @@ function getExecutablePath() {
 }
 
 async function loadPackageJson() {
-    const data = await readFile('package.json', 'utf-8');
-    return JSON.parse(data);
+  // app.getAppPath() returns:
+  //  - in dev: the project root folder
+  //  - in production: the path to resources/app.asar
+  const appPath = app.getAppPath();
+  const pkgPath = path.join(appPath, 'package.json');
+  const data = await readFile(pkgPath, 'utf-8');
+  return JSON.parse(data);
 }
 
 const pjson = await loadPackageJson();
@@ -65,7 +49,7 @@ const buttonStates = {
     dpdown: false,
 };
 
-let isProd = false;
+let isProd = app.isPackaged;
 
 gamecontroller.on("error", (data) => console.log("error", data));
 gamecontroller.on("warning", (data) => console.log("warning", data));
@@ -271,6 +255,10 @@ function createWindows() {
         },
     });
     mainWindow.loadFile('src/html/index.html');
+
+    if (app.isPackaged) {
+        Menu.setApplicationMenu(null);
+    }
 }
 
 ipcMain.on('show-context-menu', (event, params) => {

@@ -44,7 +44,6 @@ linux:
 
 win:
   target:
-    - nsis
     - zip
   icon: "img/icon.png"
   artifactName: "${productName}-win-${version}.${ext}"

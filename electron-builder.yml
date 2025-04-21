@@ -41,3 +41,16 @@ linux:
   # AppImage / deb metadata
   icon: "img/icon.png"
   category: Utility
+
+win:
+  target:
+    - nsis
+    - zip
+  icon: "img/icon.png"
+  artifactName: "${productName}-win-${version}.${ext}"
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true

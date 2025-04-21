@@ -1,6 +1,6 @@
 {
     "name": "emulsion",
-    "version": "0.0.7",
+    "version": "0.0.11",
     "context": "prod",
     "description": "Better gaming throught chemistry",
     "homepage": "https://gitlab.com/yphil/emulsion",
@@ -18,44 +18,7 @@
     "scripts": {
         "start": "electron . --no-sandbox",
         "prebuild": "rm -rf ./dist ./out ./node_modules ./repack ./tmp && npm install",
-        "build": "electron-builder --config electron-builder.yml"
-    },
-    "build": {
-        "files": [
-            "**/*",
-            "!**/*.map",
-            "!**/*.log",
-            "!**/node_modules/**/*.md",
-            "!**/node_modules/**/*.ts",
-            "!**/node_modules/**/test",
-            "!**/node_modules/**/tests",
-            "!**/node_modules/**/examples"
-        ],
-        "extraResources": [
-            {
-                "from": "bin",
-                "to": "bin",
-                "filter": ["**/*"]
-            }
-        ],
-        "asarUnpack": "bin/*",
-        "appId": "com.yphil.emulsion",
-        "productName": "emulsion",
-        "linux": {
-            "target": [
-                "AppImage",
-                "deb"
-            ],
-            "icon": "img/icon.png",
-            "category": "Utility",
-            "artifactName": "${productName}-${version}.${ext}"
-        },
-        "win": {
-            "target": "nsis",
-            "executableName": "emulsion"
-        },
-        "asar": true,
-        "compression": "store"
+        "build": "electron-builder --config electron-builder.yml --linux --win"
     },
     "devDependencies": {
         "electron": "^34.0.2",

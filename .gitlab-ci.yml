@@ -34,12 +34,12 @@ release_job:
     description: 'Release $CI_COMMIT_TAG for Linux.'
     assets:
       links:
-        - name: "EmumE-${CI_COMMIT_TAG}.deb"
+        - name: "emulsion-${CI_COMMIT_TAG}.deb"
           link_type: "package"
-          url: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/EmumE-${CI_COMMIT_TAG}.deb"
-        - name: "EmumE-${CI_COMMIT_TAG}.AppImage"
+          url: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/emulsion-${CI_COMMIT_TAG}.deb"
+        - name: "emulsion-${CI_COMMIT_TAG}.AppImage"
           link_type: "package"
-          url: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/EmumE-${CI_COMMIT_TAG}.AppImage"
+          url: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/emulsion-${CI_COMMIT_TAG}.AppImage"
   dependencies:
     - upload_assets
 
@@ -53,11 +53,11 @@ upload_assets:
     - echo "Uploading assets for tag $CI_COMMIT_TAG"
     - |
       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
-           --upload-file "dist/EmumE-${CI_COMMIT_TAG}.deb" \
-           "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/EmumE-${CI_COMMIT_TAG}.deb"
+           --upload-file "dist/emulsion-${CI_COMMIT_TAG}.deb" \
+           "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/emulsion-${CI_COMMIT_TAG}.deb"
     - |
       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
-           --upload-file "dist/EmumE-${CI_COMMIT_TAG}.AppImage" \
-           "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/EmumE-${CI_COMMIT_TAG}.AppImage"
+           --upload-file "dist/emulsion-${CI_COMMIT_TAG}.AppImage" \
+           "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/emulsion-${CI_COMMIT_TAG}.AppImage"
   dependencies:
     - build_packages

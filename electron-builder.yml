@@ -1,0 +1,43 @@
+# electron-builder.yml
+
+appId: com.yphil.emulsion
+productName: emulsion
+artifactName: "${productName}-${version}.${ext}"
+asar: true
+compression: store
+
+# Unpack the native binaries from the ASAR into this folder so they stay executable
+asarUnpack:
+  - "bin/**"
+
+files:
+  - "**/*"
+  - "!**/*.map"
+  - "!**/*.log"
+  - "!**/node_modules/**/*.md"
+  - "!**/node_modules/**/*.ts"
+  - "!**/node_modules/**/test"
+  - "!**/node_modules/**/tests"
+  - "!**/node_modules/**/examples"
+
+# Copy the 'bin' folder verbatim alongside the app
+extraResources:
+  - from: "bin"
+    to: "bin"
+    filter:
+      - "**/*"
+
+linux:
+  executableName: emulsion
+
+  # CLI flags to append when your users launch the app but that dont work dont it
+  executableArgs:
+    - --no-sandbox
+
+  target:
+    - AppImage
+    - deb
+
+  # AppImage / deb metadata
+  icon: "img/icon.png"
+  category: Utility

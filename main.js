@@ -49,8 +49,6 @@ const buttonStates = {
     dpdown: false,
 };
 
-let isProd = app.isPackaged;
-
 gamecontroller.on("error", (data) => console.log("error", data));
 gamecontroller.on("warning", (data) => console.log("warning", data));
 
@@ -90,7 +88,6 @@ Options:
 if (process.argv.includes('--help')) {
     showHelp();
 }
-
 
 function loadRecents() {
     try {
@@ -273,7 +270,7 @@ ipcMain.on('show-context-menu', (event, params) => {
             mainWindow.inspectElement(params.x, params.y);
         },
     };
-    if (!isProd) {
+    if (!app.isPackaged) {
         template.push({ type: 'separator' });
         template.push(devToolsEntry);
     }
@@ -555,6 +552,31 @@ ipcMain.handle('parse-sfo', async (_event, filePath) => {
             }
         });
     });
+});
+
+ipcMain.handle('open-about-window', () => {
+    const aboutWindow = new BrowserWindow({
+        width: 400,
+        height: 200,
+        resizable: false,
+        minimizable: false,
+        maximizable: false,
+        title: 'About Emulsion',
+        modal: true,
+        parent: mainWindow,
+        icon: path.join(__dirname, 'img/icon.png'),
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+        },
+    });
+
+    aboutWindow.removeMenu();
+    aboutWindow.loadFile(path.join(__dirname, 'src/html/about.html'));
+});
+
+ipcMain.handle('get-version', () => {
+    return pjson.version;
 });
 
 app.whenReady().then(() => {

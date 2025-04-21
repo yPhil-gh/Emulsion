@@ -177,7 +177,8 @@ function _buildPrefsForm() {
     const platformMenuImageCtn = document.createElement('div');
     platformMenuImageCtn.classList.add('platform-menu-image-ctn');
     const platformMenuImage = document.createElement('img');
-    platformMenuImage.src = path.join(LB.baseDir, 'img', 'emulsion.png');
+    platformMenuImage.src = path.join(LB.baseDir, 'img', 'platforms', `settings.png`);
+
     platformMenuImage.width = '250';
     platformMenuImageCtn.appendChild(platformMenuImage);
 
@@ -256,7 +257,7 @@ function _buildPrefsForm() {
     cancelButton.addEventListener('click', _cancelButtonClick);
 
     aboutButton.addEventListener('click', () => {
-        ipcRenderer.invoke('go-to-url', 'https://yphil.gitlab.io/ext/emulsion.html?v=' + LB.versionNumber);
+        ipcRenderer.invoke('open-about-window');
     });
 
     saveButton.addEventListener('click', _saveButtonClick);

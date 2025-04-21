@@ -38,7 +38,7 @@ generateDesktopFile() {
 
     cat <<EOF > emulsion.desktop
 [Desktop Entry]
-Name=$name
+Name=Emulsion
 Exec=/opt/emulsion/emulsion --no-sandbox %U
 Terminal=false
 Type=Application

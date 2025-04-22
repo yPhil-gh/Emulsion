@@ -1,6 +1,6 @@
 {
     "name": "emulsion",
-    "version": "0.0.26",
+    "version": "0.0.28",
     "context": "prod",
     "description": "Better gaming throught chemistry",
     "homepage": "https://gitlab.com/yphil/emulsion",
@@ -18,7 +18,7 @@
     "scripts": {
         "start": "electron . --no-sandbox",
         "prebuild": "rm -rf ./dist ./out ./node_modules ./repack ./tmp && npm install",
-        "build": "electron-builder --config electron-builder.yml --linux --win"
+        "build": "electron-builder --config electron-builder.yml --linux"
     },
     "devDependencies": {
         "electron": "^34.0.2",

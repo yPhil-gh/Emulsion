@@ -38,8 +38,6 @@ build_windows:
     - echo "Installing deps and building Windows package via Wine…"
     - yarn --frozen-lockfile
     - yarn run electron-builder --config electron-builder.yml --win nsis
-    - echo "Renaming outputs for tag consistency…"
-    - mv dist/*.exe "dist/emulsion-win-${CI_COMMIT_TAG}.exe"
   artifacts:
     paths:
       - dist/emulsion-win-${CI_COMMIT_TAG}.exe

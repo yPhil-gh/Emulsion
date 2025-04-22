@@ -156,6 +156,51 @@ function _moveTrailingArticleToFront(s) {
     return s;
 }
 
+
+const platforms = [
+    { name: "nes", extensions: [".zip"] },
+    { name: "sms", extensions: [".zip"] },
+    { name: "pcengine", extensions: [".pce"] },
+    { name: "amiga", extensions: [".lha", ".adf"] },
+    { name: "megadrive", extensions: [".md"] },
+    { name: "snes", extensions: [".smc"] },
+    { name: "jaguar", extensions: [".jag"] },
+    { name: "saturn", extensions: [".cue"] },
+    { name: "psx", extensions: [".srm"] },
+    { name: "n64", extensions: [".z64"] },
+    { name: "dreamcast", extensions: [".gdi", ".cdi"] },
+    { name: "ps2", extensions: [".bin", ".iso"] },
+    { name: "gamecube", extensions: [".iso", ".ciso"] },
+    { name: "xbox", extensions: [".xiso.iso"] },
+    { name: "psp", extensions: [".iso"] },
+    { name: "ps3", extensions: [".SFO"] }
+];
+
+function getPlatformInfo(name) {
+    const platforms = {
+        'settings': { name: 'Emulsion', vendor: 'Settings' },
+        'nes': { name: 'NES', vendor: 'Nintendo' },
+        'sms': { name: 'Master System', vendor: 'Sega' },
+        'pcengine': { name: 'PC Engine', vendor: 'NEC' },
+        'amiga': { name: 'Amiga', vendor: 'Commodore' },
+        'megadrive': { name: 'Megadrive', vendor: 'Sega' },
+        'snes': { name: 'SNES', vendor: 'Nintendo' },
+        'jaguar': { name: 'Jaguar', vendor: 'Atari' },
+        'saturn': { name: 'Saturn', vendor: 'Sega' },
+        'psx': { name: 'PlayStation', vendor: 'Sony' },
+        'n64': { name: 'Nintendo64', vendor: 'Nintendo' },
+        'dreamcast': { name: 'Dreamcast', vendor: 'Sega' },
+        'ps2': { name: 'PlayStation 2', vendor: 'Sony' },
+        'gamecube': { name: 'GameCube', vendor: 'Nintendo' },
+        'xbox': { name: 'X-Box', vendor: 'Microsoft' },
+        'psp': { name: 'PlayStation Portable', vendor: 'Sony' },
+        'ps3': { name: 'PlayStation 3', vendor: 'Sony' }
+    };
+
+    // Return the platform info if found, otherwise return the original name as both name and vendor
+    return platforms[name.toLowerCase()] || { name: name, vendor: '' };
+}
+
 function getPlatformName(name) {
     switch (name) {
     case 'snes':
@@ -183,7 +228,7 @@ function getPlatformName(name) {
         break;
     }
 
-    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    return name;
 }
 
 
@@ -333,6 +378,7 @@ LB.utils = {
     applyTheme: applyTheme,
     setFooterSize: setFooterSize,
     getPlatformName: getPlatformName,
+    getPlatformInfo: getPlatformInfo,
     cleanFileName: cleanFileName,
     safeFileName: safeFileName,
     simulateKeyDown: simulateKeyDown,

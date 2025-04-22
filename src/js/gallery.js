@@ -224,9 +224,28 @@ function buildSettingsPageContent(platforms) {
         platformContainer.setAttribute('data-platform', platformName);
         platformContainer.setAttribute('data-index', i);
 
+        // const platformNameElement = document.createElement('div');
+        // platformNameElement.textContent = LB.utils.getPlatformName(platformName);
+        // platformNameElement.classList.add('platform-name');
+
+        const platformInfo = LB.utils.getPlatformInfo(platformName);
+
         const platformNameElement = document.createElement('div');
-        platformNameElement.textContent = LB.utils.getPlatformName(platformName);
-        platformNameElement.classList.add('platform-name');
+        platformNameElement.classList.add('platform-info');
+
+        const vendorSpan = document.createElement('span');
+        vendorSpan.classList.add('vendor');
+        vendorSpan.textContent = platformInfo.vendor;
+
+        const nameSpan = document.createElement('span');
+        nameSpan.classList.add('name');
+        nameSpan.textContent = platformInfo.name;
+
+        const lineBreak = document.createElement('br');
+
+        platformNameElement.appendChild(vendorSpan);
+        platformNameElement.appendChild(lineBreak);
+        platformNameElement.appendChild(nameSpan);
 
         const platformImage = document.createElement('img');
 

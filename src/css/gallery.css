@@ -106,6 +106,14 @@ div.game-container:hover {
   border-color: var(--color-border-on);
 }
 
+div.platform-info .vendor {
+  font-size: 0.6em;
+}
+
+div.platform-info .name {
+  font-size: 0.8em;
+}
+
 p {
   margin-top: 0;
 }

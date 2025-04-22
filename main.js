@@ -44,6 +44,7 @@ async function loadPackageJson() {
 }
 
 const pjson = await loadPackageJson();
+
 const buttonStates = {
     back: false,
     dpdown: false,
@@ -511,7 +512,11 @@ ipcMain.handle('quit', () => {
     app.quit();
 });
 
-// app.whenReady().then(createWindows);
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
+});
 
 function killChildProcesses(childProcesses) {
     childProcesses.forEach((child, pid) => {

@@ -46,7 +46,7 @@ win:
   target:
     - nsis
   icon: "img/icon.png"
-  artifactName: "${productName}-win-${version}.${ext}"
+  artifactName: "${productName}-${version}.${ext}"
 
 nsis:
   oneClick: false

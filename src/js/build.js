@@ -178,6 +178,7 @@ function _buildPrefsForm() {
     platformMenuImageCtn.classList.add('platform-menu-image-ctn');
     const platformMenuImage = document.createElement('img');
     platformMenuImage.src = path.join(LB.baseDir, 'img', 'platforms', `settings.png`);
+    platformMenuImage.title = `Emulsion version ${LB.versionNumber}`;
 
     platformMenuImage.width = '250';
     platformMenuImageCtn.appendChild(platformMenuImage);

@@ -143,6 +143,11 @@ function initSlideShow(platformToDisplay) {
         case 'Escape':
             ipcRenderer.invoke('quit');
             break;
+        case 'q':
+            if (event.ctrlKey) {
+                ipcRenderer.invoke('quit');
+            }
+            break;
         }
     }
 
@@ -615,6 +620,11 @@ function initGallery(currentIndex, disabledPlatform) {
             LB.control.initSlideShow(activePlatformIndex);
             // LB.control.initSlideShow(LB.kidsMode ? currentIndex - 1 : currentIndex);
             document.querySelector('header .item-number').textContent = '';
+            break;
+        case 'q':
+            if (event.ctrlKey) {
+                ipcRenderer.invoke('quit');
+            }
             break;
         }
 

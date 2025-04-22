@@ -49,8 +49,23 @@ Categories=Utility;
 EOF
 }
 
+# Store the original directory
+original_dir=$(pwd)
+
 # Build ; This cleans, too, see package.json
-npm run build
+npm run build || { echo "Build failed"; exit 1; }
+
+# Process files in build directory (and return)
+(
+    cd build || exit 1
+    for item in Emultion*; do
+        [ -e "$item" ] || continue  # Skip if no matches
+        mv -v "$item" "emultion${item#Emultion}"
+    done
+)
+
+# You're now back in the original directory
+echo "Done! Current directory: $(pwd)"
 
 # Create build & rebuild dirs and files (see README.md "sandbox" why)
 mkdir -pv repack out DEBIAN

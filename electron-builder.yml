@@ -9,6 +9,7 @@ compression: store
 # Unpack the native binaries from the ASAR into this folder so they stay executable
 asarUnpack:
   - "bin/**"
+  - "img/**"
 
 files:
   - "**/*"
@@ -44,6 +45,7 @@ linux:
 
 win:
   target:
+    - nsis
     - zip
   icon: "img/icon.png"
   artifactName: "${productName}-win-${version}.${ext}"

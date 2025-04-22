@@ -42,8 +42,8 @@ build_windows:
     paths:
       - dist/emulsion-win-${CI_COMMIT_TAG}.exe
 
-# Create a GitLab release
-release_job:
+# Create the GitLab release
+create_release:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   rules:
@@ -65,10 +65,10 @@ release_job:
           link_type: "package"
           url: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/emulsion-win-${CI_COMMIT_TAG}.exe"
   dependencies:
-    - upload_assets
+    - upload_artifacts
 
 # Upload assets to GitLab Generic Packages Registry
-upload_assets:
+upload_artifacts:
   stage: release
   image: curlimages/curl:latest  # Use curl to upload files
   rules:
@@ -77,16 +77,16 @@ upload_assets:
     - echo "Uploading assets for tag $CI_COMMIT_TAG"
     - |
       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
-           --upload-file "dist/emulsion-${CI_COMMIT_TAG}.deb" \
-           "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/emulsion-${CI_COMMIT_TAG}.deb"
+           --upload-file "dist/emulsion-win-${CI_COMMIT_TAG}.exe" \
+           "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/emulsion-win-${CI_COMMIT_TAG}.exe"
     - |
       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
            --upload-file "dist/emulsion-${CI_COMMIT_TAG}.AppImage" \
            "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/emulsion-${CI_COMMIT_TAG}.AppImage"
     - |
       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
-           --upload-file "dist/emulsion-win-${CI_COMMIT_TAG}.exe" \
-           "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/emulsion-win-${CI_COMMIT_TAG}.exe"
+           --upload-file "dist/emulsion-${CI_COMMIT_TAG}.deb" \
+           "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/emulsion-${CI_COMMIT_TAG}.deb"
   dependencies:
     - build_linux
     - build_windows

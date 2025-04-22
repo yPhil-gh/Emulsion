@@ -5,7 +5,9 @@ stages:
 variables:
   ELECTRON_FORGE_VERSION: "6.0.0"
 
-# Build Linux packages
+# ─────────────────────────────────────────────────────────────────────────────
+#  1. Linux build (unchanged)
+# ─────────────────────────────────────────────────────────────────────────────
 build_packages:
   stage: build
   image: node:20
@@ -13,7 +15,8 @@ build_packages:
     - if: $CI_COMMIT_TAG  # Run this job only when a tag is pushed
   script:
     - apt-get update && apt-get install -y dpkg fakeroot jq npm bash fuse
-    - curl -L -o appimagetool-x86_64.AppImage https://github.com/AppImage/AppImageKit/releases/latest/download/appimagetool-x86_64.AppImage
+    - curl -L -o appimagetool-x86_64.AppImage \
+         https://github.com/AppImage/AppImageKit/releases/latest/download/appimagetool-x86_64.AppImage
     - chmod +x appimagetool-x86_64.AppImage
     - chmod +x build.sh
     - source build.sh
@@ -21,17 +24,39 @@ build_packages:
     paths:
       - dist/
 
-# Create a GitLab release
+# ─────────────────────────────────────────────────────────────────────────────
+#  2. Windows build (new, runs on a Windows runner)
+# ─────────────────────────────────────────────────────────────────────────────
+build_windows:
+  stage: build
+  # This job will only run on runners tagged "windows"
+  tags:
+    - windows
+  rules:
+    - if: $CI_COMMIT_TAG                                  # Tagged release
+  script:
+    - echo "Installing Node deps on Windows…"
+    - npm ci                                              # Clean install
+    - echo "Building Windows package…"
+    - npx electron-builder --config electron-builder.yml --win nsis
+  artifacts:
+    paths:
+      - dist/emulsion-*win-*.exe
+      - dist/emulsion-*win-*.zip
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  3. Release & Upload (also unchanged, but now will include Windows artifacts)
+# ─────────────────────────────────────────────────────────────────────────────
 release_job:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   rules:
-    - if: $CI_COMMIT_TAG  # Run this job only when a tag is pushed
+    - if: $CI_COMMIT_TAG
   script:
     - echo "Creating release for version $CI_COMMIT_TAG"
-  release:  # See https://docs.gitlab.com/ee/ci/yaml/#release for available properties
+  release:
     tag_name: '$CI_COMMIT_TAG'
-    description: 'Release $CI_COMMIT_TAG for Linux.'
+    description: 'Release $CI_COMMIT_TAG for Linux and Windows.'
     assets:
       links:
         - name: "emulsion-${CI_COMMIT_TAG}.deb"
@@ -40,24 +65,28 @@ release_job:
         - name: "emulsion-${CI_COMMIT_TAG}.AppImage"
           link_type: "package"
           url: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/emulsion-${CI_COMMIT_TAG}.AppImage"
+        - name: "emulsion-${CI_COMMIT_TAG}.exe"
+          link_type: "package"
+          url: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/emulsion-${CI_COMMIT_TAG}.exe"
+        - name: "emulsion-${CI_COMMIT_TAG}.win.zip"
+          link_type: "package"
+          url: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/emulsion-${CI_COMMIT_TAG}.win.zip"
   dependencies:
     - upload_assets
 
-# Upload assets to GitLab Generic Packages Registry
 upload_assets:
   stage: release
-  image: curlimages/curl:latest  # Use curl to upload files
+  image: curlimages/curl:latest
   rules:
-    - if: $CI_COMMIT_TAG  # Run this job only when a tag is pushed
+    - if: $CI_COMMIT_TAG
   script:
-    - echo "Uploading assets for tag $CI_COMMIT_TAG"
     - |
-      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
-           --upload-file "dist/emulsion-${CI_COMMIT_TAG}.deb" \
-           "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/emulsion-${CI_COMMIT_TAG}.deb"
-    - |
-      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
-           --upload-file "dist/emulsion-${CI_COMMIT_TAG}.AppImage" \
-           "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/emulsion-${CI_COMMIT_TAG}.AppImage"
+      for file in dist/*; do
+        echo "Uploading $file…"
+        curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+             --upload-file "$file" \
+             "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/releases/${CI_COMMIT_TAG}/$(basename "$file")"
+      done
   dependencies:
     - build_packages
+    - build_windows

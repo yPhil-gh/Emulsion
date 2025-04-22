@@ -45,10 +45,10 @@ label {
   flex-direction: row;
   align-items: center;
 
-  font-family: 'sans-serif';
-  font-weight: normal;
+  /* font-family: 'sans-serif'; */
+  /* font-weight: normal; */
   font-style: normal;
-  font-size: 12pt;
+  font-size: 1em;
   margin-left: 60px;
 }
 
@@ -255,14 +255,8 @@ label.checkbox {
   flex-direction: row;
 }
 
-.input:hover,
-.input:focus,
-.input:active,
-.button:hover,
-.button:focus,
-.button:active {
+.button:hover {
   background-color: var(--color-button-on);
-  background-position: 0 0;
   color: #ffffff;
 }
 

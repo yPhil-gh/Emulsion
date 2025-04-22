@@ -10,8 +10,9 @@ function buildSlide(platformName, preferences) {
     slide.className = "slide";
     slide.id = platformName;
     const platformImgPath = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
+    const bgImageUrl = `url("file://${platformImgPath.replace(/\\/g, '/')}")`;
 
-    slide.style.backgroundImage = `url('${platformImgPath}')`;
+    slide.style.backgroundImage = bgImageUrl;
 
     const slideContent = document.createElement("div");
     slideContent.className = "slide-content";

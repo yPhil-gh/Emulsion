@@ -23,20 +23,26 @@ build_linux:
 
 build_windows:
   stage: build
-  # This job will only run on runners tagged "windows"
-  tags:
-    - windows
+  image: electronuserland/builder:wine
   rules:
-    - if: $CI_COMMIT_TAG                                  # Tagged release
+    - if: $CI_COMMIT_TAG  # Only on tags
+  variables:
+    ELECTRON_CACHE: "$CI_PROJECT_DIR/.cache/electron"
+    ELECTRON_BUILDER_CACHE: "$CI_PROJECT_DIR/.cache/electron-builder"
+  cache:
+    paths:
+      - node_modules/
+      - .cache/electron/
+      - .cache/electron-builder/
   script:
-    - echo "Installing Node deps on Windows…"
-    - npm ci                                              # Clean install
-    - echo "Building Windows package…"
-    - npx electron-builder --config electron-builder.yml --win nsis
+    - echo "Installing deps and building Windows package via Wine…"
+    - yarn --frozen-lockfile
+    - yarn run electron-builder --config electron-builder.yml --win nsis
+    - echo "Renaming outputs for tag consistency…"
+    - mv dist/*.exe "dist/emulsion-win-${CI_COMMIT_TAG}.exe"
   artifacts:
     paths:
-      - dist/emulsion-*win-*.exe
-      - dist/emulsion-*win-*.zip
+      - dist/emulsion-win-${CI_COMMIT_TAG}.exe
 
 # Create a GitLab release
 release_job:

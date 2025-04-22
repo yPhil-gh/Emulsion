@@ -10,9 +10,28 @@ build_packages:
   stage: build
   image: node:20
   rules:
-    - if: $CI_COMMIT_TAG  # Run this job only when a tag is pushed
+    - if: $CI_COMMIT_TAG
   script:
-    - apt-get update && apt-get install -y dpkg fakeroot jq npm bash fuse wine
+    # Install dependencies
+    - apt-get update && apt-get install -y
+        dpkg fakeroot jq npm bash fuse
+        wine wine64 wine32
+        xvfb libgl1-mesa-glx libglib2.0-0
+        nsis  # Add NSIS package
+
+    # Configure Wine
+    - export WINEDEBUG=-all
+    - export WINEPREFIX=$CI_PROJECT_DIR/.wine
+    - Xvfb :0 -screen 0 1024x768x16 &> /dev/null &
+    - export DISPLAY=:0.0
+    - wine wineboot --init
+    - winetricks --unattended vcrun2019
+
+    # Symlink NSIS for Wine
+    - mkdir -p "$WINEPREFIX/drive_c/Program Files (x86)/NSIS"
+    - ln -s "$(which makensis)" "$WINEPREFIX/drive_c/Program Files (x86)/NSIS/makensis.exe"
+
+    # Continue with build
     - curl -L -o appimagetool-x86_64.AppImage https://github.com/AppImage/AppImageKit/releases/latest/download/appimagetool-x86_64.AppImage
     - chmod +x appimagetool-x86_64.AppImage
     - chmod +x build.sh

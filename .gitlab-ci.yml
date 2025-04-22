@@ -14,14 +14,6 @@ build_packages:
   script:
     - apt-get update && apt-get install -y dpkg fakeroot jq npm bash fuse wine64 xvfb libgl1-mesa-glx libglib2.0-0 nsis
 
-    # Configure pure 64-bit Wine environment
-    - export WINEARCH=win64
-    - export WINEDEBUG=-all
-    - export WINEPREFIX="$CI_PROJECT_DIR/.wine64"
-    - Xvfb :0 -screen 0 1024x768x16 &> /dev/null &
-    - export DISPLAY=:0.0
-    - wine64 wineboot --init
-
     # Continue with build
     - curl -L -o appimagetool-x86_64.AppImage https://github.com/AppImage/AppImageKit/releases/latest/download/appimagetool-x86_64.AppImage
     - chmod +x appimagetool-x86_64.AppImage

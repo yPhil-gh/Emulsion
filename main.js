@@ -7,7 +7,6 @@ import { spawn, exec } from 'child_process';
 import { getAllCoverImageUrls } from './src/js/backends.js';
 
 import axios from 'axios';
-import gamecontroller from "sdl2-gamecontroller";
 import os from 'os';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -49,26 +48,6 @@ const buttonStates = {
     back: false,
     dpdown: false,
 };
-
-gamecontroller.on("error", (data) => console.log("error", data));
-gamecontroller.on("warning", (data) => console.log("warning", data));
-
-gamecontroller.on("sdl-init", (data) => {
-    console.log("SDL2 Initialized");
-});
-
-gamecontroller.on("controller-device-added", (data) => {
-    // console.log("controller connected", data);
-    gamecontroller.setLeds(0x0f, 0x62, 0xfe, data.player);
-});
-
-gamecontroller.on('controller-button-up', (event) => {
-    if (event.button === 'back') {
-        buttonStates.back = false;
-    } else if (event.button === 'dpdown') {
-        buttonStates.dpdown = false;
-    }
-});
 
 const preferencesFilePath = path.join(app.getPath('userData'), "preferences.json");
 const recentFilePath = path.join(app.getPath('userData'), "recently_played.json");
@@ -599,18 +578,6 @@ app.whenReady().then(() => {
     });
 
     createWindows();
-
-    gamecontroller.on('controller-button-down', (event) => {
-        if (event.button === 'back') {
-            buttonStates.back = true;
-        } else if (event.button === 'dpdown') {
-            buttonStates.dpdown = true;
-        }
-
-        if (buttonStates.back && buttonStates.dpdown) {
-            killChildProcesses(childProcesses);
-        }
-    });
 
     globalShortcut.register('Ctrl+Shift+K', () => {
         killChildProcesses(childProcesses);

@@ -1,6 +1,6 @@
 {
     "name": "emulsion",
-    "version": "0.0.21",
+    "version": "0.0.22",
     "context": "prod",
     "description": "Better gaming throught chemistry",
     "homepage": "https://gitlab.com/yphil/emulsion",
@@ -30,7 +30,6 @@
         "fs": "^0.0.1-security",
         "node-fetch": "^3.3.2",
         "path": "^0.12.7",
-        "sdl2-gamecontroller": "^1.0.11",
         "steamgriddb": "^2.2.0",
         "tree-kill": "^1.2.2"
     }

@@ -315,9 +315,6 @@ function buildPlatformForm(platformName) {
     const platformMenuImageCtn = document.createElement('div');
     platformMenuImageCtn.classList.add('platform-menu-image-ctn');
     const platformMenuImage = document.createElement('img');
-
-    console.log("LB.baseDir in build: ", LB.baseDir);
-
     platformMenuImage.src = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
     platformMenuImage.width = '250';
 

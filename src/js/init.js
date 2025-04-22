@@ -342,14 +342,7 @@ function applyTheme(theme) {
         ? LB.baseDir.slice(0, -1)
         : LB.baseDir;
 
-    // const bgImageUrl = `url("${baseDir}/img/themes/${theme}/background.png")`;
-
-    console.log("LB.baseDir in init: ", LB.baseDir);
-
-    const bgPath = path.join(LB.baseDir, 'img', 'themes', theme, 'background.png');
-    const bgImageUrl = `url("file://${bgPath.replace(/\\/g, '/')}")`;
-
-    console.log("bgImageUrl: ", bgImageUrl);
+    const bgImageUrl = `url("${baseDir}/img/themes/${theme}/background.png")`;
 
     body.style.backgroundImage = bgImageUrl;
     menu.style.backgroundImage = bgImageUrl;

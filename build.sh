@@ -49,34 +49,8 @@ Categories=Utility;
 EOF
 }
 
-
-# Store original directory
-original_dir=$(pwd)
-
-# Create or empty build directory
-if [ ! -d "build" ]; then
-    mkdir -v build
-else
-    echo "Emptying build directory..."
-    rm -rfv build/* 2>/dev/null  # Silence errors if already empty
-fi
-
-# Run build process
-npm run build || {
-    echo "Build failed!"
-    exit 1
-}
-
-# Rename files and return to original dir
-(
-    cd build || exit 1
-    for item in Emultion*; do
-        [ -e "$item" ] || continue
-        mv -v "$item" "emultion${item#Emultion}"
-    done
-)
-
-echo "Operation complete. Back in: $(pwd)"
+# Build ; This cleans, too, see package.json
+npm run build
 
 # Create build & rebuild dirs and files (see README.md "sandbox" why)
 mkdir -pv repack out DEBIAN

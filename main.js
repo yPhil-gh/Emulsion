@@ -234,9 +234,9 @@ function createWindows() {
     });
     mainWindow.loadFile('src/html/index.html');
 
-    if (app.isPackaged) {
-        Menu.setApplicationMenu(null);
-    }
+    // if (app.isPackaged) {
+    //     Menu.setApplicationMenu(null);
+    // }
 }
 
 ipcMain.on('show-context-menu', (event, params) => {

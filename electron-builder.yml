@@ -10,6 +10,7 @@ compression: store
 asarUnpack:
   - "bin/**"
   - "img/**"
+  - "font/**"
 
 files:
   - "**/*"

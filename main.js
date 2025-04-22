@@ -435,7 +435,7 @@ const platforms = [
     { name: "dreamcast", extensions: [".gdi", ".cdi"] },
     { name: "ps2", extensions: [".bin", ".iso"] },
     { name: "gamecube", extensions: [".iso", ".ciso"] },
-    { name: "xbox", extensions: [".xiso.iso"] },
+    { name: "xbox", extensions: [".iso"] },
     { name: "psp", extensions: [".iso"] },
     { name: "ps3", extensions: [".SFO"] }
 ];

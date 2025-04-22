@@ -108,10 +108,18 @@ div.game-container:hover {
 
 div.platform-info .vendor {
   font-size: 0.6em;
+  color: black;
+
+  text-shadow:
+    -1px -1px 0 white,
+     1px -1px 0 white,
+    -1px  1px 0 white,
+     1px  1px 0 white;
 }
 
 div.platform-info .name {
   font-size: 0.8em;
+  color: var(--color-text-1);
 }
 
 p {
@@ -174,6 +182,7 @@ div.platform-container {
 
 .game-label {
   background-color: rgba(0, 0, 0, 0.6); /* Black with 50% transparency */
+  color: var(--color-text-game-label);
   margin-top: 5px;
   font-size: 12px;
 

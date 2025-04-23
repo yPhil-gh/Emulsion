@@ -110,7 +110,9 @@ function testCleanFileName() {
     { input: '3DMovie_4K(TheBest)', expected: '3D Movie' },
 
       // Last case
-    { input: 'Lucky Dime Caper Starring Donald Duck, The (Europe, Brazil) (En)', expected: 'The Lucky Dime Caper Starring Donald Duck' }
+      { input: 'Lucky Dime Caper Starring Donald Duck, The (Europe, Brazil) (En)', expected: 'The Lucky Dime Caper Starring Donald Duck' },
+      { input: 'Bubblegum Crash! - Knight Sabers 2034 (Japan) [En by Dave Shadoff+Filler+Tomaitheous v1.0]', expected: 'Bubblegum Crash! - Knight Sabers 2034' }
+
 
 
   ];

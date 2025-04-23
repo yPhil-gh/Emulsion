@@ -115,7 +115,7 @@ async function _buildRecentGallery({ userDataPath, index }) {
         // gameContainer.style.height = `calc(120vw / ${LB.galleryNumOfCols})`;
 
         const date = new Date(recent.date);
-        gameContainer.title = `Last played on ${date.toLocaleString()}`;
+        gameContainer.title = `${recent.gameName} - Last played on ${date.toLocaleString()} \n\n- Click to launch`;
 
         gameContainer.setAttribute('data-game-name', recent.gameName);
         gameContainer.setAttribute('data-platform', recent.platform);
@@ -328,14 +328,6 @@ async function buildGallery(params) {
 
         const gameFiles = await scanDirectory(gamesDir, extensions, true);
 
-        function formatTitle(title) {
-            if (title.toLowerCase().endsWith(", the")) {
-                const prefix = title.slice(0, -5).trim();
-                return "The " + prefix;
-            }
-            return title;
-        }
-
         function getEbootPath(gameFile) {
             const gameDir = path.dirname(gameFile);
             return path.join(gameDir, 'USRDIR', 'EBOOT.BIN');
@@ -375,7 +367,7 @@ async function buildGallery(params) {
                 const gameContainer = document.createElement('div');
                 gameContainer.classList.add('game-container');
                 // gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
-                gameContainer.title = `${fileNameClean} \n\n- Click to launch\n- Righ-click to configure`;
+                gameContainer.title = `${fileNameClean} (${fileNameWithoutExt}) \n\n- Click to launch\n- Righ-click to configure`;
                 gameContainer.setAttribute('data-game-name', fileNameWithoutExt);
                 gameContainer.setAttribute('data-platform', platform);
                 gameContainer.setAttribute('data-command', dataCommand);

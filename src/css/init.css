@@ -58,12 +58,9 @@
   --color-bg-header: #3974b8;
   --color-border-header: #3974b8;
 
-  /* --color-bg-footer: #8badd3; */
-  /* --color-text-footer: #1b0c66; */
-  /* --color-border-footer: #759cc8; */
-
-
   --color-text-game-label: #29f1ea;
+
+  --color-outline-selected: #ff6b00; /* Electric orange for high contrast against blue header */
 }
 
 .theme-night {
@@ -75,9 +72,7 @@
 
   --color-bg-header: #050c16;
 
-  /* --color-bg-footer: #050c16; */
-  /* --color-text-footer: #ffffff; */
-  /* --color-border-footer: #1E3E62; */
+  --color-outline-selected: #ff00f7; /* Neon pink/purple that pops against dark background */
 
 }
 
@@ -89,9 +84,8 @@
   --color-platform-outline-header: #29f1ea;
   --color-bg-header: #050c16;
 
-  /* --color-bg-footer: #050c16; */
-  /* --color-text-footer: #29f1ea; */
-  /* --color-border-footer: #1E3E62; */
+  --color-outline-selected: #00ffcc; /* Cyberpunk teal that matches the text-1 accent */
+
 }
 
 * {
@@ -176,6 +170,3 @@ header, footer  {
   cursor: pointer;
 }
 
-#east:hover {
-  color: var(--color-text-2);
-}

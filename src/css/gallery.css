@@ -87,7 +87,8 @@ div.game-container.launching {
 div.game-container,
 div.menu-game-container {
   /* height: 22vw; */
-  border: 1px solid var(--color-border-off);
+  border: 1px solid;
+  border-color:  var(--color-border-off);
   display: flex;
 
   flex-direction: column;
@@ -181,7 +182,7 @@ div.platform-container {
 }
 
 .game-label {
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.5);
   color: var(--color-text-game-label);
   margin-top: 5px;
   font-size: 12px;
@@ -208,8 +209,9 @@ div.platform-container {
 }
 
 .selected {
-  outline: 2px solid yellow;
-  box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.6);
+  outline: 4px solid var(--color-outline-selected);
+  border-color: var(--color-outline-selected) !important;
+  /* box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.6); */
 }
 
 .selected .game-label {

@@ -69,7 +69,7 @@ header .platform-image img {
 }
 
 .pages-nav-links:hover {
-  color: var(--color-border-on);
+  color: var(--color-outline-selected);
 }
 
 .left-links {

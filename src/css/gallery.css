@@ -198,6 +198,11 @@ div.platform-container {
   overflow: hidden;
   /* white-space: nowrap; */
   text-overflow: ellipsis;
+  text-shadow:
+    -1px -1px 0 var(--color-outline-game-label),
+     1px -1px 0 var(--color-outline-game-label),
+    -1px  1px 0 var(--color-outline-game-label),
+     1px  1px 0 var(--color-outline-game-label);
 
   /* color: #333; */
 }
@@ -205,6 +210,11 @@ div.platform-container {
 .selected {
   outline: 2px solid yellow;
   box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.6);
+}
+
+.selected .game-label {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: white;
 }
 
 .page-content div img {

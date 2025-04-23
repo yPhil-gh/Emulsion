@@ -83,77 +83,79 @@ function safeFileName(fileName) {
         .replace(/^\s+|\s+$/g, '') || 'default_filename'; // Prevent empty names
 }
 
+// Include all the original functions
 function cleanFileName(fileName) {
-    // Step 1: Remove everything after the first underscore.
-    let baseName = _removeAfterUnderscore(fileName);
+  // 1) Drop everything after the first underscore
+  let s = _removeAfterUnderscore(fileName);
 
-    // Step 2: Handle special digit+letter cases (e.g., "3DWorld" → "3D World")
-    let withSpecialSplit = _splitSpecial(baseName);
+  // 2) Handle special digit+upper (e.g. "3DWorld" → "3D World")
+  s = _splitSpecial(s);
 
-    // Step 3: Split camelCase (insert space between a lowercase and an uppercase letter)
-    let withCamelSplit = _splitCamelCase(withSpecialSplit);
+  // 3) Split camelCase (e.g. "simpleName" → "simple Name")
+  s = _splitCamelCase(s);
 
-    // Step 4: Split acronyms from following capitalized words (e.g., "XMLHttp" → "XML Http")
-    let withAcronymSplit = _splitAcronym(withCamelSplit);
+  // 4) Split acronyms from following words (e.g. "XMLHttp" → "XML Http")
+  s = _splitAcronym(s);
 
-    let withNumberSplit = _splitNumberWord(withAcronymSplit);
+  // 5) Strip parentheses and brackets
+  s = _removeParens(s);
+  s = _removeBrackets(s);
 
-    // // Step 5: Remove extra spaces and trim.
-    // let normalized = _normalizeSpaces(withNumberSplit);
+  // 6) Move trailing ", The" (or similar) to the front
+  s = _moveTrailingArticleToFront(s);
 
-    let articleToFront = _moveTrailingArticleToFront(withAcronymSplit);
-
-    let withoutParens = _removeParens(articleToFront);
-
-    return _removeBrackets(withoutParens);
+  // 7) Finally, title-case each word (but keep ALL-CAP words intact)
+  return _titleCase(s);
 }
 
-function _removeAfterUnderscore(fileName) {
-    return fileName.split('_')[0];
+
+function _removeAfterUnderscore(s) {
+  return s.split('_')[0];
 }
 
-function _removeBrackets(s) {
-    return s.replace(/\s*\[.*?\]/g, '');
+function _splitSpecial(s) {
+  return s.replace(/(\d+[A-Z])(?=[A-Z][a-z])/g, '$1 ');
+}
+
+function _splitCamelCase(s) {
+  return s.replace(/([a-z])([A-Z])/g, '$1 $2');
+}
+
+function _splitAcronym(s) {
+  return s.replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2');
 }
 
 function _removeParens(s) {
-    return s.replace(/\s*\(.*?\)/g, '');
+  return s.replace(/\s*\(.*?\)/g, '');
 }
 
-// Inserts a space after a sequence like "3D" when it is immediately followed by an uppercase letter and a lowercase letter.
-function _splitSpecial(s) {
-    return s.replace(/(\d+[A-Z])(?=[A-Z][a-z])/g, '$1 ');
+function _removeBrackets(s) {
+  return s.replace(/\s*\[.*?\]/g, '');
 }
 
-// Splits camelCase by inserting a space between a lowercase letter and an uppercase letter.
-function _splitCamelCase(s) {
-    return s.replace(/([a-z])([A-Z])/g, '$1 $2');
-}
-
-// Splits an acronym from a following capitalized word (e.g., "XMLHttp" becomes "XML Http").
-function _splitAcronym(s) {
-    return s.replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2');
-}
-
-// // Normalizes spacing by trimming and replacing multiple spaces with a single space.
-// function _normalizeSpaces(s) {
-//   return s.trim().replace(/\s+/g, ' ');
-// }
-
-function _splitNumberWord(s) {
-    s.replace(/(?<!\b[234])(\d+)([A-Za-z])/g, '$1 $2');
-}
-
-// Final function: If the string ends with ", The", move "The" to the beginning.
 function _moveTrailingArticleToFront(s) {
-    // Match pattern: any text, followed by a comma, optional whitespace, then "The" (case-insensitive)
-    const pattern = /^(.*),\s*(The)$/i;
-    const match = s.match(pattern);
-    if (match) {
-        // Return "The " + the rest of the string (trimmed)
-        return match[2].charAt(0).toUpperCase() + match[2].slice(1).toLowerCase() + ' ' + match[1].trim();
-    }
-    return s;
+  // Matches "... , The" (case-insensitive), end of string
+  const m = s.match(/^(.*?),\s*(The|An|A)$/i);
+  if (m) {
+    // Capitalize the article properly and prepend
+    const art = m[2].charAt(0).toUpperCase() + m[2].slice(1).toLowerCase();
+    return `${art} ${m[1].trim()}`;
+  }
+  return s;
+}
+
+function _titleCase(s) {
+  return s
+    .split(/\s+/)
+    .map(word => {
+      // If it's all digits or ALL-CAP (or contains digits), leave as-is
+      if (/^[0-9]+$/.test(word) || /^[A-Z0-9]+$/.test(word)) {
+        return word;
+      }
+      // Otherwise, uppercase first letter, lowercase the rest
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    })
+    .join(' ');
 }
 
 function getPlatformInfo(name) {

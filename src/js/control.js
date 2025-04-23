@@ -153,8 +153,8 @@ function initSlideShow(platformToDisplay) {
 
     LB.utils.updateControls('dpad', 'button-dpad-ew', 'Browse<br>Platforms', 'on');
     LB.utils.updateControls('shoulders', 'same', 'Browse<br>Platforms', 'off');
-    LB.utils.updateControls('square', 'same', 'same', 'off');
-    LB.utils.updateControls('circle', 'same', 'Exit');
+    LB.utils.updateControls('west', 'same', 'same', 'off');
+    LB.utils.updateControls('east', 'same', 'Exit');
 
     updateHomeCarousel(platformToDisplay);
 }
@@ -163,13 +163,13 @@ function setGalleryControls(currentIndex) {
     if (currentIndex === 0) {
         LB.utils.updateControls('dpad', 'button-dpad-nesw', 'Browse<br>Platforms', 'on');
         LB.utils.updateControls('shoulders', 'same', 'Browse<br>Platforms', 'off');
-        LB.utils.updateControls('square', 'same', 'Fetch<br>cover', 'off');
+        LB.utils.updateControls('west', 'same', 'Fetch<br>cover', 'off');
     } else {
         LB.utils.updateControls('dpad', 'button-dpad-nesw', 'Browse<br>Games', 'on');
-        LB.utils.updateControls('square', 'same', 'Fetch<br>cover', 'on');
+        LB.utils.updateControls('west', 'same', 'Fetch<br>cover', 'on');
         LB.utils.updateControls('shoulders', 'same', 'Browse<br>Platforms', 'on');
     }
-    LB.utils.updateControls('circle', 'same', 'Back');
+    LB.utils.updateControls('east', 'same', 'Back');
 }
 
 function launchGame(gameContainer) {
@@ -454,7 +454,7 @@ function initGallery(currentIndex, disabledPlatform) {
 
         function _openMenu(platformToOpen) {
 
-            LB.utils.updateControls('square', 'same', '', 'off');
+            LB.utils.updateControls('west', 'same', '', 'off');
             LB.utils.updateControls('dpad', 'same', '', 'off');
             LB.utils.updateControls('shoulders', 'same', '', 'off');
 
@@ -499,7 +499,7 @@ function initGallery(currentIndex, disabledPlatform) {
 
             updatePagesCarousel();
 
-            // LB.utils.updateControls('square', 'same', 'Fetch cover', 'on');
+            // LB.utils.updateControls('west', 'same', 'Fetch cover', 'on');
             LB.utils.updateControls('dpad', 'same', 'Browse', 'on');
 
             document.querySelector('header .prev-link').style.opacity = 1;
@@ -665,38 +665,26 @@ function initGallery(currentIndex, disabledPlatform) {
     updatePagesCarousel(); // Initialize the pages carousel
 }
 
-function simulateKeyDown(key) {
-
-    let keyCode;
-    switch (key) {
-    case 'ArrowLeft':
-        keyCode = 37;
-        break;
-    case 'ArrowRight':
-        keyCode = 39;
-        break;
-    case 'ArrowUp':
-        keyCode = 38;
-        break;
-    case 'ArrowDown':
-        keyCode = 40;
-        break;
-    case 'Shift':
-        keyCode = 16;
-        break;
-    case 'Enter':
-        keyCode = 13;
-        break;
-    case 'Escape':
-        keyCode = 27;
-        break;
-    }
+function simulateKeyDown(key, modifiers = {}) {
+    const keyCodes = {
+        ArrowLeft: 37,
+        ArrowRight: 39,
+        ArrowUp: 38,
+        ArrowDown: 40,
+        Shift: 16,
+        Enter: 13,
+        Escape: 27
+    };
 
     const keyboardEvent = new KeyboardEvent('keydown', {
-        key:key,
+        key,
         code: key,
-        keyCode:keyCode,
-        which: keyCode,
+        keyCode: keyCodes[key] || 0,
+        which: keyCodes[key] || 0,
+        shiftKey: modifiers.shift || false,
+        ctrlKey: modifiers.ctrl || false,
+        altKey: modifiers.alt || false,
+        metaKey: modifiers.meta || false,
         bubbles: true
     });
 
@@ -714,9 +702,9 @@ function initGamepad () {
     }
 
     const buttonStates = {
-        0: false, // Cross button (X)
-        1: false, // Circle button (O)
-        2: false, // Square button
+        0: false, // Cross /South button (X)
+        1: false, // Circle /East button (O)
+        2: false, // Square / West button
         3: false, // Triangle button
         4: false, // L1 button
         5: false, // R1 button
@@ -759,7 +747,7 @@ function initGamepad () {
 
         if (gamepad) {
             // Check all relevant buttons
-            [0, 1, 2, 3, 12, 13, 14, 15].forEach((buttonIndex) => {
+            [0, 1, 2, 3, 4, 5, 12, 13, 14, 15].forEach((buttonIndex) => {
                 const button = gamepad.buttons[buttonIndex];
                 const wasPressed = buttonStates[buttonIndex];
 
@@ -796,6 +784,12 @@ function initGamepad () {
         case 3:
             console.log("3 (triangle)");
             break;
+        case 4:
+            simulateKeyDown('ArrowLeft', { shift: true });
+            break;
+        case 5:
+            simulateKeyDown('ArrowRight', { shift: true });
+            break;
         case 12:
             simulateKeyDown('ArrowUp');
             break;
@@ -804,12 +798,6 @@ function initGamepad () {
             break;
         case 14:
             simulateKeyDown('ArrowLeft');
-            break;
-        case 15:
-            simulateKeyDown('ArrowRight');
-            break;
-        case 15:
-            simulateKeyDown('ArrowRight');
             break;
         case 15:
             simulateKeyDown('ArrowRight');

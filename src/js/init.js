@@ -309,7 +309,7 @@ function applyTheme(theme) {
 
 function setFooterSize(size) {
   const footer = document.getElementById('footer');
-  footer.className = size === 'big' ? '' : `footer-${size}`;
+  footer.className = `footer-${size}`;
 }
 
 LB.prefs = {

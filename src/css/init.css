@@ -53,12 +53,14 @@
 
   --color-platform-text-header: #0a3f4a;
   --color-platform-outline-header: #a3ffff;
-
-  --color-bg-footer: #8badd3;
-  --color-text-footer: #1b0c66;
-  --color-border-footer: #759cc8;
   --color-bg-header: #3974b8;
   --color-border-header: #3974b8;
+
+  /* --color-bg-footer: #8badd3; */
+  /* --color-text-footer: #1b0c66; */
+  /* --color-border-footer: #759cc8; */
+
+
   --color-text-game-label: #29f1ea;
 }
 
@@ -69,11 +71,11 @@
   --color-platform-text-header: #29f1ea;
   --color-platform-outline-header: #0a0a0f;
 
-  --color-bg-footer: #050c16;
-  --color-text-footer: #ffffff;
-  --color-border-footer: #1E3E62;
-
   --color-bg-header: #050c16;
+
+  /* --color-bg-footer: #050c16; */
+  /* --color-text-footer: #ffffff; */
+  /* --color-border-footer: #1E3E62; */
 
 }
 
@@ -83,11 +85,11 @@
 
   --color-platform-text-header: #1a1e2a;
   --color-platform-outline-header: #29f1ea;
-
-  --color-bg-footer: #050c16;
-  --color-text-footer: #29f1ea;
-  --color-border-footer: #1E3E62;
   --color-bg-header: #050c16;
+
+  /* --color-bg-footer: #050c16; */
+  /* --color-text-footer: #29f1ea; */
+  /* --color-border-footer: #1E3E62; */
 }
 
 * {
@@ -172,6 +174,6 @@ header, footer  {
   cursor: pointer;
 }
 
-#circle:hover {
+#east:hover {
   color: var(--color-text-2);
 }

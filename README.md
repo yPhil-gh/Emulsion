@@ -1,13 +1,8 @@
 # Emulsion
 
-|                                                                        | Emulsion                                                                                  |   |
-|:----------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:-:|
-| ![Emulsion](https://yphil.gitlab.io/images/1x1px.png){: width="50vw"} | ![Emulsion](https://gitlab.com/yphil/emulsion/-/raw/master/img/icon.png){: width="200px"} |   |
-|                                                                        | Better gaming through chemistry                                                           |   |
-
 Emulsion is a unified, lightweight frontend for your game emulators.
 
-![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png)
+![Emulsion](https://gitlab.com/yphil/emulsion/-/raw/master/img/icon.png){: width="100px"}
 
 ## Features
 ### Full control
@@ -21,7 +16,7 @@ All those settings are saved in a central, standard json file.
 - One single config file
 - Install a full gaming PC in one command
 
-## Solidity
+### Solidity
 - One update of an emulator won't break everything
 - Emulsion will never forget you game controller config / calibration
 
@@ -37,6 +32,8 @@ Direct dowloading of the game cover art via several backends:
 - [Wikipedia](https://en.wikipedia.org/w/index.php?title=Category:Amiga_game_covers)
 - [GiantBomb](https://www.giantbomb.com/api/)
 - [UVList](https://www.uvlist.net/)
+
+![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png)
 
 ## Installation
 

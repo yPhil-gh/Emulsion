@@ -1,8 +1,9 @@
+![Emulsion](https://gitlab.com/yphil/emulsion/-/raw/master/img/icon.png){: width="72px"}
+
 # Emulsion
 
 Emulsion is a unified, lightweight frontend for your game emulators.
 
-![Emulsion](https://gitlab.com/yphil/emulsion/-/raw/master/img/icon.png){: width="100px"}
 
 ## Features
 ### Full control

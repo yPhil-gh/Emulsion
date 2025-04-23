@@ -1,29 +1,33 @@
 # Emulsion
 
-|                                                                        | Emulsion                                                                                  |                                                                        |
-|:----------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:----------------------------------------------------------------------:|
-| ![Emulsion](https://yphil.gitlab.io/images/1x1px.png){: width="200px"} | ![Emulsion](https://gitlab.com/yphil/emulsion/-/raw/master/img/icon.png){: width="200px"} | ![Emulsion](https://yphil.gitlab.io/images/1x1px.png){: width="200px"} |
-|                                                                        | Better gaming through chemistry                                                           |                                                                        |
+|                                                                        | Emulsion                                                                                  |   |
+|:----------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:-:|
+| ![Emulsion](https://yphil.gitlab.io/images/1x1px.png){: width="50vw"} | ![Emulsion](https://gitlab.com/yphil/emulsion/-/raw/master/img/icon.png){: width="200px"} |   |
+|                                                                        | Better gaming through chemistry                                                           |   |
 
-EMULSION is a unified, lightweight frontend for your game emulators. Covering everything from classic systems like the PC Engine to modern ones like the PS3, EMULSION streamlines your gaming experience. Instead of installing multiple copies of the same emulator or worrying about calibrating gamepads, EMULSION lets you configure each platform with a single, easy-to-use interface. Simply provide your games directory, choose your emulator executable, add any optional launch arguments, and let EMULSION build visually appealing galleries for every platform. Whether you control it via gamepad, keyboard, or mouse, EMULSION focuses exclusively on launching your games — leaving the heavy lifting of calibration and extra configuration for other software.
+Emulsion is a unified, lightweight frontend for your game emulators.
 
 ![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png)
 
 ## Features
-- Multi-Platform Support:
+### Multi-Platform Support
 Input your games directory, select the appropriate emulator and launch parameters for every platform—from retro consoles like the PC Engine to modern consoles like the PS3.
 
-- Unified Gallery Interface:
-Automatically builds visual galleries for each platform, letting you browse your games easily.
+### Input Versatility
+Fully controllable using **gamepad, keyboard, or mouse**.
 
-- Input Versatility:
-Fully controllable using gamepad, keyboard, or mouse so you can navigate and select your games with your preferred device.
+### Centralized, standard configuration
+Emulsion avoids duplicating emulator installations and config files.
 
-- No Redundant Configuration:
-Unlike other frontends, EMULSION avoids duplicating emulator installations and config files. Focus solely on your games without the hassle of extra calibration or misdirected settings.
+### Cover art management
+Direct dowloading of the game cover art via several backends:
 
-- Sleek & Responsive UI:
-Designed with performance and user experience in mind, ensuring that launching a game is as smooth as gameplay itself.
+- [SteamGridDB](https://www.steamgriddb.com/)
+- [MobyGames](mobygames.com)
+- [Exotica](https://www.exotica.org.uk/)
+- [Wikipedia](https://en.wikipedia.org/w/index.php?title=Category:Amiga_game_covers)
+- [GiantBomb](https://www.giantbomb.com/api/)
+- [UVList](https://www.uvlist.net/)
 
 ## Supported Platforms
 
@@ -48,15 +52,18 @@ EMULSION supports the following platforms:
 
 ## Installation
 
-See releases
+See [Releases](https://gitlab.com/yphil/emulsion/-/releases)
 
 ## Configuration
+for each machine, enter
 
-To configure the emulators, you need to provide the path to the emulator executable and any optional launch arguments for each platform. This can be done through the application's settings.
+- Games directory
+- Emulator
+- Optional Emulator arguments
 
-## Controller Support
+## Usage
 
-EMULSION supports gamepads, keyboards, and mice.
+Later
 
 ## Contributing
 

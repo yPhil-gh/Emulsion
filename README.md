@@ -10,14 +10,23 @@ Emulsion is a unified, lightweight frontend for your game emulators.
 ![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png)
 
 ## Features
-### Multi-Platform Support
-Input your games directory, select the appropriate emulator and launch parameters for every platform—from retro consoles like the PC Engine to modern consoles like the PS3.
+### Full control
+- Your games can be anywhere
+- Latest versions of the emulators
+- Fine-tuning of the emulators
+
+All those settings are saved in a central, standard json file.
+
+### Centralized, standard configuration
+- One single config file
+- Install a full gaming PC in one command
+
+## Solidity
+- One update of an emulator won't break everything
+- Emulsion will never forget you game controller config / calibration
 
 ### Input Versatility
 Fully controllable using **gamepad, keyboard, or mouse**.
-
-### Centralized, standard configuration
-Emulsion avoids duplicating emulator installations and config files.
 
 ### Cover art management
 Direct dowloading of the game cover art via several backends:
@@ -29,9 +38,21 @@ Direct dowloading of the game cover art via several backends:
 - [GiantBomb](https://www.giantbomb.com/api/)
 - [UVList](https://www.uvlist.net/)
 
-## Supported Platforms
+## Installation
 
-EMULSION supports the following platforms:
+See [Releases](https://gitlab.com/yphil/emulsion/-/releases)
+
+## Configuration
+for each machine, enter
+
+- Games directory
+- Emulator
+- Optional Emulator arguments
+
+
+### Supported Platforms
+
+Emulsion supports the following platforms:
 
 - Nintendo NES
 - Sega Master System
@@ -50,21 +71,15 @@ EMULSION supports the following platforms:
 - Sony Playstation PSP
 - Sony Playstation 3
 
-## Installation
-
-See [Releases](https://gitlab.com/yphil/emulsion/-/releases)
-
-## Configuration
-for each machine, enter
-
-- Games directory
-- Emulator
-- Optional Emulator arguments
 
 ## Usage
 
 Later
 
-## Contributing
+## Can I help?
 
-If you want to contribute to the project, feel free to submit a pull request.
+Why of course, thank you for asking.
+
+- Donate
+- Submit an issue
+- Contribute code

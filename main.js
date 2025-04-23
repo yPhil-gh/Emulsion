@@ -541,8 +541,8 @@ ipcMain.handle('parse-sfo', async (_event, filePath) => {
 
 ipcMain.handle('open-about-window', () => {
     const aboutWindow = new BrowserWindow({
-        width: 400,
-        height: 200,
+        width: 300,
+        height: 400,
         resizable: false,
         minimizable: false,
         maximizable: false,

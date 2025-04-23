@@ -115,7 +115,7 @@ async function _buildRecentGallery({ userDataPath, index }) {
         // gameContainer.style.height = `calc(120vw / ${LB.galleryNumOfCols})`;
 
         const date = new Date(recent.date);
-        gameContainer.title = `${recent.gameName} - Last played on ${date.toLocaleString()} \n\n- Click to launch`;
+        gameContainer.title = `${recent.gameName} (${recent.platform}) - Last played on ${date.toLocaleString()} \n\n- Click to launch`;
 
         gameContainer.setAttribute('data-game-name', recent.gameName);
         gameContainer.setAttribute('data-platform', recent.platform);

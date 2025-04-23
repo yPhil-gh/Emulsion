@@ -68,7 +68,6 @@ Emulsion supports the following platforms:
 - Sony Playstation PSP
 - Sony Playstation 3
 
-
 ## Usage
 
 Later

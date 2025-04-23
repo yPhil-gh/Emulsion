@@ -164,8 +164,8 @@ div.platform-container {
 }
 
 .game-image {
-    width: 100%; /* Ensure images fill the container */
-    height: auto; /* Maintain aspect ratio */
+    /* width: 100%; /\* Ensure images fill the container *\/ */
+    /* height: auto; /\* Maintain aspect ratio *\/ */
     height: 100%;
     /* object-fit: cover; /\* Ensure images fill the space without distortion *\/ */
     /* object-fit: contain; /\* Show full image without cropping *\/ */
@@ -181,7 +181,7 @@ div.platform-container {
 }
 
 .game-label {
-  background-color: rgba(0, 0, 0, 0.6); /* Black with 50% transparency */
+  background-color: rgba(0, 0, 0, 0.7);
   color: var(--color-text-game-label);
   margin-top: 5px;
   font-size: 12px;

@@ -478,11 +478,12 @@ function initGallery(currentIndex, disabledPlatform) {
                         menuContainer.appendChild(platformForm);
                     } else {
                         const gameImage = container.querySelector('img');
-                        const gameMenuContainer = LB.build.gameMenu(container.dataset.gameName, gameImage);
+                        const gameName = LB.utils.cleanFileName(container.dataset.gameName);
+                        const gameMenuContainer = LB.build.gameMenu(gameName, gameImage);
                         menuContainer.appendChild(gameMenuContainer);
-                        await LB.build.populateGameMenu(gameMenuContainer, container.dataset.gameName, platformToOpen || container.dataset.platform);
+                        await LB.build.populateGameMenu(gameMenuContainer, gameName, platformToOpen || container.dataset.platform);
 
-                        document.querySelector('header .platform-name').textContent = container.dataset.gameName;
+                        document.querySelector('header .platform-name').textContent = gameName;
                         document.querySelector('header .item-type').textContent = '';
                         document.querySelector('header .item-number').textContent = '';
 

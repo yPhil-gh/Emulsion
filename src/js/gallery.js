@@ -112,7 +112,7 @@ async function _buildRecentGallery({ userDataPath, index }) {
         const gameContainer = document.createElement('div');
         gameContainer.classList.add('game-container');
         // Use the same dangerous height logic
-        gameContainer.style.height = `calc(120vw / ${LB.galleryNumOfCols})`;
+        // gameContainer.style.height = `calc(120vw / ${LB.galleryNumOfCols})`;
 
         const date = new Date(recent.date);
         gameContainer.title = `Last played on ${date.toLocaleString()}`;
@@ -315,7 +315,7 @@ async function buildGallery(params) {
 
             const gameContainer = document.createElement('div');
             gameContainer.classList.add('game-container');
-            gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+            // gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
             gameContainer.title = 'Empty';
             gameContainer.setAttribute('data-platform', platform);
 
@@ -374,7 +374,7 @@ async function buildGallery(params) {
 
                 const gameContainer = document.createElement('div');
                 gameContainer.classList.add('game-container');
-                gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+                // gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
                 gameContainer.title = `${fileNameClean} \n\n- Click to launch\n- Righ-click to configure`;
                 gameContainer.setAttribute('data-game-name', fileNameWithoutExt);
                 gameContainer.setAttribute('data-platform', platform);

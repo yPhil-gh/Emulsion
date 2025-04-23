@@ -224,10 +224,6 @@ function buildSettingsPageContent(platforms) {
         platformContainer.setAttribute('data-platform', platformName);
         platformContainer.setAttribute('data-index', i);
 
-        // const platformNameElement = document.createElement('div');
-        // platformNameElement.textContent = LB.utils.getPlatformName(platformName);
-        // platformNameElement.classList.add('platform-name');
-
         const platformInfo = LB.utils.getPlatformInfo(platformName);
 
         const platformNameElement = document.createElement('div');
@@ -264,7 +260,6 @@ function buildSettingsPageContent(platforms) {
     return pageContent;
 }
 
-// Build the gallery for a specific platform
 async function buildGallery(params) {
 
     if (LB.kidsMode && params.platform === 'settings') {

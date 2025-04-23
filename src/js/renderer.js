@@ -16,7 +16,8 @@ function buildSlide(platformName, preferences) {
 
     const slideContent = document.createElement("div");
     slideContent.className = "slide-content";
-    slideContent.innerHTML = `${LB.utils.getPlatformName(platformName)}`;
+    const platformInfo = LB.utils.getPlatformInfo(platformName);
+    slideContent.innerHTML = platformInfo.name;
 
     slide.setAttribute('data-platform', platformName);
 

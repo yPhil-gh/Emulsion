@@ -156,29 +156,10 @@ function _moveTrailingArticleToFront(s) {
     return s;
 }
 
-
-const platforms = [
-    { name: "nes", extensions: [".zip"] },
-    { name: "sms", extensions: [".zip"] },
-    { name: "pcengine", extensions: [".pce"] },
-    { name: "amiga", extensions: [".lha", ".adf"] },
-    { name: "megadrive", extensions: [".md"] },
-    { name: "snes", extensions: [".smc"] },
-    { name: "jaguar", extensions: [".jag"] },
-    { name: "saturn", extensions: [".cue"] },
-    { name: "psx", extensions: [".srm"] },
-    { name: "n64", extensions: [".z64"] },
-    { name: "dreamcast", extensions: [".gdi", ".cdi"] },
-    { name: "ps2", extensions: [".bin", ".iso"] },
-    { name: "gamecube", extensions: [".iso", ".ciso"] },
-    { name: "xbox", extensions: [".xiso.iso"] },
-    { name: "psp", extensions: [".iso"] },
-    { name: "ps3", extensions: [".SFO"] }
-];
-
 function getPlatformInfo(name) {
     const platforms = {
         'settings': { name: 'Emulsion', vendor: 'Settings' },
+        'recents': { name: 'Recents', vendor: 'Emulsion' },
         'nes': { name: 'NES', vendor: 'Nintendo' },
         'sms': { name: 'Master System', vendor: 'Sega' },
         'pcengine': { name: 'PC Engine', vendor: 'NEC' },
@@ -198,39 +179,8 @@ function getPlatformInfo(name) {
     };
 
     // Return the platform info if found, otherwise return the original name as both name and vendor
-    return platforms[name.toLowerCase()] || { name: name, vendor: '' };
+    return platforms[name] || { name: name, vendor: '' };
 }
-
-function getPlatformName(name) {
-    switch (name) {
-    case 'snes':
-        return "SNES";
-        break;
-    case 'pcengine':
-        return "PCEngine";
-        break;
-    case 'psx':
-        return "Playstation";
-        break;
-    case 'ps2':
-        return "Playstation 2";
-        break;
-    case 'ps3':
-        return "Playstation 3";
-        break;
-    case 'gamecube':
-        return "GameCube";
-        break;
-    case 'n64':
-        return "Nintendo64";
-        break;
-    default:
-        break;
-    }
-
-    return name;
-}
-
 
 async function _loadUserData() {
     try {
@@ -294,11 +244,9 @@ async function updatePreference(platformName, key, value) {
 
         notifications.style.opacity = 1;
 
-        // Fade out after 1 second (same duration as the transition)
         setTimeout(() => {
             notifications.style.opacity = 0;
-        }, 3000); // Adjust timing to match your transition duration
-
+        }, 3000);
 
         console.log(`${platformName} Preferences saved successfully!`);
 
@@ -311,22 +259,18 @@ async function updatePreference(platformName, key, value) {
 
 async function getPlatformPreference(platformName, key) {
     try {
-        // Step 1: Load the current preferences
         const preferences = await getPrefs();
 
         console.log("preferences[platformName]: ", preferences[platformName]);
 
-        // Step 2: Check if the platform exists
         if (!preferences[platformName]) {
             throw new Error(`Platform "${platformName}" not found in preferences.`);
         }
 
-        // Step 3: Check if the key exists for the platform
         if (preferences[platformName][key] === undefined) {
             throw new Error(`Key "${key}" not found for platform "${platformName}".`);
         }
 
-        // // Step 4: Return the value for the specified key
         return preferences[platformName][key];
     } catch (error) {
         console.error('Error getting platform preference:', error);
@@ -366,7 +310,6 @@ function applyTheme(theme) {
 function setFooterSize(size) {
   const footer = document.getElementById('footer');
   footer.className = size === 'big' ? '' : `footer-${size}`;
-  // localStorage.setItem('footerSize', size);
 }
 
 LB.prefs = {
@@ -378,7 +321,6 @@ LB.prefs = {
 LB.utils = {
     applyTheme: applyTheme,
     setFooterSize: setFooterSize,
-    getPlatformName: getPlatformName,
     getPlatformInfo: getPlatformInfo,
     cleanFileName: cleanFileName,
     safeFileName: safeFileName,

@@ -256,7 +256,9 @@ function initGallery(currentIndex, disabledPlatform) {
             block: "center"
         });
 
-        document.querySelector('header .platform-name').textContent = LB.utils.getPlatformName(page.dataset.platform);
+        const platformInfo = LB.utils.getPlatformInfo(page.dataset.platform);
+
+        document.querySelector('header .platform-name').textContent = platformInfo.name;
         document.querySelector('header .item-type').textContent = index === 0 ? ' platforms' : ' games';
         document.querySelector('header .item-number').textContent = gameContainers.length - 1;
 

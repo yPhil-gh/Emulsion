@@ -37,11 +37,16 @@ header .platform-image {
 }
 
 header .platform-name {
-  color: #062EF9;
+  color: var(--color-platform-text-header);
   font-size: 32pt;
   opacity: 1;
   z-index: 2;
-  text-shadow: 0 0 5px white, 0 0 10px #062EF9, 0 0 15px yellow;
+
+  text-shadow:
+    -1px -1px 0 var(--color-platform-outline-header),
+     1px -1px 0 var(--color-platform-outline-header),
+    -1px  1px 0 var(--color-platform-outline-header),
+    1px  1px 0 var(--color-platform-outline-header);
 }
 
 header .platform-stats {

@@ -216,7 +216,7 @@ function _buildPrefsForm() {
     const giantBombAPIKeyGroup = giantBombAPIKey.group;
     const giantBombAPIKeyInput = giantBombAPIKey.input;
 
-    formContainer.appendChild(platformMenuImageCtn);
+    // formContainer.appendChild(platformMenuImageCtn);
     formContainer.appendChild(numberOfColumnsGroup);
     formContainer.appendChild(homeMenuThemeGroup);
     formContainer.appendChild(themeGroup);
@@ -331,7 +331,10 @@ function buildPlatformForm(platformName) {
 
     const statusLabelPlatormName = document.createElement('span');
     statusLabelPlatormName.id = 'form-status-label-platform-name';
-    statusLabelPlatormName.innerHTML = `${LB.utils.getPlatformName(platformName)} is&nbsp;`;
+
+    const platformInfo = LB.utils.getPlatformInfo(platformName);
+
+    statusLabelPlatormName.innerHTML = `${platformInfo.name} is&nbsp;`;
 
     const statusLabelPlatormStatus = document.createElement('span');
     statusLabelPlatormStatus.id = 'form-status-label-platform-status';

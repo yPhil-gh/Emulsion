@@ -1,5 +1,21 @@
+@font-face {
+  font-family: 'Orbitron';
+  src: url('../../font/Orbitron-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900; /* For variable fonts */
+  font-stretch: 50% 200%; /* Optional for variable fonts */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Exo2';
+  src: url('../../font/Exo2-Regular.otf') format('opentype');
+  font-weight: normal; /* For variable fonts */
+  font-style: normal;
+}
+
 :root {
   --font-main: 'Orbitron', sans-serif;
+  --font-second: 'Exo2', sans-serif;
   --glow-color: 167, 0, 255;
   --color-succes: #00ff18;
   --color-icon: #007bff;
@@ -17,6 +33,8 @@
   --color-bg-footer: #050c16;
   --color-border-footer: #1E3E62;
 
+  --color-outline-header: #050c16;
+
   --color-button-off: #FF4742;
   --color-button-on: #050c16;
 
@@ -32,6 +50,10 @@
 .theme-day {
   --color-text-1: #333333;
   --color-text-2: #666666;
+
+  --color-platform-text-header: #0a3f4a;
+  --color-platform-outline-header: #a3ffff;
+
   --color-bg-footer: #8badd3;
   --color-text-footer: #1b0c66;
   --color-border-footer: #759cc8;
@@ -41,8 +63,12 @@
 }
 
 .theme-night {
-  --color-text-1: #ffffff;
+  --color-text-1: #29f1a6;
   --color-text-2: #dddddd;
+
+  --color-platform-text-header: #29f1ea;
+  --color-platform-outline-header: #0a0a0f;
+
   --color-bg-footer: #050c16;
   --color-text-footer: #ffffff;
   --color-border-footer: #1E3E62;
@@ -54,8 +80,12 @@
 .theme-default {
   --color-text-1: #29f1ea;
   --color-text-2: #fff3d8;
+
+  --color-platform-text-header: #1a1e2a;
+  --color-platform-outline-header: #29f1ea;
+
   --color-bg-footer: #050c16;
-  --color-text-footer: #ffffff;
+  --color-text-footer: #29f1ea;
   --color-border-footer: #1E3E62;
   --color-bg-header: #050c16;
 }

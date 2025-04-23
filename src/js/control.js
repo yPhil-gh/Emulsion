@@ -260,7 +260,7 @@ function initGallery(currentIndex, disabledPlatform) {
 
         document.querySelector('header .platform-name').textContent = platformInfo.name;
         document.querySelector('header .item-type').textContent = index === 0 ? ' platforms' : ' games';
-        document.querySelector('header .item-number').textContent = gameContainers.length - 1;
+        document.querySelector('header .item-number').textContent = index === 0 ? gameContainers.length - 1 : gameContainers.length;
 
         document.querySelector('header .platform-image').style.backgroundImage = `url('../../img/platforms/${page.dataset.platform}.png')`;
 

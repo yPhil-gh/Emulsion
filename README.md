@@ -2,8 +2,7 @@
 
 # Emulsion
 
-Emulsion is a unified, lightweight frontend for your game emulators.
-
+A unified, lightweight frontend for game emulators.
 
 ## Features
 ### Full control

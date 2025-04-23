@@ -1,7 +1,7 @@
 # Emulsion
 
 
-| plop  | ![Emulsion](https://gitlab.com/yphil/emulsion/-/raw/master/img/icon.png){: text-align="center" width="200px"}
+| plop  | ![Emulsion](https://gitlab.com/yphil/emulsion/-/raw/master/img/icon.png){: text-align="center" width="100%"}
   | plop  |
 
 

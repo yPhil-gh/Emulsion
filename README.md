@@ -47,7 +47,7 @@ for each machine, enter
 - Optional Emulator arguments
 
 
-### Supported Platforms
+### Supported Machines
 
 Emulsion supports the following platforms:
 
@@ -72,10 +72,13 @@ Emulsion supports the following platforms:
 
 ### Keyboard Commands
 #### Home Screen (Platform Slideshow)
-- ← / → Arrow Keys: Navigate between platforms
+- ← / → Arrow Keys: Navigate between machines
 - Enter: Select highlighted platform
 - Escape / Ctrl + Q: Exit application
-- Mouse Wheel: Scroll up/down to navigate platforms
+
+- <kbd>Esc</kbd> / <kbd>Ctrl</kbd>+<kbd>Q</kbd>: Exit Emulsion
+
+- Mouse Wheel: Scroll up/down to navigate machines
 - Click: Select platform (click active platform to confirm)
 
 ##### Gamepad
@@ -84,9 +87,9 @@ Emulsion supports the following platforms:
 - Cross Button (A/X) → Confirm selection
 - Circle Button (B/O) → Exit app
 
-#### Gallery Screen (Games/Platforms)
+#### Gallery Screen (Games/Machines)
 ##### Navigation:
-- ← / → Arrows: Move between games (hold Shift to switch platforms)
+- ← / → Arrows: Move between games (hold <kbd>Shift</kbd> to move between platforms)
 - ↑ / ↓ Arrows: Move vertically between game rows
 - Page Up/Down: Jump 10 rows
 - Home/End: Jump to first/last game
@@ -112,11 +115,12 @@ Emulsion supports the following platforms:
 - Enter: Select image to download
 - Escape: Close menu
 
-Mouse Wheel: Scroll through images
+Mouse Wheel works everywhere.
 
 #### Universal Controls
-- Ctrl + Q: Force quit application
+- Ctrl + Q: Quit Emulsion
 - Shift + Arrows: Alternative navigation mode (platform switching in galleries)
+- Ctrl + Shift + K: Quit game and return to Emulsion
 
 #### Contextual Help
 Control hints appear in the footer based on current screen:

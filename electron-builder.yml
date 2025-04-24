@@ -12,13 +12,10 @@ asarUnpack:
 
 files:
   - "**/*"
-  - "!**/*.map"
-  - "!**/*.log"
-  - "!**/node_modules/**/*.md"
+  - "!**/*.{map,log,md,markdown,txt}"
   - "!**/node_modules/**/*.ts"
-  - "!**/node_modules/**/test"
-  - "!**/node_modules/**/tests"
-  - "!**/node_modules/**/examples"
+  - "!**/**/{test,tests,tmp,example,examples}"
+  - "!**/node_modules/**/{CHANGELOG.md,README.md,LICENSE,Makefile}"
 
 # Copy the 'bin' folder verbatim alongside the app
 extraResources:
@@ -30,7 +27,7 @@ extraResources:
 linux:
   executableName: emulsion
 
-  # CLI flags to append when your users launch the app but that dont work dont it
+  # CLI flags to append when your users launch the app but that dont really work, now don't it :|
   executableArgs:
     - --no-sandbox
 

@@ -70,7 +70,59 @@ Emulsion supports the following platforms:
 
 ## Usage
 
-Later
+### Keyboard Commands
+#### Home Screen (Platform Slideshow)
+- ← / → Arrow Keys: Navigate between platforms
+- Enter: Select highlighted platform
+- Escape / Ctrl + Q: Exit application
+- Mouse Wheel: Scroll up/down to navigate platforms
+- Click: Select platform (click active platform to confirm)
+
+##### Gamepad
+
+- D-Pad Left/Right → Platform navigation
+- Cross Button (A/X) → Confirm selection
+- Circle Button (B/O) → Exit app
+
+#### Gallery Screen (Games/Platforms)
+##### Navigation:
+- ← / → Arrows: Move between games (hold Shift to switch platforms)
+- ↑ / ↓ Arrows: Move vertically between game rows
+- Page Up/Down: Jump 10 rows
+- Home/End: Jump to first/last game
+- Mouse Wheel: Vertical scroll (hold Shift for platform switching)
+
+##### Actions:
+- Enter: Launch selected game
+- Escape: Return to home screen
+- I Key: Open game/image menu
+- Right-Click (Mouse): Open context menu for selected game
+- F5: Reload UI
+
+##### Gamepad Equivalent:
+- D-Pad → Game navigation
+- L1/R1 → Platform switching
+- Cross Button → Launch game/open menu
+- Circle Button → Return to home
+- Square Button → Open game menu
+
+#### Game/Platform Menu
+- ← / → Arrows: Navigate image thumbnails
+- ↑ / ↓ Arrows: Scroll through image grid
+- Enter: Select image to download
+- Escape: Close menu
+
+Mouse Wheel: Scroll through images
+
+#### Universal Controls
+- Ctrl + Q: Force quit application
+- Shift + Arrows: Alternative navigation mode (platform switching in galleries)
+
+#### Contextual Help
+Control hints appear in the footer based on current screen:
+- D-Pad Icon: Indicates primary navigation method
+- Shoulder Button Icons: Show secondary actions (platform switching)
+- Button Labels: Change dynamically for context-specific actions (e.g., "Fetch cover", "Browse Platforms")
 
 ## Can I help?
 

@@ -182,7 +182,7 @@ div.platform-container {
 }
 
 .game-label {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   color: var(--color-text-game-label);
   margin-top: 5px;
   font-size: 12px;

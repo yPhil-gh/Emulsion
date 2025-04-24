@@ -15,7 +15,7 @@ A unified, lightweight frontend for game emulators.
     - [Games directory](#games-directory)
     - [Emulator](#emulator)
     - [Emulator arguments](#emulator-arguments)
-    - [What emulator / launch arguments can I use for (insert machine / platform)?](#what-emulator--launch-arguments-can-i-use-for-insert-machine--platform)
+      - [What emulator / launch arguments can I use for (insert machine / platform)?](#what-emulator--launch-arguments-can-i-use-for-insert-machine--platform)
   - [Controls](#controls)
     - [Home](#home)
     - [Gallery](#gallery)
@@ -25,12 +25,13 @@ A unified, lightweight frontend for game emulators.
     - [Contextual Help](#contextual-help)
 - [Can I help?](#can-i-help)
 
+
 ## Features
 ### Controllable
 - Your games can be anywhere
 - Latest versions of the emulators
 - Fine-tuning of the emulators
-- Fully controllable using **gamepad, keyboard, or mouse**.
+- Fully controllable using **game controller, keyboard & mouse**.
 
 ### Standard
 - One single config file
@@ -71,7 +72,7 @@ The emulator for that platform. The name of a program installed on your machine,
 #### Emulator arguments
 The *optional* arguments for that emulator. Most don't need any, read on
 
-#### What emulator / launch arguments can I use for (insert machine / platform)?
+##### What emulator / launch arguments can I use for (insert machine / platform)?
 Consult [the Emulsion Wiki](https://gitlab.com/yphil/emulsion/-/wikis/home) to get tips on emulators and settings
 
 ### Controls

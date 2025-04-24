@@ -4,6 +4,30 @@
 
 A unified, lightweight frontend for game emulators.
 
+- [Features](#features)
+  - [Full control](#full-control)
+  - [Centralized, standard configuration](#centralized-standard-configuration)
+  - [Solidity](#solidity)
+  - [Input Versatility](#input-versatility)
+  - [Cover art management](#cover-art-management)
+- [Installation](#installation)
+- [Configuration](#configuration)
+  - [Supported Machines](#supported-machines)
+- [Usage](#usage)
+  - [Controls](#controls)
+    - [Home Screen (Platform Slideshow)](#home-screen-platform-slideshow)
+      - [Keyboard](#keyboard)
+      - [Gamepad](#gamepad)
+    - [Gallery Screen (Games/Machines)](#gallery-screen-gamesmachines)
+      - [Keyboard](#keyboard)
+      - [Gamepad](#gamepad)
+    - [Game/Platform Menu](#gameplatform-menu)
+    - [Mouse](#mouse)
+    - [Universal Controls](#universal-controls)
+    - [Contextual Help](#contextual-help)
+- [Can I help?](#can-i-help)
+
+
 ## Features
 ### Full control
 - Your games can be anywhere
@@ -70,7 +94,7 @@ Emulsion supports the following platforms:
 
 ## Usage
 
-### Control
+### Controls
 #### Home Screen (Platform Slideshow)
 ##### Keyboard
 - <kbd>←</kbd> / <kbd>→</kbd>: Navigate between machines
@@ -82,8 +106,6 @@ Emulsion supports the following platforms:
 - D-Pad Left / Right <kbd>◄</kbd> / <kbd>►</kbd>: Platform navigation
 - Cross / A / South <kbd>X</kbd>: Confirm selection
 - Circle / B / East <kbd>O</kbd>: Exit Emulsion
-
-▲▼►◄ x o □ △
 
 #### Gallery Screen (Games/Machines)
 ##### Keyboard
@@ -99,7 +121,7 @@ Emulsion supports the following platforms:
 - D-Pad Left / Right / Up / down <kbd>◄</kbd> / <kbd>►</kbd> / <kbd>▲</kbd> / <kbd>▼</kbd>: Game navigation
 - <kbd>L1</kbd> / <kbd>R1</kbd>: Platform switching
 - Cross / A / South <kbd>X</kbd>: Launch game
-- Square / X / South <kbd>□</kbd>: Open menu
+- Square / X / West <kbd>□</kbd>: Open game menu
 - Circle / B / East <kbd>O</kbd>: Back to home
 
 #### Game/Platform Menu

@@ -4,6 +4,8 @@
 
 A unified, lightweight frontend for game emulators.
 
+![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png)
+
 - [Features](#features)
   - [Full control](#full-control)
   - [Centralized, standard configuration](#centralized-standard-configuration)
@@ -29,8 +31,6 @@ A unified, lightweight frontend for game emulators.
     - [Mouse](#mouse)
     - [Contextual Help](#contextual-help)
 - [Can I help?](#can-i-help)
-
-![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png)
 
 ## Features
 ### Full control
@@ -90,11 +90,11 @@ Consult [the Emulsion Wiki](https://gitlab.com/yphil/emulsion/-/wikis/homehttps:
 #### Home
 The  platforms / machines carousel
 
-| Action                      | Keyboard                       | Game controller                               |
-|-----------------------------|--------------------------------|-----------------------------------------------|
-| Navigate between machines   | <kbd>←</kbd> / <kbd>→</kbd>    | D-Pad Left / Right <kbd>◄</kbd> / <kbd>►</kbd |
-| Select highlighted platform | <kbd>Enter</kbd>               | Cross / A / South <kbd>⤫</kbd>                |
-| Exit Emulsion               | <kbd>Ctrl</kbd> + <kbd>Q</kbd> | Circle / B / East <kbd>○</kbd>                |
+| Action                      | Keyboard                       | Game controller                                |
+|-----------------------------|--------------------------------|------------------------------------------------|
+| Navigate between machines   | <kbd>←</kbd> / <kbd>→</kbd>    | D-Pad Left / Right <kbd>◄</kbd> / <kbd>►</kbd> |
+| Select highlighted platform | <kbd>Enter</kbd>               | Cross / A / South <kbd>⤫</kbd>                 |
+| Exit Emulsion               | <kbd>Ctrl</kbd> + <kbd>Q</kbd> | Circle / B / East <kbd>○</kbd>                 |
 
 #### Gallery
 The games and plaforms config page

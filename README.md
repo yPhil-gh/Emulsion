@@ -70,63 +70,55 @@ Emulsion supports the following platforms:
 
 ## Usage
 
-### Keyboard Commands
+### Control
 #### Home Screen (Platform Slideshow)
-- ← / → Arrow Keys: Navigate between machines
-- Enter: Select highlighted platform
-- Escape / Ctrl + Q: Exit application
-
+##### Keyboard
+- <kbd>←</kbd> / <kbd>→</kbd>: Navigate between machines
+- <kbd>Enter</kbd>: Select highlighted platform
 - <kbd>Esc</kbd> / <kbd>Ctrl</kbd>+<kbd>Q</kbd>: Exit Emulsion
-
-- Mouse Wheel: Scroll up/down to navigate machines
-- Click: Select platform (click active platform to confirm)
 
 ##### Gamepad
 
-- D-Pad Left/Right → Platform navigation
-- Cross Button (A/X) → Confirm selection
-- Circle Button (B/O) → Exit app
+- D-Pad Left / Right <kbd>◄</kbd> / <kbd>►</kbd>: Platform navigation
+- Cross / A / South <kbd>X</kbd>: Confirm selection
+- Circle / B / East <kbd>O</kbd>: Exit Emulsion
+
+▲▼►◄ x o □ △
 
 #### Gallery Screen (Games/Machines)
-##### Navigation:
-- ← / → Arrows: Move between games (hold <kbd>Shift</kbd> to move between platforms)
-- ↑ / ↓ Arrows: Move vertically between game rows
-- Page Up/Down: Jump 10 rows
-- Home/End: Jump to first/last game
-- Mouse Wheel: Vertical scroll (hold Shift for platform switching)
+##### Keyboard
+- <kbd>←</kbd> / <kbd>→</kbd> / <kbd>↑</kbd> / <kbd>↓</kbd>: Move between games (hold <kbd>Shift</kbd> to move between platforms)
+- <kbd>Page Up</kbd> / <kbd>Page Down</kbd>: Jump 10 rows
+- <kbd>Home</kbd> / <kbd>End</kbd>: Jump to first/last game
+- <kbd>Enter</kbd>: Launch selected game
+- <kbd>Escape</kbd>: Return to home screen
+- <kbd>I</kbd>: Open game/image menu
+- <kbd>F5</kbd>: Reload UI
 
-##### Actions:
-- Enter: Launch selected game
-- Escape: Return to home screen
-- I Key: Open game/image menu
-- Right-Click (Mouse): Open context menu for selected game
-- F5: Reload UI
-
-##### Gamepad Equivalent:
-- D-Pad → Game navigation
-- L1/R1 → Platform switching
-- Cross Button → Launch game/open menu
-- Circle Button → Return to home
-- Square Button → Open game menu
+##### Gamepad
+- D-Pad Left / Right / Up / down <kbd>◄</kbd> / <kbd>►</kbd> / <kbd>▲</kbd> / <kbd>▼</kbd>: Game navigation
+- <kbd>L1</kbd> / <kbd>R1</kbd>: Platform switching
+- Cross / A / South <kbd>X</kbd>: Launch game
+- Square / X / South <kbd>□</kbd>: Open menu
+- Circle / B / East <kbd>O</kbd>: Back to home
 
 #### Game/Platform Menu
-- ← / → Arrows: Navigate image thumbnails
-- ↑ / ↓ Arrows: Scroll through image grid
-- Enter: Select image to download
-- Escape: Close menu
+- <kbd>←</kbd> / <kbd>→</kbd> / <kbd>↑</kbd> / <kbd>↓</kbd>: Navigate image thumbnails
+- <kbd>Enter</kbd>: Select / save image
+- <kbd>Escape</kbd>: Close menu
 
-Mouse Wheel works everywhere.
+#### Mouse
+- Left Click: Select platform / launch game
+- Right-Click: Open context menu for selected game
+- Mouse Wheel: Scroll machines / games
 
 #### Universal Controls
-- Ctrl + Q: Quit Emulsion
-- Shift + Arrows: Alternative navigation mode (platform switching in galleries)
-- Ctrl + Shift + K: Quit game and return to Emulsion
+- <kbd>Ctrl</kbd> + <kbd>Q</kbd>: Quit Emulsion
+- <kbd>Shift</kbd> + <kbd>←</kbd> / <kbd>→</kbd>: Alternative navigation mode (platform switching in galleries)
+- <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>: Quit game and return to Emulsion
 
 #### Contextual Help
-Control hints appear in the footer based on current screen:
-- D-Pad Icon: Indicates primary navigation method
-- Shoulder Button Icons: Show secondary actions (platform switching)
-- Button Labels: Change dynamically for context-specific actions (e.g., "Fetch cover", "Browse Platforms")
+Control hints appear in the footer based on current screen
 
 ## Can I help?
 

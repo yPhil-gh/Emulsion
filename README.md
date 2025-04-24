@@ -4,8 +4,6 @@
 
 A unified, lightweight frontend for game emulators.
 
-![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png)
-
 - [Features](#features)
   - [Full control](#full-control)
   - [Centralized, standard configuration](#centralized-standard-configuration)
@@ -18,14 +16,10 @@ A unified, lightweight frontend for game emulators.
     - [Games directory](#games-directory)
     - [Emulator](#emulator)
     - [Emulator arguments](#emulator-arguments)
-    - [What emulator can I use for <platform> ?](#what-emulator-can-i-use-for-platform-)
+    - [What emulator / launch arguments can I use for (insert machine / platform)?](#what-emulator--launch-arguments-can-i-use-for-insert-machine--platform)
   - [Controls](#controls)
-    - [Home Screen (Platform Slideshow)](#home-screen-platform-slideshow)
-      - [Keyboard](#keyboard)
-      - [Gamepad](#gamepad)
-    - [Gallery Screen (Games / Machines)](#gallery-screen-games--machines)
-      - [Keyboard](#keyboard)
-      - [Gamepad](#gamepad)
+    - [Home](#home)
+    - [Gallery](#gallery)
     - [Game/Platform Menu](#gameplatform-menu)
     - [Universal Controls](#universal-controls)
     - [Mouse](#mouse)
@@ -72,18 +66,14 @@ See [Releases](https://gitlab.com/yphil/emulsion/-/releases)
 
 For each machine, enter
 
-- Games directory
-- Emulator
-- Optional Emulator arguments
-
 #### Games directory
-The directory where the games are stored for that platform
+The directory where the games are stored for that platform ; Enter a path or better, use the Browse button
 #### Emulator
 The emulator for that platform. The name of a program installed on your machine, or the full path to an executable
 #### Emulator arguments
-The *optional* arguments for that emulator. Most don't need any.
+The *optional* arguments for that emulator. Most don't need any, read on
 
-#### What emulator can I use for (insert machine / platform)?
+#### What emulator / launch arguments can I use for (insert machine / platform)?
 Consult [the Emulsion Wiki](https://gitlab.com/yphil/emulsion/-/wikis/homehttps://gitlab.com/yphil/emulsion/-/wikis/home) to get tips on emulators and settings
 
 ### Controls
@@ -130,9 +120,9 @@ Works everywhere
 | Restart Emulsion                 | <kbd>F5</kbd>                                     |                                               |
 
 #### Mouse
-- Left Click: Select platform / launch game
-- Right-Click: Open context menu for selected game
-- Mouse Wheel: Scroll machines / games
+- Left Click: Home: Select platform, Menu: Select and save cover art image, Gallery: **launch game** 🚀
+- Right-Click: Open contextual game menu
+- Mouse Wheel: Scroll / browse machines / games
 
 #### Contextual Help
 Control hints appear in the footer based on current screen

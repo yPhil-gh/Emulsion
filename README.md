@@ -84,7 +84,7 @@ The emulator for that platform. The name of a program installed on your machine,
 The *optional* arguments for that emulator. Most don't need any.
 
 #### What emulator can I use for (insert machine / platform)?
-Consult the wiki to get tips on emulators and settings
+Consult [the Emulsion Wiki](https://gitlab.com/yphil/emulsion/-/wikis/homehttps://gitlab.com/yphil/emulsion/-/wikis/home) to get tips on emulators and settings
 
 ### Controls
 #### Home Screen (Platform Slideshow)

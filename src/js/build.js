@@ -512,37 +512,35 @@ function buildPlatformForm(platformName) {
             console.error('Failed to get platform preference:', error);
         });
 
-
     statusCheckBox.addEventListener('change', (event) => {
         console.log("event: ", event);
         const isNotEnablable = !gamesDirInput.value || !emulatorInput.value;
+        const isEnabling = statusCheckBox.checked;
 
         statusLabelPlatormStatus.classList.remove('on', 'off');
 
         gamesDirSubLabel.textContent = '';
         emulatorSubLabel.textContent = '';
 
-        if (!gamesDirInput.value) {
-            gamesDirSubLabel.textContent = 'This field cannot be empty';
+        if (isEnabling) {
+            if (!gamesDirInput.value) {
+                gamesDirSubLabel.textContent = 'Please enter a game directory';
+            }
+            if (!emulatorInput.value) {
+                emulatorSubLabel.textContent = 'Please enter an emulator (name or path)';
+            }
         }
 
-
-        if (!emulatorInput.value) {
-            emulatorSubLabel.textContent = 'This field cannot be empty';
+        if (isEnabling && isNotEnablable) {
+            event.preventDefault();
+            statusCheckBox.checked = false;
+            console.log("Cannot enable platform - missing requirements");
         }
-
-        if (isNotEnablable) {
-            event.preventDefault(); // Prevent the default behavior
-            statusCheckBox.checked = !statusCheckBox.checked; // Revert the checkbox state
-            console.log("Checkbox state change prevented.");
-            // platformText.textContent = 'Please provide both a games directory and an emulator.';
-        } else {
+        else {
             statusLabelPlatormStatus.textContent = statusCheckBox.checked ? 'On' : 'Off';
             statusLabelPlatormStatus.classList.add(statusCheckBox.checked ? 'on' : 'off');
-
         }
     });
-
 
     cancelButton.addEventListener('click', _cancelButtonClick);
 

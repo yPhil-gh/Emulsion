@@ -103,7 +103,8 @@ div.menu-game-container {
   position: relative; /* Needed for absolute positioning of the label */
 }
 
-div.game-container:hover {
+div.game-container:hover,
+div.menu-game-container:hover {
   border-color: var(--color-border-on);
 }
 

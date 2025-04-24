@@ -82,6 +82,9 @@ The emulator for that platform. The name of a program installed on your machine,
 #### Emulator arguments
 The *optional* arguments for that emulator. Most don't need any.
 
+#### What emulator can I use for <platform> ?
+Consult the wiki to get tips on emulators and settings
+
 ### Controls
 #### Home Screen (Platform Slideshow)
 ##### Keyboard
@@ -90,25 +93,24 @@ The *optional* arguments for that emulator. Most don't need any.
 - <kbd>Esc</kbd> / <kbd>Ctrl</kbd>+<kbd>Q</kbd>: Exit Emulsion
 
 ##### Gamepad
-
 - D-Pad Left / Right <kbd>◄</kbd> / <kbd>►</kbd>: Platform navigation
 - Cross / A / South <kbd>X</kbd>: Confirm selection
 - Circle / B / East <kbd>O</kbd>: Exit Emulsion
 
-#### Gallery Screen (Games/Machines)
+#### Gallery Screen (Games / Machines)
 ##### Keyboard
-- <kbd>←</kbd> / <kbd>→</kbd> / <kbd>↑</kbd> / <kbd>↓</kbd>: Move between games (hold <kbd>Shift</kbd> to move between platforms)
+- <kbd>←</kbd> / <kbd>→</kbd> / <kbd>↑</kbd> / <kbd>↓</kbd>: Browse games
+- <kbd>Shift</kbd> + <kbd>←</kbd> / <kbd>→</kbd>: Browse machines / platforms
 - <kbd>Page Up</kbd> / <kbd>Page Down</kbd>: Jump 10 rows
-- <kbd>Home</kbd> / <kbd>End</kbd>: Jump to first/last game
-- <kbd>Enter</kbd>: Launch selected game
-- <kbd>Escape</kbd>: Return to home screen
-- <kbd>I</kbd>: Open game/image menu
-- <kbd>F5</kbd>: Reload UI
+- <kbd>Home</kbd> / <kbd>End</kbd>: Jump to first / last game
+- <kbd>Enter</kbd>: **Launch** selected **game** 🚀
+- <kbd>Escape</kbd>: Return to home screen / machines menu
+- <kbd>I</kbd>: Open game / cover image menu
 
 ##### Gamepad
 - D-Pad Left / Right / Up / down <kbd>◄</kbd> / <kbd>►</kbd> / <kbd>▲</kbd> / <kbd>▼</kbd>: Game navigation
 - <kbd>L1</kbd> / <kbd>R1</kbd>: Platform switching
-- Cross / A / South <kbd>X</kbd>: Launch game
+- Cross / A / South <kbd>X</kbd>: **Launch** selected **game** 🚀
 - Square / X / West <kbd>□</kbd>: Open game menu
 - Circle / B / East <kbd>O</kbd>: Back to home
 
@@ -117,15 +119,15 @@ The *optional* arguments for that emulator. Most don't need any.
 - <kbd>Enter</kbd>: Select / save image
 - <kbd>Escape</kbd>: Close menu
 
+#### Universal Controls
+- <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>: Quit game and return to Emulsion
+- <kbd>Ctrl</kbd> + <kbd>Q</kbd>: Quit Emulsion
+- <kbd>F5</kbd>: Restart Emulsion
+
 #### Mouse
 - Left Click: Select platform / launch game
 - Right-Click: Open context menu for selected game
 - Mouse Wheel: Scroll machines / games
-
-#### Universal Controls
-- <kbd>Ctrl</kbd> + <kbd>Q</kbd>: Quit Emulsion
-- <kbd>Shift</kbd> + <kbd>←</kbd> / <kbd>→</kbd>: Alternative navigation mode (platform switching in galleries)
-- <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>: Quit game and return to Emulsion
 
 #### Contextual Help
 Control hints appear in the footer based on current screen

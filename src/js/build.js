@@ -436,9 +436,14 @@ function buildPlatformForm(platformName) {
     saveButton.classList.add('button');
     saveButton.textContent = 'Save';
 
+    const helpButton = document.createElement('button');
+    helpButton.type = 'button';
+    helpButton.classList.add('button');
+    helpButton.textContent = 'Help';
+
     const cancelButton = document.createElement('button');
     cancelButton.type = 'button';
-    cancelButton.classList.add('is-info', 'button');
+    cancelButton.classList.add('button');
     cancelButton.textContent = 'Cancel';
 
     LB.prefs.getValue(platformName, 'gamesDir')
@@ -490,11 +495,11 @@ function buildPlatformForm(platformName) {
     formContainer.appendChild(gamesDirGroup);
     formContainer.appendChild(emulatorGroup);
     formContainer.appendChild(emulatorArgsGroup);
-    formContainer.appendChild(cancelButton);
 
     const formContainerButtons = document.createElement('div');
     formContainerButtons.classList.add('cancel-save-buttons');
     formContainerButtons.appendChild(cancelButton);
+    formContainerButtons.appendChild(helpButton);
     formContainerButtons.appendChild(saveButton);
 
     LB.prefs.getValue(platformName, 'isEnabled')
@@ -540,6 +545,11 @@ function buildPlatformForm(platformName) {
 
 
     cancelButton.addEventListener('click', _cancelButtonClick);
+
+    helpButton.addEventListener('click', () => {
+        ipcRenderer.invoke('go-to-url', 'https://gitlab.com/yphil/emulsion/-/blob/master/README.md#usage');
+    });
+
     saveButton.addEventListener('click', _saveButtonClick);
 
     function _cancelButtonClick(event) {

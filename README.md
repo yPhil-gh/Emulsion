@@ -11,9 +11,11 @@ A unified, lightweight frontend for game emulators.
   - [Input Versatility](#input-versatility)
   - [Cover art management](#cover-art-management)
 - [Installation](#installation)
-- [Configuration](#configuration)
-  - [Supported Machines](#supported-machines)
 - [Usage](#usage)
+  - [Platform configuration](#platform-configuration)
+    - [Games directory](#games-directory)
+    - [Emulator](#emulator)
+    - [Emulator arguments](#emulator-arguments)
   - [Controls](#controls)
     - [Home Screen (Platform Slideshow)](#home-screen-platform-slideshow)
       - [Keyboard](#keyboard)
@@ -27,6 +29,7 @@ A unified, lightweight frontend for game emulators.
     - [Contextual Help](#contextual-help)
 - [Can I help?](#can-i-help)
 
+![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png)
 
 ## Features
 ### Full control
@@ -57,42 +60,27 @@ Direct dowloading of the game cover art via several backends:
 - [GiantBomb](https://www.giantbomb.com/api/)
 - [UVList](https://www.uvlist.net/)
 
-![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png)
-
 ## Installation
 
 See [Releases](https://gitlab.com/yphil/emulsion/-/releases)
 
-## Configuration
-for each machine, enter
+## Usage
+### Platform configuration
+
+![Emulsion](https://yphil.gitlab.io/images/emulsion-01-platform_config.png)
+
+For each machine, enter
 
 - Games directory
 - Emulator
 - Optional Emulator arguments
 
-
-### Supported Machines
-
-Emulsion supports the following platforms:
-
-- Nintendo NES
-- Sega Master System
-- PCEngine
-- Amiga
-- Sega MegaDrive
-- Nintendo SNES
-- Atari Jaguar
-- Sega Saturn
-- Sony Playstation
-- Nintendo 64
-- Sega Dreamcast
-- Sony Playstation 2
-- Nintendo GameCube
-- XBox
-- Sony Playstation PSP
-- Sony Playstation 3
-
-## Usage
+#### Games directory
+The directory where the games are stored for that platform
+#### Emulator
+The emulator for that platform. The name of a program installed on your machine, or the full path to an executable
+#### Emulator arguments
+The *optional* arguments for that emulator. Most don't need any.
 
 ### Controls
 #### Home Screen (Platform Slideshow)

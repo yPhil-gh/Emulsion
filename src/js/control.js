@@ -144,8 +144,14 @@ function initSlideShow(platformToDisplay) {
             ipcRenderer.invoke('quit');
             break;
         case 'q':
-            if (event.ctrlKey) {
-                ipcRenderer.invoke('quit');
+            if (event.ctrlKey || event.metaKey) { // metaKey = Command on Mac
+                try {
+                    ipcRenderer.invoke('quit').catch(() => {
+                        window.close();
+                    });
+                } catch (e) {
+                    window.close();
+                }
             }
             break;
         }

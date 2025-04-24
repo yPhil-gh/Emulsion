@@ -89,47 +89,45 @@ Consult [the Emulsion Wiki](https://gitlab.com/yphil/emulsion/-/wikis/homehttps:
 ### Controls
 #### Home
 The  platforms / machines carousel
-##### Keyboard
-- <kbd>←</kbd> / <kbd>→</kbd>: Navigate between machines
-- <kbd>Enter</kbd>: Select highlighted platform
-- <kbd>Escape</kbd> / <kbd>Ctrl</kbd>+<kbd>Q</kbd>: Exit Emulsion
 
-##### Gamepad
-- D-Pad Left / Right <kbd>◄</kbd> / <kbd>►</kbd>: Platform navigation
-- Cross / A / South <kbd>X</kbd>: Confirm selection
-- Circle / B / East <kbd>O</kbd>: Exit Emulsion
+| Action                      | Keyboard                       | Game controller                               |
+|-----------------------------|--------------------------------|-----------------------------------------------|
+| Navigate between machines   | <kbd>←</kbd> / <kbd>→</kbd>    | D-Pad Left / Right <kbd>◄</kbd> / <kbd>►</kbd |
+| Select highlighted platform | <kbd>Enter</kbd>               | Cross / A / South <kbd>⤫</kbd>                |
+| Exit Emulsion               | <kbd>Ctrl</kbd> + <kbd>Q</kbd> | Circle / B / East <kbd>○</kbd>                |
 
 #### Gallery
 The games and plaforms config page
 
-##### Keyboard
-
 | Action                                | Keyboard                                                  | Game controller                |
 |---------------------------------------|-----------------------------------------------------------|--------------------------------|
 | Browse games                          | <kbd>←</kbd> / <kbd>→</kbd> / <kbd>↑</kbd> / <kbd>↓</kbd> | DPad                           |
-| Browse machines / platforms           | <kbd>Shift</kbd> + <kbd>←</kbd> / <kbd>→</kbd>            | L1 / R1                        |
+| Browse machines / platforms           | <kbd>Shift</kbd> + <kbd>←</kbd> / <kbd>→</kbd>            | <kbd>L1</kbd> / <kbd>R1</kbd>  |
 | Jump 10 rows                          | <kbd>Page Up</kbd> / <kbd>Page Down</kbd>                 |                                |
 | Jump to first / last game             | <kbd>Home</kbd> / <kbd>End</kbd>                          |                                |
-| **Launch** selected **game** 🚀       | <kbd>Enter</kbd>                                          | Cross / A / South <kbd>X</kbd> |
-| Open game / cover image menu          | <kbd>I</kbd>                                              | Circle / B / East <kbd>O</kbd> |
-| Return to home screen / machines menu | <kbd>Escape</kbd>                                         | Circle / B / East <kbd>O</kbd> |
+| **Launch** selected **game** 🚀       | <kbd>Enter</kbd>                                          | Cross / A / South <kbd>⤫</kbd> |
+| Open game / cover image menu          | <kbd>I</kbd>                                              | Square / X / West <kbd>□</kbd> |
+| Return to home screen / machines menu | <kbd>Escape</kbd>                                         | Circle / B / East <kbd>○</kbd> |
 
-##### Gamepad
-- D-Pad Left / Right / Up / down <kbd>◄</kbd> / <kbd>►</kbd> / <kbd>▲</kbd> / <kbd>▼</kbd>: Game navigation
-- <kbd>L1</kbd> / <kbd>R1</kbd>: Platform switching
-- Cross / A / South <kbd>X</kbd>: **Launch** selected **game** 🚀
-- Square / X / West <kbd>□</kbd>: Open game menu
-- Circle / B / East <kbd>O</kbd>: Back to home
 
 #### Game/Platform Menu
-- <kbd>←</kbd> / <kbd>→</kbd> / <kbd>↑</kbd> / <kbd>↓</kbd>: Navigate image thumbnails
-- <kbd>Enter</kbd>: Select / save image
+The game configuration / Download cover art menu
+
+| Action                      | Keyboard                                                  | Game controller                |
+|-----------------------------|-----------------------------------------------------------|--------------------------------|
+| Navigate image thumbnails   | <kbd>←</kbd> / <kbd>→</kbd> / <kbd>↑</kbd> / <kbd>↓</kbd> | DPad                           |
+| Select / save image         | <kbd>Enter</kbd>                                          | Cross / A / South <kbd>⤫</kbd> |
 
 #### Universal Controls
-- <kbd>Escape</kbd>: Close gallery / menu
-- <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>: Quit game and return to Emulsion
-- <kbd>Ctrl</kbd> + <kbd>Q</kbd>: Quit Emulsion
-- <kbd>F5</kbd>: Restart Emulsion
+Works everywhere
+
+| Action                           | Keyboard                                          | Game controller                               |
+|----------------------------------|---------------------------------------------------|-----------------------------------------------|
+| Close gallery / menu             | <kbd>Escape</kbd>                                 | D-Pad Left / Right <kbd>◄</kbd> / <kbd>►</kbd |
+| Select highlighted platform      | <kbd>Enter</kbd>                                  | Cross / A / South <kbd>⤫</kbd>                |
+| Exit Emulsion                    | <kbd>Ctrl</kbd> + <kbd>Q</kbd>                    | Circle / B / East <kbd>○</kbd>                |
+| Quit game and return to Emulsion | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> |                                               |
+| Restart Emulsion                 | <kbd>F5</kbd>                                     |                                               |
 
 #### Mouse
 - Left Click: Select platform / launch game

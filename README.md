@@ -29,23 +29,19 @@ A unified, lightweight frontend for game emulators.
 - [Can I help?](#can-i-help)
 
 ## Features
-### Full control
+### Controllable
 - Your games can be anywhere
 - Latest versions of the emulators
 - Fine-tuning of the emulators
+- Fully controllable using **gamepad, keyboard, or mouse**.
 
-All those settings are saved in a central, standard json file.
-
-### Centralized, standard configuration
+### Standard
 - One single config file
 - Install a full gaming PC in one command
 
-### Solidity
+### Robust
 - One update of an emulator won't break everything
-- Emulsion will never forget you game controller config / calibration
-
-### Input Versatility
-Fully controllable using **gamepad, keyboard, or mouse**.
+- Emulsion will never forget you game controller config / calibration. It-just-works.
 
 ### Cover art management
 Direct dowloading of the game cover art via several backends:
@@ -59,7 +55,8 @@ Direct dowloading of the game cover art via several backends:
 
 ## Installation
 
-See [Releases](https://gitlab.com/yphil/emulsion/-/releases)
+- See [Releases](https://gitlab.com/yphil/emulsion/-/releases)
+- `npm install ; npm start`
 
 ## Usage
 ### Platform configuration

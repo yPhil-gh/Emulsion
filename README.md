@@ -1,5 +1,3 @@
-![Emulsion](https://gitlab.com/yphil/emulsion/-/raw/master/img/icon.png){: width="72px"}
-
 # Emulsion
 
 A unified, lightweight frontend for game emulators.
@@ -7,10 +5,9 @@ A unified, lightweight frontend for game emulators.
 ![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png)
 
 - [Features](#features)
-  - [Full control](#full-control)
-  - [Centralized, standard configuration](#centralized-standard-configuration)
-  - [Solidity](#solidity)
-  - [Input Versatility](#input-versatility)
+  - [Controllable](#controllable)
+  - [Standard](#standard)
+  - [Robust](#robust)
   - [Cover art management](#cover-art-management)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -52,6 +49,8 @@ Direct dowloading of the game cover art via several backends:
 - [Wikipedia](https://en.wikipedia.org/w/index.php?title=Category:Amiga_game_covers)
 - [GiantBomb](https://www.giantbomb.com/api/)
 - [UVList](https://www.uvlist.net/)
+
+See the [Emulsion Wiki](https://gitlab.com/yphil/emulsion/-/wikis/home) for [details about the cover art search & download backends](https://gitlab.com/yphil/emulsion/-/wikis/home#cover-art-download-backends-api-keys).
 
 ## Installation
 

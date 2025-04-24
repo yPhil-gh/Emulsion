@@ -77,7 +77,7 @@ Consult [the Emulsion Wiki](https://gitlab.com/yphil/emulsion/-/wikis/home) to g
 
 ### Controls
 #### Home
-The  platforms / machines carousel
+Platforms / machines home carousel
 
 | Action                      | Keyboard                       | Game controller                                |
 |-----------------------------|--------------------------------|------------------------------------------------|
@@ -85,8 +85,8 @@ The  platforms / machines carousel
 | Select highlighted platform | <kbd>Enter</kbd>               | Cross / A / South <kbd>⤫</kbd>                 |
 | Exit Emulsion               | <kbd>Ctrl</kbd> + <kbd>Q</kbd> | Circle / B / East <kbd>○</kbd>                 |
 
-#### Gallery
-The games and plaforms config page
+#### Galleries
+Games (and plaforms config) pages
 
 | Action                                | Keyboard                                                  | Game controller                |
 |---------------------------------------|-----------------------------------------------------------|--------------------------------|
@@ -100,14 +100,14 @@ The games and plaforms config page
 
 
 #### Game/Platform Menu
-The game configuration / Download cover art menu
+The game config / download cover art menu
 
 | Action                      | Keyboard                                                  | Game controller                |
 |-----------------------------|-----------------------------------------------------------|--------------------------------|
 | Navigate image thumbnails   | <kbd>←</kbd> / <kbd>→</kbd> / <kbd>↑</kbd> / <kbd>↓</kbd> | DPad                           |
 | Select / save image         | <kbd>Enter</kbd>                                          | Cross / A / South <kbd>⤫</kbd> |
 
-#### Universal Controls
+#### Global controls
 Works everywhere
 
 | Action                           | Keyboard                                          | Game controller                               |
@@ -123,7 +123,7 @@ Works everywhere
 - Right-Click: Open contextual game menu
 - Mouse Wheel: Scroll / browse machines / games
 
-#### Contextual Help
+#### Contextual help
 Control hints appear in the footer based on current screen
 
 ## Can I help?

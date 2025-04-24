@@ -134,6 +134,6 @@ Control hints appear in the footer based on current screen
 
 Why of course, thank you for asking.
 
-- Donate
-- Submit an issue
-- Contribute code
+- [Donate](https://yphil.gitlab.io/ext/support.html)
+- [Report usage problems / suggestions](https://gitlab.com/yphil/emulsion/-/issues)
+- [Contribute code](https://gitlab.com/yphil/emulsion/-/commits/master?ref_type=heads)

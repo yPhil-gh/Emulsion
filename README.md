@@ -2,7 +2,7 @@
 
 A unified, lightweight frontend for game emulators.
 
-![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png)
+![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png?x)
 
 - [Features](#features)
   - [Controllable](#controllable)

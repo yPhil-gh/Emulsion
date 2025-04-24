@@ -87,26 +87,32 @@ The *optional* arguments for that emulator. Most don't need any.
 Consult [the Emulsion Wiki](https://gitlab.com/yphil/emulsion/-/wikis/homehttps://gitlab.com/yphil/emulsion/-/wikis/home) to get tips on emulators and settings
 
 ### Controls
-#### Home Screen (Platform Slideshow)
+#### Home
+The  platforms / machines carousel
 ##### Keyboard
 - <kbd>←</kbd> / <kbd>→</kbd>: Navigate between machines
 - <kbd>Enter</kbd>: Select highlighted platform
-- <kbd>Esc</kbd> / <kbd>Ctrl</kbd>+<kbd>Q</kbd>: Exit Emulsion
+- <kbd>Escape</kbd> / <kbd>Ctrl</kbd>+<kbd>Q</kbd>: Exit Emulsion
 
 ##### Gamepad
 - D-Pad Left / Right <kbd>◄</kbd> / <kbd>►</kbd>: Platform navigation
 - Cross / A / South <kbd>X</kbd>: Confirm selection
 - Circle / B / East <kbd>O</kbd>: Exit Emulsion
 
-#### Gallery Screen (Games / Machines)
+#### Gallery
+The games and plaforms config page
+
 ##### Keyboard
-- <kbd>←</kbd> / <kbd>→</kbd> / <kbd>↑</kbd> / <kbd>↓</kbd>: Browse games
-- <kbd>Shift</kbd> + <kbd>←</kbd> / <kbd>→</kbd>: Browse machines / platforms
-- <kbd>Page Up</kbd> / <kbd>Page Down</kbd>: Jump 10 rows
-- <kbd>Home</kbd> / <kbd>End</kbd>: Jump to first / last game
-- <kbd>Enter</kbd>: **Launch** selected **game** 🚀
-- <kbd>Escape</kbd>: Return to home screen / machines menu
-- <kbd>I</kbd>: Open game / cover image menu
+
+| Action                                | Keyboard                                                  | Game controller                |
+|---------------------------------------|-----------------------------------------------------------|--------------------------------|
+| Browse games                          | <kbd>←</kbd> / <kbd>→</kbd> / <kbd>↑</kbd> / <kbd>↓</kbd> | DPad                           |
+| Browse machines / platforms           | <kbd>Shift</kbd> + <kbd>←</kbd> / <kbd>→</kbd>            | L1 / R1                        |
+| Jump 10 rows                          | <kbd>Page Up</kbd> / <kbd>Page Down</kbd>                 |                                |
+| Jump to first / last game             | <kbd>Home</kbd> / <kbd>End</kbd>                          |                                |
+| **Launch** selected **game** 🚀       | <kbd>Enter</kbd>                                          | Cross / A / South <kbd>X</kbd> |
+| Open game / cover image menu          | <kbd>I</kbd>                                              | Circle / B / East <kbd>O</kbd> |
+| Return to home screen / machines menu | <kbd>Escape</kbd>                                         | Circle / B / East <kbd>O</kbd> |
 
 ##### Gamepad
 - D-Pad Left / Right / Up / down <kbd>◄</kbd> / <kbd>►</kbd> / <kbd>▲</kbd> / <kbd>▼</kbd>: Game navigation
@@ -118,9 +124,9 @@ Consult [the Emulsion Wiki](https://gitlab.com/yphil/emulsion/-/wikis/homehttps:
 #### Game/Platform Menu
 - <kbd>←</kbd> / <kbd>→</kbd> / <kbd>↑</kbd> / <kbd>↓</kbd>: Navigate image thumbnails
 - <kbd>Enter</kbd>: Select / save image
-- <kbd>Escape</kbd>: Close menu
 
 #### Universal Controls
+- <kbd>Escape</kbd>: Close gallery / menu
 - <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>: Quit game and return to Emulsion
 - <kbd>Ctrl</kbd> + <kbd>Q</kbd>: Quit Emulsion
 - <kbd>F5</kbd>: Restart Emulsion

@@ -112,7 +112,7 @@ Works everywhere
 
 | Action                           | Keyboard                                          | Game controller                               |
 |----------------------------------|---------------------------------------------------|-----------------------------------------------|
-| Close gallery / menu             | <kbd>Escape</kbd>                                 | D-Pad Left / Right <kbd>◄</kbd> / <kbd>►</kbd |
+| Close gallery / menu             | <kbd>Escape</kbd>                                 | D-Pad Left / Right <kbd>◄</kbd> / <kbd>►</kbd> |
 | Select highlighted platform      | <kbd>Enter</kbd>                                  | Cross / A / South <kbd>⤫</kbd>                |
 | Exit Emulsion                    | <kbd>Ctrl</kbd> + <kbd>Q</kbd>                    | Circle / B / East <kbd>○</kbd>                |
 | Quit game and return to Emulsion | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> |                                               |

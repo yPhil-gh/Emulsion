@@ -162,9 +162,9 @@ If you can - after you [donated to this project](https://yphil.gitlab.io/ext/sup
 
 ```
 Options:
-  --kiosk        Read-only / kids mode: No config / settings, disabled platforms hidden.
-  --full-screen  Start the app in full screen mode.
-  --help         Show this help message.`
+  --kiosk        Read-only / Media center / Kids mode: No config / settings, disabled platforms hidden.
+  --full-screen  Start Emulsion in full screen mode.
+  --help         Show this help message.
 ```
 
 ## Can I help?

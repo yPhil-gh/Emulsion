@@ -2,7 +2,7 @@
 
 appId: com.yphil.emulsion
 productName: emulsion
-artifactName: "${productName}-${version}.${ext}"
+artifactName: "${productName}_${arch}.${ext}"
 asar: true
 compression: store
 
@@ -43,7 +43,6 @@ win:
   target:
     - nsis
   icon: "img/icon.png"
-  artifactName: "${productName}-${version}.${ext}"
 
 nsis:
   oneClick: false

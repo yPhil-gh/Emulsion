@@ -5,7 +5,7 @@
 # mkdir -pv dist
 
 packageName() {
-    echo "$(jq -r '.name' package.json)-$(jq -r '.version' package.json)"
+    echo "$(jq -r '.name' package.json)"
 }
 
 author() {
@@ -13,8 +13,9 @@ author() {
 }
 
 PACKAGE_NAME=$(packageName)
+PACKAGE_VERSION=$(jq -r '.version' package.json)
 
-echo "Building $PACKAGE_NAME"
+echo "Building $PACKAGE_NAME v$PACKAGE_VERSION"
 
 generateDebControlFile() {
     local name=$(jq -r '.name' package.json)
@@ -52,6 +53,7 @@ EOF
 # Build ; This cleans, too, see package.json
 npm run build
 
+
 # Create build & rebuild dirs and files (see README.md "sandbox" why)
 mkdir -pv repack out DEBIAN
 
@@ -59,20 +61,20 @@ generateDesktopFile
 generateDebControlFile
 
 doDeb() {
-    local pkg="dist/$PACKAGE_NAME.deb"
+    local pkg="dist/${PACKAGE_NAME}_amd64.deb"
     if [ ! -f "$pkg" ]; then
         echo "Error: $pkg not found"
         return 1
     fi
 
-    echo "Processing .deb package..."
+    echo "Processing Debian package..."
 
     # Clean slate
     rm -rf repack out
     mkdir -p repack out
 
     # Step 1: Copy original and extract control+data
-    cp -v "$pkg" repack/
+    cp -v "$pkg" "repack/$PACKAGE_NAME.deb"
     dpkg-deb -R "repack/$PACKAGE_NAME.deb" "repack/$PACKAGE_NAME"
 
     # Now you have:
@@ -88,14 +90,9 @@ doDeb() {
     rm -rf "repack/$PACKAGE_NAME/opt/emulsion/locales"
 
     # Step 4: Rebuild the .deb
-    dpkg-deb -b "repack/$PACKAGE_NAME" "out/$PACKAGE_NAME.deb"
+    dpkg-deb -b "repack/$PACKAGE_NAME" "$pkg"
 
-    echo "Rebuilt .deb:"
-    du -h "out/$PACKAGE_NAME.deb"
-
-    # (Optionally) replace the original
-    cp -v "out/$PACKAGE_NAME.deb" "dist/$PACKAGE_NAME.deb"
-    echo "Replaced dist/$PACKAGE_NAME.deb with rebuilt package."
+    echo "PWD doDeb: $(pwd)"
 }
 
 
@@ -115,24 +112,25 @@ atexit()\
 }
 
 doAppImage() {
-    echo "PWD: $(pwd) name: $PACKAGE_NAME"
-    if [ -f "dist/$PACKAGE_NAME.AppImage" ]; then
-        echo "Processing .AppImage package..."
+    local pkg="${PACKAGE_NAME}_x86_64.AppImage"
+    echo "Processing $pkg..."
+    if [ -f "dist/$pkg" ]; then
         cd ./dist/
-        ./"$PACKAGE_NAME.AppImage" --appimage-extract
+        ./"$pkg" --appimage-extract
         # cp -v ../AppRun ./squashfs-root/AppRun
         modify_atexit "./squashfs-root/AppRun"
         rm -rfv ./squashfs-root/locales/*
         # ../appimagetool-x86_64.AppImage squashfs-root "$PACKAGE_NAME.AppImage"
-        echo "PWD: $(pwd) name: $PACKAGE_NAME"
+        echo "PWD: $(pwd) name: $pkg"
         if command -v ../bin/appimagetool-x86_64.AppImage &> /dev/null; then
             echo "Using appimagetool from PATH"
-            ../bin/appimagetool-x86_64.AppImage squashfs-root "$PACKAGE_NAME.AppImage"
+            ../bin/appimagetool-x86_64.AppImage squashfs-root "$pkg"
         else
             # We are in GitLab CI/CD
             echo "Using local ../appimagetool-x86_64.AppImage"
-            ../appimagetool-x86_64.AppImage squashfs-root "$PACKAGE_NAME.AppImage"
+            ../appimagetool-x86_64.AppImage squashfs-root "$pkg"
         fi
+        cd ..
     fi
 }
 
@@ -141,13 +139,14 @@ doAppImage() {
 doDeb
 doAppImage
 
-cd ..
+# cd ..
 
 echo "In dist: $(ls -la ./dist/)"
 
-rm -v ./emulsion.desktop
-rm -rfv ./squashfs-root/
-rm -rfv ./DEBIAN/
-rm -rfv ./out/
+# rm -v ./emulsion.desktop
+# rm -rfv ./DEBIAN/
+# rm -rfv ./out/
 
-echo "Post-build process for $PACKAGE_NAME complete."
+# rm -rfv ./squashfs-root/
+
+echo "Post-build process for $PACKAGE_NAME v$PACKAGE_VERSION complete."

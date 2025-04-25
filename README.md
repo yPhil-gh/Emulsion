@@ -188,3 +188,5 @@ Why of course, thank you for asking.
 - [Donate](https://yphil.gitlab.io/ext/support.html)
 - [Report usage problems / suggestions](https://github.com/yPhil-gh/emulsion/issues)
 - [Contribute code](https://github.com/yPhil-gh/emulsion/commits/master/)
+
+This repository is a mirror of https://gitlab.com/yphil/emulsion the official Emulsion repo.

@@ -172,8 +172,16 @@ If you can - after you donated to Emulsion -  support those backends. They do a 
 | PSP        |                                                                                          |                          | `.iso`          |
 | PS3        | [~/bin/rpcs3-v0.0.35-17701-6921684c_linux64.AppImage](https://rpcs3.net/)                | `--no-gui`               | `.SFO`          |
 
-
 **NB** This works on an Ubuntu 24.04.2 LTS box ; All the packages referenced by their name only are directly installed from the normal system repo / app store.
+
+## Command line (CLI) options / flags
+
+``` shell
+Options:
+  --kids-mode   Read-only mode: No config / settings, disabled platforms hidden.
+  --fullscreen  Start the app in full screen mode.
+  --help        Show this help message.`
+```
 
 ## Can I help?
 

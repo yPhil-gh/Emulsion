@@ -4,7 +4,6 @@ A unified, lightweight frontend for game emulators.
 
 ![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png?x)
 
-- [Features](#features)
   - [Controllable](#controllable)
   - [Standard](#standard)
   - [Robust](#robust)
@@ -28,7 +27,7 @@ A unified, lightweight frontend for game emulators.
       - [GiantBomb](#giantbomb)
     - [Complete list of backends](#complete-list-of-backends)
   - [Emulator tips](#emulator-tips)
-- [Command line (CLI) options / flags](#command-line-cli-options--flags)
+  - [Command line (CLI) options / flags](#command-line-cli-options--flags)
 - [Can I help?](#can-i-help)
 
 ### Controllable
@@ -173,7 +172,7 @@ If you can - after you [donated to this project](https://yphil.gitlab.io/ext/sup
 
 **NB** This works on an Ubuntu 24.04.2 LTS box ; All the packages referenced by their name only are directly installed from the normal system repo / app store.
 
-## Command line (CLI) options / flags
+### Command line (CLI) options / flags
 
 ``` shell
 Options:

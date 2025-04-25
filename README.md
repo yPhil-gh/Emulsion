@@ -68,7 +68,7 @@ Direct dowloading of the game cover art via several backends:
 #### Games directory
 The directory where the games are stored for that platform ; Enter a path or better, use the Browse button.
 #### Emulator
-The emulator for that platform. The name of a program installed on your machine, or use the Browse button to select the full path to the meulator executable.
+The emulator for that platform. The name of a program installed on your machine, or use the Browse button to select the full path to the emulator executable.
 #### Emulator arguments
 The *optional* arguments for that emulator. Most don't need any, [read on](#emulator-tips).
 

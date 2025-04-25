@@ -4,6 +4,7 @@ A unified, lightweight frontend for game emulators.
 
 ![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png?x)
 
+- [Features](#features)
   - [Controllable](#controllable)
   - [Standard](#standard)
   - [Robust](#robust)
@@ -23,36 +24,25 @@ A unified, lightweight frontend for game emulators.
     - [Contextual help](#contextual-help)
   - [Cover art download](#cover-art-download)
     - [backends API Keys](#backends-api-keys)
-      - [SteamGridDB](#steamgriddb)
       - [GiantBomb](#giantbomb)
+      - [SteamGridDB](#steamgriddb)
     - [Complete list of backends](#complete-list-of-backends)
   - [Emulator tips](#emulator-tips)
   - [Command line (CLI) options / flags](#command-line-cli-options--flags)
 - [Can I help?](#can-i-help)
 
-### Controllable
-- Your games can be anywhere ;
-- Latest versions of the emulators ;
-- Fine-tuning of the emulators ;
-- Fully controllable using **game controller, keyboard & mouse**.
+## Features
 
-### Standard
-- One single config file ;
-- Install a full gaming PC in one command.
+Emulsion:
+- Unifies all *your* emulators in a single interface
+- Lets you precisely select game cover art from multiple backends
 
-### Robust
-- One update of an emulator won't break everything ;
-- Emulsion will never forget your game controller config / calibration. It-just-works.
+These features set it apart from competitors that:
+- Manage emulators (which Emulsion doesn't do)
+- Handle controller configuration (often unreliably)
+- Handle cover art downloads automatically / unattended / externally without selection options
 
-### Cover art management
-Direct dowloading of the game cover art via several backends:
-
-- [SteamGridDB](https://www.steamgriddb.com/)
-- [MobyGames](mobygames.com)
-- [Exotica](https://www.exotica.org.uk/)
-- [Wikipedia](https://en.wikipedia.org/w/index.php?title=Category:Amiga_game_covers)
-- [GiantBomb](https://www.giantbomb.com/api/)
-- [UVList](https://www.uvlist.net/)
+What's more, Emulsion is *reproductible*. Thanks to its single standard config file, you can install a full gaming PC in one command.
 
 ## Installation
 
@@ -69,7 +59,7 @@ The directory where the games are stored for that platform ; Enter a path or bet
 #### Emulator
 The emulator for that platform. The name of a program installed on your machine, or use the Browse button to select the full path to the emulator executable.
 #### Emulator arguments
-The *optional* arguments for that emulator. Most don't need any, [read on](#emulator-tips).
+The *optional* arguments for that emulator ; Most don't need any, [read on](#emulator-tips).
 
 ### Controls
 #### Home

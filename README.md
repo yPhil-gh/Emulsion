@@ -123,13 +123,16 @@ Works everywhere
 #### Contextual help
 Control hints appear in the footer based on current screen.
 
-### Cover art download backends API Keys
+### Cover art download
+
+#### backends API Keys
+
 Some cover art download backends (SteamGridDB and GiantBomb) require authentication ; The key is free and easy to obtain:
-#### SteamGridDB
+##### SteamGridDB
 - Create or log into your [Steam](https://store.steampowered.com/) account ;
 - Get your [API](https://www.steamgriddb.com/api/v2) key by login in to https://www.steamgriddb.com and open the preferences menu.
 
-#### GiantBomb
+##### GiantBomb
 - get your key at https://www.giantbomb.com/api/
 
 Paste the key into the corresponding field in the **Emulsion settings** form ; click <kbd>Save</kbd>.
@@ -138,12 +141,12 @@ The other backends require no authentication, but you'll find **way more** image
 If you can - after you donated to Emulsion -  support those backends. They do a great job of keeping our common culture ali... Well, existing.
 
 #### Complete list of backends
-- [SteamGridDB](https://www.steamgriddb.com/)
-- [MobyGames](mobygames.com)
-- [Exotica](https://www.exotica.org.uk/)
-- [Wikipedia](https://en.wikipedia.org/w/index.php?title=Category:Amiga_game_covers) (Amiga)
-- [GiantBomb](https://www.giantbomb.com/api/)
-- [UVList](https://www.uvlist.net/)
+- [SteamGridDB](https://www.steamgriddb.com/) (API)
+- [GiantBomb](https://www.giantbomb.com/api/) (API)
+- [MobyGames](mobygames.com) (Web)
+- [Exotica](https://www.exotica.org.uk/) (Web)
+- [Wikipedia](https://en.wikipedia.org/w/index.php?title=Category:Amiga_game_covers) (Amiga) (Web)
+- [UVList](https://www.uvlist.net/) (Web)
 
 ...More to come.
 
@@ -169,7 +172,7 @@ If you can - after you donated to Emulsion -  support those backends. They do a 
 | PS3        | [~/bin/rpcs3-v0.0.35-17701-6921684c_linux64.AppImage](https://rpcs3.net/)                | `--no-gui`               | `.SFO`          |
 
 
-**NB** This works on an Ubuntu 24.04.2 LTS box ; All the packages referenced by their name only are directly installed using apt-get from the normal system repo / app store.
+**NB** This works on an Ubuntu 24.04.2 LTS box ; All the packages referenced by their name only are directly installed from the normal system repo / app store.
 
 ## Can I help?
 

@@ -28,6 +28,7 @@ A unified, lightweight frontend for game emulators.
       - [GiantBomb](#giantbomb)
     - [Complete list of backends](#complete-list-of-backends)
   - [Emulator tips](#emulator-tips)
+- [Command line (CLI) options / flags](#command-line-cli-options--flags)
 - [Can I help?](#can-i-help)
 
 

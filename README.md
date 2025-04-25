@@ -29,19 +29,20 @@ A unified, lightweight frontend for game emulators.
   - [Emulator tips](#emulator-tips)
 - [Can I help?](#can-i-help)
 
+
 ## Features
 ### Controllable
-- Your games can be anywhere
-- Latest versions of the emulators
-- Fine-tuning of the emulators
+- Your games can be anywhere ;
+- Latest versions of the emulators ;
+- Fine-tuning of the emulators ;
 - Fully controllable using **game controller, keyboard & mouse**.
 
 ### Standard
-- One single config file
-- Install a full gaming PC in one command
+- One single config file ;
+- Install a full gaming PC in one command.
 
 ### Robust
-- One update of an emulator won't break everything
+- One update of an emulator won't break everything ;
 - Emulsion will never forget you game controller config / calibration. It-just-works.
 
 ### Cover art management
@@ -54,11 +55,9 @@ Direct dowloading of the game cover art via several backends:
 - [GiantBomb](https://www.giantbomb.com/api/)
 - [UVList](https://www.uvlist.net/)
 
-See the [Emulsion Wiki](https://gitlab.com/yphil/emulsion/-/wikis/home) for [details about the cover art search & download backends](https://gitlab.com/yphil/emulsion/-/wikis/home#cover-art-download-backends-api-keys).
-
 ## Installation
 
-- See [Releases](https://gitlab.com/yphil/emulsion/-/releases)
+- See [Releases](https://github.com/yphil-gh/emulsion/releases/latest)
 - `npm install ; npm start`
 
 ## Usage
@@ -67,11 +66,11 @@ See the [Emulsion Wiki](https://gitlab.com/yphil/emulsion/-/wikis/home) for [det
 ![Emulsion](https://yphil.gitlab.io/images/emulsion-01-platform_config.png)
 
 #### Games directory
-The directory where the games are stored for that platform ; Enter a path or better, use the Browse button
+The directory where the games are stored for that platform ; Enter a path or better, use the Browse button.
 #### Emulator
-The emulator for that platform. The name of a program installed on your machine, or the full path to an executable
+The emulator for that platform. The name of a program installed on your machine, or use the Browse button to select the full path to the meulator executable.
 #### Emulator arguments
-The *optional* arguments for that emulator. Most don't need any, read on
+The *optional* arguments for that emulator. Most don't need any, [read on](#emulator-tips).
 
 ### Controls
 #### Home
@@ -122,19 +121,21 @@ Works everywhere
 - Mouse Wheel: Scroll / browse machines / games
 
 #### Contextual help
-Control hints appear in the footer based on current screen
+Control hints appear in the footer based on current screen.
 
 ### Cover art download backends API Keys
 Some cover art download backends (SteamGridDB and GiantBomb) require authentication ; The key is free and easy to obtain:
 #### SteamGridDB
-- Create or log into your [Steam](https://store.steampowered.com/) account
+- Create or log into your [Steam](https://store.steampowered.com/) account ;
 - Get your [API](https://www.steamgriddb.com/api/v2) key by login in to https://www.steamgriddb.com and open the preferences menu.
 
 #### GiantBomb
-- get your key at https://www.giantbomb.com/api/.
+- get your key at https://www.giantbomb.com/api/
 
-Paste the key into the corresponding field in the **Emulsion settings** form ; click **Save**.
+Paste the key into the corresponding field in the **Emulsion settings** form ; click <kbd>Save</kbd>.
 The other backends require no authentication, but you'll find **way more** images using all the backends, including SteamGridDB and GiantBomb.
+
+If you can - after you donated to Emulsion -  support those backends. They do a great job of keeping our common culture ali... Well, existing.
 
 #### Complete list of backends
 - [SteamGridDB](https://www.steamgriddb.com/)
@@ -143,6 +144,8 @@ The other backends require no authentication, but you'll find **way more** image
 - [Wikipedia](https://en.wikipedia.org/w/index.php?title=Category:Amiga_game_covers) (Amiga)
 - [GiantBomb](https://www.giantbomb.com/api/)
 - [UVList](https://www.uvlist.net/)
+
+...More to come.
 
 ### Emulator tips
 

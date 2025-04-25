@@ -18,13 +18,17 @@ A unified, lightweight frontend for game emulators.
       - [What emulator / launch arguments can I use for (insert machine / platform)?](#what-emulator--launch-arguments-can-i-use-for-insert-machine--platform)
   - [Controls](#controls)
     - [Home](#home)
-    - [Gallery](#gallery)
+    - [Galleries](#galleries)
     - [Game/Platform Menu](#gameplatform-menu)
-    - [Universal Controls](#universal-controls)
+    - [Global controls](#global-controls)
     - [Mouse](#mouse)
-    - [Contextual Help](#contextual-help)
+    - [Contextual help](#contextual-help)
+  - [Cover art download backends API Keys](#cover-art-download-backends-api-keys)
+    - [SteamGridDB](#steamgriddb)
+    - [GiantBomb](#giantbomb)
+    - [Complete list of backends](#complete-list-of-backends)
+  - [Emulator tips](#emulator-tips)
 - [Can I help?](#can-i-help)
-
 
 ## Features
 ### Controllable
@@ -126,19 +130,19 @@ Works everywhere
 #### Contextual help
 Control hints appear in the footer based on current screen
 
-## Cover art download backends API Keys
+### Cover art download backends API Keys
 Some cover art download backends (SteamGridDB and GiantBomb) require authentication ; The key is free and easy to obtain:
-### SteamGridDB
+#### SteamGridDB
 - Create or log into your [Steam](https://store.steampowered.com/) account
 - Get your [API](https://www.steamgriddb.com/api/v2) key by login in to https://www.steamgriddb.com and open the preferences menu.
 
-### GiantBomb
+#### GiantBomb
 - get your key at https://www.giantbomb.com/api/.
 
 Paste the key into the corresponding field in the **Emulsion settings** form ; click **Save**.
 The other backends require no authentication, but you'll find **way more** images using all the backends, including SteamGridDB and GiantBomb.
 
-### Complete list of backends
+#### Complete list of backends
 - [SteamGridDB](https://www.steamgriddb.com/)
 - [MobyGames](mobygames.com)
 - [Exotica](https://www.exotica.org.uk/)
@@ -146,7 +150,7 @@ The other backends require no authentication, but you'll find **way more** image
 - [GiantBomb](https://www.giantbomb.com/api/)
 - [UVList](https://www.uvlist.net/)
 
-## Emulator tips
+### Emulator tips
 
 | Platform   | Emulator                                                                                 | Emulator Arguments       | Extensions      |
 |------------|------------------------------------------------------------------------------------------|--------------------------|-----------------|

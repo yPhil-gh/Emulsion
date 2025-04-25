@@ -14,7 +14,7 @@ A unified, lightweight frontend for game emulators.
   - [Controls](#controls)
     - [Home](#home)
     - [Galleries](#galleries)
-    - [Game/Platform Menu](#gameplatform-menu)
+    - [Cover art download menu](#cover-art-download-menu)
     - [Global controls](#global-controls)
     - [Mouse](#mouse)
     - [Contextual help](#contextual-help)
@@ -31,14 +31,14 @@ A unified, lightweight frontend for game emulators.
 
 Emulsion:
 - Unifies all *your* emulators in a single interface
-- Lets you precisely select game cover art from multiple backends
+- Lets you *precisely* select game cover art from multiple backends
 
 These features set it apart from solutions that:
 - Manage emulators (which Emulsion doesn't do)
 - Handle controller configuration (often unreliably)
 - Handle cover art downloads automatically / unattended / externally without selection options
 
-What's more, Emulsion is *reproductible*: Thanks to its single **standard** config file, you can install a full gaming PC in one command.
+What's more, Emulsion is *reproductible*: Thanks to its single **standard** config file, you can install a full gaming PC in one command. and it-won't-move ; At least that's the idea.
 
 ## Installation
 
@@ -152,7 +152,7 @@ If you can - after you [donated to this project](https://yphil.gitlab.io/ext/sup
 | Dreamcast  | [flycast-x86_64.AppImage](https://github.com/flyinghead/flycast)                         |                          | `.gdi`, `.cdi`  |
 | PS2        | [pcsx2](https://pcsx2.net/)                                                              | `-nogui -fullscreen`     | `.bin`, `.iso`  |
 | GameCube   | [~/bin/EMU/Dolphin-Emulator-5.0-16793-x86-64.AppImage](https://dolphin-emu.org/)         | `-b -e`                  | `.iso`, `.ciso` |
-| Xbox       | [~/bin/EMU/xemu-v0.8.48-x86_64.AppImage](https://xemu.app/)                              | `-full-screen -dvd_path` | `.xiso.iso`          |
+| Xbox       | [~/bin/EMU/xemu-v0.8.48-x86_64.AppImage](https://xemu.app/)                              | `-full-screen -dvd_path` | `.xiso.iso`     |
 | PSP        |                                                                                          |                          | `.iso`          |
 | PS3        | [~/bin/rpcs3-v0.0.35-17701-6921684c_linux64.AppImage](https://rpcs3.net/)                | `--no-gui`               | `.SFO`          |
 
@@ -162,7 +162,7 @@ If you can - after you [donated to this project](https://yphil.gitlab.io/ext/sup
 
 ```
 Options:
-  --kiosk        Media center / Kids mode: No config / settings, disabled platforms hidden.
+  --kiosk        Media center / Kids mode: No settings + disabled platforms hidden.
   --full-screen  Start Emulsion in full screen mode.
   --help         Show this help message.
 ```

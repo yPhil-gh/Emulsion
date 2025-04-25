@@ -1,24 +1,35 @@
 # .github/workflows/ci.yml
 name: Build & Release
 
+# 1. Only run on tag pushes
 on:
   push:
     tags:
-      - '*'   # only run on any tag push :contentReference[oaicite:8]{index=8}
+      - '*'   # any tag :contentReference[oaicite:4]{index=4}
+
+# 2. Grant GITHUB_TOKEN write permissions so Electron Builder can publish releases
+permissions:
+  contents: write    # allow Releases API write access :contentReference[oaicite:5]{index=5}
+  packages: write    # if you ever auto-publish to GitHub Packages :contentReference[oaicite:6]{index=6}
+
+# 3. Make GITHUB_TOKEN available as GH_TOKEN for Electron Builder
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
+  # 4. Build Linux (.deb + AppImage) and auto-publish on tag
   build_linux:
-    runs-on: ubuntu-latest   # GitHub-hosted Ubuntu runner :contentReference[oaicite:9]{index=9}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3   # checkout v3 :contentReference[oaicite:10]{index=10}
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3 # setup-node v3 :contentReference[oaicite:11]{index=11}
+        uses: actions/setup-node@v3
         with:
           node-version: '20'
 
-      - name: Install Linux deps
+      - name: Install Linux dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y dpkg fakeroot jq npm bash fuse
@@ -29,21 +40,14 @@ jobs:
             https://github.com/AppImage/AppImageKit/releases/latest/download/appimagetool-x86_64.AppImage
           chmod +x appimagetool-x86_64.AppImage
 
-      - name: Build and post-process
+      - name: Build and post-process Linux packages
         run: |
           chmod +x build.sh
-          ./build.sh   # produces emulsion_amd64.deb & emulsion_x86_64.AppImage :contentReference[oaicite:12]{index=12}
+          ./build.sh    # runs `electron-builder --linux` under the hood and auto-publishes :contentReference[oaicite:7]{index=7}
 
-      - name: Upload Linux artifacts
-        uses: actions/upload-artifact@v4   # upload-artifact v4 :contentReference[oaicite:13]{index=13}
-        with:
-          name: linux-dist
-          path: dist/*
-
+  # 5. Build Windows (NSIS .exe) and auto-publish on tag
   build_windows:
-    runs-on: windows-latest  # GitHub-hosted Windows runner :contentReference[oaicite:14]{index=14}
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: windows-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -57,68 +61,7 @@ jobs:
         run: npm ci
 
       - name: Build Windows package
-        run: |
-          npx electron-builder --config builder.yml --win nsis --x64   # produces emulsion_x64.exe
+        run: npx electron-builder --config builder.yml --win nsis --x64
+        # this will auto-publish `.exe` to the GitHub Release :contentReference[oaicite:8]{index=8}
 
-      - name: Upload Windows artifacts
-        uses: actions/upload-artifact@v4   # upload-artifact v4 :contentReference[oaicite:15]{index=15}
-        with:
-          name: windows-dist
-          path: dist/*
-
-  release:
-    needs: [build_linux, build_windows]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Linux artifacts
-        uses: actions/download-artifact@v4 # download-artifact v4 :contentReference[oaicite:16]{index=16}
-        with:
-          name: linux-dist
-          path: dist
-
-      - name: Download Windows artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: windows-dist
-          path: dist
-
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1     # create-release v1 :contentReference[oaicite:17]{index=17}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Emulsion ${{ github.ref_name }}
-          draft: false
-          prerelease: false
-
-      - name: Upload emulsion_x64.exe
-        uses: actions/upload-release-asset@v1 # upload-release-asset v1 :contentReference[oaicite:18]{index=18}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/emulsion_x64.exe
-          asset_name: emulsion_x64.exe
-          asset_content_type: application/octet-stream
-
-      - name: Upload emulsion_x86_64.AppImage
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/emulsion_x86_64.AppImage
-          asset_name: emulsion_x86_64.AppImage
-          asset_content_type: application/octet-stream
-
-      - name: Upload emulsion_amd64.deb
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/emulsion_amd64.deb
-          asset_name: emulsion_amd64.deb
-          asset_content_type: application/octet-stream
+# No separate "release" job needed—electron-builder will create or update the GitHub Release for you.

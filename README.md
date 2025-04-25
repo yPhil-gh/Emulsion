@@ -31,8 +31,6 @@ A unified, lightweight frontend for game emulators.
 - [Command line (CLI) options / flags](#command-line-cli-options--flags)
 - [Can I help?](#can-i-help)
 
-
-## Features
 ### Controllable
 - Your games can be anywhere ;
 - Latest versions of the emulators ;
@@ -140,7 +138,7 @@ Some cover art download backends (SteamGridDB and GiantBomb) require authenticat
 Paste the key into the corresponding field in the **Emulsion settings** form ; click <kbd>Save</kbd>.
 The other backends require no authentication, but you'll find **way more** images using all the backends, including SteamGridDB and GiantBomb.
 
-If you can - after you donated to Emulsion -  support those backends. They do a great job of keeping our common culture ali... Well, existing.
+If you can - after you [donated to this project](https://yphil.gitlab.io/ext/support.html), thank you very much -  support those backends. They do a great job of keeping our common culture aliv... Well, existing.
 
 #### Complete list of backends
 - [SteamGridDB](https://www.steamgriddb.com/) (API)

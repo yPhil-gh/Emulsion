@@ -126,10 +126,54 @@ Works everywhere
 #### Contextual help
 Control hints appear in the footer based on current screen
 
+## Cover art download backends API Keys
+Some cover art download backends (SteamGridDB and GiantBomb) require authentication ; The key is free and easy to obtain:
+### SteamGridDB
+- Create or log into your [Steam](https://store.steampowered.com/) account
+- Get your [API](https://www.steamgriddb.com/api/v2) key by login in to https://www.steamgriddb.com and open the preferences menu.
+
+### GiantBomb
+- get your key at https://www.giantbomb.com/api/.
+
+Paste the key into the corresponding field in the **Emulsion settings** form ; click **Save**.
+The other backends require no authentication, but you'll find **way more** images using all the backends, including SteamGridDB and GiantBomb.
+
+### Complete list of backends
+- [SteamGridDB](https://www.steamgriddb.com/)
+- [MobyGames](mobygames.com)
+- [Exotica](https://www.exotica.org.uk/)
+- [Wikipedia](https://en.wikipedia.org/w/index.php?title=Category:Amiga_game_covers) (Amiga)
+- [GiantBomb](https://www.giantbomb.com/api/)
+- [UVList](https://www.uvlist.net/)
+
+## Emulator tips
+
+| Platform   | Emulator                                                                                 | Emulator Arguments       | Extensions      |
+|------------|------------------------------------------------------------------------------------------|--------------------------|-----------------|
+| NES        | [mednafen](https://mednafen.github.io/)                                                  |                          | `.zip`          |
+| SMS        | mednafen                                                                                 |                          | `.zip`          |
+| PC Engine  | mednafen                                                                                 |                          | `.pce`          |
+| Amiga      | [amiberry](https://github.com/BlitterStudio/amiberry)                                    |                          | `.lha`, `.adf`  |
+| Mega Drive | [~/bin/EMU/blastem64-0.6.2/blastem](https://www.retrodev.com/blastem/)                   | `-m gen -f`              | `.md `          |
+| SNES       | [Mesen](https://www.mesen.ca/)                                                           |                          | `.smc`          |
+| Jaguar     | [~/bin/EMU/BigPEmu_Linux64_v118/bigpemu/bigpemu](https://www.richwhitehouse.com/jaguar/) |                          | `.jag`          |
+| Saturn     | mednafen                                                                                 |                          | `.cue`          |
+| PSX        | [~/bin/EMU/DuckStation-x64.AppImage](https://github.com/stenzek/duckstation)             | `-fullscreen -nogui`     | `.srm`          |
+| N64        | [mupen64plus](https://mupen64plus.org/)                                                  |                          | `.z64`          |
+| Dreamcast  | [flycast-x86_64.AppImage](https://github.com/flyinghead/flycast)                         |                          | `.gdi`, `.cdi`  |
+| PS2        | [pcsx2](https://pcsx2.net/)                                                              | `-nogui -fullscreen`     | `.bin`, `.iso`  |
+| GameCube   | [~/bin/EMU/Dolphin-Emulator-5.0-16793-x86-64.AppImage](https://dolphin-emu.org/)         | `-b -e`                  | `.iso`, `.ciso` |
+| Xbox       | [~/bin/EMU/xemu-v0.8.48-x86_64.AppImage](https://xemu.app/)                              | `-full-screen -dvd_path` | `.iso`          |
+| PSP        |                                                                                          |                          | `.iso`          |
+| PS3        | [~/bin/rpcs3-v0.0.35-17701-6921684c_linux64.AppImage](https://rpcs3.net/)                | `--no-gui`               | `.SFO`          |
+
+
+**NB** This works on an Ubuntu 24.04.2 LTS box ; All the packages referenced by their name only are directly installed using apt-get from the normal system repo / app store.
+
 ## Can I help?
 
 Why of course, thank you for asking.
 
 - [Donate](https://yphil.gitlab.io/ext/support.html)
-- [Report usage problems / suggestions](https://gitlab.com/yphil/emulsion/-/issues)
-- [Contribute code](https://gitlab.com/yphil/emulsion/-/commits/master?ref_type=heads)
+- [Report usage problems / suggestions](https://github.com/yPhil-gh/emulsion/issues)
+- [Contribute code](https://github.com/yPhil-gh/emulsion/commits/master/)

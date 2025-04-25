@@ -33,12 +33,12 @@ Emulsion:
 - Unifies all *your* emulators in a single interface
 - Lets you precisely select game cover art from multiple backends
 
-These features set it apart from competitors that:
+These features set it apart from solutions that:
 - Manage emulators (which Emulsion doesn't do)
 - Handle controller configuration (often unreliably)
 - Handle cover art downloads automatically / unattended / externally without selection options
 
-What's more, Emulsion is *reproductible*. Thanks to its single standard config file, you can install a full gaming PC in one command.
+What's more, Emulsion is *reproductible*: Thanks to its single **standard** config file, you can install a full gaming PC in one command.
 
 ## Installation
 
@@ -160,7 +160,7 @@ If you can - after you [donated to this project](https://yphil.gitlab.io/ext/sup
 
 ### Command line (CLI) options / flags
 
-``` shell
+```
 Options:
   --kiosk Read-only / kids mode: No config / settings, disabled platforms hidden.
   --full-screen  Start the app in full screen mode.

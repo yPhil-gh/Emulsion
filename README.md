@@ -15,7 +15,6 @@ A unified, lightweight frontend for game emulators.
     - [Games directory](#games-directory)
     - [Emulator](#emulator)
     - [Emulator arguments](#emulator-arguments)
-      - [What emulator / launch arguments can I use for (insert machine / platform)?](#what-emulator--launch-arguments-can-i-use-for-insert-machine--platform)
   - [Controls](#controls)
     - [Home](#home)
     - [Galleries](#galleries)
@@ -67,17 +66,12 @@ See the [Emulsion Wiki](https://gitlab.com/yphil/emulsion/-/wikis/home) for [det
 
 ![Emulsion](https://yphil.gitlab.io/images/emulsion-01-platform_config.png)
 
-For each machine, enter
-
 #### Games directory
 The directory where the games are stored for that platform ; Enter a path or better, use the Browse button
 #### Emulator
 The emulator for that platform. The name of a program installed on your machine, or the full path to an executable
 #### Emulator arguments
 The *optional* arguments for that emulator. Most don't need any, read on
-
-##### What emulator / launch arguments can I use for (insert machine / platform)?
-Consult [the Emulsion Wiki](https://gitlab.com/yphil/emulsion/-/wikis/home) to get tips on emulators and settings
 
 ### Controls
 #### Home

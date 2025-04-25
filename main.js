@@ -54,13 +54,13 @@ const recentFilePath = path.join(app.getPath('userData'), "recently_played.json"
 
 function showHelp() {
     console.log(`
-Emulsion ${pjson.version}
+${pjson.name.toLowerCase()} ${pjson.version}
 Usage: ${pjson.name.toLowerCase()} [options]
 
 Options:
-  --kids-mode   Read-only mode: No config / settings, disabled platforms hidden.
-  --fullscreen  Start the app in full screen mode.
-  --help        Show this help message.
+  --media-center Read-only mode: No config / settings, disabled platforms hidden.
+  --full-screen  Start the app in full screen mode.
+  --help         Show this help message.
     `);
     app.quit();
 }
@@ -476,7 +476,7 @@ ipcMain.handle('load-preferences', () => {
         preferences.userDataPath = userDataPath;
         preferences.appPath = appPath;
         preferences.versionNumber = versionNumber;
-        preferences.kidsMode = process.argv.includes('--mediacenter');
+        preferences.kidsMode = process.argv.includes('--media-center');
         preferences.recents = recents;
         return preferences;
     }

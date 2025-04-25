@@ -43,7 +43,7 @@ A unified, lightweight frontend for game emulators.
 
 ### Robust
 - One update of an emulator won't break everything ;
-- Emulsion will never forget you game controller config / calibration. It-just-works.
+- Emulsion will never forget your game controller config / calibration. It-just-works.
 
 ### Cover art management
 Direct dowloading of the game cover art via several backends:

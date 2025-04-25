@@ -59,7 +59,7 @@ Usage: ${pjson.name.toLowerCase()} [options]
 
 Options:
   --media-center Read-only mode: No config / settings, disabled platforms hidden.
-  --full-screen  Start the app in full screen mode.
+  --kiosk  Start the app in full screen mode.
   --help         Show this help message.
     `);
     app.quit();
@@ -225,7 +225,7 @@ function createWindows() {
     mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
-        fullscreen: process.argv.includes('--fullscreen'),
+        fullscreen: process.argv.includes('--kiosk'),
         icon: path.join(__dirname, 'img/icon.png'),
         webPreferences: {
             nodeIntegration: true,

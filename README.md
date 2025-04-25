@@ -5,10 +5,6 @@ A unified, lightweight frontend for game emulators.
 ![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png?x)
 
 - [Features](#features)
-  - [Controllable](#controllable)
-  - [Standard](#standard)
-  - [Robust](#robust)
-  - [Cover art management](#cover-art-management)
 - [Installation](#installation)
 - [Usage](#usage)
   - [Platform configuration](#platform-configuration)
@@ -166,7 +162,7 @@ If you can - after you [donated to this project](https://yphil.gitlab.io/ext/sup
 
 ``` shell
 Options:
-  --media-center Read-only / kids mode: No config / settings, disabled platforms hidden.
+  --kiosk Read-only / kids mode: No config / settings, disabled platforms hidden.
   --full-screen  Start the app in full screen mode.
   --help        Show this help message.`
 ```

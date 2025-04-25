@@ -166,7 +166,7 @@ If you can - after you [donated to this project](https://yphil.gitlab.io/ext/sup
 
 ``` shell
 Options:
-  --kids-mode   Read-only mode: No config / settings, disabled platforms hidden.
+  --mediacenter Read-only / kids mode: No config / settings, disabled platforms hidden.
   --fullscreen  Start the app in full screen mode.
   --help        Show this help message.`
 ```

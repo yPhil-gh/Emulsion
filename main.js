@@ -476,7 +476,7 @@ ipcMain.handle('load-preferences', () => {
         preferences.userDataPath = userDataPath;
         preferences.appPath = appPath;
         preferences.versionNumber = versionNumber;
-        preferences.kidsMode = process.argv.includes('--kids-mode');
+        preferences.kidsMode = process.argv.includes('--mediacenter');
         preferences.recents = recents;
         return preferences;
     }

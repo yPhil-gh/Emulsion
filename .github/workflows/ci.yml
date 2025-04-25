@@ -42,6 +42,8 @@ jobs:
 
   build_windows:
     runs-on: windows-latest  # GitHub-hosted Windows runner :contentReference[oaicite:14]{index=14}
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

@@ -1,21 +1,20 @@
+# .github/workflows/ci.yml
 name: Build & Release
 
-# 1. Trigger only on tag pushes
 on:
   push:
     tags:
-      - '*'                     # Run this workflow for any Git tag :contentReference[oaicite:2]{index=2}
+      - '*'   # only run on any tag push :contentReference[oaicite:8]{index=8}
 
 jobs:
-  # 2. Linux build
   build_linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest   # GitHub-hosted Ubuntu runner :contentReference[oaicite:9]{index=9}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3   # checkout v3 :contentReference[oaicite:10]{index=10}
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v3 # setup-node v3 :contentReference[oaicite:11]{index=11}
         with:
           node-version: '20'
 
@@ -33,17 +32,16 @@ jobs:
       - name: Build and post-process
         run: |
           chmod +x build.sh
-          ./build.sh
+          ./build.sh   # produces emulsion_amd64.deb & emulsion_x86_64.AppImage :contentReference[oaicite:12]{index=12}
 
       - name: Upload Linux artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4   # upload-artifact v4 :contentReference[oaicite:13]{index=13}
         with:
           name: linux-dist
           path: dist/*
 
-  # 3. Windows build
   build_windows:
-    runs-on: windows-latest
+    runs-on: windows-latest  # GitHub-hosted Windows runner :contentReference[oaicite:14]{index=14}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -58,51 +56,50 @@ jobs:
 
       - name: Build Windows package
         run: |
-          npm run build -- --win nsis  # uses builder.yml to emit emulsion_x64.exe
+          npm run build -- --win nsis   # produces emulsion_x64.exe
 
       - name: Upload Windows artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4   # upload-artifact v4 :contentReference[oaicite:15]{index=15}
         with:
           name: windows-dist
           path: dist/*
 
-  # 4. Release creation and asset upload
   release:
     needs: [build_linux, build_windows]
     runs-on: ubuntu-latest
     steps:
       - name: Download Linux artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4 # download-artifact v4 :contentReference[oaicite:16]{index=16}
         with:
           name: linux-dist
           path: dist
 
       - name: Download Windows artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: windows-dist
           path: dist
 
       - name: Create GitHub Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: actions/create-release@v1     # create-release v1 :contentReference[oaicite:17]{index=17}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }}
           release_name: Emulsion ${{ github.ref_name }}
           draft: false
-          prerelease: false                       # published full release :contentReference[oaicite:3]{index=3}
+          prerelease: false
 
       - name: Upload emulsion_x64.exe
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v1 # upload-release-asset v1 :contentReference[oaicite:18]{index=18}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: dist/emulsion_x64.exe
           asset_name: emulsion_x64.exe
-          asset_content_type: application/octet-stream :contentReference[oaicite:4]{index=4}
+          asset_content_type: application/octet-stream
 
       - name: Upload emulsion_x86_64.AppImage
         uses: actions/upload-release-asset@v1
@@ -112,7 +109,7 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: dist/emulsion_x86_64.AppImage
           asset_name: emulsion_x86_64.AppImage
-          asset_content_type: application/octet-stream :contentReference[oaicite:5]{index=5}
+          asset_content_type: application/octet-stream
 
       - name: Upload emulsion_amd64.deb
         uses: actions/upload-release-asset@v1

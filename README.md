@@ -81,7 +81,7 @@ Games (and plaforms config) pages
 | Return to home screen / machines menu | <kbd>Escape</kbd>                                         | Circle / B / East <kbd>○</kbd> |
 
 
-#### Game/Platform Menu
+#### Cover art download menu
 The game config / download cover art menu
 
 | Action                      | Keyboard                                                  | Game controller                |

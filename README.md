@@ -1,3 +1,5 @@
+![Emulsion](https://yphil.gitlab.io/images/emulsion-logo.png?x)
+
 # Emulsion
 
 A unified, lightweight frontend for game emulators.

@@ -10,6 +10,8 @@ A unified, lightweight frontend for your game emulators.
   - [Platform](#platform)
   - [Emulator tips](#emulator-tips)
   - [Cover art](#cover-art)
+    - [backends API Keys](#backends-api-keys)
+    - [All backends](#all-backends)
 - [Usage](#usage)
   - [Controls](#controls)
   - [CLI](#cli)
@@ -76,7 +78,7 @@ The *optional* arguments for that emulator ; Most don't need any, [read on](#emu
 
 ### Cover art
 
-- backends API Keys
+#### backends API Keys
 
 Some cover art download backends (SteamGridDB and GiantBomb) require authentication ; The key is free and easy to obtain:
 
@@ -92,7 +94,7 @@ The other backends require no authentication, but you'll find **way more** image
 
 If you can - after you [donated to this project](https://yphil.gitlab.io/ext/support.html), thank you very much 🙂 please consider supporting those backends. They do a great job of keeping our common culture aliv... Well, existing.
 
-- Complete list of image backends
+#### All backends
   - [SteamGridDB](https://www.steamgriddb.com/) (API)
   - [GiantBomb](https://www.giantbomb.com/api/) (API)
   - [MobyGames](mobygames.com) (Web)

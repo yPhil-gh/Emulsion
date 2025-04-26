@@ -6,11 +6,12 @@ A unified, lightweight frontend for your game emulators.
 
 - [Features](#features)
 - [Installation](#installation)
+- [Configuration](#configuration)
+  - [Platform](#platform)
+  - [Emulator tips](#emulator-tips)
 - [Usage](#usage)
-  - [Platform configuration](#platform-configuration)
   - [Controls](#controls)
   - [Cover art](#cover-art)
-  - [Emulator tips](#emulator-tips)
   - [Command line (CLI) options / flags](#command-line-cli-options--flags)
 - [Can I help?](#can-i-help)
 

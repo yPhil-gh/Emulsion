@@ -15,6 +15,7 @@ A unified, lightweight frontend for your game emulators.
   - [CLI](#cli)
 - [Can I help?](#can-i-help)
 
+
 ## Features
 
 Emulsion:
@@ -160,6 +161,8 @@ Works everywhere
   - Control hints appear in the footer based on current screen.
 
 ### CLI
+
+Command Line Interface:
 
 ```
 Options:

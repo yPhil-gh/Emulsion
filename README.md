@@ -32,8 +32,8 @@ What's more, Emulsion is *reproductible*: Thanks to its single **standard** conf
 - See [Releases](https://github.com/yphil-gh/emulsion/releases/latest)
 - `npm install ; npm start`
 
-## Usage
-### Platform configuration
+## Configuration
+### Platform
 
 ![Emulsion](https://yphil.gitlab.io/images/emulsion-01-platform_config.png)
 
@@ -43,6 +43,31 @@ The directory where the games are stored for that platform ; Enter a path or bet
 The emulator for that platform. The name of a program installed on your machine, or use the Browse button to select the full path to the emulator executable.
 - Emulator arguments
 The *optional* arguments for that emulator ; Most don't need any, [read on](#emulator-tips).
+
+### Emulator tips
+
+| Platform   | Emulator                                                                                 | Emulator Arguments       | Extensions      |
+|------------|------------------------------------------------------------------------------------------|--------------------------|-----------------|
+| NES        | [mednafen](https://mednafen.github.io/)                                                  |                          | `.zip`          |
+| SMS        | mednafen                                                                                 |                          | `.zip`          |
+| PC Engine  | mednafen                                                                                 |                          | `.pce`          |
+| Amiga      | [amiberry](https://github.com/BlitterStudio/amiberry)                                    |                          | `.lha`, `.adf`  |
+| Mega Drive | [~/bin/EMU/blastem64-0.6.2/blastem](https://www.retrodev.com/blastem/)                   | `-m gen -f`              | `.md `          |
+| SNES       | [Mesen](https://www.mesen.ca/)                                                           |                          | `.smc`          |
+| Jaguar     | [~/bin/EMU/BigPEmu_Linux64_v118/bigpemu/bigpemu](https://www.richwhitehouse.com/jaguar/) |                          | `.jag`          |
+| Saturn     | mednafen                                                                                 |                          | `.cue`          |
+| PSX        | [~/bin/EMU/DuckStation-x64.AppImage](https://github.com/stenzek/duckstation)             | `-fullscreen -nogui`     | `.srm`          |
+| N64        | [mupen64plus](https://mupen64plus.org/)                                                  |                          | `.z64`          |
+| Dreamcast  | [flycast-x86_64.AppImage](https://github.com/flyinghead/flycast)                         |                          | `.gdi`, `.cdi`  |
+| PS2        | [pcsx2](https://pcsx2.net/)                                                              | `-nogui -fullscreen`     | `.bin`, `.iso`  |
+| GameCube   | [~/bin/EMU/Dolphin-Emulator-5.0-16793-x86-64.AppImage](https://dolphin-emu.org/)         | `-b -e`                  | `.iso`, `.ciso` |
+| Xbox       | [~/bin/EMU/xemu-v0.8.48-x86_64.AppImage](https://xemu.app/)                              | `-full-screen -dvd_path` | `.xiso.iso`     |
+| PSP        |                                                                                          |                          | `.iso`          |
+| PS3        | [~/bin/rpcs3-v0.0.35-17701-6921684c_linux64.AppImage](https://rpcs3.net/)                | `--no-gui`               | `.SFO`          |
+
+**NB** This works on an Ubuntu 24.04.2 LTS box ; All the packages referenced by their name only are directly installed from the normal system repo / app store.
+
+## Usage
 
 ### Controls
 - Home
@@ -122,29 +147,6 @@ If you can - after you [donated to this project](https://yphil.gitlab.io/ext/sup
   - [UVList](https://www.uvlist.net/) (Web)
 
 ...More to come.
-
-### Emulator tips
-
-| Platform   | Emulator                                                                                 | Emulator Arguments       | Extensions      |
-|------------|------------------------------------------------------------------------------------------|--------------------------|-----------------|
-| NES        | [mednafen](https://mednafen.github.io/)                                                  |                          | `.zip`          |
-| SMS        | mednafen                                                                                 |                          | `.zip`          |
-| PC Engine  | mednafen                                                                                 |                          | `.pce`          |
-| Amiga      | [amiberry](https://github.com/BlitterStudio/amiberry)                                    |                          | `.lha`, `.adf`  |
-| Mega Drive | [~/bin/EMU/blastem64-0.6.2/blastem](https://www.retrodev.com/blastem/)                   | `-m gen -f`              | `.md `          |
-| SNES       | [Mesen](https://www.mesen.ca/)                                                           |                          | `.smc`          |
-| Jaguar     | [~/bin/EMU/BigPEmu_Linux64_v118/bigpemu/bigpemu](https://www.richwhitehouse.com/jaguar/) |                          | `.jag`          |
-| Saturn     | mednafen                                                                                 |                          | `.cue`          |
-| PSX        | [~/bin/EMU/DuckStation-x64.AppImage](https://github.com/stenzek/duckstation)             | `-fullscreen -nogui`     | `.srm`          |
-| N64        | [mupen64plus](https://mupen64plus.org/)                                                  |                          | `.z64`          |
-| Dreamcast  | [flycast-x86_64.AppImage](https://github.com/flyinghead/flycast)                         |                          | `.gdi`, `.cdi`  |
-| PS2        | [pcsx2](https://pcsx2.net/)                                                              | `-nogui -fullscreen`     | `.bin`, `.iso`  |
-| GameCube   | [~/bin/EMU/Dolphin-Emulator-5.0-16793-x86-64.AppImage](https://dolphin-emu.org/)         | `-b -e`                  | `.iso`, `.ciso` |
-| Xbox       | [~/bin/EMU/xemu-v0.8.48-x86_64.AppImage](https://xemu.app/)                              | `-full-screen -dvd_path` | `.xiso.iso`     |
-| PSP        |                                                                                          |                          | `.iso`          |
-| PS3        | [~/bin/rpcs3-v0.0.35-17701-6921684c_linux64.AppImage](https://rpcs3.net/)                | `--no-gui`               | `.SFO`          |
-
-**NB** This works on an Ubuntu 24.04.2 LTS box ; All the packages referenced by their name only are directly installed from the normal system repo / app store.
 
 ### Command line (CLI) options / flags
 

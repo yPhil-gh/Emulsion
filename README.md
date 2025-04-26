@@ -8,7 +8,7 @@ A unified, lightweight frontend for your game emulators.
 - [Installation](#installation)
 - [Configuration](#configuration)
   - [Platform](#platform)
-  - [Emulator tips](#emulator-tips)
+    - [Emulator tips](#emulator-tips)
   - [Cover art](#cover-art)
     - [backends API Keys](#backends-api-keys)
     - [All backends](#all-backends)
@@ -16,7 +16,6 @@ A unified, lightweight frontend for your game emulators.
   - [Controls](#controls)
   - [CLI](#cli)
 - [Can I help?](#can-i-help)
-
 
 ## Features
 
@@ -53,7 +52,7 @@ The emulator for that platform. The name of a program installed on your machine,
 
 The *optional* arguments for that emulator ; Most don't need any, [read on](#emulator-tips).
 
-### Emulator tips
+#### Emulator tips
 
 | Platform   | Emulator                                                                                 | Emulator Arguments       | Extensions      |
 |------------|------------------------------------------------------------------------------------------|--------------------------|-----------------|

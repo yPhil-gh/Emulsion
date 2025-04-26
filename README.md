@@ -9,10 +9,10 @@ A unified, lightweight frontend for your game emulators.
 - [Configuration](#configuration)
   - [Platform](#platform)
   - [Emulator tips](#emulator-tips)
+  - [Cover art](#cover-art)
 - [Usage](#usage)
   - [Controls](#controls)
-  - [Cover art](#cover-art)
-  - [Command line (CLI) options / flags](#command-line-cli-options--flags)
+  - [CLI](#cli)
 - [Can I help?](#can-i-help)
 
 ## Features
@@ -73,6 +73,34 @@ The *optional* arguments for that emulator ; Most don't need any, [read on](#emu
 
 **NB** This works on an Ubuntu 24.04.2 LTS box ; All the packages referenced by their name only are directly installed from the normal system repo / app store.
 
+### Cover art
+
+- backends API Keys
+
+Some cover art download backends (SteamGridDB and GiantBomb) require authentication ; The key is free and easy to obtain:
+
+- GiantBomb
+  - get your key at https://www.giantbomb.com/api/
+
+- SteamGridDB
+  - Create or log into your [Steam](https://store.steampowered.com/) account ;
+  - Get your [API](https://www.steamgriddb.com/api/v2) key by login in to https://www.steamgriddb.com and open the preferences menu.
+
+Paste the key into the corresponding field in the **Emulsion settings** form ; click <kbd>Save</kbd>.
+The other backends require no authentication, but you'll find **way more** images using all the backends, including SteamGridDB and GiantBomb.
+
+If you can - after you [donated to this project](https://yphil.gitlab.io/ext/support.html), thank you very much 🙂 please consider supporting those backends. They do a great job of keeping our common culture aliv... Well, existing.
+
+- Complete list of image backends
+  - [SteamGridDB](https://www.steamgriddb.com/) (API)
+  - [GiantBomb](https://www.giantbomb.com/api/) (API)
+  - [MobyGames](mobygames.com) (Web)
+  - [Exotica](https://www.exotica.org.uk/) (Web)
+  - [Wikipedia](https://en.wikipedia.org/w/index.php?title=Category:Amiga_game_covers) (Amiga) (Web)
+  - [UVList](https://www.uvlist.net/) (Web)
+
+...More to come.
+
 ## Usage
 
 ### Controls
@@ -112,6 +140,7 @@ Game config / download cover art menu
 | Select / save image         | <kbd>Enter</kbd>                                          | Cross / A / South <kbd>⤫</kbd> |
 
 - Global controls
+
 Works everywhere
 
 | Action                           | Keyboard                                          | Game controller                                |
@@ -130,35 +159,7 @@ Works everywhere
 - Contextual help
   - Control hints appear in the footer based on current screen.
 
-### Cover art
-
-- backends API Keys
-
-Some cover art download backends (SteamGridDB and GiantBomb) require authentication ; The key is free and easy to obtain:
-
-- GiantBomb
-  - get your key at https://www.giantbomb.com/api/
-
-- SteamGridDB
-  - Create or log into your [Steam](https://store.steampowered.com/) account ;
-  - Get your [API](https://www.steamgriddb.com/api/v2) key by login in to https://www.steamgriddb.com and open the preferences menu.
-
-Paste the key into the corresponding field in the **Emulsion settings** form ; click <kbd>Save</kbd>.
-The other backends require no authentication, but you'll find **way more** images using all the backends, including SteamGridDB and GiantBomb.
-
-If you can - after you [donated to this project](https://yphil.gitlab.io/ext/support.html), thank you very much 🙂 please consider supporting those backends. They do a great job of keeping our common culture aliv... Well, existing.
-
-- Complete list of image backends
-  - [SteamGridDB](https://www.steamgriddb.com/) (API)
-  - [GiantBomb](https://www.giantbomb.com/api/) (API)
-  - [MobyGames](mobygames.com) (Web)
-  - [Exotica](https://www.exotica.org.uk/) (Web)
-  - [Wikipedia](https://en.wikipedia.org/w/index.php?title=Category:Amiga_game_covers) (Amiga) (Web)
-  - [UVList](https://www.uvlist.net/) (Web)
-
-...More to come.
-
-### Command line (CLI) options / flags
+### CLI
 
 ```
 Options:

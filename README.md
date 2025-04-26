@@ -8,19 +8,8 @@ A unified, lightweight frontend for your game emulators.
 - [Installation](#installation)
 - [Usage](#usage)
   - [Platform configuration](#platform-configuration)
-    - [Games directory](#games-directory)
-    - [Emulator](#emulator)
-    - [Emulator arguments](#emulator-arguments)
   - [Controls](#controls)
-    - [Home](#home)
-    - [Galleries](#galleries)
-    - [Cover art download menu](#cover-art-download-menu)
-    - [Global controls](#global-controls)
-    - [Mouse](#mouse)
-    - [Contextual help](#contextual-help)
-  - [Cover art download](#cover-art-download)
-    - [backends API Keys](#backends-api-keys)
-    - [Complete list of image backends](#complete-list-of-image-backends)
+  - [Cover art](#cover-art)
   - [Emulator tips](#emulator-tips)
   - [Command line (CLI) options / flags](#command-line-cli-options--flags)
 - [Can I help?](#can-i-help)
@@ -48,15 +37,15 @@ What's more, Emulsion is *reproductible*: Thanks to its single **standard** conf
 
 ![Emulsion](https://yphil.gitlab.io/images/emulsion-01-platform_config.png)
 
-#### Games directory
+- Games directory
 The directory where the games are stored for that platform ; Enter a path or better, use the Browse button.
-#### Emulator
+- Emulator
 The emulator for that platform. The name of a program installed on your machine, or use the Browse button to select the full path to the emulator executable.
-#### Emulator arguments
+- Emulator arguments
 The *optional* arguments for that emulator ; Most don't need any, [read on](#emulator-tips).
 
 ### Controls
-#### Home
+- Home
 Platforms / machines home carousel
 
 | Action                      | Keyboard                       | Game controller                                |
@@ -65,7 +54,7 @@ Platforms / machines home carousel
 | Select highlighted platform | <kbd>Enter</kbd>               | Cross / A / South <kbd>⤫</kbd>                 |
 | Exit Emulsion               | <kbd>Ctrl</kbd> + <kbd>Q</kbd> | Circle / B / East <kbd>○</kbd>                 |
 
-#### Galleries
+- Galleries
 Games (and plaforms config) pages
 
 | Action                                | Keyboard                                                  | Game controller                |
@@ -79,7 +68,7 @@ Games (and plaforms config) pages
 | Return to home screen / machines menu | <kbd>Escape</kbd>                                         | Circle / B / East <kbd>○</kbd> |
 
 
-#### Cover art download menu
+- Game menu
 The game config / download cover art menu
 
 | Action                      | Keyboard                                                  | Game controller                |
@@ -87,7 +76,7 @@ The game config / download cover art menu
 | Navigate image thumbnails   | <kbd>←</kbd> / <kbd>→</kbd> / <kbd>↑</kbd> / <kbd>↓</kbd> | DPad                           |
 | Select / save image         | <kbd>Enter</kbd>                                          | Cross / A / South <kbd>⤫</kbd> |
 
-#### Global controls
+- Global controls
 Works everywhere
 
 | Action                           | Keyboard                                          | Game controller                                |
@@ -98,17 +87,17 @@ Works everywhere
 | Quit game and return to Emulsion | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> |                                                |
 | Restart Emulsion                 | <kbd>F5</kbd>                                     |                                                |
 
-#### Mouse
+- Mouse
 - Left Click: Home: Select platform, Menu: Select and save cover art image, Gallery: **launch game** 🚀
 - Right-Click: Open contextual game menu
 - Mouse Wheel: Scroll / browse machines / games
 
-#### Contextual help
+- Contextual help
 Control hints appear in the footer based on current screen.
 
-### Cover art download
+### Cover art
 
-#### backends API Keys
+- backends API Keys
 
 Some cover art download backends (SteamGridDB and GiantBomb) require authentication ; The key is free and easy to obtain:
 
@@ -124,13 +113,13 @@ The other backends require no authentication, but you'll find **way more** image
 
 If you can - after you [donated to this project](https://yphil.gitlab.io/ext/support.html), thank you very much 🙂 please consider supporting those backends. They do a great job of keeping our common culture aliv... Well, existing.
 
-#### Complete list of image backends
-- [SteamGridDB](https://www.steamgriddb.com/) (API)
-- [GiantBomb](https://www.giantbomb.com/api/) (API)
-- [MobyGames](mobygames.com) (Web)
-- [Exotica](https://www.exotica.org.uk/) (Web)
-- [Wikipedia](https://en.wikipedia.org/w/index.php?title=Category:Amiga_game_covers) (Amiga) (Web)
-- [UVList](https://www.uvlist.net/) (Web)
+- Complete list of image backends
+  - [SteamGridDB](https://www.steamgriddb.com/) (API)
+  - [GiantBomb](https://www.giantbomb.com/api/) (API)
+  - [MobyGames](mobygames.com) (Web)
+  - [Exotica](https://www.exotica.org.uk/) (Web)
+  - [Wikipedia](https://en.wikipedia.org/w/index.php?title=Category:Amiga_game_covers) (Amiga) (Web)
+  - [UVList](https://www.uvlist.net/) (Web)
 
 ...More to come.
 

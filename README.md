@@ -26,9 +26,9 @@ Emulsion:
 These features set it apart from solutions that:
 - Manage emulators (which Emulsion doesn't do)
 - Handle controller configuration (often unreliably)
-- Handle cover art downloads automatically / unattended / externally without selection options
+- Handle cover art downloads automatically / unattended / or even externally, without selection options
 
-What's more, Emulsion is *reproductible*: Thanks to its single **standard** config file, you can install a full gaming PC in one command. and it-won't-move ; At least that's the idea.
+Emulsion is *reproductible*: Thanks to its single **standard** config file, you can install a full gaming PC in one command, and-it-won't-move ; At least that's the idea.
 
 ## Installation
 

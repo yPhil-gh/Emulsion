@@ -39,10 +39,15 @@ What's more, Emulsion is *reproductible*: Thanks to its single **standard** conf
 ![Emulsion](https://yphil.gitlab.io/images/emulsion-01-platform_config.png)
 
 - Games directory
+
 The directory where the games are stored for that platform ; Enter a path or better, use the Browse button.
+
 - Emulator
+
 The emulator for that platform. The name of a program installed on your machine, or use the Browse button to select the full path to the emulator executable.
+
 - Emulator arguments
+
 The *optional* arguments for that emulator ; Most don't need any, [read on](#emulator-tips).
 
 ### Emulator tips
@@ -71,7 +76,9 @@ The *optional* arguments for that emulator ; Most don't need any, [read on](#emu
 ## Usage
 
 ### Controls
+
 - Home
+
 Platforms / machines home carousel
 
 | Action                      | Keyboard                       | Game controller                                |
@@ -81,6 +88,7 @@ Platforms / machines home carousel
 | Exit Emulsion               | <kbd>Ctrl</kbd> + <kbd>Q</kbd> | Circle / B / East <kbd>○</kbd>                 |
 
 - Galleries
+
 Games (and plaforms config) pages
 
 | Action                                | Keyboard                                                  | Game controller                |
@@ -95,7 +103,8 @@ Games (and plaforms config) pages
 
 
 - Game menu
-The game config / download cover art menu
+
+Game config / download cover art menu
 
 | Action                      | Keyboard                                                  | Game controller                |
 |-----------------------------|-----------------------------------------------------------|--------------------------------|
@@ -114,12 +123,12 @@ Works everywhere
 | Restart Emulsion                 | <kbd>F5</kbd>                                     |                                                |
 
 - Mouse
-- Left Click: Home: Select platform, Menu: Select and save cover art image, Gallery: **launch game** 🚀
-- Right-Click: Open contextual game menu
-- Mouse Wheel: Scroll / browse machines / games
+  - Left Click: Home: Select platform, Menu: Select and save cover art image, Gallery: **launch game** 🚀
+  - Right-Click: Open contextual game menu
+  - Mouse Wheel: Scroll / browse machines / games
 
 - Contextual help
-Control hints appear in the footer based on current screen.
+  - Control hints appear in the footer based on current screen.
 
 ### Cover art
 

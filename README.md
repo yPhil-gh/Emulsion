@@ -113,19 +113,20 @@ Control hints appear in the footer based on current screen.
 #### backends API Keys
 
 Some cover art download backends (SteamGridDB and GiantBomb) require authentication ; The key is free and easy to obtain:
-##### GiantBomb
-- get your key at https://www.giantbomb.com/api/
+
+- GiantBomb
+  - get your key at https://www.giantbomb.com/api/
+
+- SteamGridDB
+  - Create or log into your [Steam](https://store.steampowered.com/) account ;
+  - Get your [API](https://www.steamgriddb.com/api/v2) key by login in to https://www.steamgriddb.com and open the preferences menu.
 
 Paste the key into the corresponding field in the **Emulsion settings** form ; click <kbd>Save</kbd>.
 The other backends require no authentication, but you'll find **way more** images using all the backends, including SteamGridDB and GiantBomb.
 
 If you can - after you [donated to this project](https://yphil.gitlab.io/ext/support.html), thank you very much 🙂 please consider supporting those backends. They do a great job of keeping our common culture aliv... Well, existing.
 
-##### SteamGridDB
-- Create or log into your [Steam](https://store.steampowered.com/) account ;
-- Get your [API](https://www.steamgriddb.com/api/v2) key by login in to https://www.steamgriddb.com and open the preferences menu.
-
-#### Complete list of backends
+#### Complete list of image backends
 - [SteamGridDB](https://www.steamgriddb.com/) (API)
 - [GiantBomb](https://www.giantbomb.com/api/) (API)
 - [MobyGames](mobygames.com) (Web)

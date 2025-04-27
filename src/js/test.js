@@ -1,26 +1,35 @@
-// 0) Predefined exceptions
+// 0) Predefined exceptions map (keys uppercase alphanumeric)
 const PREDEFINED_TITLES = {
-  VRALLY: 'V-Rally',
-  FIFA21: 'FIFA 21',
-  RE2:    'Resident Evil 2',
-  MK11:   'Mortal Kombat 11',
-  NHL94:  'NHL ’94',
-  // add more…
+  VRALLY2:     'V-Rally 2',
+  WIPEOUT2097: 'Wipeout 2097',
+  WIPEOUT3:    'WipEout 3',
+  RE2:         'Resident Evil 2',
+  MK11:        'Mortal Kombat 11',
+  NHL94:       'NHL ’94',
+  // …etc
 };
 
 function cleanFileName(fileName) {
-  // 1) Extract base before underscore
+  // 1) Base part before underscore
   const raw = fileName.split('_')[0];
-  const upper = raw.toUpperCase();
 
-  // 2) Match letter+digits pattern
-  const m = upper.match(/^([A-Z]+)(\d+)$/);
-  if (m && PREDEFINED_TITLES[m[1]]) {
-    // 3) Return exception + numeric suffix
-    return PREDEFINED_TITLES[m[1]] + ' ' + m[2];
+  // 2) Remove all trailing "(…)" or "[…]"
+  const noParens = raw.replace(/\s*[\(\[].*?[\)\]]/g, '');
+
+  // 3) Split into [core, subtitle] on first " - "
+  const [corePart, subtitlePart] = noParens.split(/\s-\s(.+)$/);
+
+  // 4) Build lookup key from corePart: remove non-alphanumerics, uppercase
+  const key = corePart.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+
+  // 5) If exception exists, return it + suffix (if any)
+  if (PREDEFINED_TITLES[key]) {
+    return subtitlePart
+      ? `${PREDEFINED_TITLES[key]} - ${subtitlePart}`   // preserve subtitle
+      : PREDEFINED_TITLES[key];
   }
 
-  // 4) Fallback to generic pipeline
+  // 6) Fallback to your original pipeline on the full raw filename
   let s = _removeAfterUnderscore(fileName);
   s = _splitSpecial(s);
   s = _splitCamelCase(s);
@@ -112,8 +121,10 @@ function testCleanFileName() {
       { input: 'Lucky Dime Caper Starring Donald Duck, The (Europe, Brazil) (En)', expected: 'The Lucky Dime Caper Starring Donald Duck' },
       { input: 'Bubblegum Crash! - Knight Sabers 2034 (Japan) [En by Dave Shadoff+Filler+Tomaitheous v1.0]', expected: 'Bubblegum Crash! - Knight Sabers 2034' },
       // Last case
-      { input: 'VRALLY2', expected: 'V-Rally 2' }
-
+      { input: 'VRALLY2', expected: 'V-Rally 2' },
+      { input: 'WIPEOUT2097', expected: 'Wipeout 2097' },
+      { input: 'WipEout 3 (USA)', expected: 'WipEout 3' },
+      { input: 'WipEout 3 - Special Edition (Europe) (En,Fr,De,Es,It)', expected: 'WipEout 3 - Special Edition' }
 
   ];
 

@@ -83,35 +83,46 @@ function safeFileName(fileName) {
         .replace(/^\s+|\s+$/g, '') || 'default_filename'; // Prevent empty names
 }
 
+// 0) Predefined exceptions map (keys uppercase alphanumeric)
 const PREDEFINED_TITLES = {
-    VRALLY: 'V-Rally',
-    FIFA21: 'FIFA 21',
-    RE2:    'Resident Evil 2',
-    MK11:   'Mortal Kombat 11',
-    NHL94:  'NHL ’94',
+  VRALLY2:     'V-Rally 2',
+  WIPEOUT2097: 'Wipeout 2097',
+  WIPEOUT3:    'WipEout 3',
+  RE2:         'Resident Evil 2',
+  MK11:        'Mortal Kombat 11',
+  NHL94:       'NHL ’94',
+  // …etc
 };
 
 function cleanFileName(fileName) {
-    // Extract base before underscore
-    const raw = fileName.split('_')[0];
-    const upper = raw.toUpperCase();
+  // 1) Base part before underscore
+  const raw = fileName.split('_')[0];
 
-    // Match letter+digits pattern
-    const m = upper.match(/^([A-Z]+)(\d+)$/);
-    if (m && PREDEFINED_TITLES[m[1]]) {
-        // Return exception + numeric suffix
-        return PREDEFINED_TITLES[m[1]] + ' ' + m[2];
-    }
+  // 2) Remove all trailing "(…)" or "[…]"
+  const noParens = raw.replace(/\s*[\(\[].*?[\)\]]/g, '');
 
-    // 4) Fallback to generic pipeline
-    let s = _removeAfterUnderscore(fileName);
-    s = _splitSpecial(s);
-    s = _splitCamelCase(s);
-    s = _splitAcronym(s);
-    s = _removeParens(s);
-    s = _removeBrackets(s);
-    s = _moveTrailingArticleToFront(s);
-    return _titleCase(s);
+  // 3) Split into [core, subtitle] on first " - "
+  const [corePart, subtitlePart] = noParens.split(/\s-\s(.+)$/);
+
+  // 4) Build lookup key from corePart: remove non-alphanumerics, uppercase
+  const key = corePart.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+
+  // 5) If exception exists, return it + suffix (if any)
+  if (PREDEFINED_TITLES[key]) {
+    return subtitlePart
+      ? `${PREDEFINED_TITLES[key]} - ${subtitlePart}`   // preserve subtitle
+      : PREDEFINED_TITLES[key];
+  }
+
+  // 6) Fallback to your original pipeline on the full raw filename
+  let s = _removeAfterUnderscore(fileName);
+  s = _splitSpecial(s);
+  s = _splitCamelCase(s);
+  s = _splitAcronym(s);
+  s = _removeParens(s);
+  s = _removeBrackets(s);
+  s = _moveTrailingArticleToFront(s);
+  return _titleCase(s);
 }
 
 function _removeAfterUnderscore(s) {

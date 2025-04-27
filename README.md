@@ -73,11 +73,15 @@ The *optional* arguments for that emulator ; Most don't need any, [read on](#emu
 | PSP        |                                                                                          |                          | `.iso`          |
 | PS3        | [~/bin/rpcs3-v0.0.35-17701-6921684c_linux64.AppImage](https://rpcs3.net/)                | `--no-gui`               | `.SFO`          |
 
-**NB** This works on an Ubuntu 24.04.2 LTS box ; All the packages referenced by their name only are directly installed from the normal system repo / app store.
+**NB** This works on an Ubuntu 24.04.2 LTS box ; All the packages referenced by their name only are directly installed from the normal system repo / app store:
 
-#### Cover art
+`sudo apt install mupen64plus mednafen pcsx2 amiberry`
 
-##### backends API Keys
+The others a either unavailable on Ubuntu, or their package is so outdated that it's better to get the latest appImage.
+
+### Cover art
+
+#### backends API Keys
 
 Some cover art download backends (SteamGridDB and GiantBomb) require authentication ; The key is free and easy to obtain:
 
@@ -93,7 +97,7 @@ The other backends require no authentication, but you'll find **way more** image
 
 If you can - after you [donated to this project](https://yphil.gitlab.io/ext/support.html), thank you very much 🙂 please consider supporting those backends. They do a great job of keeping our common culture aliv... Well, existing.
 
-##### All backends
+#### All backends
   - [SteamGridDB](https://www.steamgriddb.com/) (API)
   - [GiantBomb](https://www.giantbomb.com/api/) (API)
   - [MobyGames](mobygames.com) (Web)

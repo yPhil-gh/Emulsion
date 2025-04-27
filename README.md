@@ -9,13 +9,14 @@ A unified, lightweight frontend for your game emulators.
 - [Configuration](#configuration)
   - [Platform](#platform)
     - [Emulator tips](#emulator-tips)
-    - [Cover art](#cover-art)
-      - [backends API Keys](#backends-api-keys)
-      - [All backends](#all-backends)
+  - [Cover art](#cover-art)
+    - [backends API Keys](#backends-api-keys)
+    - [All backends](#all-backends)
 - [Usage](#usage)
   - [Controls](#controls)
   - [CLI](#cli)
 - [Can I help?](#can-i-help)
+
 
 ## Features
 
@@ -36,6 +37,7 @@ Emulsion is *reproductible*: Thanks to its single **standard** config file, you 
 - `npm install ; npm start`
 
 ## Configuration
+
 ### Platform
 
 ![Emulsion](https://yphil.gitlab.io/images/emulsion-01-platform_config.png)

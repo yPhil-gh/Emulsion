@@ -38,7 +38,7 @@ async function populateGameMenu(gameMenuContainer, gameName, platformName) {
 
         if (urls.length === 0) {
             // dummyGameContainer.innerHTML = `No cover art found for <br><strong>${gameName}</strong>.`;
-            dummyGameContainer.innerHTML = `<p><i class="fa fa-heartbeat fa-5x" aria-hidden="true"></i></p><p>No cover art found for</p><p><code>${gameName}</code></p>`;
+            dummyGameContainer.innerHTML = `<p><i class="fa fa-binoculars fa-5x" aria-hidden="true"></i></p><p>No cover art found for</p><p><code>${gameName}</code></p>`;
 
             dummyGameContainer.style.gridColumn = `2 / calc(${LB.galleryNumOfCols} + 1)`;
 

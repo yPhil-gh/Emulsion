@@ -301,30 +301,13 @@ ipcMain.on('fetch-images', (event, gameName, platformName, steamGridAPIKey, gian
         });
 });
 
-let childProcesses = new Map();
-
-// ipcMain.on('run-command', (event, command) => {
-//     const child = spawn(command, {
-//         shell: true,
-//         detached: true,
-//         stdio: 'ignore'
-//     });
-
-//     childProcesses.set(child.pid, child);
-
-//     child.on('exit', () => {
-//         childProcesses.delete(child.pid);
-//     });
-// });
 
 function getRecentlyPlayedPath() {
     const userDataPath = app.getPath('userData');
     return path.join(userDataPath, 'recently_played.json');
 }
 
-// function runCommand(command) {
-
-// }
+let childProcesses = new Map();
 
 ipcMain.on('run-command', (event, data) => {
     const { fileName, filePath, gameName, emulator, emulatorArgs, platform } = data;

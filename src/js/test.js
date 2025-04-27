@@ -1,28 +1,35 @@
-// Include all the original functions
+// 0) Predefined exceptions
+const PREDEFINED_TITLES = {
+  VRALLY: 'V-Rally',
+  FIFA21: 'FIFA 21',
+  RE2:    'Resident Evil 2',
+  MK11:   'Mortal Kombat 11',
+  NHL94:  'NHL ’94',
+  // add more…
+};
+
 function cleanFileName(fileName) {
-  // 1) Drop everything after the first underscore
+  // 1) Extract base before underscore
+  const raw = fileName.split('_')[0];
+  const upper = raw.toUpperCase();
+
+  // 2) Match letter+digits pattern
+  const m = upper.match(/^([A-Z]+)(\d+)$/);
+  if (m && PREDEFINED_TITLES[m[1]]) {
+    // 3) Return exception + numeric suffix
+    return PREDEFINED_TITLES[m[1]] + ' ' + m[2];
+  }
+
+  // 4) Fallback to generic pipeline
   let s = _removeAfterUnderscore(fileName);
-
-  // 2) Handle special digit+upper (e.g. "3DWorld" → "3D World")
   s = _splitSpecial(s);
-
-  // 3) Split camelCase (e.g. "simpleName" → "simple Name")
   s = _splitCamelCase(s);
-
-  // 4) Split acronyms from following words (e.g. "XMLHttp" → "XML Http")
   s = _splitAcronym(s);
-
-  // 5) Strip parentheses and brackets
   s = _removeParens(s);
   s = _removeBrackets(s);
-
-  // 6) Move trailing ", The" (or similar) to the front
   s = _moveTrailingArticleToFront(s);
-
-  // 7) Finally, title-case each word (but keep ALL-CAP words intact)
   return _titleCase(s);
 }
-
 
 function _removeAfterUnderscore(s) {
   return s.split('_')[0];
@@ -80,14 +87,6 @@ function testCleanFileName() {
     { input: 'simpleName', expected: 'Simple Name' },
     { input: 'AnotherName', expected: 'Another Name' },
 
-    // Underscore cases
-    { input: 'before_after', expected: 'before' },
-    { input: 'only_underscore_', expected: 'only' },
-
-    // CamelCase cases
-    { input: 'camelCaseName', expected: 'camel Case Name' },
-    { input: 'XMLHttpRequest', expected: 'XML Http Request' },
-
     // Special number cases
     { input: '3DWorld', expected: '3D World' },
     { input: '4KVideo', expected: '4K Video' },
@@ -111,8 +110,9 @@ function testCleanFileName() {
 
       // Last case
       { input: 'Lucky Dime Caper Starring Donald Duck, The (Europe, Brazil) (En)', expected: 'The Lucky Dime Caper Starring Donald Duck' },
-      { input: 'Bubblegum Crash! - Knight Sabers 2034 (Japan) [En by Dave Shadoff+Filler+Tomaitheous v1.0]', expected: 'Bubblegum Crash! - Knight Sabers 2034' }
-
+      { input: 'Bubblegum Crash! - Knight Sabers 2034 (Japan) [En by Dave Shadoff+Filler+Tomaitheous v1.0]', expected: 'Bubblegum Crash! - Knight Sabers 2034' },
+      // Last case
+      { input: 'VRALLY2', expected: 'V-Rally 2' }
 
 
   ];

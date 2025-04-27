@@ -83,31 +83,36 @@ function safeFileName(fileName) {
         .replace(/^\s+|\s+$/g, '') || 'default_filename'; // Prevent empty names
 }
 
-// Include all the original functions
+const PREDEFINED_TITLES = {
+    VRALLY: 'V-Rally',
+    FIFA21: 'FIFA 21',
+    RE2:    'Resident Evil 2',
+    MK11:   'Mortal Kombat 11',
+    NHL94:  'NHL ’94',
+};
+
 function cleanFileName(fileName) {
-  // 1) Drop everything after the first underscore
-  let s = _removeAfterUnderscore(fileName);
+    // Extract base before underscore
+    const raw = fileName.split('_')[0];
+    const upper = raw.toUpperCase();
 
-  // 2) Handle special digit+upper (e.g. "3DWorld" → "3D World")
-  s = _splitSpecial(s);
+    // Match letter+digits pattern
+    const m = upper.match(/^([A-Z]+)(\d+)$/);
+    if (m && PREDEFINED_TITLES[m[1]]) {
+        // Return exception + numeric suffix
+        return PREDEFINED_TITLES[m[1]] + ' ' + m[2];
+    }
 
-  // 3) Split camelCase (e.g. "simpleName" → "simple Name")
-  s = _splitCamelCase(s);
-
-  // 4) Split acronyms from following words (e.g. "XMLHttp" → "XML Http")
-  s = _splitAcronym(s);
-
-  // 5) Strip parentheses and brackets
-  s = _removeParens(s);
-  s = _removeBrackets(s);
-
-  // 6) Move trailing ", The" (or similar) to the front
-  s = _moveTrailingArticleToFront(s);
-
-  // 7) Finally, title-case each word (but keep ALL-CAP words intact)
-  return _titleCase(s);
+    // 4) Fallback to generic pipeline
+    let s = _removeAfterUnderscore(fileName);
+    s = _splitSpecial(s);
+    s = _splitCamelCase(s);
+    s = _splitAcronym(s);
+    s = _removeParens(s);
+    s = _removeBrackets(s);
+    s = _moveTrailingArticleToFront(s);
+    return _titleCase(s);
 }
-
 
 function _removeAfterUnderscore(s) {
   return s.split('_')[0];

@@ -80,7 +80,6 @@ async function populateGameMenu(gameMenuContainer, gameName, platformName) {
     ipcRenderer.once('image-urls', (event, urls) => {
 
         if (urls.length === 0) {
-            // dummyGameContainer.innerHTML = `No cover art found for <br><strong>${gameName}</strong>.`;
             dummyGameContainer.innerHTML = `<p><i class="fa fa-binoculars fa-5x" aria-hidden="true"></i></p><p>No cover art found for</p><p><code>${gameName}</code></p>`;
 
             dummyGameContainer.style.gridColumn = `2 / calc(${LB.galleryNumOfCols} + 1)`;
@@ -98,14 +97,14 @@ async function populateGameMenu(gameMenuContainer, gameName, platformName) {
                 img.style.opacity = '0';
                 img.style.transition = 'opacity 0.3s ease-in';
 
+                const gameContainer = document.createElement('div');
+                gameContainer.classList.add('menu-game-container');
+                gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+                gameContainer.appendChild(img);
+
+                gameMenuContainer.appendChild(gameContainer);
+
                 img.onload = () => {
-                    const gameContainer = document.createElement('div');
-                    gameContainer.classList.add('menu-game-container');
-                    gameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
-                    gameContainer.appendChild(img);
-
-                    gameMenuContainer.appendChild(gameContainer);
-
                     requestAnimationFrame(() => {
                         img.style.opacity = '1';
                     });

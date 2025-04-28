@@ -4,46 +4,6 @@ window.topMenuSlider = document.getElementById("top-menu-slider");
 
 LB.control.initGamepad();
 
-function buildSlide(platformName, preferences) {
-
-    const slide = document.createElement("div");
-    slide.className = "slide";
-    slide.id = platformName;
-    const platformImgPath = path.join(LB.baseDir, 'img', 'platforms', `${platformName}.png`);
-    const bgImageUrl = `url("file://${platformImgPath.replace(/\\/g, '/')}")`;
-
-    slide.style.backgroundImage = bgImageUrl;
-
-    const slideContent = document.createElement("div");
-    slideContent.className = "slide-content";
-    const platformInfo = LB.utils.getPlatformInfo(platformName);
-    slideContent.innerHTML = platformInfo.name;
-
-    slide.setAttribute('data-platform', platformName);
-
-    slide.appendChild(slideContent);
-
-    if (platformName === 'recents') {
-        slide.setAttribute('data-index', LB.totalNumberOfPlatforms);
-        return slide;
-    }
-
-    if (platformName !== 'settings') {
-        if (LB.disabledPlatformsPolicy === 'hide' && !preferences[platformName].isEnabled) {
-            return null;
-        }
-    }
-
-    if (LB.kidsMode && platformName === 'settings') {
-        return null;
-    }
-
-    slide.setAttribute('data-index', preferences[platformName].index);
-    slide.setAttribute('data-is-enabled', preferences[platformName].isEnabled);
-
-    return slide;
-}
-
 LB.prefs.load()
     .then((preferences) => {
 
@@ -76,7 +36,7 @@ LB.prefs.load()
         LB.totalNumberOfPlatforms = platforms.length - 1;
 
         platforms.forEach((platform) => {
-            const homeSlide = buildSlide(platform, preferences);
+            const homeSlide = LB.build.homeSlide(platform, preferences);
             if (homeSlide) {
                 slideshow.appendChild(homeSlide);
             }

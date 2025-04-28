@@ -357,7 +357,7 @@ async function buildGallery(params) {
                     const ps3GameTitle = await getPs3GameTitle(gameFilePath);
                     fileNameWithoutExt = LB.utils.safeFileName(ps3GameTitle);
                     fileNameClean = ps3GameTitle;
-                    dataCommand = `${emulator} ${emulatorArgs || ""} "${getEbootPath(gameFilePath)}"`;
+                    dataCommand = `${emulator} ${emulatorArgs} "${getEbootPath(gameFilePath)}"`;
                 }
 
                 let coverImagePath = findImageFile(path.join(userDataPath, "covers", platform), fileNameWithoutExt);

@@ -176,7 +176,7 @@ function _titleCase(s) {
 
 function getPlatformInfo(name) {
     const platforms = {
-        'settings': { name: 'Emulsion', vendor: 'Settings' },
+        'settings': { name: 'Settings', vendor: 'Emulsion' },
         'recents': { name: 'Recents', vendor: 'Emulsion' },
         'nes': { name: 'NES', vendor: 'Nintendo' },
         'sms': { name: 'Master System', vendor: 'Sega' },

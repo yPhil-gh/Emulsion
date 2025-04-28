@@ -30,6 +30,14 @@
   transform-style: preserve-3d; /* Enable 3D transformations */
 }
 
+p.vendor {
+  color: var(--color-text-1);
+}
+
+p.name {
+  color: var(--color-text-2);
+}
+
 #top-menu:focus,
 #slideshow:focus,
 .gallery:focus {
@@ -103,11 +111,19 @@
 
 .slide-content {
   position: relative;
-  height: 100%; /* Ensure it takes the full height of the slide */
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-end; /* Align content to the bottom */
   align-items: center; /* Center horizontally */
+}
+
+.slide-content > p.vendor {
+  margin: 0;
+}
+
+.slide-content > p.name {
+  font-size: 16pt;
 }
 
 @keyframes pulse-glow {

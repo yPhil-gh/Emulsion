@@ -344,20 +344,20 @@ async function buildGallery(params) {
 
         if (gameFiles.length > 0) {
             for (let i = 0; i < gameFiles.length; i++) {
-                const gameFilePath = gameFiles[i];
+                let gameFilePath = gameFiles[i];
                 const missingImagePath = path.join(LB.baseDir, 'img', 'missing.png');
 
                 let fileName = path.basename(gameFilePath);
                 let fileNameWithoutExt = path.parse(fileName).name;
                 let fileNameClean = LB.utils.cleanFileName(fileNameWithoutExt);
 
-                let dataCommand = `${emulator} ${emulatorArgs || ""} "${gameFilePath}"`;
+                let dataCommand = `${emulator} ${emulatorArgs} ${gameFilePath}`;
 
                 if (platform === 'ps3') {
                     const ps3GameTitle = await getPs3GameTitle(gameFilePath);
                     fileNameWithoutExt = LB.utils.safeFileName(ps3GameTitle);
                     fileNameClean = ps3GameTitle;
-                    dataCommand = `${emulator} ${emulatorArgs} "${getEbootPath(gameFilePath)}"`;
+                    gameFilePath = getEbootPath(gameFilePath);
                 }
 
                 let coverImagePath = findImageFile(path.join(userDataPath, "covers", platform), fileNameWithoutExt);

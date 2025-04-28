@@ -392,7 +392,7 @@ const platforms = [
     { name: "snes", extensions: [".smc"] },
     { name: "jaguar", extensions: [".jag"] },
     { name: "saturn", extensions: [".cue"] },
-    { name: "psx", extensions: [".srm"] },
+    { name: "psx", extensions: [".cue"] },
     { name: "n64", extensions: [".z64"] },
     { name: "dreamcast", extensions: [".gdi", ".cdi"] },
     { name: "ps2", extensions: [".bin", ".iso"] },

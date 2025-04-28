@@ -117,7 +117,7 @@ async function _buildRecentGallery({ userDataPath, index }) {
         const date = new Date(recent.date);
         gameContainer.title = `${recent.gameName} (${recent.platform}) - Last played on ${date.toLocaleString()} \n\n- Click to launch`;
 
-        gameContainer.setAttribute('data-game-name', recent.gameName);
+        gameContainer.setAttribute('data-game-name', recent.fileName);
         gameContainer.setAttribute('data-platform', recent.platform);
         gameContainer.setAttribute('data-emulator', recent.emulator);
         gameContainer.setAttribute('data-emulator-args', recent.emulatorArgs);

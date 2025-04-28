@@ -83,15 +83,14 @@ function safeFileName(fileName) {
         .replace(/^\s+|\s+$/g, '') || 'default_filename'; // Prevent empty names
 }
 
-// 0) Predefined exceptions map (keys uppercase alphanumeric)
+// Uppercase ALPHANUMER1C
 const PREDEFINED_TITLES = {
-  VRALLY2:     'V-Rally 2',
-  WIPEOUT2097: 'Wipeout 2097',
-  WIPEOUT3:    'WipEout 3',
-  RE2:         'Resident Evil 2',
-  MK11:        'Mortal Kombat 11',
-  NHL94:       'NHL ’94',
-  // …etc
+  VRALLY2:        'V-Rally 2',
+  WIPEOUT2097:    'Wipeout 2097',
+  WIPEOUT3:       'WipEout 3',
+  PROJECTXSE:     'ProjectX SE',
+  SONIC3COMPLETE: 'Sonic 3 Complete',
+  NHL94:          'NHL 94',
 };
 
 function cleanFileName(fileName) {

@@ -376,6 +376,7 @@ function initGallery(currentIndex, disabledPlatform) {
                     // selectedIndex = (selectedIndex + 1) % gameContainers.length;
                 }
                 break;
+
             case 'ArrowLeft':
                 if (event.shiftKey) {
                     // prevPage();
@@ -385,6 +386,7 @@ function initGallery(currentIndex, disabledPlatform) {
                     }
                 }
                 break;
+
             case 'ArrowUp':
                 if (menuSelectedIndex > LB.galleryNumOfCols) {
                     menuSelectedIndex = Math.max(menuSelectedIndex - LB.galleryNumOfCols, 0);
@@ -393,14 +395,43 @@ function initGallery(currentIndex, disabledPlatform) {
             case 'ArrowDown':
                 menuSelectedIndex = Math.min(menuSelectedIndex + LB.galleryNumOfCols, menuGameContainers.length);
                 break;
+
+            case 'PageUp':
+                // 10 rows up
+                menuSelectedIndex = Math.max(
+                    menuSelectedIndex - LB.galleryNumOfCols * 10,
+                    0
+                );
+                break;
+
+            case 'PageDown':
+                // 10 rows down
+                menuSelectedIndex = Math.min(
+                    menuSelectedIndex + LB.galleryNumOfCols * 10,
+                    menuGameContainers.length - 1
+                );
+                break;
+
+            case 'Home':
+                // go to first item
+                menuSelectedIndex = 0;
+                break;
+
+            case 'End':
+                // go to last item
+                menuSelectedIndex = menuGameContainers.length - 1;
+                break;
+
             case 'Enter':
                 const menuSelectedGame = LB.utils.getSelectedGame(menuGameContainers, menuSelectedIndex);
                 const menuSelectedGameImg = menuSelectedGame.querySelector('.game-image');
                 _closeMenu(menuSelectedGameImg.src);
                 break;
+
             case 'F5':
                 window.location.reload();
                 break;
+
             case 'Escape':
                 window.location.reload();
                 // _closeMenu();

@@ -451,6 +451,48 @@ function buildPlatformForm(platformName) {
     emulatorGroup.appendChild(emulatorCtn);
     emulatorGroup.appendChild(emulatorSubLabel);
 
+    // ======== NEW EXTENSIONS SECTION ========
+    const extensionsGroup = document.createElement('div');
+    const extensionsLabel = document.createElement('label');
+    extensionsLabel.textContent = 'File Extensions';
+
+    const extensionsCtn = document.createElement('div');
+    extensionsCtn.classList.add('dual-ctn');
+
+    const extensionsIcon = document.createElement('div');
+    extensionsIcon.classList.add('form-icon');
+    extensionsIcon.innerHTML = '<i class="form-icon fa fa-2x fa-file-archive-o" aria-hidden="true"></i>';
+
+    const extensionsInputsContainer = document.createElement('div');
+    extensionsInputsContainer.classList.add('extensions-inputs-container');
+
+    // Load existing extensions
+    LB.prefs.getValue(platformName, 'extensions')
+        .then(extensions => {
+            const initialExtensions = extensions || ['.iso'];
+            initialExtensions.forEach((ext, index) => {
+                const inputRow = _createExtensionInputRow(ext, index === 0);
+                extensionsInputsContainer.appendChild(inputRow);
+            });
+        })
+        .catch(console.error);
+
+    // Add button for new extensions
+    const addExtensionBtn = document.createElement('button');
+    addExtensionBtn.classList.add('button', 'small');
+    addExtensionBtn.innerHTML = '<i class="form-icon emulator-args-icon fa fa-plus" aria-hidden="true"></i>';
+    addExtensionBtn.addEventListener('click', () => {
+        extensionsInputsContainer.appendChild(_createExtensionInputRow('', false));
+    });
+
+    extensionsCtn.appendChild(extensionsIcon);
+    extensionsCtn.appendChild(extensionsInputsContainer);
+    extensionsInputsContainer.appendChild(addExtensionBtn);
+
+    extensionsGroup.appendChild(extensionsLabel);
+    extensionsGroup.appendChild(extensionsCtn);
+    // ======== END EXTENSIONS SECTION ========
+
     const emulatorArgsGroup = document.createElement('div');
 
     const emulatorArgsCtn = document.createElement('div');
@@ -536,6 +578,7 @@ function buildPlatformForm(platformName) {
     formContainer.appendChild(statusLabel);
     formContainer.appendChild(gamesDirGroup);
     formContainer.appendChild(emulatorGroup);
+    formContainer.appendChild(extensionsGroup);  // <-- New addition
     formContainer.appendChild(emulatorArgsGroup);
 
     const formContainerButtons = document.createElement('div');
@@ -621,15 +664,55 @@ function buildPlatformForm(platformName) {
 
         emulatorSubLabel.textContent = '';
 
+        // Process extensions
+        const extensions = Array.from(extensionsInputsContainer.querySelectorAll('input'))
+              .map(input => {
+                  let val = input.value.trim().toLowerCase();
+                  if (!val.startsWith('.')) val = '.' + val;
+                  return val.replace(/[^a-z0-9.]/gi, '');
+              })
+              .filter(ext => ext.length > 1);  // Filter out empty/. only
+
         try {
             await LB.prefs.save(platformName, 'isEnabled', statusCheckBox.checked);
             await LB.prefs.save(platformName, 'gamesDir', gamesDirInput.value);
             await LB.prefs.save(platformName, 'emulator', emulatorInput.value);
+            await LB.prefs.save(platformName, 'extensions', extensions);
             await LB.prefs.save(platformName, 'emulatorArgs', emulatorArgsInput.value);
             window.location.reload();
         } catch (error) {
             console.error('Failed to save preferences:', error);
         }
+    }
+
+        // EXTENSION INPUT ROW CREATOR
+    function _createExtensionInputRow(value, isFirst) {
+        const row = document.createElement('div');
+        row.classList.add('extension-input-row');
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = value;
+        input.placeholder = '.ext';
+        input.classList.add('input', 'small');
+
+        // Auto-format on blur
+        input.addEventListener('blur', () => {
+            let val = input.value.trim().toLowerCase();
+            if (!val.startsWith('.')) val = '.' + val;
+            input.value = val.replace(/[^a-z0-9.]/gi, '');
+        });
+
+        if (!isFirst) {
+            const removeBtn = document.createElement('button');
+            removeBtn.classList.add('button', 'small', 'danger');
+            removeBtn.innerHTML = '<i class="form-icon emulator-args-icon fa fa-remove" aria-hidden="true"></i>';
+            removeBtn.addEventListener('click', () => row.remove());
+            row.appendChild(removeBtn);
+        }
+
+        row.appendChild(input);
+        return row;
     }
 
     formContainer.appendChild(formContainerButtons);

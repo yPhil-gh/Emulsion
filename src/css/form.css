@@ -303,3 +303,19 @@ div.form-icon {
   min-width: 60px;
   color: var(--color-icon);
 }
+
+.extensions-inputs-container {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+.extension-input-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.extension-input-row input {
+    width: 80px;
+}

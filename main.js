@@ -9,6 +9,44 @@ import { getAllCoverImageUrls } from './src/js/backends.js';
 import axios from 'axios';
 import os from 'os';
 
+let gamecontroller;
+const buttonStates = {
+    back: false,
+    dpdown: false,
+};
+
+if (process.platform === 'linux') {
+    import('sdl2-gamecontroller')
+        .then((mod) => {
+            gamecontroller = mod.default || mod;
+
+            gamecontroller.on("error", (data) => console.log("error", data));
+            gamecontroller.on("warning", (data) => console.log("warning", data));
+            gamecontroller.on("sdl-init", () => console.log("SDL2 Initialized"));
+
+            gamecontroller.on("controller-device-added", (data) => {
+                gamecontroller.setLeds(0x0f, 0x62, 0xfe, data.player);
+            });
+
+            gamecontroller.on('controller-button-up', (event) => {
+                if (event.button === 'back') buttonStates.back = false;
+                if (event.button === 'dpdown') buttonStates.dpdown = false;
+            });
+
+            gamecontroller.on('controller-button-down', (event) => {
+                if (event.button === 'back') buttonStates.back = true;
+                if (event.button === 'dpdown') buttonStates.dpdown = true;
+
+                if (buttonStates.back && buttonStates.dpdown) {
+                    killChildProcesses(childProcesses);
+                }
+            });
+        })
+        .catch((err) => {
+            console.warn("SDL2 Gamecontroller module failed to load:", err);
+        });
+}
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -38,11 +76,6 @@ async function loadPackageJson() {
 }
 
 const pjson = await loadPackageJson();
-
-const buttonStates = {
-    back: false,
-    dpdown: false,
-};
 
 const preferencesFilePath = path.join(app.getPath('userData'), "preferences.json");
 const recentFilePath = path.join(app.getPath('userData'), "recently_played.json");

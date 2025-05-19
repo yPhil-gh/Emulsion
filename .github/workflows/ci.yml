@@ -32,7 +32,7 @@ jobs:
       - name: Install Linux dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y dpkg fakeroot jq npm bash fuse
+          sudo apt-get install -y dpkg fakeroot jq npm bash fuse cmake libsdl2-dev
 
       - name: Download AppImage tool
         run: |
@@ -42,7 +42,7 @@ jobs:
 
       - name: Build and post-process Linux packages
         run: |
-          chmod +x build.sh
+          chmod +x build.sh # this runs npm install
           ./build.sh    # runs `electron-builder --linux` under the hood and auto-publishes :contentReference[oaicite:7]{index=7}
 
   # 5. Build Windows (NSIS .exe) and auto-publish on tag
@@ -58,7 +58,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-optional
 
       - name: Build Windows package
         run: npx electron-builder --config builder.yml --win nsis --x64

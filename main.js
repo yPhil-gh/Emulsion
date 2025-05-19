@@ -15,6 +15,8 @@ const buttonStates = {
     dpdown: false,
 };
 
+let childProcesses = new Map();
+
 if (process.platform === 'linux') {
     import('sdl2-gamecontroller')
         .then((mod) => {
@@ -362,8 +364,6 @@ function getRecentlyPlayedPath() {
     const userDataPath = app.getPath('userData');
     return path.join(userDataPath, 'recently_played.json');
 }
-
-let childProcesses = new Map();
 
 ipcMain.on('run-command', (event, data) => {
     const { fileName, filePath, gameName, emulator, emulatorArgs, platform } = data;

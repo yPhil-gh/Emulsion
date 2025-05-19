@@ -97,6 +97,11 @@ async function _buildRecentGallery({ userDataPath, index }) {
         return null;
     }
 
+    // Sort by date (newest first)
+    const sortedRecents = [...recents].sort((a, b) => {
+        return new Date(b.date) - new Date(a.date); // Descending order
+    });
+
     const page = document.createElement('div');
     page.classList.add('page');
     page.id = `page${index}`;
@@ -107,12 +112,10 @@ async function _buildRecentGallery({ userDataPath, index }) {
     pageContent.classList.add('page-content');
     pageContent.style.gridTemplateColumns = `repeat(${LB.galleryNumOfCols}, 1fr)`;
 
-    recents.forEach((recent, i) => {
-
+    // Use the sorted array
+    sortedRecents.forEach((recent, i) => {
         const gameContainer = document.createElement('div');
         gameContainer.classList.add('game-container');
-        // Use the same dangerous height logic
-        // gameContainer.style.height = `calc(120vw / ${LB.galleryNumOfCols})`;
 
         const date = new Date(recent.date);
         gameContainer.title = `${recent.gameName} (${recent.platform}) - Last played on ${date.toLocaleString()} \n\n- Click to launch`;
@@ -136,10 +139,6 @@ async function _buildRecentGallery({ userDataPath, index }) {
         if (!isImgExists) {
             gameImage.classList.add('missing-image');
         }
-
-        // const viewportWidth = window.innerWidth;
-        // const columnWidth = viewportWidth / LB.galleryNumOfCols;
-        // gameImage.width = columnWidth;
 
         const gameLabel = document.createElement('div');
         gameLabel.classList.add('game-label');

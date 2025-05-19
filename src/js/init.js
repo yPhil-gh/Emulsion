@@ -93,6 +93,20 @@ const PREDEFINED_TITLES = {
   NHL94:          'NHL 94',
 };
 
+function stripExtensions(fileName) {
+  let name = fileName;
+  let ext;
+
+  // keep chopping off the last ext until there is none
+  while ((ext = path.extname(name))) {
+    // safety: if name is just the extension (e.g. ".gitignore"), break
+    if (name === ext) break;
+    name = name.slice(0, -ext.length);
+  }
+
+  return name;
+}
+
 function cleanFileName(fileName) {
   // 1) Base part before underscore
   const raw = fileName.split('_')[0];
@@ -339,6 +353,7 @@ LB.utils = {
     applyTheme: applyTheme,
     setFooterSize: setFooterSize,
     getPlatformInfo: getPlatformInfo,
+    stripExtensions: stripExtensions,
     cleanFileName: cleanFileName,
     safeFileName: safeFileName,
     simulateKeyDown: simulateKeyDown,

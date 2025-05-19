@@ -345,7 +345,7 @@ async function buildGallery(params) {
                 const missingImagePath = path.join(LB.baseDir, 'img', 'missing.png');
 
                 let fileName = path.basename(gameFilePath);
-                let fileNameWithoutExt = path.parse(fileName).name;
+                let fileNameWithoutExt = LB.utils.stripExtensions(fileName);
                 let fileNameClean = LB.utils.cleanFileName(fileNameWithoutExt);
 
                 let dataCommand = `${emulator} ${emulatorArgs} ${gameFilePath}`;

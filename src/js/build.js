@@ -47,7 +47,7 @@ function buildGameMenu(gameName, image) {
     gameMenuContainer.style.gridTemplateColumns = `repeat(${LB.galleryNumOfCols}, 1fr)`;
 
     const currentImageContainer = document.createElement('div');
-    currentImageContainer.classList.add('menu-game-container', 'current-image');
+    currentImageContainer.classList.add('menu-game-container');
     currentImageContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
 
     const currentImage = document.createElement('img');
@@ -76,7 +76,7 @@ function buildGameMenu(gameName, image) {
 async function populateGameMenu(gameMenuContainer, gameName, platformName) {
     const infoGameContainer = gameMenuContainer.querySelector('.dummy-game-container');
 
-    const currentImageGameContainer = gameMenuContainer.querySelector('.current-image');
+    const currentImageGameContainer = gameMenuContainer.querySelector('img.current-image');
 
     ipcRenderer.send('fetch-images', gameName, platformName, LB.steamGridAPIKey, LB.giantBombAPIKey);
 
@@ -97,7 +97,8 @@ async function populateGameMenu(gameMenuContainer, gameName, platformName) {
 
                 const destPath = path.join(LB.userDataPath, 'covers', platformName, `${gameName}.jpg`);
 
-                currentImageGameContainer.src = destPath;
+                currentImageGameContainer.src = '';
+                currentImageGameContainer.src = `${destPath}?${Date.now()}`;
 
                 console.log("destPath: ", destPath);
 

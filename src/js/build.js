@@ -52,6 +52,7 @@ function buildGameMenu(gameName, image) {
 
     const currentImage = document.createElement('img');
     currentImage.src = image.src;
+    currentImage.className = 'current-image';
     currentImage.alt = 'Current game image';
 
     const gameLabel = document.createElement('div');
@@ -73,20 +74,68 @@ function buildGameMenu(gameName, image) {
 }
 
 async function populateGameMenu(gameMenuContainer, gameName, platformName) {
-    const dummyGameContainer = gameMenuContainer.querySelector('.dummy-game-container');
+    const infoGameContainer = gameMenuContainer.querySelector('.dummy-game-container');
+
+    const currentImageGameContainer = gameMenuContainer.querySelector('.current-image');
 
     ipcRenderer.send('fetch-images', gameName, platformName, LB.steamGridAPIKey, LB.giantBombAPIKey);
 
     ipcRenderer.once('image-urls', (event, urls) => {
 
         if (urls.length === 0) {
-            dummyGameContainer.innerHTML = `<p><i class="fa fa-binoculars fa-5x" aria-hidden="true"></i></p><p>No cover art found for</p><p><code>${gameName}</code></p>`;
 
-            dummyGameContainer.style.gridColumn = `2 / calc(${LB.galleryNumOfCols} + 1)`;
+            const manualImgSelectButton = document.createElement('button');
+            manualImgSelectButton.classList.add('button');
+            manualImgSelectButton.textContent = 'Select image';
 
-            dummyGameContainer.style.animation = 'unset';
+            manualImgSelectButton.addEventListener('click', async e => {
+                e.stopPropagation();
+
+                // open image picker (main will filter to images)
+                const srcPath = await ipcRenderer.invoke('pick-image');
+                if (!srcPath) return; // user cancelled
+
+                const destPath = path.join(LB.userDataPath, 'covers', platformName, `${gameName}.jpg`);
+
+                currentImageGameContainer.src = destPath;
+
+                console.log("destPath: ", destPath);
+
+                const ok = await ipcRenderer.invoke('save-cover', srcPath, destPath);
+                console.log(ok ? `Cover saved to ${destPath}` : 'Failed to save cover');
+            });
+
+            // Clear the container first
+            infoGameContainer.textContent = '';
+
+            // <p><i class="fa fa‑binoculars fa-5x" aria-hidden="true"></i></p>
+            const pIcon   = document.createElement('p');
+            const icon    = document.createElement('i');
+            icon.className = 'fa fa-binoculars fa-5x';
+            icon.setAttribute('aria-hidden', 'true');
+            pIcon.appendChild(icon);
+
+            // <p>No cover art found for</p>
+            const pMsg = document.createElement('p');
+            pMsg.textContent = 'No cover art found for';
+
+            // <p><code>${gameName}</code></p>
+            const pCode = document.createElement('p');
+            const code  = document.createElement('code');
+            code.textContent = gameName;
+            pCode.appendChild(code);
+
+            // append everything to the container
+            infoGameContainer.appendChild(pIcon);
+            infoGameContainer.appendChild(pMsg);
+            infoGameContainer.appendChild(pCode);
+            infoGameContainer.appendChild(manualImgSelectButton);
+
+            infoGameContainer.style.gridColumn = `2 / calc(${LB.galleryNumOfCols} + 1)`;
+
+            infoGameContainer.style.animation = 'unset';
         } else {
-            gameMenuContainer.removeChild(dummyGameContainer);
+            gameMenuContainer.removeChild(infoGameContainer);
 
             urls.forEach(({ url, source }) => {
 

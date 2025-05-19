@@ -212,6 +212,37 @@ const downloadAndSaveImage = async (imgSrc, platform, gameName) => {
     }
 };
 
+// manual pick image file
+ipcMain.handle('pick-image', async () => {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    title: 'Select cover art',
+    properties: ['openFile'],
+    filters: [{ name: 'JPG', extensions: ['jpg'] }]
+  });
+  return canceled ? null : filePaths[0];
+});
+
+//  copy to covers directory
+ipcMain.handle('save-cover', async (_event, src, dest) => {
+  return new Promise(resolve => {
+    fs.mkdir(path.dirname(dest), { recursive: true }, err => {
+      if (err) {
+        console.error('save-cover mkdir error:', err);
+        return resolve(false);
+      }
+
+      // once dir is ready, copy the file
+      fs.copyFile(src, dest, err2 => {
+        if (err2) {
+          console.error('save-cover copy error:', err2);
+          return resolve(false);
+        }
+        resolve(true);
+      });
+    });
+  });
+});
+
 let mainWindow;
 
 function createWindows() {

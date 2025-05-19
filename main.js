@@ -14,20 +14,15 @@ const __dirname = dirname(__filename);
 
 import { readFile } from 'fs/promises';
 
-console.log("getExecutablePath(): ", getExecutablePath());
-
-console.log("process.resourcesPath: ", process.resourcesPath);
-
 function getExecutablePath() {
   const exeName = os.platform() === 'win32' ? 'sfo.exe' : 'sfo';
   if (app.isPackaged) {
     return path.join(
-      process.resourcesPath,          // /opt/emulsion/resources
+      process.resourcesPath,
       'bin',
       exeName
     );
   } else {
-    // __dirname in dev points to your src folder
     return path.join(__dirname, 'bin', exeName);
   }
 }
@@ -58,9 +53,9 @@ ${pjson.name.toLowerCase()} ${pjson.version}
 Usage: ${pjson.name.toLowerCase()} [options]
 
 Options:
-  --media-center Read-only mode: No config / settings, disabled platforms hidden.
-  --kiosk  Start the app in full screen mode.
-  --help         Show this help message.
+  --media-center         Read-only / kids mode: No config / settings, disabled platforms hidden.
+  --kiosk, --full-screen Start Emulsion in full screen mode.
+  --help                 Show this help message.
     `);
     app.quit();
 }
@@ -119,9 +114,7 @@ function loadPreferences() {
         if (fs.existsSync(preferencesFilePath)) {
             const preferencesFileContent = fs.readFileSync(preferencesFilePath, 'utf8');
 
-            // Attempt to parse the JSON
             try {
-                // console.log("data: ", preferencesFileContent);
                 const preferences = JSON.parse(preferencesFileContent);;
 
                 for (const [platform, platformPreferences] of Object.entries(preferences)) {
@@ -225,7 +218,7 @@ function createWindows() {
     mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
-        fullscreen: process.argv.includes('--kiosk'),
+        fullscreen: process.argv.includes('--kiosk') || process.argv.includes('--full-screen'),
         icon: path.join(__dirname, 'img/icon.png'),
         webPreferences: {
             nodeIntegration: true,
@@ -262,9 +255,9 @@ ipcMain.on('show-context-menu', (event, params) => {
 ipcMain.handle('download-image', async (event, imgSrc, platform, gameName) => {
     try {
         const savedImagePath = await downloadAndSaveImage(imgSrc, platform, gameName);
-        return { success: true, path: savedImagePath };  // Send the saved path back to the renderer
+        return { success: true, path: savedImagePath };
     } catch (error) {
-        return { success: false, error: error.message };  // Send error message if download fails
+        return { success: false, error: error.message };
     }
 });
 
@@ -300,7 +293,6 @@ ipcMain.on('fetch-images', (event, gameName, platformName, steamGridAPIKey, gian
             event.reply('image-urls', []);
         });
 });
-
 
 function getRecentlyPlayedPath() {
     const userDataPath = app.getPath('userData');
@@ -405,7 +397,7 @@ const platforms = [
 platforms.forEach((platform, index) => {
     defaultPreferences[platform.name] = {
         isEnabled: false,
-        index: index + 1, // Start at 1 since settings is index 0
+        index: index + 1, // Start at 1 because SETTINGS IS INDEX 0
         gamesDir: "",
         emulator: "",
         emulatorArgs: "",

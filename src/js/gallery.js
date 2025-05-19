@@ -160,7 +160,9 @@ async function _buildRecentGallery({ userDataPath, index }) {
 async function scanDirectory(gamesDir, extensions, recursive = true, ignoredDirs = ['PS3_EXTRA', 'PKGDIR', 'freezer', 'tmp']) {
     let files = [];
 
-    // Validate the gamesDir argument
+    // Sort extensions by longest first to prioritize multi-part matches
+    const sortedExts = [...new Set(extensions)].sort((a, b) => b.length - a.length); // Dedupe and sort
+
     if (!gamesDir || typeof gamesDir !== 'string') {
         console.warn("scanDirectory: Invalid directory path provided:", gamesDir);
         return files;
@@ -171,19 +173,14 @@ async function scanDirectory(gamesDir, extensions, recursive = true, ignoredDirs
         for (const item of items) {
             const fullPath = path.join(gamesDir, item.name);
 
-            // Skip ignored directories
             if (item.isDirectory()) {
-                if (ignoredDirs.includes(item.name)) {
-                    console.log(`Skipping ignored directory: ${fullPath}`);
-                    continue;
-                }
-
-                if (recursive) {
-                    const subDirFiles = await scanDirectory(fullPath, extensions, recursive, ignoredDirs);
-                    files = files.concat(subDirFiles);
-                }
-            } else if (extensions.includes(path.extname(item.name))) {
-                files.push(fullPath);
+                if (ignoredDirs.includes(item.name)) continue;
+                if (recursive) files.push(...await scanDirectory(fullPath, extensions, recursive, ignoredDirs));
+            } else {
+                // Check if filename ENDS WITH any allowed extension (case-insensitive)
+                const lowerName = item.name.toLowerCase();
+                const match = sortedExts.find(ext => lowerName.endsWith(ext.toLowerCase()));
+                if (match) files.push(fullPath);
             }
         }
     } catch (err) {

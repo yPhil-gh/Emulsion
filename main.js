@@ -59,11 +59,11 @@ async function sdlInit() {
         gamecontroller.on("sdl-init", () => {
             console.log("SDL2 Initialized successfully");
             sdlInitialized = true;
-            startPolling();
+            // startPolling();
         });
 
         gamecontroller.on("controller-device-added", (data) => {
-            if (!sdlInitialized) return;
+            // if (!sdlInitialized) return;
             console.log(`Controller connected: Player ${data.player}`);
             try {
                 gamecontroller.setLeds(0x0f, 0x62, 0xfe, data.player);
@@ -120,10 +120,11 @@ function restartSDL() {
 }
 
 // Initialization
-sdlInit();
+// sdlInit();
 
 // IPC handler
 ipcMain.handle('game-controller-init', async () => {
+    console.log("game-controller-init: ");
     return await sdlInit();
 });
 

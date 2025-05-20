@@ -762,6 +762,7 @@ function initGamepad () {
     // Listen for gamepad connection events
     window.addEventListener('gamepadconnected', (event) => {
         console.log('Gamepad connected:', event.gamepad.id);
+        ipcRenderer.invoke('game-controller-init');
         requestAnimationFrame(pollGamepad);
     });
 

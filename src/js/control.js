@@ -735,6 +735,7 @@ function initGamepad () {
 
     if (connected) {
         console.log('Gamepad connected at startup:', gamepads[0].id);
+        ipcRenderer.invoke('game-controller-init');
     } else {
         console.log('No gamepad connected at startup.');
     }

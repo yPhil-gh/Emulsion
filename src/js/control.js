@@ -515,12 +515,13 @@ function initGallery(currentIndex, disabledPlatform) {
                         menuContainer.appendChild(platformForm);
                     } else {
                         const gameImage = container.querySelector('img');
-                        const gameName = LB.utils.cleanFileName(container.dataset.gameName);
-                        const gameMenuContainer = LB.build.gameMenu(gameName, gameImage);
+                        const gameName = container.dataset.gameName;
+                        const platformName = platformToOpen || container.dataset.platform;
+                        const gameMenuContainer = LB.build.gameMenu(gameName, gameImage, platformName);
                         menuContainer.appendChild(gameMenuContainer);
-                        await LB.build.populateGameMenu(gameMenuContainer, gameName, platformToOpen || container.dataset.platform);
+                        await LB.build.populateGameMenu(gameMenuContainer, gameName, platformName);
 
-                        document.querySelector('header .platform-name').textContent = gameName;
+                        document.querySelector('header .platform-name').textContent = LB.utils.cleanFileName(gameName);
                         document.querySelector('header .item-type').textContent = '';
                         document.querySelector('header .item-number').textContent = '';
 

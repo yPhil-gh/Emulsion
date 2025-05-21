@@ -272,6 +272,8 @@ async function buildGallery(params) {
     const extensions = params.extensions;
     const isEnabled = params.isEnabled;
 
+    document.getElementById('loading-platform-name').textContent = platform;
+
     const galleryContainer = document.createElement('div');
     galleryContainer.id = `page-${platform}`;
     galleryContainer.classList.add('gallery');

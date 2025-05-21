@@ -17,8 +17,6 @@ const buttonStates = {
     dpdown: false,
 };
 
-let sdlInitialized = false;
-let pollInterval;
 
 async function sdlInit() {
     if (process.platform !== 'linux') {
@@ -28,42 +26,33 @@ async function sdlInit() {
 
     try {
         // Cleanup previous instance
-        if (gamecontroller) {
-            clearInterval(pollInterval);
-            gamecontroller.removeAllListeners();
-            if (typeof gamecontroller.quit === 'function') {
-                gamecontroller.quit();
-            }
-            gamecontroller = null;
-            sdlInitialized = false;
-            console.log('Cleaned up previous SDL2 instance');
-        }
+        // if (gamecontroller) {
+        //     gamecontroller.removeAllListeners();
+        //     if (typeof gamecontroller.quit === 'function') {
+        //         gamecontroller.quit();
+        //     }
+        //     gamecontroller = null;
+        //     console.log('Cleaned up previous SDL2 instance');
+        // }
 
         const mod = await import('sdl2-gamecontroller');
         gamecontroller = mod.default || mod;
-        sdlInitialized = true;
 
         // Setup event listeners
         gamecontroller.on("error", (data) => {
             console.error("SDL2 Error:", data);
-            sdlInitialized = false;
         });
 
         gamecontroller.on("warning", (data) => {
             console.warn("SDL2 Warning:", data);
-            if (data.message.includes('too long')) {
-                restartSDL();
-            }
+            restartSDL();
         });
 
         gamecontroller.on("sdl-init", () => {
             console.log("SDL2 Initialized successfully");
-            sdlInitialized = true;
-            // startPolling();
         });
 
         gamecontroller.on("controller-device-added", (data) => {
-            // if (!sdlInitialized) return;
             console.log(`Controller connected: Player ${data.player}`);
             try {
                 gamecontroller.setLeds(0x0f, 0x62, 0xfe, data.player);
@@ -77,12 +66,10 @@ async function sdlInit() {
         });
 
         gamecontroller.on('controller-button-up', (event) => {
-            if (!sdlInitialized) return;
             buttonStates[event.button] = false;
         });
 
         gamecontroller.on('controller-button-down', (event) => {
-            if (!sdlInitialized) return;
             buttonStates[event.button] = true;
             if (buttonStates.back && buttonStates.dpdown) {
                 console.log('Triggering process kill combo');
@@ -94,37 +81,16 @@ async function sdlInit() {
         return true;
     } catch (err) {
         console.error('SDL2 Initialization failed:', err);
-        sdlInitialized = false;
         return false;
     }
 }
 
-function startPolling() {
-    clearInterval(pollInterval);
-    pollInterval = setInterval(() => {
-        if (!sdlInitialized) return;
-        try {
-            // This keeps the event loop alive
-            gamecontroller.poll();
-        } catch (err) {
-            console.error('Polling error:', err);
-            restartSDL();
-        }
-    }, 16); // ~60fps
-}
-
 function restartSDL() {
     console.log('Restarting SDL...');
-    sdlInitialized = false;
     setTimeout(() => sdlInit(), 1000);
 }
 
-// Initialization
-// sdlInit();
-
-// IPC handler
 ipcMain.handle('game-controller-init', async () => {
-    console.log("game-controller-init: ");
     return await sdlInit();
 });
 

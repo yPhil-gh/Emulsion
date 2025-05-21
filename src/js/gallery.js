@@ -258,9 +258,9 @@ function buildSettingsPageContent(platforms) {
 
 async function buildGallery(params) {
 
-    if (LB.kidsMode && params.platform === 'settings') {
-        return null;
-    }
+    // if (LB.kidsMode && params.platform === 'settings') {
+    //     return null;
+    // }
 
     const platform = params.platform;
     const gamesDir = params.gamesDir;

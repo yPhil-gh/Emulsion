@@ -24,13 +24,9 @@ function buildHomeSlide(platformName, preferences) {
         return slide;
     }
 
-    if (platformName !== 'settings') {
-        if (LB.disabledPlatformsPolicy === 'hide' && !preferences[platformName].isEnabled) {
-            return null;
-        }
-    }
-
-    if (LB.kidsMode && platformName === 'settings') {
+    if (platformName !== 'settings' &&
+        ((LB.kidsMode || LB.disabledPlatformsPolicy === 'hide') &&
+         !preferences[platformName]?.isEnabled)) {
         return null;
     }
 

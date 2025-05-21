@@ -113,9 +113,6 @@ function initSlideShow(platformToDisplay) {
             break;
         case 'Enter':
 
-            document.getElementById('slideshow').style.display = 'none';
-            window.removeEventListener('keydown', homeKeyDown);
-
             let activeGalleryIndex;
             let activePlatformName;
             let isPlatformEnabled;
@@ -132,12 +129,18 @@ function initSlideShow(platformToDisplay) {
             if (activePlatformName === 'recents') {
                 initGallery(LB.totalNumberOfPlatforms);
             } else if (LB.enabledPlatforms.includes(activePlatformName)) {
+                if (activePlatformName === 'settings' && LB.kidsMode) {
+                    return;
+                }
                 initGallery(activeGalleryIndex);
             } else {
                 initGallery(0, activePlatformName);
             }
 
+            document.getElementById('slideshow').style.display = 'none';
             document.getElementById('galleries').style.display = "flex";
+
+            window.removeEventListener('keydown', homeKeyDown);
 
             break;
         case 'Escape':

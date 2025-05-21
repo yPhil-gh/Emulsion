@@ -494,20 +494,47 @@ function buildPlatformForm(platformName) {
 
     // ======== NEW EXTENSIONS SECTION ========
     const extensionsGroup = document.createElement('div');
+
+    // Label
     const extensionsLabel = document.createElement('label');
     extensionsLabel.textContent = 'File Extensions';
 
+    // Container for icon + inputs
     const extensionsCtn = document.createElement('div');
     extensionsCtn.classList.add('dual-ctn');
 
+    // Icon
     const extensionsIcon = document.createElement('div');
     extensionsIcon.classList.add('form-icon');
     extensionsIcon.innerHTML = '<i class="form-icon fa fa-2x fa-file-archive-o" aria-hidden="true"></i>';
 
+    // Inputs wrapper
     const extensionsInputsContainer = document.createElement('div');
     extensionsInputsContainer.classList.add('extensions-inputs-container');
 
-    // Load existing extensions
+    // Helper to enable/disable the “+” button based on row count
+    function updateAddExtensionBtn() {
+        // Count only the input rows (total children minus the add button itself)
+        const rowCount = extensionsInputsContainer.children.length - 1;
+        addExtensionBtn.disabled = rowCount >= 3;
+        addExtensionBtn.style.opacity = addExtensionBtn.disabled ? '0.5' : '1';
+    }
+
+    // Create the “Select +” button wired to add a new row
+    const addExtensionBtn = document.createElement('button');
+    addExtensionBtn.classList.add('button', 'small');
+    addExtensionBtn.innerHTML = '<i class="form-icon emulator-args-icon fa fa-plus" aria-hidden="true"></i>';
+    addExtensionBtn.addEventListener('click', () => {
+        // Guard so we never exceed 3
+        if (extensionsInputsContainer.children.length - 1 < 3) {
+            const newRow = _createExtensionInputRow('', false);
+            // Insert before the button
+            extensionsInputsContainer.insertBefore(newRow, addExtensionBtn);
+            updateAddExtensionBtn();
+        }
+    });
+
+    // Load existing extensions from preferences
     LB.prefs.getValue(platformName, 'extensions')
         .then(extensions => {
             const initialExtensions = extensions || ['.iso'];
@@ -515,21 +542,15 @@ function buildPlatformForm(platformName) {
                 const inputRow = _createExtensionInputRow(ext, index === 0);
                 extensionsInputsContainer.appendChild(inputRow);
             });
+            // Finally append the add button and update its state
+            extensionsInputsContainer.appendChild(addExtensionBtn);
+            updateAddExtensionBtn();
         })
         .catch(console.error);
 
-    // Add button for new extensions
-    const addExtensionBtn = document.createElement('button');
-    addExtensionBtn.classList.add('button', 'small');
-    addExtensionBtn.innerHTML = '<i class="form-icon emulator-args-icon fa fa-plus" aria-hidden="true"></i>';
-    addExtensionBtn.addEventListener('click', () => {
-        extensionsInputsContainer.appendChild(_createExtensionInputRow('', false));
-    });
-
+    // Assemble the full group
     extensionsCtn.appendChild(extensionsIcon);
     extensionsCtn.appendChild(extensionsInputsContainer);
-    extensionsInputsContainer.appendChild(addExtensionBtn);
-
     extensionsGroup.appendChild(extensionsLabel);
     extensionsGroup.appendChild(extensionsCtn);
     // ======== END EXTENSIONS SECTION ========

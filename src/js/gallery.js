@@ -390,8 +390,8 @@ async function buildGallery(params) {
                 gameLabel.classList.add('game-label');
                 gameLabel.textContent = fileNameClean;
 
-                gameContainer.appendChild(gameLabel);
                 gameContainer.appendChild(gameImage);
+                gameContainer.appendChild(gameLabel);
                 pageContent.appendChild(gameContainer);
             }
         } else {

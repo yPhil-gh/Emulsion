@@ -41,36 +41,37 @@ function buildHomeSlide(platformName, preferences) {
 }
 
 function createManualSelectButton(gameName, platformName, imgElem) {
-  const btn = document.createElement('button');
-  btn.classList.add('button');
-  btn.textContent = 'Select image';
+    const btn = document.createElement('button');
+    btn.classList.add('button');
+    btn.title = 'Select image';
+    btn.innerHTML = '<i class="fa fa-plus" aria-hidden="true"></i>';
 
-  btn.addEventListener('click', async e => {
-    e.stopPropagation();
+    btn.addEventListener('click', async e => {
+        e.stopPropagation();
 
-    // Ask the main process to show a file picker
-    const srcPath = await ipcRenderer.invoke('pick-image');
-    if (!srcPath) return;  // user cancelled
+        // Ask the main process to show a file picker
+        const srcPath = await ipcRenderer.invoke('pick-image');
+        if (!srcPath) return;  // user cancelled
 
-    // Destination in user data covers folder
-    const destPath = path.join(
-      LB.userDataPath,
-      'covers',
-      platformName,
-      `${gameName}.jpg`
-    );
+        // Destination in user data covers folder
+        const destPath = path.join(
+            LB.userDataPath,
+            'covers',
+            platformName,
+            `${gameName}.jpg`
+        );
 
-    // Update the img element to the new file (with cache‐bust)
-    imgElem.src = `file://${destPath}?${Date.now()}`;
+        // Update the img element to the new file (with cache‐bust)
+        imgElem.src = `file://${destPath}?${Date.now()}`;
 
-    // Tell main to copy the file
-    const ok = await ipcRenderer.invoke('save-cover', srcPath, destPath);
-    console.log(ok
-      ? `Cover saved to ${destPath}`
-      : 'Failed to save cover');
-  });
+        // Tell main to copy the file
+        const ok = await ipcRenderer.invoke('save-cover', srcPath, destPath);
+        console.log(ok
+                    ? `Cover saved to ${destPath}`
+                    : 'Failed to save cover');
+    });
 
-  return btn;
+    return btn;
 }
 
 function buildGameMenu(gameName, image, platformName) {
@@ -80,7 +81,7 @@ function buildGameMenu(gameName, image, platformName) {
 
     const currentImageContainer = document.createElement('div');
     currentImageContainer.classList.add('menu-game-container');
-    currentImageContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+    // currentImageContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
 
     const currentImage = document.createElement('img');
     currentImage.src = image.src;
@@ -95,13 +96,14 @@ function buildGameMenu(gameName, image, platformName) {
 
     gameLabel.appendChild(manualBtn);
 
-    currentImageContainer.appendChild(gameLabel);
     currentImageContainer.appendChild(currentImage);
+    currentImageContainer.appendChild(gameLabel);
+
     gameMenuContainer.appendChild(currentImageContainer);
 
     const dummyGameContainer = document.createElement('div');
     dummyGameContainer.classList.add('menu-game-container', 'dummy-game-container');
-    dummyGameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+    // dummyGameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
     dummyGameContainer.innerHTML = `Searching...`;
 
     gameMenuContainer.appendChild(dummyGameContainer);
@@ -124,15 +126,10 @@ async function populateGameMenu(gameMenuContainer, gameName, platformName) {
       const iconP = document.createElement('p');
       iconP.innerHTML = `<i class="fa fa-binoculars fa-5x" aria-hidden="true"></i>`;
       const msgP  = document.createElement('p');
-      msgP.textContent = `No cover art found for`;
-      const codeP = document.createElement('p');
-      codeP.innerHTML = `<code>${gameName}</code>`;
-
-      // Manual button wired to currentImageElem
-      const manualBtn = createManualSelectButton(gameName, platformName, currentImageElem);
+      msgP.textContent = `No cover art found`;
 
       // Layout
-      dummyContainer.append(iconP, msgP, codeP, manualBtn);
+      dummyContainer.append(iconP, msgP);
       dummyContainer.style.gridColumn = `2 / calc(${LB.galleryNumOfCols} + 1)`;
       dummyContainer.style.animation = 'unset';
     } else {
@@ -149,7 +146,7 @@ async function populateGameMenu(gameMenuContainer, gameName, platformName) {
 
         const container = document.createElement('div');
         container.classList.add('menu-game-container');
-        container.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+        // container.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
         container.appendChild(img);
         gameMenuContainer.appendChild(container);
 

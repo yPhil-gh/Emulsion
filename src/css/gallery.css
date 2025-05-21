@@ -215,6 +215,15 @@ div.platform-container {
   /* color: #333; */
 }
 
+.menu-game-container .game-label {
+  background-color: unset;
+}
+
+.menu-game-container .game-label button {
+  max-width: unset;
+  border-radius: 0;
+}
+
 .selected {
   outline: 4px solid var(--color-outline-selected);
   border-color: var(--color-outline-selected) !important;

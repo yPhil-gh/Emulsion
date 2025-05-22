@@ -149,11 +149,6 @@ async function populateGameMenu(gameMenuContainer, gameName, platformName) {
         img.onload = () => requestAnimationFrame(() => { img.style.opacity = '1'; });
         img.onerror = () => console.warn('Failed to load image:', url);
 
-        // On click, save this cover too
-        img.addEventListener('click', () => {
-          const btn = createManualSelectButton(gameName, platformName, img);
-          btn.click();  // reuse logic
-        });
       });
     }
   });

@@ -151,13 +151,14 @@ Game config / download cover art menu
 
 Works everywhere
 
-| Action                           | Keyboard                                          | Game controller                                |
-|----------------------------------|---------------------------------------------------|------------------------------------------------|
-| Back                             | <kbd>Escape</kbd>                                 | D-Pad Left / Right <kbd>◄</kbd> / <kbd>►</kbd> |
-| Select                           | <kbd>Enter</kbd>                                  | Cross / A / South <kbd>⤫</kbd>                 |
-| Exit Emulsion                    | <kbd>Ctrl</kbd> + <kbd>Q</kbd>                    | Circle / B / East <kbd>○</kbd>                 |
-| Quit game and return to Emulsion | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> |                                                |
-| Restart Emulsion                 | <kbd>F5</kbd>                                     |                                                |
+| Action                                           | Keyboard                                          | Game controller                                |
+|--------------------------------------------------|---------------------------------------------------|------------------------------------------------|
+| Back                                             | <kbd>Escape</kbd>                                 | D-Pad Left / Right <kbd>◄</kbd> / <kbd>►</kbd> |
+| Select                                           | <kbd>Enter</kbd>                                  | Cross / A / South <kbd>⤫</kbd>                 |
+| Exit Emulsion                                    | <kbd>Ctrl</kbd> + <kbd>Q</kbd>                    | Circle / B / East <kbd>○</kbd>                 |
+| Quit game / Exit emulator and return to Emulsion | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> | Select / Share + <kbd>▼</kbd>                  |
+| Reload Emulsion                                  | <kbd>F5</kbd>                                     | ▲                                              |
+| Restart Emulsion                                 | <kbd>Shift</kbd> + <kbd>F5</kbd>                  | Select / Share + <kbd>▲</kbd>                  |
 
 - Mouse
   - Left Click: Home: Select platform, Menu: Select and save cover art image, Gallery: **launch game** 🚀

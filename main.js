@@ -17,6 +17,10 @@ const buttonStates = {
     dpdown: false,
 };
 
+function fullRestart() {
+  app.relaunch({ args: process.argv.slice(1).concat(['--restarted']) });
+  app.exit(0);
+}
 
 async function sdlInit() {
     if (process.platform !== 'linux') {
@@ -25,15 +29,6 @@ async function sdlInit() {
     }
 
     try {
-        // Cleanup previous instance
-        // if (gamecontroller) {
-        //     gamecontroller.removeAllListeners();
-        //     if (typeof gamecontroller.quit === 'function') {
-        //         gamecontroller.quit();
-        //     }
-        //     gamecontroller = null;
-        //     console.log('Cleaned up previous SDL2 instance');
-        // }
 
         const mod = await import('sdl2-gamecontroller');
         gamecontroller = mod.default || mod;
@@ -45,7 +40,7 @@ async function sdlInit() {
 
         gamecontroller.on("warning", (data) => {
             console.warn("SDL2 Warning:", data);
-            restartSDL();
+            // restartSDL();
         });
 
         gamecontroller.on("sdl-init", () => {
@@ -391,6 +386,11 @@ ipcMain.handle('select-file-or-directory', async (event, property) => {
 ipcMain.handle('go-to-url', async (event, link) => {
     console.log("url: ", link);
     shell.openExternal(link);
+    return true;
+});
+
+ipcMain.handle('restart', async () => {
+    fullRestart();
     return true;
 });
 

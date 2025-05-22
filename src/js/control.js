@@ -143,6 +143,13 @@ function initSlideShow(platformToDisplay) {
             window.removeEventListener('keydown', homeKeyDown);
 
             break;
+        case 'F5':
+            if (event.shiftKey) {
+                ipcRenderer.invoke('restart');
+            } else {
+                window.location.reload();
+            }
+            break;
         case 'Escape':
             ipcRenderer.invoke('quit');
             break;
@@ -432,9 +439,12 @@ function initGallery(currentIndex, disabledPlatform) {
                 break;
 
             case 'F5':
-                window.location.reload();
+                if (event.shiftKey) {
+                    ipcRenderer.invoke('restart');
+                } else {
+                    window.location.reload();
+                }
                 break;
-
             case 'Escape':
                 window.location.reload();
                 // _closeMenu();
@@ -641,7 +651,11 @@ function initGallery(currentIndex, disabledPlatform) {
             _toggleMenu(gameContainers, selectedIndex, onGalleryKeyDown, isMenuOpen);
             break;
         case 'F5':
-            window.location.reload();
+            if (event.shiftKey) {
+                ipcRenderer.invoke('restart');
+            } else {
+                window.location.reload();
+            }
             break;
         case 'Enter':
             const selectedGameContainer = LB.utils.getSelectedGame(gameContainers, selectedIndex);
@@ -789,20 +803,22 @@ function initGamepad () {
         const gamepad = gamepads[0]; // Use the first connected gamepad
 
         if (gamepad) {
-            // Check all relevant buttons
-            [0, 1, 2, 3, 4, 5, 12, 13, 14, 15].forEach((buttonIndex) => {
+            [0,1,2,3,4,5,8,12,13,14,15].forEach((buttonIndex) => {
                 const button = gamepad.buttons[buttonIndex];
                 const wasPressed = buttonStates[buttonIndex];
 
                 if (button.pressed && !wasPressed) {
-                    // Button is pressed for the first time
                     buttonStates[buttonIndex] = true;
                 } else if (!button.pressed && wasPressed) {
-                    // Button is released
                     buttonStates[buttonIndex] = false;
-                    console.log("Button released:", buttonIndex);
 
-                    // Trigger the action only on button release
+                    if (buttonIndex === 12 && buttonStates[8]) {
+                        console.log('Share + Up combo!');
+                        ipcRenderer.invoke('restart');
+                        return;
+                    }
+
+                    // Otherwise handle normally
                     handleButtonPress(buttonIndex);
                 }
             });

@@ -40,7 +40,7 @@ Emulsion is *reproductible*: Thanks to its single **standard** config file, you 
 
 ### Platform
 
-![Emulsion](https://yphil.gitlab.io/images/emulsion-01-platform_config.png)
+![Emulsion](https://yphil.gitlab.io/images/emulsion-01-platform_config.png?x)
 
 - Games directory
 
@@ -48,7 +48,7 @@ The directory where the games are stored for that platform ; Enter a path or bet
 
 - Emulator
 
-The emulator for that platform. The name of a program installed on your machine, or use the Browse button to select the full path to the emulator executable.
+The emulator for that platform. The name of a program installed on your machine, or use the Browse button to select an emulator executable.
 
 - Emulator arguments
 
@@ -79,9 +79,11 @@ The *optional* arguments for that emulator ; Most don't need any, [read on](#emu
 
 `sudo apt install mupen64plus mednafen pcsx2 amiberry`
 
-The others a either unavailable on Ubuntu, or their package is so outdated that it's better to get the latest appImage.
+The others a either un-packaged for Ubuntu, or their package is so outdated that it's better to get the latest appImage.
 
 ### Cover art
+
+Emulsion handles the download of the cover art images of you games.
 
 #### backends API Keys
 

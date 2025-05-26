@@ -246,7 +246,6 @@ function initGallery(currentIndex, disabledPlatform) {
                 if (event.currentTarget.classList.contains('settings')) {
                     _toggleMenu(Array.from(document.querySelectorAll('.game-container') || []), event.currentTarget.dataset.index / 1, onGalleryKeyDown, false, disabledPlatform);
                 } else {
-                    console.log("YO!!");
                     launchGame(event.currentTarget);
                 }
             });
@@ -557,10 +556,7 @@ function initGallery(currentIndex, disabledPlatform) {
             document.querySelector('header .prev-link').style.opacity = 1;
             document.querySelector('header .next-link').style.opacity = 1;
 
-            console.log("selectedIndex after: ", selectedIndex);
-
             LB.imageSrc = imgSrc;
-            console.log("closeMenu: ");
             document.getElementById('menu').innerHTML = '';
             // footer.style.height = '100px'; // original height
 
@@ -672,8 +668,6 @@ function initGallery(currentIndex, disabledPlatform) {
             document.getElementById('slideshow').style.display = 'flex';
             document.getElementById('galleries').style.display = 'none';
             window.removeEventListener('keydown', onGalleryKeyDown);
-
-            console.log("activePlatformIndex: ", activePlatformIndex);
 
             LB.control.initSlideShow(activePlatformIndex);
             // LB.control.initSlideShow(LB.kidsMode ? currentIndex - 1 : currentIndex);

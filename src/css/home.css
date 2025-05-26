@@ -58,19 +58,19 @@ p.name {
 .slide.active {
   opacity: 1;
   z-index: 2;
-  filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.6));
+  filter: drop-shadow(0 0 2px rgba(var(--glow-color-rgb), 0.6));
   animation: slide-pulse-glow 5s infinite ease-in-out;
 }
 
 @keyframes slide-pulse-glow {
   0% {
-    filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.6));
+    filter: drop-shadow(0 0 2px rgba(var(--glow-color-rgb), 0.6));
   }
   50% {
-    filter: drop-shadow(0 0 14px rgba(var(--glow-color), 0.7));
+    filter: drop-shadow(0 0 14px rgba(var(--glow-color-rgb), 0.7));
   }
   100% {
-    filter: drop-shadow(0 0 2px rgba(var(--glow-color), 0.6));
+    filter: drop-shadow(0 0 2px rgba(var(--glow-color-rgb), 0.6));
   }
 }
 

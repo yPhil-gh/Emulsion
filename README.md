@@ -1,3 +1,5 @@
+[![Latest Release](https://img.shields.io/github/v/release/yPhil-gh/emulsion/?style=for-the-badge)](https://github.com/yPhil-gh/emulsion/releases/latest)
+
 # Emulsion
 
 A unified, lightweight frontend for your game emulators.
@@ -8,10 +10,7 @@ A unified, lightweight frontend for your game emulators.
 - [Installation](#installation)
 - [Configuration](#configuration)
   - [Platform](#platform)
-    - [Emulator tips](#emulator-tips)
   - [Cover art](#cover-art)
-    - [backends API Keys](#backends-api-keys)
-    - [All backends](#all-backends)
 - [Usage](#usage)
   - [Controls](#controls)
   - [CLI](#cli)
@@ -32,14 +31,22 @@ Emulsion is *reproductible*: Thanks to its single **standard** config file, you 
 
 ## Installation
 
-- See [Releases](https://github.com/yphil-gh/emulsion/releases/latest)
+### Package (recommended)
+- [Latest Linux Deb release](https://github.com/yPhil-gh/emulsion/releases/latest/download/emulsion_amd64.deb)
+- [Latest Linux AppImage release](https://github.com/yPhil-gh/emulsion/releases/latest/download/emulsion_x86_64.AppImage)
+- [Latest Windows release](https://github.com/yPhil-gh/emulsion/releases/latest/download/emulsion_x64.exe)
+
+- Other [Releases](https://github.com/yphil-gh/emulsion/releases/latest)
+
+### Source
+
 - `npm install ; npm start`
 
 ## Configuration
 
 ### Platform
 
-![Emulsion](https://yphil.gitlab.io/images/emulsion-01-platform_config.png?x)
+![Emulsion](https://yphil.gitlab.io/images/emulsion-01-platform_config.png?xx)
 
 - Games directory
 

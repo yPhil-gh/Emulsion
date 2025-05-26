@@ -16,7 +16,6 @@
 :root {
   --font-main: 'Orbitron', sans-serif;
   --font-second: 'Exo2', sans-serif;
-  --glow-color: 167, 0, 255;
   --color-succes: #00ff18;
   --color-icon: #007bff;
 
@@ -53,6 +52,8 @@
   --color-text-1: #333333;
   --color-text-2: #666666;
 
+  --glow-color-rgb: 255, 107, 0;
+
   --color-platform-text-header: #0a3f4a;
   --color-platform-outline-header: #a3ffff;
   --color-bg-header: #3974b8;
@@ -67,6 +68,8 @@
   --color-text-1: #29f1a6;
   --color-text-2: #dddddd;
 
+  --glow-color-rgb: 255, 0, 247;
+
   --color-platform-text-header: #29f1ea;
   --color-platform-outline-header: #0a0a0f;
 
@@ -79,6 +82,8 @@
 .theme-default {
   --color-text-1: #29f1ea;
   --color-text-2: #fff3d8;
+
+  --glow-color-rgb: 255, 243, 216;
 
   --color-platform-text-header: #1a1e2a;
   --color-platform-outline-header: #29f1ea;

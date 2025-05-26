@@ -659,8 +659,6 @@ function buildPlatformForm(platformName) {
         const isNotEnablable = !gamesDirInput.value || !emulatorInput.value;
         const isEnabling = statusCheckBox.checked;
 
-        statusLabelPlatormStatus.classList.remove('on', 'off');
-
         gamesDirSubLabel.textContent = '';
         emulatorSubLabel.textContent = '';
 
@@ -679,6 +677,8 @@ function buildPlatformForm(platformName) {
             console.log("Cannot enable platform - missing requirements");
         }
         else {
+            // Only modify classes and text if requirements are met
+            statusLabelPlatormStatus.classList.remove('on', 'off');
             statusLabelPlatormStatus.textContent = statusCheckBox.checked ? 'On' : 'Off';
             statusLabelPlatormStatus.classList.add(statusCheckBox.checked ? 'on' : 'off');
         }

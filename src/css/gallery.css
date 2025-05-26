@@ -115,19 +115,19 @@ div.menu-game-container:hover {
 }
 
 div.platform-info .vendor {
-  font-size: 0.6em;
-  color: black;
+  font-size: 1em;
+  color: var(--color-platform-text-header);
 
   text-shadow:
-    -1px -1px 0 white,
-     1px -1px 0 white,
-    -1px  1px 0 white,
-     1px  1px 0 white;
+    -1px -1px 0 var(--color-platform-outline-header),
+     1px -1px 0 var(--color-platform-outline-header),
+    -1px  1px 0 var(--color-platform-outline-header),
+     1px  1px 0 var(--color-platform-outline-header)
 }
 
 div.platform-info .name {
   font-size: 0.8em;
-  color: var(--color-text-1);
+  color: whitesmoke;
 }
 
 p {

@@ -500,7 +500,8 @@ const platforms = [
     { name: "gamecube", extensions: [".iso", ".ciso"] },
     { name: "xbox", extensions: [".iso"] },
     { name: "psp", extensions: [".iso"] },
-    { name: "ps3", extensions: [".SFO"] }
+    { name: "ps3", extensions: [".SFO"] },
+    { name: "xbox360", extensions: [".iso", ".xex"] }
 ];
 
 platforms.forEach((platform, index) => {

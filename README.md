@@ -74,7 +74,10 @@ The *optional* arguments for that emulator ; Most don't need any, [read on](#emu
 | PSP        |                                                                                          |                          | `.iso`          |
 | PS3        | [~/bin/rpcs3-v0.0.35-17701-6921684c_linux64.AppImage](https://rpcs3.net/)                | `--no-gui`               | `.SFO`          |
 
-**NB** This works on an Ubuntu 24.04.2 LTS box ; All the packages referenced by their name only are directly installed from the normal system repo / app store:
+
+##### Nota bene
+- The arguments are the default in Emulsion
+- This emulator list works on an Ubuntu 24.04.2 LTS box ; All the packages referenced by their name only are directly installed from the normal system repo / app store:
 
 `sudo apt install mupen64plus mednafen pcsx2 amiberry`
 

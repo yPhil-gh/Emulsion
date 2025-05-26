@@ -205,8 +205,9 @@ function getPlatformInfo(name) {
         'ps2': { name: 'PlayStation 2', vendor: 'Sony' },
         'gamecube': { name: 'GameCube', vendor: 'Nintendo' },
         'xbox': { name: 'X-Box', vendor: 'Microsoft' },
-        'psp': { name: 'PlayStation Portable', vendor: 'Sony' },
-        'ps3': { name: 'PlayStation 3', vendor: 'Sony' }
+        'psp': { name: 'PS Portable', vendor: 'Sony' },
+        'ps3': { name: 'PlayStation 3', vendor: 'Sony' },
+        'xbox360': { name: 'X-Box 360', vendor: 'Microsoft' }
     };
 
     // Return the platform info if found, otherwise return the original name as both name and vendor

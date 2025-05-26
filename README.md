@@ -4,7 +4,7 @@
 
 A unified, lightweight frontend for your game emulators.
 
-![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png?x)
+![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png?xx)
 
 - [Features](#features)
 - [Installation](#installation)
@@ -36,7 +36,7 @@ Emulsion is *reproductible*: Thanks to its single **standard** config file, you 
 - [Latest Linux AppImage release](https://github.com/yPhil-gh/emulsion/releases/latest/download/emulsion_x86_64.AppImage)
 - [Latest Windows release](https://github.com/yPhil-gh/emulsion/releases/latest/download/emulsion_x64.exe)
 
-- Other [Releases](https://github.com/yphil-gh/emulsion/releases/latest)
+- [Other Releases](https://github.com/yphil-gh/emulsion/releases/latest)
 
 ### Source
 

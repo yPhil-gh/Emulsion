@@ -507,7 +507,7 @@ const platforms = [
 platforms.forEach((platform, index) => {
     defaultPreferences[platform.name] = {
         isEnabled: false,
-        index: index + 1, // Start at 1 because SETTINGS IS INDEX 0
+        index: index + 1, // Starts at 1 because SETTINGS IS INDEX 0
         gamesDir: "",
         emulator: "",
         emulatorArgs: "",

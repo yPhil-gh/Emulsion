@@ -17,7 +17,6 @@ A unified, lightweight frontend for your game emulators.
   - [CLI](#cli)
 - [Can I help?](#can-i-help)
 
-
 ## Features
 
 Emulsion:
@@ -129,16 +128,17 @@ Platforms / machines home carousel
 
 Games (and plaforms config) pages
 
-| Action                                | Keyboard                                                  | Game controller                |
-|---------------------------------------|-----------------------------------------------------------|--------------------------------|
-| Browse games                          | <kbd>←</kbd> / <kbd>→</kbd> / <kbd>↑</kbd> / <kbd>↓</kbd> | DPad                           |
-| Browse machines / platforms           | <kbd>Shift</kbd> + <kbd>←</kbd> / <kbd>→</kbd>            | <kbd>L1</kbd> / <kbd>R1</kbd>  |
-| Jump 10 rows                          | <kbd>Page Up</kbd> / <kbd>Page Down</kbd>                 |                                |
-| Jump to first / last game             | <kbd>Home</kbd> / <kbd>End</kbd>                          |                                |
-| **Launch** selected **game** 🚀       | <kbd>Enter</kbd>                                          | Cross / A / South <kbd>⤫</kbd> |
-| Open game / cover image menu          | <kbd>I</kbd>                                              | Square / X / West <kbd>□</kbd> |
-| Return to home screen / machines menu | <kbd>Escape</kbd>                                         | Circle / B / East <kbd>○</kbd> |
+| Action                                    | Keyboard                                                  | Game controller                |
+|-------------------------------------------|-----------------------------------------------------------|--------------------------------|
+| Browse games                              | <kbd>←</kbd> / <kbd>→</kbd> / <kbd>↑</kbd> / <kbd>↓</kbd> | DPad                           |
+| Browse machines / platforms               | <kbd>Shift</kbd> + <kbd>←</kbd> / <kbd>→</kbd>            | <kbd>L1</kbd> / <kbd>R1</kbd>  |
+| Jump 10 rows                              | <kbd>Page Up</kbd> / <kbd>Page Down</kbd>                 |                                |
+| Jump to first / last game                 | <kbd>Home</kbd> / <kbd>End</kbd>                          |                                |
+| **Launch** selected **game** 🚀           | <kbd>Enter</kbd>                                          | Cross / A / South <kbd>⤫</kbd> |
+| Open game / cover image menu              | <kbd>I</kbd>                                              | Square / X / West <kbd>□</kbd> |
+| Return to home screen / machines menu (1) | <kbd>Escape</kbd>                                         | Circle / B / East <kbd>○</kbd> |
 
+**1**: Only works on Linux ([for now](https://github.com/IBM/sdl2-gamecontroller/issues/16)).
 
 - Game menu
 
@@ -159,7 +159,7 @@ Works everywhere
 | Select                                           | <kbd>Enter</kbd>                                  | Cross / A / South <kbd>⤫</kbd>                 |
 | Exit Emulsion                                    | <kbd>Ctrl</kbd> + <kbd>Q</kbd>                    | Circle / B / East <kbd>○</kbd>                 |
 | Quit game / Exit emulator and return to Emulsion | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> | Select / Share + <kbd>▼</kbd>                  |
-| Reload Emulsion                                  | <kbd>F5</kbd>                                     | ▲                                              |
+| Reload Emulsion                                  | <kbd>F5</kbd>                                     |                                                |
 | Restart Emulsion                                 | <kbd>Shift</kbd> + <kbd>F5</kbd>                  | Select / Share + <kbd>▲</kbd>                  |
 
 - Mouse

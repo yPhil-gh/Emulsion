@@ -1,4 +1,6 @@
-[![Latest Release](https://img.shields.io/github/v/release/yPhil-gh/emulsion/?style=for-the-badge)](https://github.com/yPhil-gh/emulsion/releases/latest)
+[![Release](https://img.shields.io/github/v/release/yPhil-gh/emulsion.svg?style=for-the-badge )](https://github.com/yPhil-gh/emulsion/releases)
+
+[![Release](https://img.shields.io/github/v/release/yPhil-gh/emulsion?style=for-the-badge&v=1)](https://github.com/yPhil-gh/emulsion/releases)
 
 # Emulsion
 

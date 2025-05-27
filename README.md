@@ -1,6 +1,4 @@
-[![Release](https://img.shields.io/github/v/release/yPhil-gh/emulsion.svg?style=for-the-badge )](https://github.com/yPhil-gh/emulsion/releases)
-
-[![Release](https://img.shields.io/github/v/release/yPhil-gh/emulsion?style=for-the-badge&v=1)](https://github.com/yPhil-gh/emulsion/releases)
+[![Release](https://img.shields.io/github/v/release/yPhil-gh/emulsion?style=flat)] [![CI/CD](https://img.shields.io/github/actions/workflow/status/yPhil-gh/emulsion/main.yml?style=flat)] [![License](https://img.shields.io/github/license/yPhil-gh/emulsion?style=flat)]
 
 # Emulsion
 

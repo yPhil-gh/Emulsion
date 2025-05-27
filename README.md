@@ -1,4 +1,4 @@
-[![Release](https://img.shields.io/github/v/release/yPhil-gh/emulsion?style=flat)] [![CI/CD](https://img.shields.io/github/actions/workflow/status/yPhil-gh/emulsion/main.yml?style=flat)] [![License](https://img.shields.io/github/license/yPhil-gh/emulsion?style=flat)]
+[Release](https://img.shields.io/github/v/release/yPhil-gh/emulsion?style=flat) [CI/CD](https://img.shields.io/github/actions/workflow/status/yPhil-gh/emulsion/.github/workflows/ci.yml?style=flat) [License](https://img.shields.io/github/license/yPhil-gh/emulsion?style=flat) [LiberaPay](https://img.shields.io/liberapay/receives/yphil.svg?logo=liberapay&style=for-the-badge)](https://liberapay.com/yphil/donate) [Ko-fi](https://img.shields.io/badge/Ko--fi-Buy_Me_a_Coffee-FF5E5B?style=for-the-badge&logo=ko-fi)
 
 # Emulsion
 

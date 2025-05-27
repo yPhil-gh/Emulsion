@@ -1,4 +1,7 @@
-[![Release](https://img.shields.io/github/v/release/yPhil-gh/emulsion?style=flat)] [![CI/CD](https://img.shields.io/github/actions/workflow/status/yPhil-gh/emulsion/.github/workflows/ci.yml?style=flat)] [![License](https://img.shields.io/github/license/yPhil-gh/emulsion?style=flat)] [![LiberaPay](https://img.shields.io/liberapay/receives/yphil.svg?logo=liberapay&style=for-the-badge)](https://liberapay.com/yphil/donate)
+[![Release](https://img.shields.io/github/v/release/yPhil-gh/emulsion?style=flat)](https://github.com/yPhil-gh/emulsion/releases)
+[![CI/CD](https://img.shields.io/github/actions/workflow/status/yPhil-gh/emulsion/.github/workflows/ci.yml?style=flat)](https://github.com/yPhil-gh/emulsion/actions)
+[![License](https://img.shields.io/github/license/yPhil-gh/emulsion?style=flat)](https://github.com/yPhil-gh/emulsion/blob/main/LICENSE)
+[![LiberaPay](https://img.shields.io/liberapay/receives/yphil.svg?logo=liberapay&style=flat)](https://liberapay.com/yphil/donate)
 
 # Emulsion
 

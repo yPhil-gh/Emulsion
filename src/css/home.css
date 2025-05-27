@@ -1,7 +1,7 @@
 #splash {
     position: absolute;
-    width: 400px;
-    height: 400px;
+    width: 700px;
+    height: 700px;
     z-index: 15;
 
     display: flex;
@@ -46,8 +46,8 @@ p.name {
 
 .slide {
   position: absolute;
-  width: 400px;
-  height: 400px;
+  width: 700px;
+  height: 700px;
   background-size: cover;
   background-position: center;
   border-radius: 24px;

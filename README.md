@@ -11,7 +11,7 @@ A unified, lightweight frontend for your games.
 ![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png?xxx)
 
 - [Installation](#installation)
-  - [Package (recommended)](#package-recommended)
+  - [Latest Package releases (recommended)](#latest-package-releases-recommended)
   - [Source](#source)
 - [Configuration](#configuration)
   - [QuickStart](#quickstart)
@@ -22,7 +22,7 @@ A unified, lightweight frontend for your games.
     - [All backends](#all-backends)
 - [Usage](#usage)
   - [Controls](#controls)
-  - [CLI](#cli)
+  - [CLI](#command-line-interface)
 
 ## Features
 
@@ -36,7 +36,7 @@ These features set it apart from solutions that:
 - Handle controller configuration (often unreliably)
 - Handle cover art downloads automatically / unattended / or even externally, without selection options
 
-Emulsion is *reproductible*: Thanks to its single **standard** config file, you can install a full gaming PC in one command, and-it-won't-move ; At least that's the idea.
+Emulsion is *reproductible*: Thanks to [its single **standard** config file](#settings), you can install a full gaming PC in one command, and It-Won't-Move, like randomly greet you with a tedious game controller calibration dialog because it somehow forgot it.
 
 ## Installation
 

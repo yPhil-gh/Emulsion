@@ -11,15 +11,11 @@ A unified, lightweight frontend for your games. [Website](https://yphil.gitlab.i
 ![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png?xxx)
 
 - [Installation](#installation)
-  - [Latest Package releases (recommended)](#latest-package-releases-recommended)
+  - [Package releases](#latest-package-releases-recommended)
   - [Source](#source)
 - [Configuration](#configuration)
   - [QuickStart](#quickstart)
   - [Settings](#settings)
-    - [Emulator tips](#emulator-tips)
-  - [Cover art](#cover-art)
-    - [backends API Keys](#backends-api-keys)
-    - [All backends](#all-backends)
 - [Usage](#usage)
   - [Controls](#controls)
   - [CLI](#command-line-interface)
@@ -126,11 +122,11 @@ Here is a non exhaustive list of emulators that you can use in Emulsion ; These 
 
 The others are installed with appImage.
 
-### Cover art
+#### Cover art
 
 Emulsion handles the download of the cover art images of you games.
 
-#### backends API Keys
+##### backends API Keys
 
 Some cover art download backends (SteamGridDB and GiantBomb) require authentication ; The key is free and easy to obtain:
 
@@ -146,7 +142,7 @@ The other backends require no authentication, but you'll find **way more images*
 
 If you can - after you [donated to this project](https://yphil.gitlab.io/ext/support.html) of course, thank you very much 🙂 please consider supporting those backends ; They do a great job of keeping our common culture aliv... Well, existing.
 
-#### All backends
+##### All backends
   - [SteamGridDB](https://www.steamgriddb.com/) (API)
   - [GiantBomb](https://www.giantbomb.com/api/) (API)
   - [MobyGames](mobygames.com) (Web)

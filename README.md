@@ -88,9 +88,9 @@ The *optional* arguments for that emulator ; Most don't need any, [read on](#emu
 
 Here is a non exhaustive list of emulators that you can use in Emulsion ; These are just what I use on my current machine, for inspiration.
 
-| Platform   | Emulator                                                     | Emulator Arguments       | Extensions      |
+| Platform   | Emulator                                                     | Emulator Arguments       | Extensions (1)  |
 |------------|--------------------------------------------------------------|--------------------------|-----------------|
-| NES        | **[Nestopia](https://nestopia.sourceforge.net/)**            | `--fullscreen`           | `.zip`          |
+| NES        | **[Nestopia](https://nestopia.sourceforge.net/)** (2)        | `--fullscreen`           | `.zip`          |
 | NES        | **[Mednafen](https://mednafen.github.io/)**                  |                          | `.zip`          |
 | SMS        | Mednafen                                                     |                          | `.zip`          |
 | PC Engine  | Mednafen                                                     |                          | `.pce`          |
@@ -110,12 +110,12 @@ Here is a non exhaustive list of emulators that you can use in Emulsion ; These 
 | X-Box 630  | [Xenia Canary](https://github.com/xenia-canary/xenia-canary) |                          | `.iso`          |
 
 **NB**
-- The arguments in this list are set as default in Emulsion
-- All the names **in bold** are directly installed from the normal system (Ubuntu box) repo / app store:
+- **1** The extensions in this list are set as default in Emulsion
+- **2** All the names **in bold** are directly installed from the normal system (Ubuntu box) repo / app store:
 
-`sudo apt install mednafen nestopia amiberry mupen64plus pcsx2`
+`mednafen nestopia amiberry mupen64plus pcsx2`
 
-The others are installed with appImage.
+The other emulators can all be installed with appImage.
 
 #### Cover art
 

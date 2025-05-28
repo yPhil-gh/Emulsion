@@ -10,15 +10,19 @@ A unified, lightweight frontend for your games.
 
 ![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png?xxx)
 
-- [Features](#features)
 - [Installation](#installation)
+  - [Package (recommended)](#package-recommended)
+  - [Source](#source)
 - [Configuration](#configuration)
-  - [Platform](#platform)
+  - [QuickStart](#quickstart)
+  - [Settings](#settings)
+    - [Emulator tips](#emulator-tips)
   - [Cover art](#cover-art)
+    - [backends API Keys](#backends-api-keys)
+    - [All backends](#all-backends)
 - [Usage](#usage)
   - [Controls](#controls)
   - [CLI](#cli)
-- [Can I help?](#can-i-help)
 
 ## Features
 
@@ -27,7 +31,7 @@ Emulsion:
 - Lets you *precisely* select game cover art from multiple backends
 
 These features set it apart from solutions that:
-- Manage emulators (which Emulsion doesn't do)
+- Centralize the emulators config files (which Emulsion doesn't do)
 - Handle controller configuration (often unreliably)
 - Handle cover art downloads automatically / unattended / or even externally, without selection options
 
@@ -35,10 +39,10 @@ Emulsion is *reproductible*: Thanks to its single **standard** config file, you 
 
 ## Installation
 
-### Package (recommended)
-- [Latest Linux Deb release](https://github.com/yPhil-gh/emulsion/releases/latest/download/emulsion_amd64.deb)
-- [Latest Linux AppImage release](https://github.com/yPhil-gh/emulsion/releases/latest/download/emulsion_x86_64.AppImage)
-- [Latest Windows release](https://github.com/yPhil-gh/emulsion/releases/latest/download/emulsion_x64.exe)
+### Latest Package releases (recommended)
+- [Linux Deb](https://github.com/yPhil-gh/emulsion/releases/latest/download/emulsion_amd64.deb)
+- [Linux AppImage](https://github.com/yPhil-gh/emulsion/releases/latest/download/emulsion_x86_64.AppImage)
+- [Windows (unsigned)](https://github.com/yPhil-gh/emulsion/releases/latest/download/emulsion_x64.exe)
 
 - [Other Releases](https://github.com/yphil-gh/emulsion/releases/latest)
 
@@ -52,19 +56,24 @@ Emulsion is *reproductible*: Thanks to its single **standard** config file, you 
 
 1. Get some games for a platform, let's say NES ;
 2. Download an emulator for that platform, let's say Nestopia: `sudo atp install nestopia` ;
-3. Optional: Check the documentation: `nestopia --help` ;
-4. Optional: Test that everything works in the CLI: `nestopia --fullscreen /games/nes/game.zip` ;
-5. Go to Emulsion: Setttings / NES ;
+3. (Optional) Check the documentation: `nestopia --help` ;
+4. (Optional) Test that everything works in the CLI: `nestopia --fullscreen /games/nes/game.zip` ;
+5. Open Emulsion: **Settings** / **NES** ;
    1. **Games Directory**: Click "Browse" and select the directory where you put your NES games ;
    2. **Emulator**: nestopia ;
    3. **Extensions**: Enter ".zip" (NB it's already the default) ;
-6. That's it, everything is saved in the configuration file, now.
+6. That's it, everything is saved in the configuration file, now ; Happy gaming !
 
 You configuration file is in `~/.config/emulsion/preferences.json`.
 
-### Platform
+**NB** with a game selected, press the image download key to select a cover art image ; it works right of the box, but you'll have better results by using the [Backends API keys](#backends-api-keys).
+**NB** This image is now in `~/.config/emulsion/covers/nes/game.jpg`.
+
+### Settings
 
 ![Emulsion](https://yphil.gitlab.io/images/emulsion-01-platform_config.png?xxx)
+
+For each platform / machine, you can configure:
 
 - Games directory
 
@@ -79,36 +88,37 @@ The emulator for that platform. The name of a program installed on your machine,
 The *optional* arguments for that emulator ; Most don't need any, [read on](#emulator-tips).
 
 #### Emulator tips
-These are just what I use on my current machine, for inspiration:
+
+Here is a non exhaustive list of emulators that you can use with Emulsion ; These are just what I use on my current machine, for inspiration.
 
 | Platform   | Emulator                                                     | Emulator Arguments       | Extensions      |
 |------------|--------------------------------------------------------------|--------------------------|-----------------|
-| NES        | [Nestopia](https://nestopia.sourceforge.net/)                |                          | `.zip`          |
-| NES        | [Mednafen](https://mednafen.github.io/)                      | `--fullscreen`           | `.zip`          |
+| NES        | **[Nestopia](https://nestopia.sourceforge.net/)**            |                          | `.zip`          |
+| NES        | **[Mednafen](https://mednafen.github.io/)**                  | `--fullscreen`           | `.zip`          |
 | SMS        | Mednafen                                                     |                          | `.zip`          |
 | PC Engine  | Mednafen                                                     |                          | `.pce`          |
-| Amiga      | [AmiBerry](https://github.com/BlitterStudio/amiberry)        |                          | `.lha`, `.adf`  |
+| Amiga      | **[AmiBerry](https://github.com/BlitterStudio/amiberry)**    |                          | `.lha`, `.adf`  |
 | Mega Drive | [Blastem](https://www.retrodev.com/blastem/)                 | `-m gen -f`              | `.md `          |
 | SNES       | [Mesen](https://www.mesen.ca/)                               |                          | `.smc`          |
 | Jaguar     | [BigPEmu](https://www.richwhitehouse.com/jaguar/)            |                          | `.jag`          |
 | Saturn     | Mednafen                                                     |                          | `.cue`          |
 | PSX        | [DuckStation](https://github.com/stenzek/duckstation)        | `-fullscreen -nogui`     | `.srm`          |
-| N64        | [Mupen64Plus](https://mupen64plus.org/)                      |                          | `.z64`          |
+| N64        | **[Mupen64Plus](https://mupen64plus.org/)**                  |                          | `.z64`          |
 | Dreamcast  | [Flycast](https://github.com/flyinghead/flycast)             |                          | `.gdi`, `.cdi`  |
-| PS2        | [PCSX2](https://pcsx2.net/)                                  | `-nogui -fullscreen`     | `.bin`, `.iso`  |
+| PS2        | **[PCSX2](https://pcsx2.net/)**                              | `-nogui -fullscreen`     | `.bin`, `.iso`  |
 | GameCube   | [Dolphin Emulator](https://dolphin-emu.org/)                 | `-b -e`                  | `.iso`, `.ciso` |
 | Xbox       | [xemu](https://xemu.app/)                                    | `-full-screen -dvd_path` | `.xiso.iso`     |
 | PSP        | [PPSSPP](https://www.ppsspp.org/)                            |                          | `.iso`          |
 | PS3        | [RPCS3](https://rpcs3.net/)                                  | `--no-gui`               | `.SFO`          |
 | X-Box 630  | [Xenia Canary](https://github.com/xenia-canary/xenia-canary) |                          | `.iso`          |
 
-##### Nota bene
-- The arguments are the default in Emulsion
-- This emulator list works on an Ubuntu 24.04.2 LTS box ; All the packages referenced by their name only are directly installed from the normal system repo / app store:
+**NB**
+- The arguments in this list are set as default in Emulsion
+- All the names **in bold** are directly installed from the normal system (Ubuntu box) repo / app store:
 
 `sudo apt install mupen64plus mednafen nestopia pcsx2 amiberry`
 
-The others a either un-packaged for Ubuntu, or their package is so outdated that it's better to get the latest appImage.
+The others are installed with appImage.
 
 ### Cover art
 

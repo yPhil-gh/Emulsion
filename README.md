@@ -4,7 +4,7 @@
 [![LiberaPay](https://img.shields.io/liberapay/receives/yphil.svg?logo=liberapay&style=flat)](https://liberapay.com/yphil/donate)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support_Me-FF5E5B?logo=ko-fi&logoColor=white&style=flat)](https://ko-fi.com/yphil)
 
-# Emulsion
+# [Emulsion](https://yphil.gitlab.io/emulsion)
 
 A unified, lightweight frontend for your games.
 
@@ -230,4 +230,4 @@ Why of course, thank you for asking
 - [Report usage problems / suggestions](https://gitlab.com/yphil/emulsion/-/issues)
 - [Contribute code](https://gitlab.com/yphil/emulsion/-/issues)
 
-This repository is a mirror of https://gitlab.com/yphil/emulsion the official Emulsion repo.
+This repository is a mirror of https://gitlab.com/yphil/emulsion the official [Emulsion](https://yphil.gitlab.io/emulsion) repo.

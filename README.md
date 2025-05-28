@@ -48,9 +48,23 @@ Emulsion is *reproductible*: Thanks to its single **standard** config file, you 
 
 ## Configuration
 
+### QuickStart
+
+1. Get some games for a platform, let's say NES ;
+2. Download an emulator for that platform, let's say Nestopia: `sudo atp install nestopia` ;
+3. Optional: Check the documentation: `nestopia --help` ;
+4. Optional: Test that everything works in the CLI: `nestopia --fullscreen /games/nes/game.zip` ;
+5. Go to Emulsion: Setttings / NES ;
+   1. **Games Directory**: Click "Browse" and select the directory where you put your NES games ;
+   2. **Emulator**: nestopia ;
+   3. **Extensions**: Enter ".zip" (NB it's already the default) ;
+6. That's it, everything is saved in the configuration file, now.
+
+You configuration file is in `~/.config/emulsion/preferences.json`.
+
 ### Platform
 
-![Emulsion](https://yphil.gitlab.io/images/emulsion-01-platform_config.png?xx)
+![Emulsion](https://yphil.gitlab.io/images/emulsion-01-platform_config.png?xxx)
 
 - Games directory
 
@@ -70,7 +84,7 @@ These are just what I use on my current machine, for inspiration:
 | Platform   | Emulator                                                     | Emulator Arguments       | Extensions      |
 |------------|--------------------------------------------------------------|--------------------------|-----------------|
 | NES        | [Nestopia](https://nestopia.sourceforge.net/)                |                          | `.zip`          |
-| NES        | [Mednafen](https://mednafen.github.io/)                      |                          | `.zip`          |
+| NES        | [Mednafen](https://mednafen.github.io/)                      | `--fullscreen`           | `.zip`          |
 | SMS        | Mednafen                                                     |                          | `.zip`          |
 | PC Engine  | Mednafen                                                     |                          | `.pce`          |
 | Amiga      | [AmiBerry](https://github.com/BlitterStudio/amiberry)        |                          | `.lha`, `.adf`  |

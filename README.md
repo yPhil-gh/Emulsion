@@ -28,6 +28,7 @@ A unified, lightweight frontend for your games.
 
 Emulsion:
 - Unifies all *your* emulators in a single interface
+- Allows you to have your games stored in multiple locations / drives
 - Lets you *precisely* select game cover art from multiple backends
 
 These features set it apart from solutions that:
@@ -93,8 +94,8 @@ Here is a non exhaustive list of emulators that you can use with Emulsion ; Thes
 
 | Platform   | Emulator                                                     | Emulator Arguments       | Extensions      |
 |------------|--------------------------------------------------------------|--------------------------|-----------------|
-| NES        | **[Nestopia](https://nestopia.sourceforge.net/)**            |                          | `.zip`          |
-| NES        | **[Mednafen](https://mednafen.github.io/)**                  | `--fullscreen`           | `.zip`          |
+| NES        | **[Nestopia](https://nestopia.sourceforge.net/)**            | `--fullscreen`           | `.zip`          |
+| NES        | **[Mednafen](https://mednafen.github.io/)**                  |                          | `.zip`          |
 | SMS        | Mednafen                                                     |                          | `.zip`          |
 | PC Engine  | Mednafen                                                     |                          | `.pce`          |
 | Amiga      | **[AmiBerry](https://github.com/BlitterStudio/amiberry)**    |                          | `.lha`, `.adf`  |
@@ -128,17 +129,17 @@ Emulsion handles the download of the cover art images of you games.
 
 Some cover art download backends (SteamGridDB and GiantBomb) require authentication ; The key is free and easy to obtain:
 
-- GiantBomb
+- **GiantBomb**
   - get your key at https://www.giantbomb.com/api/
 
-- SteamGridDB
+- **SteamGridDB**
   - Create or log into your [Steam](https://store.steampowered.com/) account ;
   - Get your [API](https://www.steamgriddb.com/api/v2) key by login in to https://www.steamgriddb.com and open the preferences menu.
 
-Paste the key into the corresponding field in the **Emulsion settings** form ; click <kbd>Save</kbd>.
-The other backends require no authentication, but you'll find **way more** images using all the backends, including SteamGridDB and GiantBomb.
+Paste the key into the corresponding field in the [Emulsion settings form](#settings) ; click Save.
+The other backends require no authentication, but you'll find **way more images** leveraging all the backends.
 
-If you can - after you [donated to this project](https://yphil.gitlab.io/ext/support.html), thank you very much 🙂 please consider supporting those backends. They do a great job of keeping our common culture aliv... Well, existing.
+If you can - after you [donated to this project](https://yphil.gitlab.io/ext/support.html) of course, thank you very much 🙂 please consider supporting those backends ; They do a great job of keeping our common culture aliv... Well, existing.
 
 #### All backends
   - [SteamGridDB](https://www.steamgriddb.com/) (API)

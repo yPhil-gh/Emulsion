@@ -6,7 +6,7 @@
 
 # Emulsion
 
-A unified, lightweight frontend for your game emulators.
+A unified, lightweight frontend for your games.
 
 ![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png?xxx)
 
@@ -65,32 +65,34 @@ The emulator for that platform. The name of a program installed on your machine,
 The *optional* arguments for that emulator ; Most don't need any, [read on](#emulator-tips).
 
 #### Emulator tips
+These are just what I use on my current machine, for inspiration:
 
-| Platform   | Emulator                                                                                 | Emulator Arguments       | Extensions      |
-|------------|------------------------------------------------------------------------------------------|--------------------------|-----------------|
-| NES        | [mednafen](https://mednafen.github.io/)                                                  |                          | `.zip`          |
-| SMS        | mednafen                                                                                 |                          | `.zip`          |
-| PC Engine  | mednafen                                                                                 |                          | `.pce`          |
-| Amiga      | [amiberry](https://github.com/BlitterStudio/amiberry)                                    |                          | `.lha`, `.adf`  |
-| Mega Drive | [~/bin/EMU/blastem64-0.6.2/blastem](https://www.retrodev.com/blastem/)                   | `-m gen -f`              | `.md `          |
-| SNES       | [Mesen](https://www.mesen.ca/)                                                           |                          | `.smc`          |
-| Jaguar     | [~/bin/EMU/BigPEmu_Linux64_v118/bigpemu/bigpemu](https://www.richwhitehouse.com/jaguar/) |                          | `.jag`          |
-| Saturn     | mednafen                                                                                 |                          | `.cue`          |
-| PSX        | [~/bin/EMU/DuckStation-x64.AppImage](https://github.com/stenzek/duckstation)             | `-fullscreen -nogui`     | `.srm`          |
-| N64        | [mupen64plus](https://mupen64plus.org/)                                                  |                          | `.z64`          |
-| Dreamcast  | [flycast-x86_64.AppImage](https://github.com/flyinghead/flycast)                         |                          | `.gdi`, `.cdi`  |
-| PS2        | [pcsx2](https://pcsx2.net/)                                                              | `-nogui -fullscreen`     | `.bin`, `.iso`  |
-| GameCube   | [~/bin/EMU/Dolphin-Emulator-5.0-16793-x86-64.AppImage](https://dolphin-emu.org/)         | `-b -e`                  | `.iso`, `.ciso` |
-| Xbox       | [~/bin/EMU/xemu-v0.8.48-x86_64.AppImage](https://xemu.app/)                              | `-full-screen -dvd_path` | `.xiso.iso`     |
-| PSP        |                                                                                          |                          | `.iso`          |
-| PS3        | [~/bin/rpcs3-v0.0.35-17701-6921684c_linux64.AppImage](https://rpcs3.net/)                | `--no-gui`               | `.SFO`          |
-
+| Platform   | Emulator                                                     | Emulator Arguments       | Extensions      |
+|------------|--------------------------------------------------------------|--------------------------|-----------------|
+| NES        | [Nestopia](https://nestopia.sourceforge.net/)                |                          | `.zip`          |
+| NES        | [Mednafen](https://mednafen.github.io/)                      |                          | `.zip`          |
+| SMS        | Mednafen                                                     |                          | `.zip`          |
+| PC Engine  | Mednafen                                                     |                          | `.pce`          |
+| Amiga      | [AmiBerry](https://github.com/BlitterStudio/amiberry)        |                          | `.lha`, `.adf`  |
+| Mega Drive | [Blastem](https://www.retrodev.com/blastem/)                 | `-m gen -f`              | `.md `          |
+| SNES       | [Mesen](https://www.mesen.ca/)                               |                          | `.smc`          |
+| Jaguar     | [BigPEmu](https://www.richwhitehouse.com/jaguar/)            |                          | `.jag`          |
+| Saturn     | Mednafen                                                     |                          | `.cue`          |
+| PSX        | [DuckStation](https://github.com/stenzek/duckstation)        | `-fullscreen -nogui`     | `.srm`          |
+| N64        | [Mupen64Plus](https://mupen64plus.org/)                      |                          | `.z64`          |
+| Dreamcast  | [Flycast](https://github.com/flyinghead/flycast)             |                          | `.gdi`, `.cdi`  |
+| PS2        | [PCSX2](https://pcsx2.net/)                                  | `-nogui -fullscreen`     | `.bin`, `.iso`  |
+| GameCube   | [Dolphin Emulator](https://dolphin-emu.org/)                 | `-b -e`                  | `.iso`, `.ciso` |
+| Xbox       | [xemu](https://xemu.app/)                                    | `-full-screen -dvd_path` | `.xiso.iso`     |
+| PSP        | [PPSSPP](https://www.ppsspp.org/)                            |                          | `.iso`          |
+| PS3        | [RPCS3](https://rpcs3.net/)                                  | `--no-gui`               | `.SFO`          |
+| X-Box 630  | [Xenia Canary](https://github.com/xenia-canary/xenia-canary) |                          | `.iso`          |
 
 ##### Nota bene
 - The arguments are the default in Emulsion
 - This emulator list works on an Ubuntu 24.04.2 LTS box ; All the packages referenced by their name only are directly installed from the normal system repo / app store:
 
-`sudo apt install mupen64plus mednafen pcsx2 amiberry`
+`sudo apt install mupen64plus mednafen nestopia pcsx2 amiberry`
 
 The others a either un-packaged for Ubuntu, or their package is so outdated that it's better to get the latest appImage.
 
@@ -200,7 +202,7 @@ Options:
 Why of course, thank you for asking.
 
 - [Donate](https://yphil.gitlab.io/ext/support.html)
-- [Report usage problems / suggestions](https://github.com/yPhil-gh/emulsion/issues)
-- [Contribute code](https://github.com/yPhil-gh/emulsion/commits/master/)
+- [Report usage problems / suggestions](https://gitlab.com/yphil/emulsion/-/issues)
+- [Contribute code](https://gitlab.com/yphil/emulsion/-/issues)
 
 This repository is a mirror of https://gitlab.com/yphil/emulsion the official Emulsion repo.

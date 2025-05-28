@@ -75,12 +75,12 @@
 
   --color-bg-header: #050c16;
 
-  --color-outline-selected: #ff00f7; /* Neon pink/purple that pops against dark background */
+  --color-outline-selected: #FF00F7; /* Neon pink/purple that pops against dark background */
 
 }
 
 .theme-default {
-  --color-text-1: #29f1ea;
+  --color-text-1: #29F1EA;
   --color-text-2: #fff3d8;
 
   --glow-color-rgb: 255, 243, 216;

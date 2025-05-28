@@ -26,7 +26,12 @@ A unified, lightweight frontend for your games. [Website](https://yphil.gitlab.i
 
 ## Features
 
-Emulsion:
+Emulsion follows two core principles:
+
+- [KISS](https://en.wikipedia.org/wiki/KISS_principle) (Keep It Simple)
+- [The Unix philosophy](https://en.wikipedia.org/wiki/Unix_philosophy#Do_One_Thing_and_Do_It_Well) - do one thing and do it well
+
+Emulsion
 - Unifies all *your* emulators in a single interface
 - Allows you to have your games stored in multiple locations / drives
 - Lets you *precisely* select game cover art from multiple backends

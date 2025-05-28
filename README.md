@@ -76,21 +76,21 @@ You configuration file is in `~/.config/emulsion/preferences.json`.
 
 For each platform / machine, you can configure:
 
-- Games directory
+- **Games Directory**
 
 The directory where the games are stored for that platform ; Enter a path or better, use the Browse button.
 
-- Emulator
+- **Emulator**
 
 The emulator for that platform. The name of a program installed on your machine, or use the Browse button to select an emulator executable.
 
-- Emulator arguments
+- **Emulator Arguments**
 
 The *optional* arguments for that emulator ; Most don't need any, [read on](#emulator-tips).
 
 #### Emulator tips
 
-Here is a non exhaustive list of emulators that you can use with Emulsion ; These are just what I use on my current machine, for inspiration.
+Here is a non exhaustive list of emulators that you can use in Emulsion ; These are just what I use on my current machine, for inspiration.
 
 | Platform   | Emulator                                                     | Emulator Arguments       | Extensions      |
 |------------|--------------------------------------------------------------|--------------------------|-----------------|
@@ -117,7 +117,7 @@ Here is a non exhaustive list of emulators that you can use with Emulsion ; Thes
 - The arguments in this list are set as default in Emulsion
 - All the names **in bold** are directly installed from the normal system (Ubuntu box) repo / app store:
 
-`sudo apt install mupen64plus mednafen nestopia pcsx2 amiberry`
+`sudo apt install mednafen nestopia amiberry mupen64plus pcsx2`
 
 The others are installed with appImage.
 
@@ -155,7 +155,7 @@ If you can - after you [donated to this project](https://yphil.gitlab.io/ext/sup
 
 ### Controls
 
-- Home
+- **Home**
 
 Platforms / machines home carousel
 
@@ -165,7 +165,7 @@ Platforms / machines home carousel
 | Select highlighted platform | <kbd>Enter</kbd>               | Cross / A / South <kbd>⤫</kbd>                 |
 | Exit Emulsion               | <kbd>Ctrl</kbd> + <kbd>Q</kbd> | Circle / B / East <kbd>○</kbd>                 |
 
-- Galleries
+- **Game Galleries**
 
 Games (and plaforms config) pages
 
@@ -181,7 +181,7 @@ Games (and plaforms config) pages
 
 **1**: Only works on Linux ([for now](https://github.com/IBM/sdl2-gamecontroller/issues/16)).
 
-- Game menu
+- **Game cover art image menu**
 
 Game config / download cover art menu
 
@@ -190,7 +190,7 @@ Game config / download cover art menu
 | Navigate image thumbnails   | <kbd>←</kbd> / <kbd>→</kbd> / <kbd>↑</kbd> / <kbd>↓</kbd> | DPad                           |
 | Select / save image         | <kbd>Enter</kbd>                                          | Cross / A / South <kbd>⤫</kbd> |
 
-- Global controls
+- **Global controls**
 
 Works everywhere
 
@@ -203,17 +203,17 @@ Works everywhere
 | Reload Emulsion                                  | <kbd>F5</kbd>                                     |                                                |
 | Restart Emulsion                                 | <kbd>Shift</kbd> + <kbd>F5</kbd>                  | Select / Share + <kbd>▲</kbd>                  |
 
-- Mouse
+- **Mouse**
   - Left Click: Home: Select platform, Menu: Select and save cover art image, Gallery: **launch game** 🚀
   - Right-Click: Open contextual game menu
   - Mouse Wheel: Scroll / browse machines / games
 
-- Contextual help
+- **Contextual help**
   - Control hints appear in the footer based on current screen.
 
-### CLI
+### Command Line Interface
 
-Command Line Interface:
+CLI arguments
 
 ```
 Options:
@@ -224,7 +224,7 @@ Options:
 
 ## Can I help?
 
-Why of course, thank you for asking.
+Why of course, thank you for asking
 
 - [Donate](https://yphil.gitlab.io/ext/support.html)
 - [Report usage problems / suggestions](https://gitlab.com/yphil/emulsion/-/issues)

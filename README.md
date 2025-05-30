@@ -228,4 +228,4 @@ Why of course, thank you for asking
 - [Report usage problems / suggestions](https://gitlab.com/yphil/emulsion/-/issues)
 - [Contribute code](https://gitlab.com/yphil/emulsion/-/issues)
 
-This repository is a mirror of https://gitlab.com/yphil/emulsion the official [Emulsion](https://yphil.gitlab.io/emulsion) repo. [Back to top ↑](#features)
+This repository is a mirror of https://gitlab.com/yphil/emulsion the official [Emulsion](https://yphil.gitlab.io/emulsion) repo. [Back to top ↑](#emulsion)

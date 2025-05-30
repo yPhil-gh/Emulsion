@@ -11,14 +11,14 @@ A unified, lightweight frontend for your games. [Website](https://yphil.gitlab.i
 ![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png?xxx)
 
 - [Installation](#installation)
-  - [Package releases](#latest-package-releases-recommended)
+  - [Package](#package)
   - [Source](#source)
 - [Configuration](#configuration)
   - [QuickStart](#quickstart)
   - [Settings](#settings)
 - [Usage](#usage)
   - [Controls](#controls)
-  - [CLI](#command-line-interface)
+  - [Command Line Interface](#command-line-interface)
 
 ## Features
 
@@ -36,11 +36,13 @@ Emulsion is *reproductible*: Thanks to [its single **standard** config file](#se
 
 ## Installation
 
-### Latest Package releases (recommended)
+### Package
+
+Latest Package releases (recommended)
+
 - [Linux Deb](https://github.com/yPhil-gh/emulsion/releases/latest/download/emulsion_amd64.deb)
 - [Linux AppImage](https://github.com/yPhil-gh/emulsion/releases/latest/download/emulsion_x86_64.AppImage)
 - [Windows (unsigned)](https://github.com/yPhil-gh/emulsion/releases/latest/download/emulsion_x64.exe)
-
 - [Other Releases](https://github.com/yphil-gh/emulsion/releases/latest)
 
 ### Source
@@ -119,7 +121,7 @@ The other emulators can all be installed with appImage.
 
 #### Cover art
 
-Emulsion handles the download of the cover art images of you games.
+Press the <kbd>□</kbd> button or the <kbd>I</kbd> key to set the cover art image of the selected game.
 
 ##### backends API Keys
 

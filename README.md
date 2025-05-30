@@ -32,7 +32,7 @@ These features set it apart from solutions that:
 - Handle controller configuration (often unreliably)
 - Handle cover art downloads automatically / unattended / or even externally, without selection options
 
-Emulsion is *reproductible*: Thanks to [its single **standard** config file](#settings), you can install a full gaming PC in one command, and It-Won't-Move, like randomly greet you with a tedious game controller calibration dialog because it somehow forgot it.
+Emulsion is *reproductible*: Thanks to [its single **standard** config file](#configuration), you can install a full gaming PC in one command, and It-Won't-Move, like randomly greet you with a tedious game controller calibration dialog because it somehow forgot it.
 
 ## Installation
 
@@ -63,10 +63,10 @@ Latest Package releases (recommended)
    3. **Extensions**: Enter ".zip" (NB it's already the default) ;
 6. That's it, everything is saved in the configuration file, now ; Happy gaming !
 
-You configuration file is in `~/.config/emulsion/preferences.json`.
-
-**NB** with a game selected, press the image download key to select a cover art image ; it works right of the box, but you'll have better results by using the [Backends API keys](#backends-api-keys).
-**NB** This image is now in `~/.config/emulsion/covers/nes/game.jpg`.
+#### NB
+- You configuration file is in `~/.config/emulsion/preferences.json`
+- With a game selected, press the image download key to select a cover art image ; it works right of the box, but you'll have better results by using the [Backends API keys](#backends-api-keys).
+- The images are in `~/.config/emulsion/covers/[platform name]/[game name].jpg`.
 
 ### Settings
 

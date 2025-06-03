@@ -191,6 +191,7 @@ function getPlatformInfo(name) {
     const platforms = {
         'settings': { name: 'Settings', vendor: 'Emulsion' },
         'recents': { name: 'Recents', vendor: 'Emulsion' },
+        'spectrum': { name: 'ZX Spectrum', vendor: 'Sinclair' },
         'nes': { name: 'NES', vendor: 'Nintendo' },
         'sms': { name: 'Master System', vendor: 'Sega' },
         'pcengine': { name: 'PC Engine', vendor: 'NEC' },

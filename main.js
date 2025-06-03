@@ -485,6 +485,7 @@ const defaultPreferences = {
 };
 
 const platforms = [
+    { name: "spectrum", extensions: [".zip"] },
     { name: "nes", extensions: [".zip"] },
     { name: "sms", extensions: [".zip"] },
     { name: "pcengine", extensions: [".pce"] },

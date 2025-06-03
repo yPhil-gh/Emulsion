@@ -274,8 +274,16 @@ function initGallery(currentIndex, disabledPlatform) {
         const platformInfo = LB.utils.getPlatformInfo(page.dataset.platform);
 
         document.querySelector('header .platform-name').textContent = platformInfo.name;
-        document.querySelector('header .item-type').textContent = index === 0 ? ' platforms' : ' games';
-        document.querySelector('header .item-number').textContent = index === 0 ? gameContainers.length - 1 : gameContainers.length;
+
+        const pluralize = (count, singular, plural = `${singular}s`) =>
+              count === 1 ? singular : plural;
+
+        const count = index === 0 ? gameContainers.length - 1 : gameContainers.length;
+        const itemType = index === 0 ? 'platform' : 'game';
+
+        document.querySelector('header .item-number').textContent = count;
+        document.querySelector('header .item-type').textContent =
+            ` ${pluralize(count, itemType)}`;
 
         document.querySelector('header .platform-image').style.backgroundImage = `url('../../img/platforms/${page.dataset.platform}.png')`;
 

@@ -207,6 +207,7 @@ function getPlatformInfo(name) {
         'xbox': { name: 'X-Box', vendor: 'Microsoft' },
         'psp': { name: 'PS Portable', vendor: 'Sony' },
         'ps3': { name: 'PlayStation 3', vendor: 'Sony' },
+        '3ds': { name: '3DS', vendor: 'Nintendo' },
         'xbox360': { name: 'X-Box 360', vendor: 'Microsoft' }
     };
 

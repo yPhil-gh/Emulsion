@@ -501,6 +501,7 @@ const platforms = [
     { name: "xbox", extensions: [".iso"] },
     { name: "psp", extensions: [".iso"] },
     { name: "ps3", extensions: [".SFO"] },
+    { name: "3ds", extensions: [".3ds"] },
     { name: "xbox360", extensions: [".iso", ".xex"] }
 ];
 

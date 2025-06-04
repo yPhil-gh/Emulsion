@@ -1,8 +1,8 @@
 {
     "name": "emulsion",
-    "version": "0.4.0",
+    "version": "v0.4.3",
     "description": "Better gaming throught chemistry",
-    "homepage": "https://yphil.gitlab.io/2025/05/23/Emulsion/",
+    "homepage": "https://yphil.gitlab.io/emulsion",
     "license": "GPLv3",
     "author": {
         "name": "yPhil",

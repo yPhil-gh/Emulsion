@@ -8,7 +8,7 @@
 
 A unified, lightweight frontend for your games. [Website](https://yphil.gitlab.io/emulsion) | [GitLab](https://gitlab.com/yphil/emulsion) (main) | [GitHub](https://github.com/yPhil-gh/Emulsion) | [Blog](https://yphil.gitlab.io/)
 
-![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png?xy)
+![Emulsion](https://yphil.gitlab.io/images/emulsion-screenshot00.png?cache=xyz)
 
 - [Installation](#installation)
   - [Package](#package)

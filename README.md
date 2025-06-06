@@ -26,6 +26,7 @@ Emulsion
 - Unifies all *your* emulators in a single interface
 - Allows you to have your games stored in multiple locations / drives
 - Lets you *precisely* select game cover art from multiple backends
+- Works with both keyboard, mouse and (any) game controller
 
 These features set it apart from solutions that:
 - Centralize the emulators config files (which Emulsion doesn't do)

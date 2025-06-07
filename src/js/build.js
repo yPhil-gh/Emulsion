@@ -77,7 +77,7 @@ function buildGameMenu(gameName, image, platformName) {
 
     const currentImageContainer = document.createElement('div');
     currentImageContainer.classList.add('menu-game-container');
-    // currentImageContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+    currentImageContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
 
     const currentImage = document.createElement('img');
     currentImage.src = image.src;
@@ -99,7 +99,7 @@ function buildGameMenu(gameName, image, platformName) {
 
     const dummyGameContainer = document.createElement('div');
     dummyGameContainer.classList.add('menu-game-container', 'dummy-game-container');
-    // dummyGameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+    dummyGameContainer.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
     dummyGameContainer.innerHTML = `Searching...`;
 
     gameMenuContainer.appendChild(dummyGameContainer);
@@ -142,7 +142,7 @@ async function populateGameMenu(gameMenuContainer, gameName, platformName) {
 
         const container = document.createElement('div');
         container.classList.add('menu-game-container');
-        // container.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
+        container.style.height = 'calc(120vw / ' + LB.galleryNumOfCols + ')';
         container.appendChild(img);
         gameMenuContainer.appendChild(container);
 

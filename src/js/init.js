@@ -191,6 +191,7 @@ function getPlatformInfo(name) {
     const platforms = {
         'settings': { name: 'Settings', vendor: 'Emulsion' },
         'recents': { name: 'Recents', vendor: 'Emulsion' },
+        'atari': { name: '2600 / 5200 / 7800', vendor: 'Atari' },
         'spectrum': { name: 'ZX Spectrum', vendor: 'Sinclair' },
         'nes': { name: 'NES', vendor: 'Nintendo' },
         'sms': { name: 'Master System', vendor: 'Sega' },

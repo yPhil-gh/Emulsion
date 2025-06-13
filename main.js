@@ -12,10 +12,58 @@ import os from 'os';
 let childProcesses = new Map();
 
 let gamecontroller = null;
+
+const pjson = await loadPackageJson();
+
 const buttonStates = {
     back: false,
     dpdown: false,
 };
+
+
+// simple semantic‐version compare (returns -1 if a<b, 0 if =, +1 if a>b)
+function compareVersions(a, b) {
+  const pa = a.split('.').map(Number);
+  const pb = b.split('.').map(Number);
+  for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+    const na = pa[i] || 0;
+    const nb = pb[i] || 0;
+    if (na < nb) return -1;
+    if (na > nb) return +1;
+  }
+  return 0;
+}
+
+async function checkForUpdates() {
+  const repo = 'yPhil-gh/Emulsion';
+  const api  = `https://api.github.com/repos/${repo}/releases/latest`;
+  try {
+    const res        = await axios.get(api, { timeout: 5000 });
+    let latestTag    = res.data.tag_name;                 // e.g. "v1.2.3"
+        latestTag    = latestTag.startsWith('v')
+                       ? latestTag.slice(1)
+                       : latestTag;                      // => "1.2.3"
+    const currentVer = pjson.version;
+
+    const cmp = compareVersions(currentVer, latestTag);
+    if (cmp < 0) {
+      console.log(
+        `🚀 Update available! You are on ${currentVer}, ` +
+        `but latest is ${latestTag}. Visit ` +
+        `https://github.com/${repo}/releases/latest to download.`
+      );
+    } else if (cmp === 0) {
+      console.log(`✅ You are running the latest version (${currentVer}).`);
+    } else {
+      console.log(`👷‍♂️ You have a newer version (${currentVer}) than GitHub’s latest (${latestTag}).`);
+    }
+  } catch (err) {
+    console.warn('Could not check for updates:', err.message);
+  }
+}
+
+// --- after loading pjson, but before creating windows: ---
+await checkForUpdates();
 
 function fullRestart() {
   app.relaunch({ args: process.argv.slice(1).concat(['--restarted']) });
@@ -116,8 +164,6 @@ async function loadPackageJson() {
   const data = await readFile(pkgPath, 'utf-8');
   return JSON.parse(data);
 }
-
-const pjson = await loadPackageJson();
 
 const preferencesFilePath = path.join(app.getPath('userData'), "preferences.json");
 const recentFilePath = path.join(app.getPath('userData'), "recently_played.json");

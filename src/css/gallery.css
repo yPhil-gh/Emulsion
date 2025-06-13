@@ -115,7 +115,7 @@ div.menu-game-container:hover {
 }
 
 div.platform-info .vendor {
-  font-size: 1em;
+  font-size: clamp(18px, 1.8vw, 24px); /* Minimum, preferred, maximum */
   color: var(--color-platform-text-header);
 
   text-shadow:
@@ -126,7 +126,7 @@ div.platform-info .vendor {
 }
 
 div.platform-info .name {
-  font-size: 0.8em;
+  font-size: clamp(10px, 1vw, 20px); /* Minimum, preferred, maximum */
   color: whitesmoke;
 }
 

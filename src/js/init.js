@@ -191,7 +191,7 @@ function getPlatformInfo(name) {
     const platforms = {
         'settings': { name: 'Settings', vendor: 'Emulsion' },
         'recents': { name: 'Recents', vendor: 'Emulsion' },
-        'atari': { name: '2600 / 5200 / 7800', vendor: 'Atari' },
+        'atari': { name: '2600 +', vendor: 'Atari' },
         'spectrum': { name: 'ZX Spectrum', vendor: 'Sinclair' },
         'nes': { name: 'NES', vendor: 'Nintendo' },
         'sms': { name: 'Master System', vendor: 'Sega' },
@@ -212,8 +212,9 @@ function getPlatformInfo(name) {
         'xbox': { name: 'X-Box', vendor: 'Microsoft' },
         'psp': { name: 'PS Portable', vendor: 'Sony' },
         'ps3': { name: 'PlayStation 3', vendor: 'Sony' },
-        '3ds': { name: '3DS', vendor: 'Nintendo' },
-        'xbox360': { name: 'X-Box 360', vendor: 'Microsoft' }
+        '3ds': { name: '3/DS', vendor: 'Nintendo' },
+        'xbox360': { name: 'X-Box 360', vendor: 'Microsoft' },
+        'ps4': { name: 'PlayStation 4', vendor: 'Sony' },
     };
 
     // Return the platform info if found, otherwise return the original name as both name and vendor

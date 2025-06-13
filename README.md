@@ -27,6 +27,7 @@ Emulsion
 - Allows you to have your games stored in multiple locations / drives
 - Lets you *precisely* select game cover art from multiple backends
 - Works with both keyboard, mouse and (any) game controller
+- Adapts itself responsively to the size of the screen
 
 These features set it apart from solutions that:
 - Centralize the emulators config files (which Emulsion doesn't do)

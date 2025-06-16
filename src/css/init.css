@@ -121,6 +121,10 @@ body {
   /* perspective: 600px; */
 }
 
+a:link {
+  color: red;
+}
+
 main {
   display: none;
   /* display: flex; */

@@ -12,16 +12,20 @@
              background-color: #1e1e1e;
              color: white;
          }
+
          img {
              width: 164px;
-             /* margin: 20px; */
          }
+
          .content {
              display: flex;
              flex-direction: column;
-             /* flex: 1; */
              text-align: center;
              justify-content: center;
+         }
+
+         #update-available {
+             display: none;
          }
         </style>
         <link rel="stylesheet" href="../css/init.css">
@@ -30,8 +34,10 @@
     <body>
         <div class="content">
             <img src="../../img/icon.png" alt="App icon">
-            <h2>Emulsion</h2>
-            <p>Version <span id="version">x.y.z</span></p>
+            <h2>Emulsion <span id="current-version">x.y.z</span></h2>
+            <h3 id="update-available">
+                <button id="upgradeBtn" class="button">✨ <span id="latest-version"></span> is available!</button>
+            </h3>
             <div class="buttons">
                 <button class="button donate" id="donateBtn">Donate</button>
                 <button class="button close" id="closeBtn">OK</button>
@@ -40,17 +46,30 @@
         <script>
          const { ipcRenderer } = require('electron');
 
+         const params = new URLSearchParams(window.location.search);
+
+         const latestVersion = params.get('latestVersion');
+         const currentVersion = params.get('currentVersion');
+
+         document.getElementById('current-version').textContent = currentVersion;
+         document.getElementById('latest-version').textContent = latestVersion;
+
+         if (latestVersion && latestVersion !== currentVersion && latestVersion !== 'Error fetching latest') {
+             document.getElementById('update-available').style.display = 'block';
+         }
+
          document.getElementById('donateBtn').addEventListener('click', () => {
              window.close();
              ipcRenderer.invoke('go-to-url', 'https://yphil.gitlab.io/ext/support.html');
          });
 
-         document.getElementById('closeBtn').addEventListener('click', () => {
+         document.getElementById('upgradeBtn').addEventListener('click', () => {
              window.close();
+             ipcRenderer.invoke('go-to-url', 'https://github.com/yPhil-gh/Emulsion/releases');
          });
 
-         ipcRenderer.invoke('get-version').then(version => {
-             document.getElementById('version').textContent = version;
+         document.getElementById('closeBtn').addEventListener('click', () => {
+             window.close();
          });
         </script>
     </body>

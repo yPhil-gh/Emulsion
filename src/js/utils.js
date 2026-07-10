@@ -209,7 +209,7 @@ export function simulateTabNavigation(container, shiftKey = false) {
     }
 }
 
-export function simulateKeyDown(key, modifiers = {}) {
+export function simulateKeyDown(key, modifiers = {}, eventOptions = {}) {
     console.log("key: ", key);
     const keyCodes = {
         ArrowLeft: 37,
@@ -232,11 +232,63 @@ export function simulateKeyDown(key, modifiers = {}) {
         ctrlKey: modifiers.ctrl || false,
         altKey: modifiers.alt || false,
         metaKey: modifiers.meta || false,
+        repeat: eventOptions.repeat || false,
         bubbles: true,
         cancelable: true
     });
 
     document.dispatchEvent(keyboardEvent);
+}
+
+export function createProgressiveRepeater(onTrigger, options = {}) {
+    const {
+        initialDelay = 250,
+        steps = [
+            { afterMs: 0, interval: 110 },
+            { afterMs: 700, interval: 75 },
+            { afterMs: 1200, interval: 50 },
+            { afterMs: 1800, interval: 35 },
+        ]
+    } = options;
+
+    const states = new Map();
+    const sortedSteps = [...steps].sort((a, b) => b.afterMs - a.afterMs);
+
+    function getIntervalFor(heldForMs) {
+        const step = sortedSteps.find(({ afterMs }) => heldForMs >= afterMs);
+        return step ? step.interval : sortedSteps[sortedSteps.length - 1].interval;
+    }
+
+    return {
+        update(inputKey, isPressed, payload) {
+            const now = performance.now();
+            const state = states.get(inputKey);
+
+            if (!isPressed) {
+                states.delete(inputKey);
+                return;
+            }
+
+            if (!state) {
+                states.set(inputKey, {
+                    holdStartedAt: now,
+                    nextTriggerAt: now + initialDelay
+                });
+                onTrigger(payload);
+                return;
+            }
+
+            if (now >= state.nextTriggerAt) {
+                const heldForMs = now - state.holdStartedAt;
+                state.nextTriggerAt = now + getIntervalFor(heldForMs);
+                onTrigger(payload, { repeat: true });
+            }
+        },
+
+        reset() {
+            states.clear();
+        }
+    };
 }
 
 export function stripExtensions(fileName, platformExtensions = []) {

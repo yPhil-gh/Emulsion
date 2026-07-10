@@ -8,6 +8,7 @@ import { updateFooterControlsFor,
          batchDownload,
          launchGame,
          simulateKeyDown,
+         createProgressiveRepeater,
          toggleHeaderNavLinks,
          buildIcon,
          switchIcon } from './utils.js';
@@ -884,25 +885,45 @@ export function initGamepad() {
         16: false, // PS button (Home button)
     };
 
-    const repeatDelay = 250;
-    const repeatInterval = 50;
+    let animationFrameId = null;
+
+    const shoulderRepeater = createProgressiveRepeater(
+        (buttonIndex, eventOptions = {}) => handleGameControllerButtonPress(buttonIndex, eventOptions),
+        {
+            initialDelay: 250,
+            steps: [
+                { afterMs: 0, interval: 110 },
+                { afterMs: 700, interval: 75 },
+                { afterMs: 1200, interval: 50 },
+                { afterMs: 1800, interval: 35 },
+            ]
+        }
+    );
+
+    function isRepeatableButton(buttonIndex) {
+        return LB.controlScheme === 'pinball' && (buttonIndex === 4 || buttonIndex === 5);
+    }
 
     // Listen for gamepad connection events
     window.addEventListener('gamepadconnected', () => {
         ipcRenderer.invoke('game-controller-init');
-        requestAnimationFrame(pollGamepad);
+        if (!animationFrameId) {
+            animationFrameId = requestAnimationFrame(pollGamepad);
+        }
     });
 
     window.addEventListener('gamepaddisconnected', () => {
-        cancelAnimationFrame(pollGamepad);
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
+        shoulderRepeater.reset();
     });
 
     function pollGamepad() {
-        let animationFrameId = null;
         // If the document doesn't have focus, simply skip processing
         if (!document.hasFocus()) {
-            // Optionally, we can cancel polling here
-            // or simply schedule the next check
+            shoulderRepeater.reset();
             animationFrameId = requestAnimationFrame(pollGamepad);
             return;
         }
@@ -918,40 +939,40 @@ export function initGamepad() {
 
             // Left stick horizontal (left/right)
             if (leftStickX < -threshold) {
-                if (!buttonStates['leftStickLeft']) {
-                    buttonStates['leftStickLeft'] = true;
+                if (!buttonStates.leftStickLeft) {
+                    buttonStates.leftStickLeft = true;
                     handleGameControllerButtonPress(14); // Left
                 }
-            } else if (buttonStates['leftStickLeft']) {
-                buttonStates['leftStickLeft'] = false;
+            } else if (buttonStates.leftStickLeft) {
+                buttonStates.leftStickLeft = false;
             }
 
             if (leftStickX > threshold) {
-                if (!buttonStates['leftStickRight']) {
-                    buttonStates['leftStickRight'] = true;
+                if (!buttonStates.leftStickRight) {
+                    buttonStates.leftStickRight = true;
                     handleGameControllerButtonPress(15); // Right
                 }
-            } else if (buttonStates['leftStickRight']) {
-                buttonStates['leftStickRight'] = false;
+            } else if (buttonStates.leftStickRight) {
+                buttonStates.leftStickRight = false;
             }
 
             // Left stick vertical (up/down)
             if (leftStickY < -threshold) {
-                if (!buttonStates['leftStickUp']) {
-                    buttonStates['leftStickUp'] = true;
+                if (!buttonStates.leftStickUp) {
+                    buttonStates.leftStickUp = true;
                     handleGameControllerButtonPress(12); // Up
                 }
-            } else if (buttonStates['leftStickUp']) {
-                buttonStates['leftStickUp'] = false;
+            } else if (buttonStates.leftStickUp) {
+                buttonStates.leftStickUp = false;
             }
 
             if (leftStickY > threshold) {
-                if (!buttonStates['leftStickDown']) {
-                    buttonStates['leftStickDown'] = true;
+                if (!buttonStates.leftStickDown) {
+                    buttonStates.leftStickDown = true;
                     handleGameControllerButtonPress(13); // Down
                 }
-            } else if (buttonStates['leftStickDown']) {
-                buttonStates['leftStickDown'] = false;
+            } else if (buttonStates.leftStickDown) {
+                buttonStates.leftStickDown = false;
             }
 
             [0,1,2,3,4,5,8,12,13,14,15].forEach((buttonIndex) => {
@@ -963,6 +984,21 @@ export function initGamepad() {
                         buttonStates[buttonIndex] = true;
                     } else if (!button.pressed && wasPressed) {
                         buttonStates[buttonIndex] = false;
+                    }
+                } else if (isRepeatableButton(buttonIndex)) {
+                    if (button.pressed) {
+                        buttonStates[buttonIndex] = true;
+                        shoulderRepeater.update(buttonIndex, true, buttonIndex);
+                    } else {
+                        shoulderRepeater.update(buttonIndex, false, buttonIndex);
+                        if (wasPressed) {
+                            buttonStates[buttonIndex] = false;
+                            if (buttonIndex === 12 && buttonStates[8]) {
+                                console.log('Share + Up combo!');
+                                ipcRenderer.invoke('restart');
+                                return;
+                            }
+                        }
                     }
                 } else {
                     if (button.pressed && !wasPressed) {
@@ -978,13 +1014,15 @@ export function initGamepad() {
                     }
                 }
             });
+        } else {
+            shoulderRepeater.reset();
         }
 
         // Continue polling
         animationFrameId = requestAnimationFrame(pollGamepad);
     }
 
-    function handleGameControllerButtonPress(buttonIndex) {
+    function handleGameControllerButtonPress(buttonIndex, eventOptions = {}) {
         // Trigger no-hover mode when any gamepad input is detected
         if (window.hideCursor) {
             window.hideCursor();
@@ -1010,32 +1048,32 @@ export function initGamepad() {
             break;
         case 4:
             if (LB.controlScheme === "pinball") {
-                simulateKeyDown('ArrowLeft');
+                simulateKeyDown('ArrowLeft', {}, eventOptions);
             } else {
-                simulateKeyDown('ArrowLeft', { shift: true });
+                simulateKeyDown('ArrowLeft', { shift: true }, eventOptions);
             }
             break;
         case 5:
             if (LB.controlScheme === "pinball") {
-                simulateKeyDown('ArrowRight');
+                simulateKeyDown('ArrowRight', {}, eventOptions);
             } else {
-                simulateKeyDown('ArrowRight', { shift: true });
+                simulateKeyDown('ArrowRight', { shift: true }, eventOptions);
             }
             break;
         case 8:
             simulateKeyDown('/');
             break;
         case 12:
-            simulateKeyDown('ArrowUp');
+            simulateKeyDown('ArrowUp', {}, eventOptions);
             break;
         case 13:
-            simulateKeyDown('ArrowDown');
+            simulateKeyDown('ArrowDown', {}, eventOptions);
             break;
         case 14:
-            simulateKeyDown('ArrowLeft');
+            simulateKeyDown('ArrowLeft', {}, eventOptions);
             break;
         case 15:
-            simulateKeyDown('ArrowRight');
+            simulateKeyDown('ArrowRight', {}, eventOptions);
             break;
         }
     }

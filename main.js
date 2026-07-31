@@ -572,6 +572,13 @@ function loadPreferences() {
             shouldSave = true;
         }
 
+        for (const platform of PLATFORMS) {
+            if (!preferences[platform.name]) {
+                preferences[platform.name] = { ...defaultPreferences[platform.name] };
+                shouldSave = true;
+            }
+        }
+
         for (const [platform, platformPreferences] of Object.entries(preferences)) {
             if (platform === 'settings') {
                 if (
@@ -1089,6 +1096,7 @@ ipcMain.on('run-command', async (event, launchRequest) => {
         await isCommandAvailable('gamemoderun');
 
     const romDir = path.dirname(gamePath);
+    const romShortName = path.basename(gamePath, path.extname(gamePath));
 
     let cmd;
     let args = [];
@@ -1108,11 +1116,31 @@ ipcMain.on('run-command', async (event, launchRequest) => {
         args = emulatorParts.slice(1);
     }
 
-    if (emulatorArgs) {
-        args.push(...emulatorArgs.split(/\s+/).filter(Boolean));
-    }
+    const parsedEmulatorArgs = emulatorArgs
+        ? emulatorArgs.split(/\s+/).filter(Boolean)
+        : [];
 
-    args.push(gamePath);
+    if (platform === 'mame') {
+        const sanitizedEmulatorArgs = [];
+
+        for (let i = 0; i < parsedEmulatorArgs.length; i++) {
+            const currentArg = parsedEmulatorArgs[i];
+
+            if (currentArg === '-rompath') {
+                const nextArg = parsedEmulatorArgs[i + 1];
+                if (nextArg && !nextArg.startsWith('-')) {
+                    i++;
+                }
+                continue;
+            }
+
+            sanitizedEmulatorArgs.push(currentArg);
+        }
+
+        args.push(...sanitizedEmulatorArgs, '-rompath', romDir, romShortName);
+    } else {
+        args.push(...parsedEmulatorArgs, gamePath);
+    }
 
     if (shouldUseGameMode && cmd !== 'gamemoderun') {
         args = [cmd, ...args];

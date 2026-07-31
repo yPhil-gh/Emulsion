@@ -1303,6 +1303,15 @@ export async function getPs3GameName(filePath) {
     }
 }
 
+export async function getMameNameMap(emulatorCommand) {
+    try {
+        return await ipcRenderer.invoke('get-mame-name-map', emulatorCommand);
+    } catch (err) {
+        console.error('Failed to resolve MAME titles:', err);
+        return {};
+    }
+}
+
 export function launchGame(gameContainer) {
 
     // Remove launching class from ALL game containers

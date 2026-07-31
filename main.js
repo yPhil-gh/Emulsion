@@ -15,6 +15,7 @@ import os from 'os';
 
 
 let childProcesses = new Map();
+let mameNameMapCache = new Map();
 
 let gamecontroller = null;
 
@@ -1152,17 +1153,88 @@ ipcMain.on('run-command', async (event, launchRequest) => {
     try {
         const child = spawn(cmd, args, {
             detached: true,
-            stdio: 'ignore'
+            stdio: ['ignore', 'pipe', 'pipe']
         });
 
         child.unref();
         childProcesses.set(child.pid, child);
 
-        child.on('exit', () => {
+        const launchStartedAt = Date.now();
+        const launchFailureWindowMs = 5000;
+        let stdoutBuffer = '';
+        let stderrBuffer = '';
+        let launchErrorReported = false;
+
+        const appendChunk = (buffer, chunk) => {
+            const combined = `${buffer}${chunk}`;
+            return combined.length > 12000 ? combined.slice(-12000) : combined;
+        };
+
+        const reportLaunchError = (message, details = '') => {
+            if (launchErrorReported) {
+                return;
+            }
+
+            launchErrorReported = true;
+            event.reply('launch-error', {
+                gameName,
+                platform,
+                message,
+                details: details.trim()
+            });
+        };
+
+        child.stdout?.on('data', (data) => {
+            const text = data.toString();
+            stdoutBuffer = appendChunk(stdoutBuffer, text);
+            process.stdout.write(text);
+        });
+
+        child.stderr?.on('data', (data) => {
+            const text = data.toString();
+            stderrBuffer = appendChunk(stderrBuffer, text);
+            process.stderr.write(text);
+        });
+
+        child.on('error', (error) => {
+            console.error('Error launching game:', error);
             childProcesses.delete(child.pid);
+            reportLaunchError(
+                `${gameName} can't be run for some reason.`,
+                error.message
+            );
+        });
+
+        child.on('close', (code, signal) => {
+            childProcesses.delete(child.pid);
+
+            const exitedQuickly = Date.now() - launchStartedAt <= launchFailureWindowMs;
+            if (launchErrorReported || !exitedQuickly || code === 0) {
+                return;
+            }
+
+            const details = [stderrBuffer, stdoutBuffer]
+                .filter(Boolean)
+                .join('\n')
+                .trim();
+
+            const reason = signal
+                ? `Launch process exited with signal ${signal}.`
+                : `Launch process exited with code ${code}.`;
+
+            reportLaunchError(
+                `${gameName} can't be run for some reason.`,
+                details || reason
+            );
         });
     } catch (error) {
         console.error('Error launching game:', error);
+        event.reply('launch-error', {
+            gameName,
+            platform,
+            message: `${gameName} can't be run for some reason.`,
+            details: error.message
+        });
     }
 });
 
@@ -1305,6 +1377,36 @@ function killChildProcesses(childProcesses) {
     childProcesses.clear();
 }
 
+function decodeXmlEntities(text = '') {
+    return text
+        .replace(/&quot;/g, '"')
+        .replace(/&apos;/g, "'")
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&');
+}
+
+function parseMameListXml(output) {
+    const machineMap = {};
+    const machineRegex = /<machine\b[^>]*\bname="([^"]+)"[^>]*>([\s\S]*?)<\/machine>/g;
+
+    for (const match of output.matchAll(machineRegex)) {
+        const shortName = match[1];
+        const machineBody = match[2];
+        const descriptionMatch = machineBody.match(/<description>([\s\S]*?)<\/description>/);
+        const yearMatch = machineBody.match(/<year>([\s\S]*?)<\/year>/);
+        const manufacturerMatch = machineBody.match(/<manufacturer>([\s\S]*?)<\/manufacturer>/);
+
+        machineMap[shortName] = {
+            displayName: descriptionMatch ? decodeXmlEntities(descriptionMatch[1].trim()) : shortName,
+            year: yearMatch ? decodeXmlEntities(yearMatch[1].trim()) : '',
+            manufacturer: manufacturerMatch ? decodeXmlEntities(manufacturerMatch[1].trim()) : ''
+        };
+    }
+
+    return machineMap;
+}
+
 ipcMain.handle('parse-sfo', async (_event, filePath) => {
     return new Promise((resolve, reject) => {
         const exePath = getExecutablePath();
@@ -1326,6 +1428,60 @@ ipcMain.handle('parse-sfo', async (_event, filePath) => {
             } else {
                 reject(new Error(`SFO parser failed with code ${code}`));
             }
+        });
+    });
+});
+
+ipcMain.handle('get-mame-name-map', async (_event, emulatorCommand) => {
+    if (typeof emulatorCommand !== 'string' || emulatorCommand.trim() === '') {
+        return {};
+    }
+
+    const cacheKey = emulatorCommand.trim();
+    if (mameNameMapCache.has(cacheKey)) {
+        return mameNameMapCache.get(cacheKey);
+    }
+
+    return new Promise((resolve) => {
+        const emulatorParts = cacheKey.split(/\s+/).filter(Boolean);
+        if (emulatorParts.length === 0) {
+            resolve({});
+            return;
+        }
+
+        let cmd;
+        let args;
+
+        if (emulatorParts[0] === 'flatpak' && emulatorParts[1] === 'run') {
+            cmd = 'flatpak';
+            args = ['run', ...emulatorParts.slice(2), '-listxml'];
+        } else {
+            cmd = emulatorParts[0];
+            args = [...emulatorParts.slice(1), '-listxml'];
+        }
+
+        const process = spawn(cmd, args);
+        let output = '';
+
+        process.stdout.on('data', (data) => {
+            output += data.toString();
+        });
+
+        process.on('error', (error) => {
+            console.warn(`Failed to resolve MAME data with "${cacheKey}": ${error.message}`);
+            resolve({});
+        });
+
+        process.on('close', (code) => {
+            if (code !== 0) {
+                console.warn(`MAME data resolver exited with code ${code} for "${cacheKey}".`);
+                resolve({});
+                return;
+            }
+
+            const machineMap = parseMameListXml(output);
+            mameNameMapCache.set(cacheKey, machineMap);
+            resolve(machineMap);
         });
     });
 });

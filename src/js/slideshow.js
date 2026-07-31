@@ -43,6 +43,7 @@ export function initSlideShow(platformToDisplay) {
 
     main.style.top = 0;
 
+    document.getElementById('menu').style.display = 'none';
     galleries.style.display = 'none';
     slideshow.style.display = 'flex';
 

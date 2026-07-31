@@ -3,6 +3,7 @@ import { cleanFileName,
          stripExtensions,
          scanDirectory,
          getPs3GameName,
+         getMameNameMap,
          findImageFile,
          buildIcon,
          extractVpxYear,
@@ -15,6 +16,21 @@ let favoriteGamePaths = new Set();
 
 function isFavoriteGamePath(gamePath) {
     return favoriteGamePaths.has(gamePath);
+}
+
+function getMameMachineData(mameNameMap, gameName) {
+    const machine = mameNameMap?.[gameName];
+
+    return {
+        displayName: machine?.displayName || cleanFileName(gameName),
+        year: machine?.year || '',
+        yearNumber: parseInt(machine?.year, 10) || 0,
+        manufacturer: machine?.manufacturer || ''
+    };
+}
+
+function formatMameBadge(machine) {
+    return [machine?.manufacturer, machine?.year].filter(Boolean).join(' ');
 }
 
 export async function buildGalleries (preferences, userDataPath) {
@@ -161,11 +177,39 @@ export async function buildGallery(params) {
     const imagesDir = path.join(gamesDir, 'images');
 
     const gameFiles = await scanDirectory(gamesDir, extensions, true);
+    const mameNameMap = platform === 'mame'
+        ? await getMameNameMap(emulator)
+        : {};
 
     // Sort based on sortGamesBy preference
     const sortGamesBy = LB.preferences[platform]?.sortGamesBy || 'name';
 
-    if (sortGamesBy === 'date') {
+    if (platform === 'mame') {
+        gameFiles.sort((a, b) => {
+            const gameNameA = stripExtensions(path.basename(a), extensions);
+            const gameNameB = stripExtensions(path.basename(b), extensions);
+            const machineA = getMameMachineData(mameNameMap, gameNameA);
+            const machineB = getMameMachineData(mameNameMap, gameNameB);
+
+            if (sortGamesBy === 'date') {
+                if (machineA.yearNumber !== machineB.yearNumber) return machineA.yearNumber - machineB.yearNumber;
+                return machineA.displayName.localeCompare(machineB.displayName, undefined, { numeric: true, sensitivity: 'base' });
+            }
+
+            if (sortGamesBy === 'vendor') {
+                if (!machineA.manufacturer && machineB.manufacturer) return 1;
+                if (machineA.manufacturer && !machineB.manufacturer) return -1;
+                if (machineA.manufacturer && machineB.manufacturer) {
+                    const vendorCompare = machineA.manufacturer.localeCompare(machineB.manufacturer, undefined, { sensitivity: 'base' });
+                    if (vendorCompare !== 0) return vendorCompare;
+                }
+                if (machineA.yearNumber !== machineB.yearNumber) return machineA.yearNumber - machineB.yearNumber;
+                return machineA.displayName.localeCompare(machineB.displayName, undefined, { numeric: true, sensitivity: 'base' });
+            }
+
+            return machineA.displayName.localeCompare(machineB.displayName, undefined, { numeric: true, sensitivity: 'base' });
+        });
+    } else if (sortGamesBy === 'date') {
         gameFiles.sort((a, b) => {
             const yearA = extractVpxYear(path.basename(a));
             const yearB = extractVpxYear(path.basename(b));
@@ -215,6 +259,8 @@ export async function buildGallery(params) {
     for (const [i, gamePath] of gameFiles.entries()) {
         const rawGameFileName = path.basename(gamePath);
         let gameName = stripExtensions(rawGameFileName, extensions);
+        let displayName;
+        let badgeText;
 
         if (platform === 'ps3') {
             try {
@@ -225,6 +271,10 @@ export async function buildGallery(params) {
             } catch (err) {
                 console.warn(`Failed to parse PS3 title for ${gamePath}:`, err);
             }
+        } else if (platform === 'mame') {
+            const mameMachine = getMameMachineData(mameNameMap, gameName);
+            displayName = mameMachine.displayName;
+            badgeText = formatMameBadge(mameMachine);
         }
 
         const gameContainer = await buildGameContainer({
@@ -233,6 +283,8 @@ export async function buildGallery(params) {
             emulatorArgs,
             gamePath,
             gameName,
+            displayName,
+            badgeText,
             index: i
         });
 
@@ -258,6 +310,8 @@ export async function buildGameContainer({
     emulatorArgs,
     gamePath,
     gameName,
+    displayName,
+    badgeText,
     index
 }) {
     const container = document.createElement('div');
@@ -266,7 +320,7 @@ export async function buildGameContainer({
         console.warn(`Platform "${platform}" not found in preferences, skipping game: ${gameName}`);
         return null;
     }
-    const cleanName = cleanFileName(gameName);
+    const cleanName = displayName || cleanFileName(gameName);
     const coverPath = await findImageFile(path.join(gamesDir, 'images'), gameName);
     const platformBadge = document.createElement('div');
     platformBadge.className = 'platform-badge';
@@ -277,6 +331,10 @@ export async function buildGameContainer({
         const vendor = extractVpxVendor(gameName) || 'N/A';
         const year = extractVpxYear(gameName) || 'N/A';
         platformBadge.textContent = `${vendor} ${year}`;
+        platformBadge.style.display = 'block';
+    } else if (platform === 'mame') {
+        platformBadge.textContent = badgeText || platform;
+        platformBadge.title = badgeText || platform;
         platformBadge.style.display = 'block';
     } else {
         platformBadge.textContent = platform;
@@ -343,15 +401,34 @@ async function buildRecordGalleryPage({ loadingName, pagePlatform, pageViewMode,
 
     if (hasRecords) {
         const fragment = document.createDocumentFragment();
+        const mameNameMaps = new Map();
 
         for (const [i, gameRecord] of gameRecords.entries()) {
             try {
+                let displayName;
+                let badgeText;
+
+                if (gameRecord.platform === 'mame') {
+                    const mameEmulator = LB.preferences?.mame?.emulator || '';
+
+                    if (!mameNameMaps.has(mameEmulator)) {
+                        mameNameMaps.set(mameEmulator, await getMameNameMap(mameEmulator));
+                    }
+
+                    const mameNameMap = mameNameMaps.get(mameEmulator) || {};
+                    const mameMachine = getMameMachineData(mameNameMap, gameRecord.gameName);
+                    displayName = mameMachine.displayName;
+                    badgeText = formatMameBadge(mameMachine);
+                }
+
                 const gameContainer = await buildGameContainer({
                     platform: gameRecord.platform,
                     emulator: '',
                     emulatorArgs: '',
                     gamePath: gameRecord.gamePath,
                     gameName: gameRecord.gameName,
+                    displayName,
+                    badgeText,
                     index: i
                 });
 

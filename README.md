@@ -158,6 +158,21 @@ Emulsion helps you manage emulator setup per platform.
 
 Either way, the result is the same: once configured, it becomes a set-it-and-forget-it frontend.
 
+### MAME note
+
+MAME is handled slightly differently from most platforms.
+
+- Set the **games directory** to your MAME ROM folder
+- Set the **emulator** to your MAME binary or command
+- Use **Emulator Arguments** only for optional extra flags
+
+Emulsion automatically launches MAME with the ROM folder as `-rompath` and uses the ROM filename without extension as the game name.
+
+Example:
+
+- ROM file: `~/roms/mame/roms/gridlee.zip`
+- Launch shape: `mame [extra args] -rompath ~/roms/mame/roms gridlee`
+
 ![Emulators management](https://yphil.gitlab.io/images/emulsion-emulators-n64.png?cache=x)
 
 ## Metadata & cover art
@@ -294,6 +309,7 @@ Current platform keys include:
 - `xbox360`
 - `ps4`
 - `vpx`
+- `mame`
 - plus `recents` and `favorites`
 
 Not every platform has to be enabled. Emulsion is happy with a tiny curated setup or a giant all-in-one cabinet build.

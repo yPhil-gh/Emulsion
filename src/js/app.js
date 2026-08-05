@@ -5,7 +5,7 @@ const fsp = require('fs').promises;
 const axios = require('axios');
 
 import * as preferences from './preferences.js';
-import { systemDialog, helpDialog } from './dialog.js';
+import { systemDialog, helpDialog, launchErrorDialog } from './dialog.js';
 import { applyTheme, setFooterSize, initFooterControls, updateLabelFontSize } from './utils.js';
 import { buildHomeSlide, initSlideShow, initGallery, initGamepad } from './slideshow.js';
 import { loadPreferences } from './preferences.js';
@@ -31,6 +31,7 @@ let mouseBlankerTimer = null;
 let lastInputWasMouse = false;
 const MOUSE_TIMEOUT = 3000;
 let storedTitles = new Map(); // Store title attributes for restoration
+let loadingCursorActive = false;
 
 function handleMouseInput() {
     lastInputWasMouse = true;
@@ -68,13 +69,44 @@ function restoreTitles() {
     storedTitles.clear();
 }
 
+function setLoadingCursor(active) {
+    loadingCursorActive = active;
+
+    if (active) {
+        document.body.classList.add('busy');
+        document.body.classList.remove('no-hover');
+        restoreTitles();
+    } else {
+        document.body.classList.remove('busy');
+        if (lastInputWasMouse) {
+            showCursor();
+        } else {
+            hideCursor();
+        }
+    }
+}
+
 function showCursor() {
+    if (loadingCursorActive) {
+        document.body.classList.add('busy');
+        document.body.classList.remove('no-hover');
+        restoreTitles();
+        return;
+    }
+
     document.body.style.cursor = 'default';
     document.body.classList.remove('no-hover');
     restoreTitles();
 }
 
 function hideCursor() {
+    if (loadingCursorActive) {
+        document.body.classList.add('busy');
+        document.body.classList.remove('no-hover');
+        restoreTitles();
+        return;
+    }
+
     document.body.style.cursor = 'none';
     document.body.classList.add('no-hover');
     removeTitles();
@@ -144,7 +176,7 @@ async function initializeApp() {
         document.addEventListener('wheel', handleMouseInput);
         document.addEventListener('keydown', handleNonMouseInput);
 
-        hideCursor();
+        setLoadingCursor(true);
         resetMouseTimer();
 
         // Set up IPC listeners
@@ -152,6 +184,10 @@ async function initializeApp() {
             import('./dialog.js').then(({ resetPrefsDialog }) => {
                 resetPrefsDialog(errorMessage);
             });
+        });
+
+        ipcRenderer.on('launch-error', (_event, payload) => {
+            launchErrorDialog(payload);
         });
 
         // Set up keyboard shortcuts
@@ -191,6 +227,8 @@ async function initializeApp() {
                 window.onInstallKeyDown(event);
             } else if (LB.mode === 'resetPrefs' && window.onResetPrefsKeyDown) {
                 window.onResetPrefsKeyDown(event);
+            } else if (LB.mode === 'launchError' && window.onLaunchErrorKeyDown) {
+                window.onLaunchErrorKeyDown(event);
             }
         });
 
@@ -219,6 +257,7 @@ async function initializeApp() {
                     document.getElementById("main").style.display = 'flex';
                     document.getElementById("footer").style.display = 'flex';
 
+                    setLoadingCursor(false);
                     updateLabelFontSize(LB.galleryNumOfCols);
 
                     const canAutoSelect =

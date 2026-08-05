@@ -3,11 +3,12 @@
   left: 0;
   top: 101px;
 
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: stretch;
 
   width: 100vw;
+  height: calc(100vh - 101px);
 
   font-size: 16pt;
   font-weight: bold;
@@ -106,10 +107,12 @@ button {
   display: flex;
   flex-direction: column;
   gap: 0.3em;
-  justify-content: center;
+  justify-content: flex-start;
 
   width: 80vw;
   max-width: 1200px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 #platform-form > div {
@@ -130,7 +133,7 @@ button {
     display: none;
   }
   .platform-menu-container {
-    margin-top: 100px;
+    margin-top: 20px;
   }
 }
 

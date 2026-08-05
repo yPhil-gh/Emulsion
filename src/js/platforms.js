@@ -345,6 +345,18 @@ export const PLATFORMS = [
         emulators: [
             { name: "VPXStandalone", flatpak: null, scoop: null, url:"https://github.com/vpinball/vpinball", args: "--play" }
         ]
+    },
+    {
+        nbGames: 0,
+        display: "grid",
+        displayName: "MAME",
+        vendor: "MAME dev Team",
+        name: "mame",
+        extensions: [".zip"],
+        sortGamesBy: "name",
+        emulators: [
+            { name: "MAME", flatpak: "org.mamedev.MAME", scoop: null, url:"https://www.mamedev.org/", args: "" }
+        ]
     }
 ];
 

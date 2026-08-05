@@ -5,7 +5,7 @@ const fsp = require('fs').promises;
 const axios = require('axios');
 
 import * as preferences from './preferences.js';
-import { systemDialog, helpDialog } from './dialog.js';
+import { systemDialog, helpDialog, launchErrorDialog } from './dialog.js';
 import { applyTheme, setFooterSize, initFooterControls, updateLabelFontSize } from './utils.js';
 import { buildHomeSlide, initSlideShow, initGallery, initGamepad } from './slideshow.js';
 import { loadPreferences } from './preferences.js';
@@ -186,6 +186,10 @@ async function initializeApp() {
             });
         });
 
+        ipcRenderer.on('launch-error', (_event, payload) => {
+            launchErrorDialog(payload);
+        });
+
         // Set up keyboard shortcuts
         document.addEventListener('keydown', async (event) => {
 
@@ -223,6 +227,8 @@ async function initializeApp() {
                 window.onInstallKeyDown(event);
             } else if (LB.mode === 'resetPrefs' && window.onResetPrefsKeyDown) {
                 window.onResetPrefsKeyDown(event);
+            } else if (LB.mode === 'launchError' && window.onLaunchErrorKeyDown) {
+                window.onLaunchErrorKeyDown(event);
             }
         });
 

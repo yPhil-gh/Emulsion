@@ -935,6 +935,65 @@ export function preferencesErrorDialog(errorMessage) {
     }
 }
 
+export function launchErrorDialog({ gameName, message, details = '' }) {
+    let overlay = document.getElementById('launch-error-overlay');
+
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'launch-error-overlay';
+        overlay.className = 'overlay popup-overlay';
+        overlay.innerHTML = `
+            <div class="dialog launch-error-dialog">
+                <h2 class="dialog-title">Launch Error</h2>
+                <div class="dialog-body">
+                    <p class="error-message"></p>
+                    <pre class="text launch-error-details"></pre>
+                </div>
+                <div class="dialog-buttons">
+                    <button class="button ok">OK</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    }
+
+    const dialog = overlay.querySelector('.dialog');
+    const messageElement = overlay.querySelector('.error-message');
+    const detailsElement = overlay.querySelector('.launch-error-details');
+    const okButton = overlay.querySelector('.ok');
+
+    messageElement.textContent = message || `${gameName} can't be run for some reason.`;
+    detailsElement.textContent = details || '';
+    detailsElement.style.display = details ? 'block' : 'none';
+
+    function closeDialog() {
+        DialogManager.closeCurrent();
+        DialogManager.restoreMode();
+    }
+
+    okButton.onclick = () => closeDialog();
+    overlay.onclick = (event) => {
+        if (event.target === overlay) {
+            closeDialog();
+        }
+    };
+
+    window.onLaunchErrorKeyDown = function onLaunchErrorKeyDown(event) {
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        switch (event.key) {
+        case 'Enter':
+        case 'Escape':
+            closeDialog();
+            break;
+        }
+    };
+
+    DialogManager.open(overlay, 'launchError');
+    okButton.focus();
+}
+
 export function resetPrefsDialog(errorMessage) {
     const overlay = document.getElementById('reset-prefs-overlay');
     const dialog = overlay.querySelector('#reset-prefs-dialog');

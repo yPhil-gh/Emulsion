@@ -8,6 +8,9 @@ const fs = require('fs');
 const path = require('path');
 const fsp = fs.promises;
 
+const IMAGE_EXTENSIONS = new Set(['.png', '.jpg', '.jpeg', '.webp']);
+const imageIndexCache = new Map();
+
 export function initFooterControls() {
     updateFooterControls('dpad', 'ew', 'Platforms', 'on');
     updateFooterControls('shoulders', 'same', 'same', 'off');
@@ -206,7 +209,7 @@ export function simulateTabNavigation(container, shiftKey = false) {
     }
 }
 
-export function simulateKeyDown(key, modifiers = {}) {
+export function simulateKeyDown(key, modifiers = {}, eventOptions = {}) {
     console.log("key: ", key);
     const keyCodes = {
         ArrowLeft: 37,
@@ -229,11 +232,63 @@ export function simulateKeyDown(key, modifiers = {}) {
         ctrlKey: modifiers.ctrl || false,
         altKey: modifiers.alt || false,
         metaKey: modifiers.meta || false,
+        repeat: eventOptions.repeat || false,
         bubbles: true,
         cancelable: true
     });
 
     document.dispatchEvent(keyboardEvent);
+}
+
+export function createProgressiveRepeater(onTrigger, options = {}) {
+    const {
+        initialDelay = 250,
+        steps = [
+            { afterMs: 0, interval: 110 },
+            { afterMs: 700, interval: 75 },
+            { afterMs: 1200, interval: 50 },
+            { afterMs: 1800, interval: 35 },
+        ]
+    } = options;
+
+    const states = new Map();
+    const sortedSteps = [...steps].sort((a, b) => b.afterMs - a.afterMs);
+
+    function getIntervalFor(heldForMs) {
+        const step = sortedSteps.find(({ afterMs }) => heldForMs >= afterMs);
+        return step ? step.interval : sortedSteps[sortedSteps.length - 1].interval;
+    }
+
+    return {
+        update(inputKey, isPressed, payload) {
+            const now = performance.now();
+            const state = states.get(inputKey);
+
+            if (!isPressed) {
+                states.delete(inputKey);
+                return;
+            }
+
+            if (!state) {
+                states.set(inputKey, {
+                    holdStartedAt: now,
+                    nextTriggerAt: now + initialDelay
+                });
+                onTrigger(payload);
+                return;
+            }
+
+            if (now >= state.nextTriggerAt) {
+                const heldForMs = now - state.holdStartedAt;
+                state.nextTriggerAt = now + getIntervalFor(heldForMs);
+                onTrigger(payload, { repeat: true });
+            }
+        },
+
+        reset() {
+            states.clear();
+        }
+    };
 }
 
 export function stripExtensions(fileName, platformExtensions = []) {
@@ -401,14 +456,123 @@ export function extractVpxVendor(filename) {
     return '';
 }
 
-export function getFilenamePublisherYear(filename) {
+export function getFilenamePublisherReleaseDate(filename) {
     const publisher = extractVpxVendor(filename);
-    const year = extractVpxYear(filename);
+    const releaseDate = extractVpxYear(filename);
 
     return {
-        Publisher: publisher || '',
-        Year: year ? String(year) : ''
+        publisher: publisher || '',
+        releaseDate: releaseDate ? String(releaseDate) : ''
     };
+}
+
+function normalizeFavoriteRecordText(value) {
+    return typeof value === 'string' ? value.trim() : '';
+}
+
+function normalizeFavoriteRecordReleaseDate(value) {
+    const normalized = normalizeFavoriteRecordText(value);
+
+    if (
+        !normalized ||
+        normalized === 'N/A' ||
+        normalized === 'Unknown' ||
+        normalized === 'undefined' ||
+        normalized === 'null' ||
+        normalized === '0000-12-31T00:00:00Z' ||
+        /^--\d{2}-\d{2}$/.test(normalized)
+    ) {
+        return '';
+    }
+
+    return normalized;
+}
+
+function findMetadataFilePath(gamePath, gameName) {
+    if (
+        typeof gamePath !== 'string' ||
+        gamePath.trim() === '' ||
+        typeof gameName !== 'string' ||
+        gameName.trim() === ''
+    ) {
+        return null;
+    }
+
+    const metadataFileName = `${gameName}.json`;
+    let currentDir = path.dirname(gamePath);
+    let previousDir = null;
+
+    while (currentDir && currentDir !== previousDir) {
+        const candidatePath = path.join(currentDir, 'metadata', metadataFileName);
+
+        try {
+            if (fs.statSync(candidatePath).isFile()) {
+                return candidatePath;
+            }
+        } catch {
+            // Keep walking up until the filesystem root.
+        }
+
+        previousDir = currentDir;
+        currentDir = path.dirname(currentDir);
+    }
+
+    return null;
+}
+
+function getMetadataPublisherReleaseDate(gamePath, gameName) {
+    const metadataFilePath = findMetadataFilePath(gamePath, gameName);
+    if (!metadataFilePath) {
+        return {
+            publisher: '',
+            releaseDate: ''
+        };
+    }
+
+    try {
+        const parsedData = JSON.parse(fs.readFileSync(metadataFilePath, 'utf8'));
+        const gameMetaData = parsedData?.gameMetaData || {};
+
+        return {
+            publisher: normalizeFavoriteRecordText(gameMetaData.publisher),
+            releaseDate: normalizeFavoriteRecordReleaseDate(gameMetaData.releaseDate)
+        };
+    } catch (error) {
+        console.warn(`Failed to read metadata for ${gameName}:`, error);
+        return {
+            publisher: '',
+            releaseDate: ''
+        };
+    }
+}
+
+function getFavoriteRecordPublisherReleaseDate(record) {
+    const fileName = record?.gamePath ? path.basename(record.gamePath) : record?.gameName;
+    const fileNameData = getFilenamePublisherReleaseDate(fileName);
+    const metadataData = getMetadataPublisherReleaseDate(record?.gamePath, record?.gameName);
+
+    return {
+        publisher:
+            metadataData.publisher ||
+            normalizeFavoriteRecordText(record?.publisher) ||
+            normalizeFavoriteRecordText(record?.Publisher) ||
+            fileNameData.publisher ||
+            '',
+        releaseDate:
+            metadataData.releaseDate ||
+            normalizeFavoriteRecordReleaseDate(record?.releaseDate) ||
+            normalizeFavoriteRecordReleaseDate(record?.Year) ||
+            fileNameData.releaseDate ||
+            ''
+    };
+}
+
+function getFavoriteRecordPublisher(record) {
+    return normalizeFavoriteRecordText(record?.publisher) || normalizeFavoriteRecordText(record?.Publisher);
+}
+
+function getFavoriteRecordReleaseDate(record) {
+    return normalizeFavoriteRecordReleaseDate(record?.releaseDate) || normalizeFavoriteRecordReleaseDate(record?.Year);
 }
 
 function compareFavoriteText(a, b) {
@@ -429,9 +593,28 @@ function compareOptionalFavoriteText(a, b) {
     return compareFavoriteText(left, right);
 }
 
-function compareOptionalFavoriteYear(a, b) {
-    const left = parseInt(a, 10) || 0;
-    const right = parseInt(b, 10) || 0;
+function getFavoriteReleaseDateSortValue(value) {
+    const normalized = normalizeFavoriteRecordReleaseDate(value);
+    if (!normalized) {
+        return 0;
+    }
+
+    const parsedDate = Date.parse(normalized);
+    if (!isNaN(parsedDate)) {
+        return parsedDate;
+    }
+
+    const yearMatch = normalized.match(/(19|20)\d{2}/);
+    if (yearMatch) {
+        return parseInt(yearMatch[0], 10);
+    }
+
+    return 0;
+}
+
+function compareOptionalFavoriteReleaseDate(a, b) {
+    const left = getFavoriteReleaseDateSortValue(a);
+    const right = getFavoriteReleaseDateSortValue(b);
 
     if (!left && right) return 1;
     if (left && !right) return -1;
@@ -447,11 +630,11 @@ function sortFavoriteRecords(records, sortBy = 'none') {
 
     if (sortBy === 'publisher') {
         return [...records].sort((recordA, recordB) => {
-            const publisherCompare = compareOptionalFavoriteText(recordA?.Publisher, recordB?.Publisher);
+            const publisherCompare = compareOptionalFavoriteText(getFavoriteRecordPublisher(recordA), getFavoriteRecordPublisher(recordB));
             if (publisherCompare !== 0) return publisherCompare;
 
-            const yearCompare = compareOptionalFavoriteYear(recordA?.Year, recordB?.Year);
-            if (yearCompare !== 0) return yearCompare;
+            const releaseDateCompare = compareOptionalFavoriteReleaseDate(getFavoriteRecordReleaseDate(recordA), getFavoriteRecordReleaseDate(recordB));
+            if (releaseDateCompare !== 0) return releaseDateCompare;
 
             return compareFavoriteText(recordA?.gameName, recordB?.gameName);
         });
@@ -459,10 +642,10 @@ function sortFavoriteRecords(records, sortBy = 'none') {
 
     if (sortBy === 'date') {
         return [...records].sort((recordA, recordB) => {
-            const yearCompare = compareOptionalFavoriteYear(recordA?.Year, recordB?.Year);
-            if (yearCompare !== 0) return yearCompare;
+            const releaseDateCompare = compareOptionalFavoriteReleaseDate(getFavoriteRecordReleaseDate(recordA), getFavoriteRecordReleaseDate(recordB));
+            if (releaseDateCompare !== 0) return releaseDateCompare;
 
-            const publisherCompare = compareOptionalFavoriteText(recordA?.Publisher, recordB?.Publisher);
+            const publisherCompare = compareOptionalFavoriteText(getFavoriteRecordPublisher(recordA), getFavoriteRecordPublisher(recordB));
             if (publisherCompare !== 0) return publisherCompare;
 
             return compareFavoriteText(recordA?.gameName, recordB?.gameName);
@@ -588,7 +771,7 @@ export function toggleFullScreen(elem = document.documentElement) {
     }
 }
 
-export async function scanDirectory(gamesDir, extensions, recursive = true, ignoredDirs = ['PS3_EXTRA', 'PKGDIR', 'freezer', 'tmp', 'WIP']) {
+export async function scanDirectory(gamesDir, extensions, recursive = true, ignoredDirs = ['PS3_EXTRA', 'PKGDIR', 'freezer', 'tmp', 'WIP', 'images', 'metadata']) {
 
     if (!gamesDir || typeof gamesDir !== 'string') {
         console.warn("scanDirectory: Invalid directory path provided:", gamesDir);
@@ -604,17 +787,59 @@ export async function scanDirectory(gamesDir, extensions, recursive = true, igno
     }
 }
 
-export async function findImageFile(basePath, fileNameWithoutExt) {
+async function buildImageIndex(basePath) {
+    const imageIndex = new Map();
+    const newestTimes = new Map();
+
     try {
-        // Use IPC to call the main process findImageFile handler
-        return await ipcRenderer.invoke('find-image-file', basePath, fileNameWithoutExt);
+        const items = await fsp.readdir(basePath, { withFileTypes: true });
+
+        for (const item of items) {
+            if (!item.isFile()) continue;
+
+            const extension = path.extname(item.name).toLowerCase();
+            if (!IMAGE_EXTENSIONS.has(extension)) continue;
+
+            const fullPath = path.join(basePath, item.name);
+            const fileName = path.basename(item.name, extension);
+
+            try {
+                const stats = await fsp.stat(fullPath);
+                const mtime = stats.mtimeMs || 0;
+
+                if (!newestTimes.has(fileName) || mtime >= newestTimes.get(fileName)) {
+                    newestTimes.set(fileName, mtime);
+                    imageIndex.set(fileName, fullPath);
+                }
+            } catch {
+                // Ignore unreadable image files
+            }
+        }
+    } catch {
+        // Missing images directory is fine
+    }
+
+    return imageIndex;
+}
+
+export async function findImageFile(basePath, fileNameWithoutExt) {
+    if (!basePath || !fileNameWithoutExt) {
+        return null;
+    }
+
+    try {
+        if (!imageIndexCache.has(basePath)) {
+            imageIndexCache.set(basePath, buildImageIndex(basePath));
+        }
+
+        const imageIndex = await imageIndexCache.get(basePath);
+        return imageIndex.get(fileNameWithoutExt) || null;
     } catch (err) {
+        imageIndexCache.delete(basePath);
         console.warn("Error finding image file:", err);
         return null;
     }
 }
-
-
 
 function setFooterProgress(barIndex, percent) {
     const bar = document.getElementById(`progress-bar-${barIndex}`);
@@ -816,15 +1041,17 @@ function updateFavoriteBadgesByPath(gamePath, enabled) {
 }
 
 export function buildFavoriteRecord(gameContainer) {
-    const fileName = path.basename(gameContainer.dataset.gamePath || gameContainer.dataset.gameName || '');
-    const { Publisher, Year } = getFilenamePublisherYear(fileName);
-
-    return {
+    const record = {
         gameName: gameContainer.dataset.gameName,
         gamePath: gameContainer.dataset.gamePath,
-        platform: gameContainer.dataset.platform,
-        Publisher,
-        Year
+        platform: gameContainer.dataset.platform
+    };
+    const { publisher, releaseDate } = getFavoriteRecordPublisherReleaseDate(record);
+
+    return {
+        ...record,
+        publisher,
+        releaseDate
     };
 }
 
@@ -1073,6 +1300,15 @@ export async function getPs3GameName(filePath) {
     } catch (err) {
         console.error('Failed to parse SFO:', err);
         return null;
+    }
+}
+
+export async function getMameNameMap(emulatorCommand) {
+    try {
+        return await ipcRenderer.invoke('get-mame-name-map', emulatorCommand);
+    } catch (err) {
+        console.error('Failed to resolve MAME titles:', err);
+        return {};
     }
 }
 

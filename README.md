@@ -1,4 +1,8 @@
-<div align="center">
+# Emulsion
+
+*Better gaming through chemistry*
+
+Display your games collection(s) into responsive galleries, manage game metadata, cover art and emulator configuration. Launch your games in style. Ideal for powering a cabinet, pinball included.
 
 [![CI/CD](https://img.shields.io/badge/Build-Passing-brightgreen)](https://github.com/yphil-dev/emulsion/actions)
 [![Release](https://img.shields.io/github/v/release/yphil-dev/emulsion?style=flat&logo=github&color=brightgreen)](https://github.com/yphil-dev/emulsion/releases)
@@ -6,17 +10,8 @@
 [![LiberaPay](https://img.shields.io/liberapay/receives/yphil.svg?logo=liberapay&style=flat)](https://liberapay.com/yphil/donate)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support_Me-FF5E5B?logo=ko-fi&logoColor=white&style=flat)](https://ko-fi.com/yphil)
 
-# Emulsion
-
-*Better gaming through chemistry*
-
-**A tonic front end for your game machine.**
-
-[Website](https://yphil.gitlab.io/emulsion) • [Download](https://github.com/yphil-dev/emulsion/releases/latest) • [GitLab (primary)](https://gitlab.com/yphil/emulsion) • [GitHub mirror](https://github.com/yphil-dev/Emulsion) • [Blog](https://yphil.gitlab.io/)
-
 ![Emulsion Hero](https://yphil.gitlab.io/images/emulsion-screenshot_01.png?cache=xyzzz)
 
-</div>
 
 ## Why Emulsion?
 

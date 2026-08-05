@@ -1,3 +1,5 @@
+<div align="center">
+
 # Emulsion
 
 *Better gaming through chemistry*
@@ -10,10 +12,9 @@ Display your games collection(s) into responsive galleries, manage game metadata
 [![LiberaPay](https://img.shields.io/liberapay/receives/yphil.svg?logo=liberapay&style=flat)](https://liberapay.com/yphil/donate)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support_Me-FF5E5B?logo=ko-fi&logoColor=white&style=flat)](https://ko-fi.com/yphil)
 
+
 ![Emulsion Hero](https://yphil.gitlab.io/images/emulsion-screenshot_01.png?cache=xyzzz)
-
-
-## Why Emulsion?
+</div>
 
 Emulsion lets you browse and launch a mixed game collection from one interface.
 It is designed to be practical: fullscreen-friendly, comfortable with a controller, and flexible about how your collection is organized.
@@ -22,7 +23,7 @@ Your games can stay where they already are: **local disk, external drive, mixed 
 
 It also works well for **arcade and pinball cabinets**, including **VPX** setups.
 
-### Highlights
+### Features
 
 - **Multi-platform launcher** — one frontend for many systems
 - **Your games can stay where they are** — local folders, external drives, mixed storage, even a NAS
